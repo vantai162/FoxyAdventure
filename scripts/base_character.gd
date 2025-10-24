@@ -23,11 +23,10 @@ var _next_animated_sprite: AnimatedSprite2D = null
 
 func _ready() -> void:
 	set_animated_sprite($Direction/AnimatedSprite2D)
-
+	
 func _physics_process(delta: float) -> void:
 	# Animation
 	_check_changed_animation()
-
 	if fsm != null:
 		fsm._update(delta)
 	# Movement
@@ -83,7 +82,6 @@ func get_animation_name() -> String:
 
 func set_animated_sprite(new_animated_sprite: AnimatedSprite2D) -> void:
 	_next_animated_sprite = new_animated_sprite
-
 # Check if the animation or animated sprite has changed and play the new animation
 func _check_changed_animation() -> void:
 	var need_play: bool = false
