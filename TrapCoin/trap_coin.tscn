@@ -1,0 +1,22 @@
+[gd_scene load_steps=4 format=3 uid="uid://dy2go6q81lmqg"]
+
+[ext_resource type="Script" uid="uid://mtevjbiti430" path="res://TrapCoin/trap_coin.gd" id="1_fje8i"]
+[ext_resource type="Texture2D" uid="uid://b3aukwxehwfbv" path="res://icon.svg" id="2_ad6db"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_51wr1"]
+size = Vector2(128, 127)
+
+[node name="TrapCoin" type="Area2D"]
+collision_layer = 512
+collision_mask = 256
+script = ExtResource("1_fje8i")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+position = Vector2(4, 8)
+texture = ExtResource("2_ad6db")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(5, 8.5)
+shape = SubResource("RectangleShape2D_51wr1")
+
+[connection signal="area_entered" from="." to="." method="_on_area_entered"]
