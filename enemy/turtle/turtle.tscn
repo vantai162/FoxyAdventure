@@ -1,0 +1,116 @@
+[gd_scene load_steps=16 format=3 uid="uid://c1bijw8i8erx5"]
+
+[ext_resource type="Script" uid="uid://bessfwihwj0hf" path="res://enemy/turtle/turtle.gd" id="1_raxgc"]
+[ext_resource type="Texture2D" uid="uid://5ganj1pgjcjn" path="res://assets/monsters/turtle_temporary/Little_Turtle.png" id="2_1m0ji"]
+[ext_resource type="PackedScene" uid="uid://cbjbo6gtyss6f" path="res://scripts/hit_area_2d.tscn" id="3_raxgc"]
+[ext_resource type="PackedScene" uid="uid://ct1tqxgwkuvbe" path="res://scripts/hurt_area_2d.tscn" id="4_ehiyd"]
+[ext_resource type="Script" uid="uid://11bngkdi5rr8" path="res://enemy/turtle/run.gd" id="5_ehiyd"]
+[ext_resource type="Script" uid="uid://c3vt7rpl6ep63" path="res://enemy/turtle/hide.gd" id="6_nvedk"]
+[ext_resource type="Script" uid="uid://ckk2lgo3gjnvk" path="res://enemy/turtle/hurt.gd" id="7_0ekdt"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_pkty3"]
+radius = 13.0384
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_4on02"]
+atlas = ExtResource("2_1m0ji")
+region = Rect2(0, 156, 48, 52)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_raxgc"]
+atlas = ExtResource("2_1m0ji")
+region = Rect2(48, 156, 48, 52)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ehiyd"]
+atlas = ExtResource("2_1m0ji")
+region = Rect2(96, 156, 48, 52)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_nvedk"]
+atlas = ExtResource("2_1m0ji")
+region = Rect2(0, 54, 48, 54)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_0ekdt"]
+atlas = ExtResource("2_1m0ji")
+region = Rect2(48, 54, 48, 54)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_5xs4q"]
+atlas = ExtResource("2_1m0ji")
+region = Rect2(96, 54, 48, 54)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_v3mmh"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_4on02")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_raxgc")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_ehiyd")
+}],
+"loop": true,
+"name": &"hide",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_nvedk")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_0ekdt")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_5xs4q")
+}],
+"loop": true,
+"name": &"run",
+"speed": 5.0
+}]
+
+[node name="Turtle" type="CharacterBody2D"]
+script = ExtResource("1_raxgc")
+metadata/_custom_type_script = "uid://s4xx82espxdt"
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("CircleShape2D_pkty3")
+
+[node name="HitArea2d" parent="." instance=ExtResource("3_raxgc")]
+collision_layer = 0
+collision_mask = 4
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="HitArea2d"]
+shape = SubResource("CircleShape2D_pkty3")
+
+[node name="HurtArea2d" parent="." instance=ExtResource("4_ehiyd")]
+collision_layer = 16
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="HurtArea2d"]
+shape = SubResource("CircleShape2D_pkty3")
+
+[node name="CollisionShape2D2" type="CollisionShape2D" parent="."]
+shape = SubResource("CircleShape2D_pkty3")
+
+[node name="Direction" type="Node2D" parent="."]
+
+[node name="FrontRayCast2D" type="RayCast2D" parent="Direction"]
+target_position = Vector2(14, 0)
+
+[node name="DownRayCast2D" type="RayCast2D" parent="Direction"]
+position = Vector2(10, 0)
+target_position = Vector2(0, 29)
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="Direction"]
+sprite_frames = SubResource("SpriteFrames_v3mmh")
+animation = &"hide"
+frame_progress = 0.540057
+
+[node name="States" type="Node" parent="."]
+
+[node name="Run" type="Node" parent="States"]
+script = ExtResource("5_ehiyd")
+
+[node name="Hide" type="Node" parent="States"]
+script = ExtResource("6_nvedk")
+
+[node name="Hurt" type="Node" parent="States"]
+script = ExtResource("7_0ekdt")
