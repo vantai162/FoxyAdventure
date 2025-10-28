@@ -20,7 +20,7 @@ position = Vector2(1162, 244)
 scale = Vector2(1.126, 4.514)
 
 [node name="Foxy" parent="." instance=ExtResource("2_8a8pi")]
-position = Vector2(427, 419)
+position = Vector2(389, 366)
 scale = Vector2(8, 8)
 
 [node name="EffectAppllier" type="Node" parent="." node_paths=PackedStringArray("player")]

@@ -113,7 +113,7 @@ shape = SubResource("RectangleShape2D_8r8n2")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="Direction"]
 sprite_frames = SubResource("SpriteFrames_7xt5n")
-animation = &"jump"
+animation = &"dead"
 
 [node name="States" type="Node" parent="."]
 
