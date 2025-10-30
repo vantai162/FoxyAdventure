@@ -1,0 +1,218 @@
+[gd_scene load_steps=40 format=3 uid="uid://duryp3ufmd0be"]
+
+[ext_resource type="Script" uid="uid://ci0q7faxk47ee" path="res://enemy/tribe/friendly_tribe.gd" id="1_icd28"]
+[ext_resource type="Texture2D" uid="uid://lrtt52fguxfv" path="res://assets/monsters/tribe_temporary/Sprites/4-Enemy-Big Guy/2-Run/1.png" id="2_fi330"]
+[ext_resource type="Texture2D" uid="uid://be0sd1vgcgy4g" path="res://assets/monsters/tribe_temporary/Sprites/4-Enemy-Big Guy/13-Dead Hit/1.png" id="2_w111s"]
+[ext_resource type="Texture2D" uid="uid://co3ydhean6cji" path="res://assets/monsters/tribe_temporary/Sprites/4-Enemy-Big Guy/13-Dead Hit/2.png" id="3_dmqik"]
+[ext_resource type="Texture2D" uid="uid://cwswug1rr4a7s" path="res://assets/monsters/tribe_temporary/Sprites/4-Enemy-Big Guy/2-Run/2.png" id="3_qf0w4"]
+[ext_resource type="Texture2D" uid="uid://etiegitqokmt" path="res://assets/monsters/tribe_temporary/Sprites/4-Enemy-Big Guy/2-Run/3.png" id="4_2oxwk"]
+[ext_resource type="Texture2D" uid="uid://dh83j4tufc4ee" path="res://assets/monsters/tribe_temporary/Sprites/4-Enemy-Big Guy/13-Dead Hit/3.png" id="4_ron27"]
+[ext_resource type="Texture2D" uid="uid://ctu8fjuvan4nu" path="res://assets/monsters/tribe_temporary/Sprites/4-Enemy-Big Guy/2-Run/4.png" id="5_6uv4s"]
+[ext_resource type="Texture2D" uid="uid://33bs4eqmu6qr" path="res://assets/monsters/tribe_temporary/Sprites/4-Enemy-Big Guy/13-Dead Hit/4.png" id="5_kkiwi"]
+[ext_resource type="Texture2D" uid="uid://b5rhxefsci06v" path="res://assets/monsters/tribe_temporary/Sprites/4-Enemy-Big Guy/13-Dead Hit/5.png" id="6_s06mn"]
+[ext_resource type="Texture2D" uid="uid://dtmlqclnvle2m" path="res://assets/monsters/tribe_temporary/Sprites/4-Enemy-Big Guy/2-Run/5.png" id="6_v5f6j"]
+[ext_resource type="Texture2D" uid="uid://d2qyt3m2cxph" path="res://assets/monsters/tribe_temporary/Sprites/4-Enemy-Big Guy/13-Dead Hit/6.png" id="7_2xebt"]
+[ext_resource type="Texture2D" uid="uid://3cohpwgofimt" path="res://assets/monsters/tribe_temporary/Sprites/4-Enemy-Big Guy/2-Run/6.png" id="7_74v2m"]
+[ext_resource type="Texture2D" uid="uid://b5gd3du4l8yd7" path="res://assets/monsters/tribe_temporary/Sprites/4-Enemy-Big Guy/12-Hit/1.png" id="8_6eps4"]
+[ext_resource type="Texture2D" uid="uid://1h70v7lq8t38" path="res://assets/monsters/tribe_temporary/Sprites/4-Enemy-Big Guy/2-Run/7.png" id="8_vjftl"]
+[ext_resource type="Texture2D" uid="uid://b86ql86s6gx3c" path="res://assets/monsters/tribe_temporary/Sprites/4-Enemy-Big Guy/12-Hit/2.png" id="9_3tc0t"]
+[ext_resource type="Texture2D" uid="uid://p55ub5q4e4vb" path="res://assets/monsters/tribe_temporary/Sprites/4-Enemy-Big Guy/2-Run/8.png" id="9_tlcj3"]
+[ext_resource type="Texture2D" uid="uid://yedcbgxgub6d" path="res://assets/monsters/tribe_temporary/Sprites/4-Enemy-Big Guy/12-Hit/3.png" id="10_1s53u"]
+[ext_resource type="Texture2D" uid="uid://c4npxjigd5nl5" path="res://assets/monsters/tribe_temporary/Sprites/4-Enemy-Big Guy/2-Run/9.png" id="10_4cm4t"]
+[ext_resource type="Texture2D" uid="uid://d3gyj1to0gpg2" path="res://assets/monsters/tribe_temporary/Sprites/4-Enemy-Big Guy/2-Run/10.png" id="11_8fm1n"]
+[ext_resource type="Texture2D" uid="uid://crbuyhw7ul5cu" path="res://assets/monsters/tribe_temporary/Sprites/4-Enemy-Big Guy/12-Hit/4.png" id="11_am78u"]
+[ext_resource type="Texture2D" uid="uid://cma6x3l2cb2wd" path="res://assets/monsters/tribe_temporary/Sprites/4-Enemy-Big Guy/2-Run/11.png" id="12_2bvhe"]
+[ext_resource type="Texture2D" uid="uid://dswx6yxguqwrk" path="res://assets/monsters/tribe_temporary/Sprites/4-Enemy-Big Guy/12-Hit/5.png" id="12_np0r0"]
+[ext_resource type="Texture2D" uid="uid://c7vuolusvlmu0" path="res://assets/monsters/tribe_temporary/Sprites/4-Enemy-Big Guy/12-Hit/6.png" id="13_6wsbc"]
+[ext_resource type="Texture2D" uid="uid://cm4namhqyxhj3" path="res://assets/monsters/tribe_temporary/Sprites/4-Enemy-Big Guy/2-Run/12.png" id="13_di5rh"]
+[ext_resource type="Texture2D" uid="uid://cts4whkaahmt3" path="res://assets/monsters/tribe_temporary/Sprites/4-Enemy-Big Guy/12-Hit/7.png" id="14_6af8g"]
+[ext_resource type="Texture2D" uid="uid://vidwepsj4vpt" path="res://assets/monsters/tribe_temporary/Sprites/4-Enemy-Big Guy/2-Run/13.png" id="14_fwwde"]
+[ext_resource type="Texture2D" uid="uid://f5xd7xmtei4s" path="res://assets/monsters/tribe_temporary/Sprites/4-Enemy-Big Guy/12-Hit/8.png" id="15_2grpr"]
+[ext_resource type="Texture2D" uid="uid://dssxdgn6aae74" path="res://assets/monsters/tribe_temporary/Sprites/4-Enemy-Big Guy/6-Ground/1.png" id="15_repug"]
+[ext_resource type="Texture2D" uid="uid://b8efw1wqoioqt" path="res://assets/monsters/tribe_temporary/Sprites/4-Enemy-Big Guy/6-Ground/2.png" id="16_01dvf"]
+[ext_resource type="Texture2D" uid="uid://bcg3sjvoxlhqh" path="res://assets/monsters/tribe_temporary/Sprites/4-Enemy-Big Guy/6-Ground/3.png" id="17_oex46"]
+[ext_resource type="PackedScene" uid="uid://ct1tqxgwkuvbe" path="res://scripts/hurt_area_2d.tscn" id="32_0lx5c"]
+[ext_resource type="Script" uid="uid://yf5k6md832ld" path="res://enemy/tribe/run.gd" id="33_etpho"]
+[ext_resource type="Script" uid="uid://rht0fd7y8qg8" path="res://enemy/tribe/surprise.gd" id="34_w111s"]
+[ext_resource type="Script" uid="uid://css0l7i18js2k" path="res://enemy/tribe/flee.gd" id="35_dmqik"]
+[ext_resource type="Texture2D" uid="uid://bgnbj6qy3a2ow" path="res://assets/monsters/tribe_temporary/problem.png" id="36_ron27"]
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_icd28"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("2_w111s")
+}, {
+"duration": 1.0,
+"texture": ExtResource("3_dmqik")
+}, {
+"duration": 1.0,
+"texture": ExtResource("4_ron27")
+}, {
+"duration": 1.0,
+"texture": ExtResource("5_kkiwi")
+}, {
+"duration": 1.0,
+"texture": ExtResource("6_s06mn")
+}, {
+"duration": 1.0,
+"texture": ExtResource("7_2xebt")
+}],
+"loop": false,
+"name": &"dead",
+"speed": 6.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("8_6eps4")
+}, {
+"duration": 1.0,
+"texture": ExtResource("9_3tc0t")
+}, {
+"duration": 1.0,
+"texture": ExtResource("10_1s53u")
+}, {
+"duration": 1.0,
+"texture": ExtResource("11_am78u")
+}, {
+"duration": 1.0,
+"texture": ExtResource("12_np0r0")
+}, {
+"duration": 1.0,
+"texture": ExtResource("13_6wsbc")
+}, {
+"duration": 1.0,
+"texture": ExtResource("14_6af8g")
+}, {
+"duration": 1.0,
+"texture": ExtResource("15_2grpr")
+}],
+"loop": false,
+"name": &"hurt",
+"speed": 8.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("2_fi330")
+}, {
+"duration": 1.0,
+"texture": ExtResource("3_qf0w4")
+}, {
+"duration": 1.0,
+"texture": ExtResource("4_2oxwk")
+}, {
+"duration": 1.0,
+"texture": ExtResource("5_6uv4s")
+}, {
+"duration": 1.0,
+"texture": ExtResource("6_v5f6j")
+}, {
+"duration": 1.0,
+"texture": ExtResource("7_74v2m")
+}, {
+"duration": 1.0,
+"texture": ExtResource("8_vjftl")
+}, {
+"duration": 1.0,
+"texture": ExtResource("9_tlcj3")
+}, {
+"duration": 1.0,
+"texture": ExtResource("10_4cm4t")
+}, {
+"duration": 1.0,
+"texture": ExtResource("11_8fm1n")
+}, {
+"duration": 1.0,
+"texture": ExtResource("12_2bvhe")
+}, {
+"duration": 1.0,
+"texture": ExtResource("13_di5rh")
+}, {
+"duration": 1.0,
+"texture": ExtResource("14_fwwde")
+}],
+"loop": true,
+"name": &"run",
+"speed": 12.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("15_repug")
+}, {
+"duration": 1.0,
+"texture": ExtResource("16_01dvf")
+}, {
+"duration": 1.0,
+"texture": ExtResource("17_oex46")
+}],
+"loop": false,
+"name": &"suprise",
+"speed": 3.0
+}]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_icd28"]
+radius = 84.7172
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_w111s"]
+radius = 30.0832
+
+[node name="FriendlyTribe" type="CharacterBody2D"]
+position = Vector2(-23, 20)
+scale = Vector2(0.64, 0.680001)
+script = ExtResource("1_icd28")
+metadata/_custom_type_script = "uid://s4xx82espxdt"
+
+[node name="Direction" type="Node2D" parent="."]
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="Direction"]
+sprite_frames = SubResource("SpriteFrames_icd28")
+animation = &"suprise"
+frame = 2
+frame_progress = 1.0
+
+[node name="FrontRayCast2D" type="RayCast2D" parent="Direction"]
+position = Vector2(23.4375, 0)
+target_position = Vector2(21.875, 0)
+
+[node name="DownRayCast2D" type="RayCast2D" parent="Direction"]
+position = Vector2(23.4375, 1.47059)
+target_position = Vector2(-1.5625, 48.5293)
+
+[node name="DetectPlayerArea2D" type="Area2D" parent="Direction"]
+visible = false
+collision_layer = 0
+collision_mask = 2
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Direction/DetectPlayerArea2D"]
+shape = SubResource("CircleShape2D_icd28")
+
+[node name="AlertIcon" type="Node2D" parent="Direction"]
+visible = false
+scale = Vector2(1, 1)
+
+[node name="Sprite2D" type="Sprite2D" parent="Direction/AlertIcon"]
+position = Vector2(16.8281, -30.8823)
+scale = Vector2(0.0380249, 0.0344669)
+texture = ExtResource("36_ron27")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(-5, 4)
+shape = SubResource("CircleShape2D_w111s")
+
+[node name="HurtArea2d" parent="." instance=ExtResource("32_0lx5c")]
+visible = false
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="HurtArea2d"]
+position = Vector2(-5, 4)
+shape = SubResource("CircleShape2D_w111s")
+
+[node name="States" type="Node" parent="."]
+
+[node name="Run" type="Node" parent="States"]
+script = ExtResource("33_etpho")
+
+[node name="Surprise" type="Node" parent="States"]
+script = ExtResource("34_w111s")
+
+[node name="Flee" type="Node" parent="States"]
+script = ExtResource("35_dmqik")
