@@ -1,7 +1,7 @@
 [gd_scene load_steps=4 format=3 uid="uid://dy6cmmwsmdx2r"]
 
 [ext_resource type="PackedScene" uid="uid://bs816w0pr8all" path="res://player/foxy.tscn" id="1_c086n"]
-[ext_resource type="PackedScene" uid="uid://c1bijw8i8erx5" path="res://enemy/turtle/turtle.tscn" id="2_vwmmf"]
+[ext_resource type="PackedScene" uid="uid://duryp3ufmd0be" path="res://enemy/tribe/friendly_tribe.tscn" id="3_vwmmf"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_my5ub"]
 size = Vector2(658.5, 87)
@@ -17,5 +17,5 @@ shape = SubResource("RectangleShape2D_my5ub")
 [node name="Foxy" parent="." instance=ExtResource("1_c086n")]
 position = Vector2(123, 195)
 
-[node name="Turtle" parent="." instance=ExtResource("2_vwmmf")]
-position = Vector2(338, 252)
+[node name="FriendlyTribe" parent="." instance=ExtResource("3_vwmmf")]
+position = Vector2(454, 243)

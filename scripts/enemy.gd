@@ -62,6 +62,7 @@ func is_can_fall() -> bool:
 
 #enable check player in sight
 func enable_check_player_in_sight() -> void:
+	
 	if(detect_player_area != null):
 		detect_player_area.get_node("CollisionShape2D").disabled = false
 
@@ -83,7 +84,7 @@ func _on_hurt_area_2d_hurt(_direction: Vector2, _damage: float) -> void:
 
 # called when player is in sight
 func _on_player_in_sight(_player_pos: Vector2):
-	pass
+	fsm.current_state.change_state(fsm.states.surprise)
 
 # called when player is not in sight
 func _on_player_not_in_sight():
