@@ -188,7 +188,6 @@ shape = SubResource("CircleShape2D_icd28")
 
 [node name="AlertIcon" type="Node2D" parent="Direction"]
 visible = false
-scale = Vector2(1, 1)
 
 [node name="Sprite2D" type="Sprite2D" parent="Direction/AlertIcon"]
 position = Vector2(16.8281, -30.8823)

@@ -3,20 +3,21 @@ extends BaseCharacter
 
 @export var Attack_Speed:int=0
 var attack_cooldown=1
-@export var Has_Blade:bool=false
 @export var Effect={
 	"Stun":0,
 	"DamAmplify":0
 }
-
+@export var KeySkill={
+	"HasBlade":false
+}
 func _ready() -> void:
 	super._ready()
 	fsm=FSM.new(self,$States,$States/Idle)
-	if Has_Blade==true:
+	if KeySkill["HasBlade"]==true:
 		_collect_blade()
 	
 func _collect_blade():
-	Has_Blade=true
+	KeySkill["HasBlade"]=true
 	set_animated_sprite($Direction/BladeAnimatedSprite2D)
 
 func _applyeffect(name:String,time:float):
