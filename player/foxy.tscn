@@ -1,4 +1,4 @@
-[gd_scene load_steps=39 format=3 uid="uid://bs816w0pr8all"]
+[gd_scene load_steps=50 format=3 uid="uid://bs816w0pr8all"]
 
 [ext_resource type="Script" uid="uid://brl5yy4w7wich" path="res://player/foxy.gd" id="1_wod02"]
 [ext_resource type="Texture2D" uid="uid://m4di78taixns" path="res://assets/foxy/fox_hat/fox_defeat_1.png" id="2_70n8a"]
@@ -21,10 +21,14 @@
 [ext_resource type="Script" uid="uid://b0wtcnr8jknwp" path="res://player/jump.gd" id="17_abt3m"]
 [ext_resource type="Texture2D" uid="uid://c8k8kn11ppnjp" path="res://assets/foxy/fox_hat_blade/fox_jump_atk_2.png" id="17_pymck"]
 [ext_resource type="Script" uid="uid://cfn6xu62pkdmq" path="res://player/fall.gd" id="18_1kvmg"]
+[ext_resource type="Texture2D" uid="uid://dnt7n2db610ps" path="res://assets/foxy/fox_hat_blade/fox_atk_1.png" id="18_camrd"]
 [ext_resource type="Texture2D" uid="uid://cp2ag6s67gj73" path="res://assets/foxy/fox_hat_blade/fox_defeat_1.png" id="18_veeyl"]
+[ext_resource type="Texture2D" uid="uid://bkabwrpxdc7cc" path="res://assets/foxy/fox_hat_blade/fox_atk_2.png" id="19_34yrj"]
 [ext_resource type="Texture2D" uid="uid://cx3p62gjf57ep" path="res://assets/foxy/fox_hat_blade/fox_defeat_2.png" id="19_reoh7"]
 [ext_resource type="Texture2D" uid="uid://blvo22k8hckk0" path="res://assets/foxy/fox_hat_blade/fox_defeat_3.png" id="20_4p3j1"]
+[ext_resource type="Texture2D" uid="uid://byd3g4nnxwfcq" path="res://assets/foxy/fox_hat_blade/fox_atk_3.png" id="20_pm71f"]
 [ext_resource type="Texture2D" uid="uid://bh18dgm068hhf" path="res://assets/foxy/fox_hat_blade/fox_hurt_1.png" id="21_kvcfx"]
+[ext_resource type="Texture2D" uid="uid://bv5er34emc8g1" path="res://assets/foxy/fox_hat_blade/fox_fall_1.png" id="21_reoh7"]
 [ext_resource type="Texture2D" uid="uid://gg8v11cck4hu" path="res://assets/foxy/fox_hat_blade/fox_hurt_2.png" id="22_6yfce"]
 [ext_resource type="Texture2D" uid="uid://cbfcke2rlqmtw" path="res://assets/foxy/fox_hat_blade/fox_hurt_3.png" id="23_ys6s8"]
 [ext_resource type="Texture2D" uid="uid://cv1omqfyyi3aj" path="res://assets/foxy/fox_hat_blade/fox_idle_1.png" id="24_camrd"]
@@ -34,6 +38,11 @@
 [ext_resource type="Texture2D" uid="uid://cr8a68nw3dww1" path="res://assets/foxy/fox_hat_blade/fox_run_2.png" id="28_rsc2w"]
 [ext_resource type="Texture2D" uid="uid://d0jfmp24jrfcy" path="res://assets/foxy/fox_hat_blade/fox_run_3.png" id="29_333wc"]
 [ext_resource type="Texture2D" uid="uid://ce35c6mn7dcok" path="res://assets/foxy/fox_hat_blade/fox_run_4.png" id="30_ajtvx"]
+[ext_resource type="Script" uid="uid://csu2b21cwchqw" path="res://scripts/hurt_area_2d.gd" id="31_pymck"]
+[ext_resource type="Script" uid="uid://xqvgljx4hk1s" path="res://scripts/hit_area_2d.gd" id="32_veeyl"]
+[ext_resource type="Script" uid="uid://devihpb45ajdr" path="res://player/hurt.gd" id="38_4p3j1"]
+[ext_resource type="Script" uid="uid://bhv3i7yhtjluc" path="res://player/attack.gd" id="39_kvcfx"]
+[ext_resource type="Script" uid="uid://0146uckcta6p" path="res://player/dead.gd" id="43_34yrj"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_8r8n2"]
 size = Vector2(21, 30)
@@ -126,7 +135,16 @@ animations = [{
 "name": &"Jump_attack",
 "speed": 5.0
 }, {
-"frames": [],
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("18_camrd")
+}, {
+"duration": 1.0,
+"texture": ExtResource("19_34yrj")
+}, {
+"duration": 1.0,
+"texture": ExtResource("20_pm71f")
+}],
 "loop": true,
 "name": &"attack",
 "speed": 5.0
@@ -143,6 +161,14 @@ animations = [{
 }],
 "loop": true,
 "name": &"dead",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("21_reoh7")
+}],
+"loop": true,
+"name": &"fall",
 "speed": 5.0
 }, {
 "frames": [{
@@ -196,6 +222,12 @@ animations = [{
 "speed": 5.0
 }]
 
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_veeyl"]
+size = Vector2(23, 30)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_reoh7"]
+size = Vector2(11, 30)
+
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_u75vx"]
 size = Vector2(23, 30)
 
@@ -220,6 +252,26 @@ visible = false
 sprite_frames = SubResource("SpriteFrames_2mww5")
 animation = &"Jump_attack"
 
+[node name="HurtArea2D" type="Area2D" parent="Direction"]
+collision_layer = 4
+collision_mask = 0
+script = ExtResource("31_pymck")
+metadata/_custom_type_script = "uid://csu2b21cwchqw"
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Direction/HurtArea2D"]
+position = Vector2(-0.5, -1)
+shape = SubResource("RectangleShape2D_veeyl")
+
+[node name="HitArea2D" type="Area2D" parent="Direction"]
+collision_layer = 0
+collision_mask = 16
+script = ExtResource("32_veeyl")
+metadata/_custom_type_script = "uid://xqvgljx4hk1s"
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Direction/HitArea2D"]
+position = Vector2(15.5, -1)
+shape = SubResource("RectangleShape2D_reoh7")
+
 [node name="States" type="Node" parent="."]
 
 [node name="Idle" type="Node" parent="States"]
@@ -233,6 +285,15 @@ script = ExtResource("17_abt3m")
 
 [node name="Fall" type="Node" parent="States"]
 script = ExtResource("18_1kvmg")
+
+[node name="Hurt" type="Node" parent="States"]
+script = ExtResource("38_4p3j1")
+
+[node name="Attack" type="Node" parent="States"]
+script = ExtResource("39_kvcfx")
+
+[node name="Dead" type="Node" parent="States"]
+script = ExtResource("43_34yrj")
 
 [node name="EffectArea" type="Area2D" parent="."]
 collision_layer = 258
