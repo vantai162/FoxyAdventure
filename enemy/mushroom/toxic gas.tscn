@@ -1,0 +1,33 @@
+[gd_scene load_steps=6 format=3 uid="uid://nr5uby15sfha"]
+
+[ext_resource type="Script" uid="uid://cnllminw4rq84" path="res://enemy/mushroom/toxic_gas.gd" id="1_vv3ki"]
+[ext_resource type="Texture2D" uid="uid://1t3pkyls8wyt" path="res://assets/island/background/small_cloud_2.png" id="2_7dsxn"]
+[ext_resource type="Script" uid="uid://csu2b21cwchqw" path="res://scripts/hurt_area_2d.gd" id="3_gywn1"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_2mysm"]
+size = Vector2(102, 27)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_k2k8w"]
+size = Vector2(102, 27)
+
+[node name="ToxicGas" type="RigidBody2D"]
+script = ExtResource("1_vv3ki")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+modulate = Color(0.732475, 0.333424, 0.735792, 1)
+texture = ExtResource("2_7dsxn")
+region_rect = Rect2(-0.0574799, 0, 104.447, 27.0772)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(-1, -0.5)
+shape = SubResource("RectangleShape2D_2mysm")
+
+[node name="HurtArea2D" type="Area2D" parent="."]
+collision_layer = 0
+collision_mask = 4
+script = ExtResource("3_gywn1")
+metadata/_custom_type_script = "uid://csu2b21cwchqw"
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="HurtArea2D"]
+position = Vector2(-1, -0.5)
+shape = SubResource("RectangleShape2D_k2k8w")
