@@ -18,20 +18,6 @@ size = Vector2(27, 24)
 animations = [{
 "frames": [{
 "duration": 1.0,
-"texture": ExtResource("5_wkm5k")
-}, {
-"duration": 1.0,
-"texture": ExtResource("6_nf052")
-}, {
-"duration": 1.0,
-"texture": ExtResource("7_of5h1")
-}],
-"loop": true,
-"name": &"run",
-"speed": 5.0
-}, {
-"frames": [{
-"duration": 1.0,
 "texture": ExtResource("2_lprww")
 }, {
 "duration": 1.0,
@@ -53,8 +39,22 @@ animations = [{
 "texture": ExtResource("4_ky03m")
 }],
 "loop": false,
-"name": &"surprise",
+"name": &"explode",
 "speed": 10.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("5_wkm5k")
+}, {
+"duration": 1.0,
+"texture": ExtResource("6_nf052")
+}, {
+"duration": 1.0,
+"texture": ExtResource("7_of5h1")
+}],
+"loop": true,
+"name": &"run",
+"speed": 5.0
 }]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_nf052"]
@@ -74,9 +74,7 @@ shape = SubResource("RectangleShape2D_vwwmg")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="Direction"]
 sprite_frames = SubResource("SpriteFrames_dcy5h")
-animation = &"surprise"
-frame = 6
-frame_progress = 1.0
+animation = &"explode"
 
 [node name="FrontRayCast2D" type="RayCast2D" parent="Direction"]
 position = Vector2(9, -4)
@@ -86,19 +84,25 @@ target_position = Vector2(14, 0)
 position = Vector2(14, -4)
 target_position = Vector2(0, 40)
 
-[node name="DetectPlayerArea2D" type="Area2D" parent="Direction"]
+[node name="DetectPlayerArea" type="Area2D" parent="Direction"]
 collision_layer = 0
 collision_mask = 2
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Direction/DetectPlayerArea2D"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Direction/DetectPlayerArea"]
 position = Vector2(-4, -1)
 shape = SubResource("RectangleShape2D_nf052")
+
+[node name="DetectPlayerRayCast2D" type="RayCast2D" parent="Direction"]
+target_position = Vector2(300, 0)
+collision_mask = 2
 
 [node name="States" type="Node" parent="."]
 
 [node name="Run" type="Node" parent="States"]
 script = ExtResource("7_lprww")
 
-[node name="Surprise" type="Node" parent="States"]
+[node name="Explode" type="Node" parent="States"]
 script = ExtResource("8_jlpow")
 toxic_gas_scene = ExtResource("11_wkm5k")
+
+[connection signal="body_entered" from="Direction/DetectPlayerArea" to="." method="_on_detect_player_area_body_entered"]

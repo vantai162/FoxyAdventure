@@ -37,4 +37,4 @@ player = NodePath("../Foxy")
 position = Vector2(805, 458)
 
 [node name="Mushroom" parent="." instance=ExtResource("6_s3n3v")]
-position = Vector2(758, 447)
+position = Vector2(713, 434)

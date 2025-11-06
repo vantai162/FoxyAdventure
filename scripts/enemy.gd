@@ -85,6 +85,12 @@ func _on_hurt_area_2d_hurt(_direction: Vector2, _damage: float) -> void:
 # called when player is in sight
 func _on_player_in_sight(_player_pos: Vector2):
 	fsm.current_state.change_state(fsm.states.surprise)
+	
+func is_player_in_sight() -> bool:
+	if detect_ray_cast != null:
+		return detect_ray_cast.is_colliding()
+	return false
+
 
 # called when player is not in sight
 func _on_player_not_in_sight():

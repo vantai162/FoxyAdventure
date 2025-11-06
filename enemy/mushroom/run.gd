@@ -1,10 +1,13 @@
 extends EnemyState
-
+@export var follow_move: float = 300.0
 func _enter() -> void:
 	obj.change_animation("run")
 
 func _update(delta):
-	obj.velocity.x = obj.direction * obj.movement_speed
+	if not  obj.is_player_in_sight():
+		obj.velocity.x = obj.direction * obj.movement_speed
+	else:
+		obj.velocity.x = obj.direction * follow_move
 	if _should_turn_around():
 		obj.turn_around()
 
