@@ -8,7 +8,7 @@
 [ext_resource type="Texture2D" uid="uid://bqgmklofxv0qi" path="res://assets/monsters/mushroom/mushroom_02.png" id="6_nf052"]
 [ext_resource type="Script" uid="uid://tyxyrjlixj58" path="res://enemy/mushroom/run.gd" id="7_lprww"]
 [ext_resource type="Texture2D" uid="uid://cghgcxg1pvwd6" path="res://assets/monsters/mushroom/mushroom_03.png" id="7_of5h1"]
-[ext_resource type="Script" uid="uid://bec5oo64fsxp5" path="res://enemy/mushroom/surprise.gd" id="8_jlpow"]
+[ext_resource type="Script" uid="uid://bec5oo64fsxp5" path="res://enemy/mushroom/explode.gd" id="8_jlpow"]
 [ext_resource type="PackedScene" uid="uid://nr5uby15sfha" path="res://enemy/mushroom/toxic gas.tscn" id="11_wkm5k"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_vwwmg"]
@@ -63,7 +63,6 @@ size = Vector2(158, 108)
 [node name="Mushroom" type="CharacterBody2D"]
 collision_layer = 8
 script = ExtResource("1_jlpow")
-toxic_gas_scene = ExtResource("11_wkm5k")
 metadata/_custom_type_script = "uid://s4xx82espxdt"
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]

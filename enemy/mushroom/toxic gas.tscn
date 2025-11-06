@@ -11,10 +11,11 @@ size = Vector2(102, 27)
 size = Vector2(102, 27)
 
 [node name="ToxicGas" type="RigidBody2D"]
+collision_layer = 32
 script = ExtResource("1_vv3ki")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
-modulate = Color(0.732475, 0.333424, 0.735792, 1)
+modulate = Color(0.733333, 0.333333, 0.737255, 1)
 texture = ExtResource("2_7dsxn")
 region_rect = Rect2(-0.0574799, 0, 104.447, 27.0772)
 

@@ -54,6 +54,7 @@ jump={
 2d_physics/layer_3="player_hurt"
 2d_physics/layer_4="enemy"
 2d_physics/layer_5="enemy_hurt"
+2d_physics/layer_6="EnemyAttack"
 2d_physics/layer_9="PlayerEffectReceiver"
 2d_physics/layer_10="EffectItem"
 

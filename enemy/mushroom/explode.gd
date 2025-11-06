@@ -1,7 +1,7 @@
 extends EnemyState
 
 @export var toxic_gas_scene: PackedScene
-
+@export var gas_speed: float = 60.0
 func _enter() -> void:
 	obj.change_animation("explode")
 	obj.velocity.x = 0
@@ -12,7 +12,10 @@ func _enter() -> void:
 func _spawn_toxic_gas():
 	if toxic_gas_scene == null:
 		push_warning("toxic_gas_scene chưa được gán!")
-		return
-	var gas = toxic_gas_scene.instantiate()
-	gas.global_position = obj.global_position
-	obj.get_parent().add_child(gas)
+		return  
+
+	for dir in [-1, 1]:
+		var gas = toxic_gas_scene.instantiate()
+		gas.global_position = obj.global_position
+		gas.velocity = Vector2(gas_speed * dir, randf_range(-20, 20)) 
+		obj.get_parent().add_child(gas)
