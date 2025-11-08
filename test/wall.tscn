@@ -5,7 +5,7 @@
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_wq8em"]
 size = Vector2(125, 126)
 
-[node name="Wall" type="Node2D"]
+[node name="Wall" type="Node2D" groups=["ground"]]
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 texture = ExtResource("1_ptq5c")

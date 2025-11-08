@@ -1,0 +1,18 @@
+[gd_scene load_steps=4 format=3 uid="uid://c7x80a00a1b2c"]
+
+[ext_resource type="Script" uid="uid://byvng4j3m7i7l" path="res://projectiles/slow_area.gd" id="1_slow"]
+[ext_resource type="Texture2D" uid="uid://853x36mkfxu8" path="res://assets/island/background/water_reflect_medium_03.png" id="2_q4s1c"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_3oyj8"]
+size = Vector2(50, 10)
+
+[node name="SlowArea" type="Area2D"]
+collision_layer = 0
+collision_mask = 2
+script = ExtResource("1_slow")
+puddle_texture = ExtResource("2_q4s1c")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("RectangleShape2D_3oyj8")
+
+[connection signal="body_entered" from="." to="." method="_on_body_entered"]

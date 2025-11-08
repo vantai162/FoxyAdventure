@@ -4,10 +4,15 @@ extends FSMState
 func control_moving() -> bool:
 	var dir: float = Input.get_action_strength("right") - Input.get_action_strength("left")
 	var is_moving: bool = abs(dir) > 0.1
+	
+	var current_speed = obj.movement_speed
+	if obj.Effect["Slow"] > 0:
+		current_speed *= 0.5 # 50% slow
+	
 	if is_moving:
 		dir = sign(dir)
 		obj.change_direction(dir)
-		obj.velocity.x = obj.movement_speed * dir
+		obj.velocity.x = current_speed * dir
 		if obj.is_on_floor():
 			change_state(fsm.states.run)
 		return true

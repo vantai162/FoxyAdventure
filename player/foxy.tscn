@@ -199,7 +199,7 @@ animations = [{
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_u75vx"]
 size = Vector2(23, 30)
 
-[node name="Foxy" type="CharacterBody2D"]
+[node name="Foxy" type="CharacterBody2D" groups=["player"]]
 collision_layer = 2
 script = ExtResource("1_wod02")
 metadata/_custom_type_script = "uid://w7xdmsdvf5vd"
