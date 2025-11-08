@@ -41,6 +41,11 @@ func _init_detect_player_area():
 		detect_player_area.body_exited.connect(_on_body_exited)
 		
 
+func _physics_process(delta: float) -> void:
+	# keep your original BaseCharacter physics
+	super._physics_process(delta)
+	# only add this lightweight detection pass
+	_check_player_in_sight()
 
 # init hurt area
 func _init_hurt_area():
@@ -65,11 +70,18 @@ func enable_check_player_in_sight() -> void:
 	
 	if(detect_player_area != null):
 		detect_player_area.get_node("CollisionShape2D").disabled = false
+	if detect_ray_cast != null:
+		detect_ray_cast.enabled = true
 
 #disable check player in sight
 func disable_check_player_in_sight() -> void:
 	if(detect_player_area != null):
 		detect_player_area.get_node("CollisionShape2D").disabled = true
+	if detect_ray_cast != null:
+		detect_ray_cast.enabled = false
+		if found_player != null:
+			found_player = null
+			_on_player_not_in_sight()
 
 func _on_body_entered(_body: CharacterBody2D) -> void:
 	found_player = _body
@@ -84,7 +96,8 @@ func _on_hurt_area_2d_hurt(_direction: Vector2, _damage: float) -> void:
 
 # called when player is in sight
 func _on_player_in_sight(_player_pos: Vector2):
-	fsm.current_state.change_state(fsm.states.surprise)
+	#fsm.current_state.change_state(fsm.states.surprise)
+	pass
 	
 func is_player_in_sight() -> bool:
 	if detect_ray_cast != null:
@@ -121,3 +134,22 @@ func check_player_in_sight(player: Player) -> bool:
 		return true
 
 	return false
+
+func _check_player_in_sight() -> void:
+	if detect_ray_cast == null or not detect_ray_cast.enabled:
+		return
+
+	if detect_ray_cast.is_colliding():
+		var collider = detect_ray_cast.get_collider()
+		if collider is Player:
+			if found_player == null:
+				found_player = collider
+				_on_player_in_sight(collider.global_position)
+		else:
+			if found_player != null:
+				found_player = null
+				_on_player_not_in_sight()
+	else:
+		if found_player != null:
+			found_player = null
+			_on_player_not_in_sight()
