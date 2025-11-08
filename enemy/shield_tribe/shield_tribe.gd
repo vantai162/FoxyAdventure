@@ -1,6 +1,16 @@
 extends EnemyCharacter
 class_name ShieldTribe
 
+@export_group("Combat")
+@export var spear_damage: int = 1
+@export var spear_active_duration: float = 0.4
+@export var attack_interval: float = 2.0
+
+@export_group("Defense")
+@export var jump_react_range: float = 60.0
+@export var jump_cooldown: float = 1.0
+@export var sight_range: float = 85.0
+
 @onready var shield: StaticBody2D = $Direction/Shield
 @onready var attack_timer: Timer = $AttackTimer
 @onready var spear_hit_area: Area2D = $Direction/SpearHitArea
@@ -49,7 +59,7 @@ func face_player() -> void:
 
 func perform_spear_attack():
 	spear_hit_area.monitoring = true
-	var timer = get_tree().create_timer(0.4)
+	var timer = get_tree().create_timer(spear_active_duration)
 	timer.connect("timeout", Callable(self, "_on_attack_finished"))
 
 func _on_attack_finished():
