@@ -1,0 +1,213 @@
+[gd_scene load_steps=31 format=3 uid="uid://dav8b7a6d5e4f"]
+
+[ext_resource type="Script" uid="uid://cbxut3mc1715v" path="res://enemy/shield_tribe/shield_tribe.gd" id="1_shield_gd"]
+[ext_resource type="PackedScene" uid="uid://ct1tqxgwkuvbe" path="res://scripts/hurt_area_2d.tscn" id="2_hurt_area"]
+[ext_resource type="Script" uid="uid://bc2n7c2iivd3m" path="res://enemy/shield_tribe/states/idle.gd" id="3_idle_state"]
+[ext_resource type="Script" uid="uid://b3wwyk586fklm" path="res://enemy/shield_tribe/states/defend.gd" id="4_defend_state"]
+[ext_resource type="Script" uid="uid://cjxtooa4rw4us" path="res://enemy/shield_tribe/states/attack.gd" id="5_attack_state"]
+[ext_resource type="Script" uid="uid://dh6yqcqg2wyd5" path="res://enemy/shield_tribe/states/hurt.gd" id="6_hurt_state"]
+[ext_resource type="Script" uid="uid://xqvgljx4hk1s" path="res://scripts/hit_area_2d.gd" id="7_hit_area_gd"]
+[ext_resource type="Texture2D" uid="uid://be0sd1vgcgy4g" path="res://assets/monsters/tribe_temporary/Sprites/4-Enemy-Big Guy/13-Dead Hit/1.png" id="8_dead_1"]
+[ext_resource type="Texture2D" uid="uid://co3ydhean6cji" path="res://assets/monsters/tribe_temporary/Sprites/4-Enemy-Big Guy/13-Dead Hit/2.png" id="9_dead_2"]
+[ext_resource type="Texture2D" uid="uid://dh83j4tufc4ee" path="res://assets/monsters/tribe_temporary/Sprites/4-Enemy-Big Guy/13-Dead Hit/3.png" id="10_dead_3"]
+[ext_resource type="Texture2D" uid="uid://33bs4eqmu6qr" path="res://assets/monsters/tribe_temporary/Sprites/4-Enemy-Big Guy/13-Dead Hit/4.png" id="11_dead_4"]
+[ext_resource type="Texture2D" uid="uid://b5rhxefsci06v" path="res://assets/monsters/tribe_temporary/Sprites/4-Enemy-Big Guy/13-Dead Hit/5.png" id="12_dead_5"]
+[ext_resource type="Texture2D" uid="uid://d2qyt3m2cxph" path="res://assets/monsters/tribe_temporary/Sprites/4-Enemy-Big Guy/13-Dead Hit/6.png" id="13_dead_6"]
+[ext_resource type="Texture2D" uid="uid://b5gd3du4l8yd7" path="res://assets/monsters/tribe_temporary/Sprites/4-Enemy-Big Guy/12-Hit/1.png" id="14_hurt_1"]
+[ext_resource type="Texture2D" uid="uid://b86ql86s6gx3c" path="res://assets/monsters/tribe_temporary/Sprites/4-Enemy-Big Guy/12-Hit/2.png" id="15_hurt_2"]
+[ext_resource type="Texture2D" uid="uid://yedcbgxgub6d" path="res://assets/monsters/tribe_temporary/Sprites/4-Enemy-Big Guy/12-Hit/3.png" id="16_hurt_3"]
+[ext_resource type="Texture2D" uid="uid://crbuyhw7ul5cu" path="res://assets/monsters/tribe_temporary/Sprites/4-Enemy-Big Guy/12-Hit/4.png" id="17_hurt_4"]
+[ext_resource type="Texture2D" uid="uid://dswx6yxguqwrk" path="res://assets/monsters/tribe_temporary/Sprites/4-Enemy-Big Guy/12-Hit/5.png" id="18_hurt_5"]
+[ext_resource type="Texture2D" uid="uid://c7vuolusvlmu0" path="res://assets/monsters/tribe_temporary/Sprites/4-Enemy-Big Guy/12-Hit/6.png" id="19_hurt_6"]
+[ext_resource type="Texture2D" uid="uid://cccowqh7kcwbn" path="res://assets/island/front_palm_trees/front_palm_tree_regular.png" id="20_vt5fp"]
+[ext_resource type="Texture2D" uid="uid://f5xd7xmtei4s" path="res://assets/monsters/tribe_temporary/Sprites/4-Enemy-Big Guy/12-Hit/8.png" id="21_hurt_8"]
+[ext_resource type="Texture2D" uid="uid://dssxdgn6aae74" path="res://assets/monsters/tribe_temporary/Sprites/4-Enemy-Big Guy/6-Ground/1.png" id="22_idle_1"]
+[ext_resource type="Texture2D" uid="uid://b8efw1wqoioqt" path="res://assets/monsters/tribe_temporary/Sprites/4-Enemy-Big Guy/6-Ground/2.png" id="23_idle_2"]
+[ext_resource type="Texture2D" uid="uid://bcg3sjvoxlhqh" path="res://assets/monsters/tribe_temporary/Sprites/4-Enemy-Big Guy/6-Ground/3.png" id="24_idle_3"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_body"]
+radius = 29.0
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_tribe"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("22_idle_1")
+}, {
+"duration": 1.0,
+"texture": ExtResource("23_idle_2")
+}, {
+"duration": 1.0,
+"texture": ExtResource("24_idle_3")
+}],
+"loop": false,
+"name": &"attack",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("8_dead_1")
+}, {
+"duration": 1.0,
+"texture": ExtResource("9_dead_2")
+}, {
+"duration": 1.0,
+"texture": ExtResource("10_dead_3")
+}, {
+"duration": 1.0,
+"texture": ExtResource("11_dead_4")
+}, {
+"duration": 1.0,
+"texture": ExtResource("12_dead_5")
+}, {
+"duration": 1.0,
+"texture": ExtResource("13_dead_6")
+}],
+"loop": false,
+"name": &"dead",
+"speed": 6.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("22_idle_1")
+}, {
+"duration": 1.0,
+"texture": ExtResource("23_idle_2")
+}, {
+"duration": 1.0,
+"texture": ExtResource("24_idle_3")
+}],
+"loop": true,
+"name": &"defend",
+"speed": 3.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("14_hurt_1")
+}, {
+"duration": 1.0,
+"texture": ExtResource("15_hurt_2")
+}, {
+"duration": 1.0,
+"texture": ExtResource("16_hurt_3")
+}, {
+"duration": 1.0,
+"texture": ExtResource("17_hurt_4")
+}, {
+"duration": 1.0,
+"texture": ExtResource("18_hurt_5")
+}, {
+"duration": 1.0,
+"texture": ExtResource("19_hurt_6")
+}, {
+"duration": 1.0,
+"texture": ExtResource("20_vt5fp")
+}, {
+"duration": 1.0,
+"texture": ExtResource("21_hurt_8")
+}],
+"loop": false,
+"name": &"hurt",
+"speed": 8.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("22_idle_1")
+}, {
+"duration": 1.0,
+"texture": ExtResource("23_idle_2")
+}, {
+"duration": 1.0,
+"texture": ExtResource("24_idle_3")
+}],
+"loop": true,
+"name": &"idle",
+"speed": 3.0
+}]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_detect"]
+radius = 84.7172
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_shield"]
+size = Vector2(20, 70)
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_spear"]
+height = 40.0
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_iqs6i"]
+radius = 32.0
+
+[node name="ShieldTribe" type="CharacterBody2D"]
+collision_layer = 8
+script = ExtResource("1_shield_gd")
+metadata/_custom_type_script = "uid://s4xx82espxdt"
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("CircleShape2D_body")
+
+[node name="Direction" type="Node2D" parent="."]
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="Direction"]
+sprite_frames = SubResource("SpriteFrames_tribe")
+animation = &"defend"
+
+[node name="DetectPlayerArea2D" type="Area2D" parent="Direction"]
+collision_layer = 0
+collision_mask = 2
+monitorable = false
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Direction/DetectPlayerArea2D"]
+shape = SubResource("CircleShape2D_detect")
+
+[node name="Shield" type="StaticBody2D" parent="Direction"]
+position = Vector2(25, 0)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Direction/Shield"]
+shape = SubResource("RectangleShape2D_shield")
+
+[node name="Sprite2D" type="Sprite2D" parent="Direction/Shield"]
+modulate = Color(1, 0.887154, 0.876812, 1)
+rotation = -0.0628319
+texture = ExtResource("20_vt5fp")
+
+[node name="Sprite2D2" type="Sprite2D" parent="Direction/Shield"]
+modulate = Color(1, 0.887154, 0.876812, 1)
+rotation = -0.0628319
+texture = ExtResource("20_vt5fp")
+flip_v = true
+
+[node name="SpearHitArea" type="Area2D" parent="Direction"]
+position = Vector2(50, 0)
+collision_layer = 0
+collision_mask = 4
+monitoring = false
+script = ExtResource("7_hit_area_gd")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Direction/SpearHitArea"]
+shape = SubResource("CapsuleShape2D_spear")
+
+[node name="HurtArea2D" parent="Direction" instance=ExtResource("2_hurt_area")]
+position = Vector2(-20, 0)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Direction/HurtArea2D"]
+shape = SubResource("CircleShape2D_iqs6i")
+
+[node name="AttackTimer" type="Timer" parent="."]
+wait_time = 2.0
+one_shot = true
+
+[node name="States" type="Node" parent="."]
+
+[node name="Idle" type="Node" parent="States"]
+script = ExtResource("3_idle_state")
+
+[node name="Defend" type="Node" parent="States"]
+script = ExtResource("4_defend_state")
+
+[node name="Attack" type="Node" parent="States"]
+script = ExtResource("5_attack_state")
+
+[node name="Hurt" type="Node" parent="States"]
+script = ExtResource("6_hurt_state")
+
+[connection signal="timeout" from="AttackTimer" to="States/Defend" method="_on_attack_timer_timeout"]
