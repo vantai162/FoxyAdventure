@@ -41,5 +41,4 @@ position = Vector2(713, 434)
 
 [node name="AggressiveTribe" parent="." instance=ExtResource("8_f6u32")]
 position = Vector2(647, 506)
-attack_cooldown = 12.0
 windup_time = 3.6

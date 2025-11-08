@@ -1,0 +1,94 @@
+[gd_scene load_steps=17 format=3 uid="uid://bdkss15p4gbma"]
+
+[ext_resource type="Script" uid="uid://bjinydvnjpo0x" path="res://enemy/seahorse/seahorse_state.gd" id="1_ao4iv"]
+[ext_resource type="Texture2D" uid="uid://ch0hp25m7evv1" path="res://assets/monsters/barrel/barrel_hurt_01.png" id="2_5djrk"]
+[ext_resource type="Texture2D" uid="uid://ckjp4ccybo5i6" path="res://assets/monsters/barrel/barrel_hurt_02.png" id="3_r4ccg"]
+[ext_resource type="Texture2D" uid="uid://dfnk2rp7cs1vg" path="res://assets/monsters/barrel/barrel_01.png" id="4_nles5"]
+[ext_resource type="Texture2D" uid="uid://bwg8hpav3cy74" path="res://assets/monsters/barrel/barrel_02.png" id="5_htoel"]
+[ext_resource type="Texture2D" uid="uid://de0p6wfv2rc7g" path="res://assets/monsters/barrel/barrel_atk_01.png" id="6_kkkta"]
+[ext_resource type="Texture2D" uid="uid://2igv4kkux8c6" path="res://assets/monsters/barrel/barrel_atk_02.png" id="7_2nx84"]
+[ext_resource type="Texture2D" uid="uid://lxyxy6hj6rja" path="res://assets/monsters/barrel/barrel_atk_03.png" id="8_qo5wi"]
+[ext_resource type="Texture2D" uid="uid://c2c1sjpl4vgrq" path="res://assets/monsters/barrel/barrel_atk_04.png" id="9_0qhhs"]
+[ext_resource type="Texture2D" uid="uid://b564c7jpiwbh0" path="res://assets/monsters/barrel/barrel_atk_05.png" id="10_mev0i"]
+[ext_resource type="Script" uid="uid://ifyit1vg4ktq" path="res://scripts/node2d_factory.gd" id="11_jkhqg"]
+[ext_resource type="PackedScene" uid="uid://bmabvmpusba5l" path="res://enemy/seahorse/seahorse_bullet.tscn" id="12_sk3dx"]
+[ext_resource type="Script" uid="uid://dmcx88tdtqlvo" path="res://enemy/seahorse/states/idle.gd" id="13_gmpqy"]
+[ext_resource type="Script" uid="uid://dbl2s02x2ct5o" path="res://enemy/seahorse/states/shoot.gd" id="14_u53s0"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_pdnpt"]
+size = Vector2(20, 22)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_vpg65"]
+resource_local_to_scene = true
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("2_5djrk")
+}, {
+"duration": 1.0,
+"texture": ExtResource("3_r4ccg")
+}],
+"loop": true,
+"name": &"hurt",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("4_nles5")
+}, {
+"duration": 1.0,
+"texture": ExtResource("5_htoel")
+}],
+"loop": true,
+"name": &"idle",
+"speed": 7.0
+}, {
+"frames": [{
+"duration": 0.8,
+"texture": ExtResource("6_kkkta")
+}, {
+"duration": 0.9,
+"texture": ExtResource("7_2nx84")
+}, {
+"duration": 0.8,
+"texture": ExtResource("8_qo5wi")
+}, {
+"duration": 1.0,
+"texture": ExtResource("9_0qhhs")
+}, {
+"duration": 1.0,
+"texture": ExtResource("10_mev0i")
+}],
+"loop": true,
+"name": &"shoot",
+"speed": 6.7
+}]
+
+[node name="Barrel" type="CharacterBody2D"]
+script = ExtResource("1_ao4iv")
+metadata/_custom_type_script = "uid://s4xx82espxdt"
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(0, 6)
+shape = SubResource("RectangleShape2D_pdnpt")
+
+[node name="Direction" type="Node2D" parent="."]
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="Direction"]
+sprite_frames = SubResource("SpriteFrames_vpg65")
+animation = &"shoot"
+frame_progress = 0.600928
+
+[node name="BulletFactory" type="Marker2D" parent="Direction"]
+position = Vector2(10, 10)
+script = ExtResource("11_jkhqg")
+product_packed_scene = ExtResource("12_sk3dx")
+target_container_name = &"Bullets"
+
+[node name="States" type="Node" parent="."]
+
+[node name="Idle" type="Node" parent="States"]
+script = ExtResource("13_gmpqy")
+
+[node name="Shoot" type="Node" parent="States"]
+script = ExtResource("14_u53s0")
