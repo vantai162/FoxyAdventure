@@ -5,7 +5,8 @@ extends BaseCharacter
 var attack_cooldown=1
 @export var Effect={
 	"Stun":0,
-	"DamAmplify":0
+	"DamAmplify":0,
+	"Slow":0
 }
 @export var KeySkill={
 	"HasBlade":false
