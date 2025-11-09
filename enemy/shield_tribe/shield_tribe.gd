@@ -5,6 +5,7 @@ class_name ShieldTribe
 @export var spear_damage: int = 1
 @export var spear_active_duration: float = 0.4
 @export var attack_interval: float = 2.0
+@export var attack_animation_duration: float = 0.8
 
 @export_group("Defense")
 @export var jump_react_range: float = 60.0
@@ -20,7 +21,7 @@ var _is_turning: bool = false
 var _pending_direction: int = 0
 
 func _ready() -> void:
-	fsm = FSM.new(self, $States, $States/idle)
+	fsm = FSM.new(self, $States, $States/Idle)
 	super._ready()
 	_init_ray_cast()
 	_init_detect_player_area()
@@ -57,6 +58,7 @@ func _on_player_in_sight(_player_pos: Vector2) -> void:
 
 func _on_player_not_in_sight() -> void:
 	if fsm.current_state.name == "defend" or fsm.current_state.name == "attack":
+		attack_timer.stop()
 		fsm.change_state(fsm.states.idle)
 
 func face_player() -> void:
