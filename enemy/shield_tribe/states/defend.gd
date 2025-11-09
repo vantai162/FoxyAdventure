@@ -33,4 +33,14 @@ func _exit() -> void:
 	obj.attack_timer.stop()
 
 func _on_attack_timer_timeout() -> void:
-	change_state(fsm.states.attack)
+	# Only attack if player is still in sight/range. Otherwise stop and idle.
+	if obj.found_player:
+		var dist = abs(obj.found_player.global_position.x - obj.global_position.x)
+		if dist <= obj.sight_range:
+			change_state(fsm.states.attack)
+		else:
+			obj.attack_timer.stop()
+			change_state(fsm.states.idle)
+	else:
+		obj.attack_timer.stop()
+		change_state(fsm.states.idle)
