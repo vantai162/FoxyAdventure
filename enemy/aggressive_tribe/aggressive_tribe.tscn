@@ -1,7 +1,9 @@
-[gd_scene load_steps=22 format=3 uid="uid://b1a2s3d4f5g6h"]
+[gd_scene load_steps=24 format=3 uid="uid://b1a2s3d4f5g6h"]
 
 [ext_resource type="Script" uid="uid://b2fd24g8c861e" path="res://enemy/aggressive_tribe/aggressive_tribe.gd" id="1_tribe_gd"]
 [ext_resource type="PackedScene" uid="uid://ct1tqxgwkuvbe" path="res://scripts/hurt_area_2d.tscn" id="2_hurt_area"]
+[ext_resource type="PackedScene" uid="uid://d1h2w3e4r5t6y" path="res://projectiles/coconut.tscn" id="2_o5hof"]
+[ext_resource type="PackedScene" uid="uid://d2e3f4g5h6i7j" path="res://projectiles/slowing_coconut.tscn" id="3_aecud"]
 [ext_resource type="Script" uid="uid://dpcf5xwvvbw55" path="res://enemy/aggressive_tribe/states/run.gd" id="3_run_state"]
 [ext_resource type="Texture2D" uid="uid://lrtt52fguxfv" path="res://assets/monsters/tribe_temporary/Sprites/4-Enemy-Big Guy/2-Run/1.png" id="4_run_1"]
 [ext_resource type="Texture2D" uid="uid://cwswug1rr4a7s" path="res://assets/monsters/tribe_temporary/Sprites/4-Enemy-Big Guy/2-Run/2.png" id="5_run_2"]
@@ -98,6 +100,8 @@ radius = 32.0
 collision_layer = 8
 script = ExtResource("1_tribe_gd")
 windup_time = 1.0
+normal_coconut_scene = ExtResource("2_o5hof")
+special_coconut_scene = ExtResource("3_aecud")
 movement_speed = 100.0
 metadata/_custom_type_script = "uid://s4xx82espxdt"
 
@@ -130,6 +134,7 @@ monitorable = false
 shape = SubResource("CircleShape2D_detect")
 
 [node name="HurtArea2D" parent="Direction" instance=ExtResource("2_hurt_area")]
+position = Vector2(0, 3)
 collision_layer = 16
 collision_mask = 0
 

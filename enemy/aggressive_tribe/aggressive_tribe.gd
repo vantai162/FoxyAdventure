@@ -23,7 +23,6 @@ var is_winding_up: bool = false
 func _ready() -> void:
 	fsm = FSM.new(self, $States, $States/Run)
 	super._ready()
-	_init_hurt_area()
 	
 	if attack_timer.wait_time == 0:
 		attack_timer.wait_time = burst_cooldown

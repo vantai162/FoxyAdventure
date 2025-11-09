@@ -1,6 +1,7 @@
-[gd_scene load_steps=7 format=3 uid="uid://d2e3f4g5h6i7j"]
+[gd_scene load_steps=8 format=3 uid="uid://d2e3f4g5h6i7j"]
 
 [ext_resource type="Script" uid="uid://djfqwrcsbd4eu" path="res://projectiles/slowing_coconut.gd" id="1_slowing_coconut_gd"]
+[ext_resource type="PackedScene" uid="uid://c7x80a00a1b2c" path="res://projectiles/slow_area.tscn" id="2_3w3nw"]
 [ext_resource type="Texture2D" uid="uid://cokgf4s6s3xg6" path="res://assets/monsters/pelican/pelican_bullet.png" id="2_cbfb7"]
 [ext_resource type="Script" uid="uid://xqvgljx4hk1s" path="res://scripts/hit_area_2d.gd" id="2_hit_area_gd"]
 
@@ -24,6 +25,7 @@ max_contacts_reported = 3
 linear_damp = 0.05
 angular_damp = 0.35
 script = ExtResource("1_slowing_coconut_gd")
+slow_puddle_scene = ExtResource("2_3w3nw")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 shape = SubResource("CircleShape2D_1")
