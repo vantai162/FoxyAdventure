@@ -2,6 +2,7 @@ extends EnemyState
 
 func _enter() -> void:
 	obj.change_animation("hurt")
+	obj.hide_shield()
 	timer = 0.3
 
 func _update(delta: float) -> void:

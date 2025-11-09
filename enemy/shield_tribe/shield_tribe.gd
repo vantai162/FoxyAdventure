@@ -14,9 +14,10 @@ class_name ShieldTribe
 @export var turn_delay: float = 0.35
 
 @onready var shield: StaticBody2D = $Direction/Shield
-@onready var attack_timer: Timer = $AttackTimer
+@onready var spear: Node2D = $Direction/Spear
+@onready var spear_sprite: AnimatedSprite2D = $Direction/Spear/AnimatedSprite2D
 @onready var spear_hit_area: Area2D = $Direction/Spear/SpearHitArea
-@onready var spear_hit_area: Area2D = $Direction/SpearHitArea
+@onready var attack_timer: Timer = $AttackTimer
 
 var _is_turning: bool = false
 var _pending_direction: int = 0
@@ -24,6 +25,11 @@ var _pending_direction: int = 0
 func _ready() -> void:
 	fsm = FSM.new(self, $States, $States/Idle)
 	super._ready()
+	
+	# Start with both shield and spear hidden
+	shield.hide()
+	shield.get_node("CollisionShape2D").disabled = true
+	spear.hide()
 	spear_hit_area.monitoring = false
 
 func _on_hurt_area_2d_hurt(attack_direction: Vector2, damage: float) -> void:
@@ -75,6 +81,8 @@ func _on_turn_timeout() -> void:
 	_is_turning = false
 
 func perform_spear_attack():
+	spear.show()
+	spear_sprite.play("attack")
 	spear_hit_area.monitoring = true
 	var timer = get_tree().create_timer(spear_active_duration)
 	timer.connect("timeout", Callable(self, "_on_attack_finished"))
@@ -82,3 +90,12 @@ func perform_spear_attack():
 func _on_attack_finished():
 	if is_instance_valid(spear_hit_area):
 		spear_hit_area.monitoring = false
+		spear.hide()
+
+func show_shield():
+	shield.show()
+	shield.get_node("CollisionShape2D").disabled = false
+
+func hide_shield():
+	shield.hide()
+	shield.get_node("CollisionShape2D").disabled = true

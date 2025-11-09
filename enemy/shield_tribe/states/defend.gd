@@ -6,8 +6,7 @@ var last_player_velocity_y: float = 0.0
 func _enter() -> void:
 	obj.face_player()
 	obj.change_animation("defend")
-	obj.shield.show()
-	obj.shield.get_node("CollisionShape2D").disabled = false
+	obj.show_shield()
 	obj.attack_timer.wait_time = obj.attack_interval
 	obj.attack_timer.start()
 	can_jump = true
