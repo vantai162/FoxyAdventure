@@ -39,5 +39,6 @@ position = Vector2(805, 458)
 [node name="Mushroom" parent="." instance=ExtResource("6_s3n3v")]
 position = Vector2(713, 434)
 
-[node name="ShieldTribe" parent="." instance=ExtResource("7_aeque")]
-position = Vector2(192, 499)
+[node name="AggressiveTribe" parent="." instance=ExtResource("8_f6u32")]
+position = Vector2(647, 506)
+windup_time = 3.6

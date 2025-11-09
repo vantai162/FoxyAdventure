@@ -212,9 +212,8 @@ shape = SubResource("RectangleShape2D_8r8n2")
 [node name="Direction" type="Node2D" parent="."]
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="Direction"]
-visible = false
 sprite_frames = SubResource("SpriteFrames_7xt5n")
-animation = &"dead"
+animation = &"idle"
 
 [node name="BladeAnimatedSprite2D" type="AnimatedSprite2D" parent="Direction"]
 visible = false

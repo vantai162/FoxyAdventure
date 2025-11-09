@@ -1,0 +1,35 @@
+[gd_scene load_steps=6 format=3 uid="uid://bmabvmpusba5l"]
+
+[ext_resource type="Script" uid="uid://connesknj5g56" path="res://enemy/seahorse/seahorse_bullet.gd" id="1_2brjt"]
+[ext_resource type="Texture2D" uid="uid://bh8lwuu75mk5h" path="res://assets/monsters/barrel/barrel_bullet.png" id="1_iveby"]
+[ext_resource type="Script" uid="uid://xqvgljx4hk1s" path="res://scripts/hit_area_2d.gd" id="2_2brjt"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_2brjt"]
+radius = 4.0
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_iveby"]
+radius = 4.0
+
+[node name="BarrelBullet" type="RigidBody2D"]
+collision_layer = 32
+mass = 0.001
+gravity_scale = 0.0
+script = ExtResource("1_2brjt")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = ExtResource("1_iveby")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(1, 1)
+shape = SubResource("CircleShape2D_2brjt")
+
+[node name="HitArea2D" type="Area2D" parent="."]
+collision_mask = 4
+script = ExtResource("2_2brjt")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="HitArea2D"]
+position = Vector2(1, 1)
+shape = SubResource("CircleShape2D_iveby")
+
+[connection signal="body_entered" from="." to="." method="_on_body_entered"]
+[connection signal="hitted" from="HitArea2D" to="." method="_on_hit_area_2d_hitted"]
