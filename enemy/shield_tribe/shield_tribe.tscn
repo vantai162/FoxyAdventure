@@ -161,8 +161,9 @@ shape = SubResource("CircleShape2D_detect")
 
 [node name="Shield" type="StaticBody2D" parent="Direction"]
 position = Vector2(25, 0)
-collision_layer = 0
-collision_mask = 2
+# Put shield on the ground/static layer so player (default mask) collides with it
+collision_layer = 1
+collision_mask = 1
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Direction/Shield"]
 shape = SubResource("RectangleShape2D_shield")
