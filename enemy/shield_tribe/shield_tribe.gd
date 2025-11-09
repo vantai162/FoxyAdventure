@@ -15,6 +15,7 @@ class_name ShieldTribe
 
 @onready var shield: StaticBody2D = $Direction/Shield
 @onready var attack_timer: Timer = $AttackTimer
+@onready var spear_hit_area: Area2D = $Direction/Spear/SpearHitArea
 @onready var spear_hit_area: Area2D = $Direction/SpearHitArea
 
 var _is_turning: bool = false
@@ -23,21 +24,7 @@ var _pending_direction: int = 0
 func _ready() -> void:
 	fsm = FSM.new(self, $States, $States/Idle)
 	super._ready()
-	_init_ray_cast()
-	_init_detect_player_area()
-	_init_hurt_area()
-	
 	spear_hit_area.monitoring = false
-
-func _init_hurt_area():
-	if has_node("Direction/HurtArea2D"):
-		var hurt_area = $Direction/HurtArea2D
-		hurt_area.hurt.connect(_on_hurt_area_2d_hurt)
-
-func _init_ray_cast() -> void:
-	# Shield tribe is stationary and doesn't need raycasts used by moving enemies.
-	# Override to avoid redundant initialization in the base class.
-	return
 
 func _on_hurt_area_2d_hurt(attack_direction: Vector2, damage: float) -> void:
 	if fsm.current_state.name == "defend" or fsm.current_state.name == "attack":

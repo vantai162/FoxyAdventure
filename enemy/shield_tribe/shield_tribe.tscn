@@ -139,7 +139,6 @@ radius = 27.0
 
 [node name="ShieldTribe" type="CharacterBody2D"]
 collision_layer = 8
-collision_mask = 1
 script = ExtResource("1_shield_gd")
 metadata/_custom_type_script = "uid://s4xx82espxdt"
 
@@ -169,24 +168,28 @@ collision_mask = 2
 shape = SubResource("RectangleShape2D_shield")
 
 [node name="Sprite2D" type="Sprite2D" parent="Direction/Shield"]
-modulate = Color(1, 0.887154, 0.876812, 1)
-rotation = -0.0628319
+modulate = Color(0.3, 0.3, 0.3, 1)
 texture = ExtResource("20_vt5fp")
 
 [node name="Sprite2D2" type="Sprite2D" parent="Direction/Shield"]
-modulate = Color(1, 0.887154, 0.876812, 1)
-rotation = -0.0628319
+modulate = Color(0.3, 0.3, 0.3, 1)
 texture = ExtResource("20_vt5fp")
 flip_v = true
 
-[node name="SpearHitArea" type="Area2D" parent="Direction"]
+[node name="Spear" type="Node2D" parent="Direction"]
 position = Vector2(50, 0)
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="Direction/Spear"]
+sprite_frames = SubResource("SpriteFrames_tribe")
+animation = &"attack"
+
+[node name="SpearHitArea" type="Area2D" parent="Direction/Spear"]
 collision_layer = 0
 collision_mask = 4
 monitoring = false
 script = ExtResource("7_hit_area_gd")
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Direction/SpearHitArea"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Direction/Spear/SpearHitArea"]
 shape = SubResource("CapsuleShape2D_spear")
 
 [node name="HurtArea2D" type="Area2D" parent="Direction"]
