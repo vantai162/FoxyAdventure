@@ -7,8 +7,6 @@ func _enter() -> void:
 
 func _update(_delta: float) -> void:
 	var is_moving=false
-	if(obj._checkcoyotea()):
-		control_jump()
 	#Control moving
 	if(obj.Effect["Stun"]<=0):
 		is_moving = control_moving()
