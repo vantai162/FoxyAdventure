@@ -1,0 +1,20 @@
+[gd_scene load_steps=3 format=3 uid="uid://b67dcgxdi1nb"]
+
+[ext_resource type="Script" uid="uid://caaeracc7asv6" path="res://scripts/autoload/game_manager.gd" id="1_2ydb0"]
+[ext_resource type="PackedScene" uid="uid://bs816w0pr8all" path="res://player/foxy.tscn" id="2_2d4g8"]
+
+[node name="GameManager" type="Node"]
+script = ExtResource("1_2ydb0")
+player_scene = ExtResource("2_2d4g8")
+
+[node name="FadeLayer" type="CanvasLayer" parent="."]
+layer = 20
+
+[node name="ColorRect" type="ColorRect" parent="FadeLayer"]
+modulate = Color(1, 1, 1, 0)
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 1)

@@ -5,6 +5,7 @@ func _enter():
 		change_state(fsm.previous_state)
 	obj.change_animation("hurt")
 	obj.velocity.y = -250
+	obj.health -= 1
 	obj.velocity.x = -250 * sign(obj.velocity.x)
 	timer = 0.5
 

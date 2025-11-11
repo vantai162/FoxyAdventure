@@ -82,3 +82,24 @@ func _updatecooldown(delta:float):
 
 func set_cool_down(skillname:String):
 	CoolDown[skillname]=InitCoolDown[skillname]
+	
+func save_state() -> Dictionary:
+	return {
+		"position": [global_position.x, global_position.y],
+		"has_blade": KeySkill["HasBlade"],
+		"health": health
+	}
+
+func load_state(data: Dictionary) -> void:
+	"""Load player state from checkpoint data"""
+	if data.has("position"):
+		var pos_array = data["position"]
+		global_position = Vector2(pos_array[0], pos_array[1])
+	if data.has("has_blade"):
+		if data["has_blade"] == true:
+			# GỌI HÀM NÀY ĐỂ HIỂN THỊ LẠI KIẾM
+			_collect_blade() 
+		else:
+			KeySkill["HasBlade"] = false
+	if data.has("health"):
+		health = data["health"]

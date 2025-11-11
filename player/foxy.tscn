@@ -36,8 +36,8 @@
 [ext_resource type="Texture2D" uid="uid://ce35c6mn7dcok" path="res://assets/foxy/fox_hat_blade/fox_run_4.png" id="30_ajtvx"]
 [ext_resource type="Script" uid="uid://0146uckcta6p" path="res://player/dead.gd" id="35_veeyl"]
 [ext_resource type="Script" uid="uid://devihpb45ajdr" path="res://player/hurt.gd" id="36_reoh7"]
-[ext_resource type="Script" uid="uid://dp045kw80ykvv" path="res://player/dash.gd" id="37_reoh7"]
-[ext_resource type="Script" uid="uid://bhv3i7yhtjluc" path="res://player/attack.gd" id="39_kvcfx"]
+[ext_resource type="Script" path="res://player/dash.gd" id="37_reoh7"]
+[ext_resource type="Script" path="res://player/attack.gd" id="39_kvcfx"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_8r8n2"]
 size = Vector2(21, 30)
@@ -145,7 +145,7 @@ animations = [{
 "duration": 1.0,
 "texture": ExtResource("20_4p3j1")
 }],
-"loop": true,
+"loop": false,
 "name": &"dead",
 "speed": 5.0
 }, {
@@ -222,7 +222,7 @@ animation = &"idle"
 [node name="BladeAnimatedSprite2D" type="AnimatedSprite2D" parent="Direction"]
 visible = false
 sprite_frames = SubResource("SpriteFrames_2mww5")
-animation = &"Jump_attack"
+animation = &"dead"
 
 [node name="States" type="Node" parent="."]
 
