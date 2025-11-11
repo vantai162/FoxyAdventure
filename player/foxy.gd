@@ -11,6 +11,8 @@ var attack_cooldown=1
 @export var KeySkill={
 	"HasBlade":false
 }
+func can_attack():
+	return KeySkill["HasBlade"]&& Effect["Stun"]<=0
 func _ready() -> void:
 	super._ready()
 	fsm=FSM.new(self,$States,$States/Idle)

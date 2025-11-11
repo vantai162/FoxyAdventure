@@ -9,6 +9,7 @@ func _update(_delta: float):
 	if(obj.Effect["Stun"]<=0): 
 		if control_jump():
 			return
+		control_attack()
 		if not control_moving():
 			change_state(fsm.states.idle)
 	else:

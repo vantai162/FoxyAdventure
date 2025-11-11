@@ -10,6 +10,7 @@ func _update(_delta: float) -> void:
 	#Control moving
 	if(obj.Effect["Stun"]<=0):
 		is_moving = control_moving()
+		control_attack()
 	else:
 		obj.velocity.x=0
 	#If on floor change to idle if not moving and not jumping

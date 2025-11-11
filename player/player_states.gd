@@ -27,7 +27,11 @@ func control_jump() -> bool:
 		change_state(fsm.states.jump)
 		return true
 	return false
-
+func control_attack() -> bool:
+	if Input.is_action_just_pressed("attack") && obj.can_attack():
+		change_state(fsm.states.attack)
+		return true
+	return false
 func take_damage(damage) -> void:
 	#Player take damage
 	obj.take_damage(damage)
