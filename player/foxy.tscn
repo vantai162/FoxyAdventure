@@ -1,4 +1,4 @@
-[gd_scene load_steps=41 format=3 uid="uid://bs816w0pr8all"]
+[gd_scene load_steps=42 format=3 uid="uid://bs816w0pr8all"]
 
 [ext_resource type="Script" uid="uid://brl5yy4w7wich" path="res://player/foxy.gd" id="1_wod02"]
 [ext_resource type="Texture2D" uid="uid://m4di78taixns" path="res://assets/foxy/fox_hat/fox_defeat_1.png" id="2_70n8a"]
@@ -36,6 +36,7 @@
 [ext_resource type="Texture2D" uid="uid://ce35c6mn7dcok" path="res://assets/foxy/fox_hat_blade/fox_run_4.png" id="30_ajtvx"]
 [ext_resource type="Script" uid="uid://0146uckcta6p" path="res://player/dead.gd" id="35_veeyl"]
 [ext_resource type="Script" uid="uid://devihpb45ajdr" path="res://player/hurt.gd" id="36_reoh7"]
+[ext_resource type="Script" uid="uid://dp045kw80ykvv" path="res://player/dash.gd" id="37_reoh7"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_8r8n2"]
 size = Vector2(21, 30)
@@ -241,6 +242,9 @@ script = ExtResource("35_veeyl")
 
 [node name="Hurt" type="Node" parent="States"]
 script = ExtResource("36_reoh7")
+
+[node name="Dash" type="Node" parent="States"]
+script = ExtResource("37_reoh7")
 
 [node name="EffectArea" type="Area2D" parent="."]
 collision_layer = 258

@@ -23,17 +23,28 @@ func control_moving() -> bool:
 	
 func control_jump() -> bool:
 	#If jump is pressed change to jump state and return true
-	if Input.is_action_just_pressed("jump")||obj._checkbuffer():
-		obj.jump()
+	if (Input.is_action_just_pressed("jump")&&obj.jump_count<2)||(obj._checkbuffer()&&obj.is_on_floor()):
+		if(obj.jump_count==1):
+			obj.jump(obj.jump_speed)
+		else:
+			obj.jump(obj.jump_speed*0.8)
+		obj.jump_count+=1
 		change_state(fsm.states.jump)
 		return true
 	return false
 	
-func control_double_jump()->bool:
-	if Input.is_action_just_pressed("jump") and fsm.previous_state!=fsm.states.doublejump:
-		obj.jump()
-		change_state(fsm.states.doublejump)
-		return true
+func control_dash() ->bool:
+	if(obj.CoolDown["Dash"]>0):
+		return false
+	if(Input.is_action_just_pressed("dash")):
+		if obj.is_on_floor():
+			change_state(fsm.states.dash)
+			return true
+		elif(!obj.dashed_on_air):
+			change_state(fsm.states.dash)
+			return true
+		else:
+			return false
 	return false
 	
 func take_damage(damage) -> void:

@@ -1,6 +1,8 @@
 extends Player_State
 
 func _enter():
+	if obj.Effect["Invicibility"]>0:
+		change_state(fsm.previous_state)
 	obj.change_animation("hurt")
 	obj.velocity.y = -250
 	obj.velocity.x = -250 * sign(obj.velocity.x)

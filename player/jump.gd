@@ -8,7 +8,8 @@ func _enter() -> void:
 func _update(_delta: float):
 	if(obj.Effect["Stun"]<=0):
 		control_moving()
-		control_double_jump()
+		control_jump()
+		control_dash()
 	else:
 		obj.velocity.x=0
 	#If velocity.y is greater than 0 change to fall
