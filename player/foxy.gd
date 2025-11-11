@@ -1,12 +1,14 @@
 class_name Player
 extends BaseCharacter
-
+@export var runspeed=300
 @export var Attack_Speed:int=0
+@export var invi_time:float=0.5
 var attack_cooldown=1
 @export var Effect={
 	"Stun":0,
 	"DamAmplify":0,
-	"Slow":0
+	"Slow":0,
+	"Invicibility":0
 }
 @export var KeySkill={
 	"HasBlade":false
@@ -55,3 +57,6 @@ func _checkbuffer()->bool:
 func _process(delta: float) -> void:
 		_updateeffect(delta)
 		_update_timeline(delta)
+func take_damage(damage: int) -> void:
+	if(Effect["Invicibility"]>=0):
+		super.take_damage(damage)

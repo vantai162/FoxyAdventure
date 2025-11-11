@@ -6,7 +6,7 @@ extends CharacterBody2D
 @export var movement_speed: float = 200.0
 @export var gravity: float = 700.0
 @export var direction: int = 1
-
+var current_speed
 @export var attack_damage: int = 1
 @export var max_health: int = 3
 var health: int = max_health

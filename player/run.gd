@@ -1,6 +1,9 @@
 extends Player_State
-
+var runwaittimer=0.1
+var waited=0
 func _enter() -> void:
+	runwaittimer=0.1
+	waited=0
 	#Change animation to run
 	obj.change_animation("run")
 	pass
@@ -10,7 +13,14 @@ func _update(_delta: float):
 		if control_jump():
 			return
 		if not control_moving():
-			change_state(fsm.states.idle)
+			waited+=_delta
+			if(waited>runwaittimer):
+				change_state(fsm.states.idle)
+		else:
+			if(runwaittimer>0&&obj.direction>0&&Input.is_action_just_pressed("right")):
+				obj.current_speed=obj.runspeed
+			elif (runwaittimer>0&&obj.direction<0&&Input.is_action_just_pressed("left")):
+				obj.current_speed=obj.runspeed
 	else:
 		change_state(fsm.states.idle)
 		obj.velocity.x=0

@@ -1,7 +1,10 @@
 {
   "ExpandedNodes": [
-    ""
+    "",
+    "\\godot-git-plugin-v3.2.1",
+    "\\player",
+    "\\test"
   ],
-  "SelectedNode": "\\.gitignore",
+  "SelectedNode": "\\test\\test.tscn",
   "PreviewInSolutionExplorer": false
 }
