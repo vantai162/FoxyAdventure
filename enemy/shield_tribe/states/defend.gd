@@ -26,7 +26,7 @@ func _update(_delta: float) -> void:
 
 func _perform_block_jump():
 	can_jump = false
-	obj.jump()
+	obj.jump(obj.jump_speed)
 	get_tree().create_timer(obj.jump_cooldown).timeout.connect(func(): can_jump = true)
 
 func _exit() -> void:
