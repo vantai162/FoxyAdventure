@@ -16,6 +16,8 @@ shape = SubResource("RectangleShape2D_my5ub")
 
 [node name="Foxy" parent="." instance=ExtResource("1_c086n")]
 position = Vector2(123, 195)
+jump_buffer = 0.1
+coyote_time = 0.15
 
 [node name="FriendlyTribe" parent="." instance=ExtResource("3_vwmmf")]
 position = Vector2(454, 243)
