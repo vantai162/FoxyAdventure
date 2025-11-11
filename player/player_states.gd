@@ -22,7 +22,7 @@ func control_moving() -> bool:
 	
 func control_jump() -> bool:
 	#If jump is pressed change to jump state and return true
-	if Input.is_action_just_pressed("jump"):
+	if Input.is_action_just_pressed("jump")||obj._checkbuffer():
 		obj.jump()
 		change_state(fsm.states.jump)
 		return true
