@@ -10,7 +10,10 @@ var current_speed
 @export var attack_damage: int = 1
 @export var max_health: int = 3
 var health: int = max_health
-
+@onready var floor_ray_cast: RayCast2D = $FloorRayCast2D
+@export var accelecrationValue = 0.01 # gia tri tang toc khi truot
+@export var slideValue = 0.01
+@export var fullStopValue = 15
 
 var jump_speed: float = 320.0
 var fsm: FSM = null
@@ -111,3 +114,10 @@ func _check_changed_direction() -> void:
 # On changed direction
 func _on_changed_direction() -> void:
 	pass
+	
+func _is_on_ice():
+	var collider = floor_ray_cast.get_collider()
+	if not collider: return false
+	
+	return collider.name == "IceBlock"
+	

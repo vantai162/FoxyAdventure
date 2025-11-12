@@ -306,3 +306,6 @@ collision_mask = 512
 [node name="CollisionShape2D" type="CollisionShape2D" parent="EffectArea"]
 position = Vector2(-0.5, -1)
 shape = SubResource("RectangleShape2D_u75vx")
+
+[node name="FloorRayCast2D" type="RayCast2D" parent="."]
+target_position = Vector2(-1, 16)

@@ -8,14 +8,26 @@ func control_moving() -> bool:
 		obj.current_speed = obj.movement_speed
 	if obj.Effect["Slow"] > 0:
 		obj.current_speed *= 0.5 # 50% slow
-	
-	if is_moving:
+
+		
+	if is_moving and not obj._is_on_ice():
 		dir = sign(dir)
 		obj.change_direction(dir)
 		obj.velocity.x = obj.current_speed * dir
 		if obj.is_on_floor():
 			change_state(fsm.states.run)
 		return true
+	elif is_moving and obj._is_on_ice():
+		dir = sign(dir)
+		obj.change_direction(dir)
+		obj.velocity.x = lerp(obj.velocity.x,dir * obj.movement_speed,obj.accelecrationValue)
+		if obj.is_on_floor():
+			change_state(fsm.states.run)
+		return true
+	elif not is_moving and obj._is_on_ice():
+		obj.velocity.x = lerp(obj.velocity.x,0.0,obj.slideValue)
+		if obj.velocity.x < obj.fullStopValue and obj.velocity.x > - obj.fullStopValue:
+			obj.velocity.x = 0
 	else:
 		obj.current_speed=0
 		obj.velocity.x = 0
