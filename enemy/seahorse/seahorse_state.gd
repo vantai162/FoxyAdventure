@@ -18,3 +18,7 @@ func fire() -> void:
 	var shooting_velocity := Vector2(bullet_speed * direction, 0.0)
 
 	bullet.apply_impulse(shooting_velocity)
+
+func _on_hurt_area_2d_hurt(direction: Vector2, damage: float) -> void:
+	take_damage(damage)
+	fsm.change_state(fsm.states.hurt)

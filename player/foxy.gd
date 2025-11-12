@@ -50,6 +50,7 @@ var last_ground_time=-1211
 func _ready() -> void:
 	super._ready()
 	fsm=FSM.new(self,$States,$States/Idle)
+	$Direction/HitArea2D/CollisionShape2D.disabled=true
 	
 func _collect_blade():
 	if not has_unlocked_blade:
@@ -89,8 +90,9 @@ func _process(delta: float) -> void:
 		_updatecooldown(delta)
 		
 func take_damage(damage: int) -> void:
-	if(Effect["Invicibility"]>0):
+	if(Effect["Invicibility"]<=0):
 		super.take_damage(damage)
+		fsm.change_state(fsm.states.hurt)
 		
 func _updatecooldown(delta:float):
 	for key in CoolDown:	
@@ -133,3 +135,9 @@ func load_state(data: Dictionary) -> void:
 	
 	if data.has("health"):
 		health = data["health"]
+
+
+func _on_hurt_area_2d_hurt(direction: Vector2, damage: float) -> void:
+	print("hit")
+	fsm.current_state.take_damage(damage)
+	pass # Replace with function body.
