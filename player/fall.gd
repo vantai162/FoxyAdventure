@@ -13,6 +13,7 @@ func _update(_delta: float) -> void:
 	#Control moving
 	if(obj.Effect["Stun"]<=0):
 		is_moving = control_moving()
+		control_throw()
 		control_attack()
 		control_jump()
 		control_dash()

@@ -1,0 +1,29 @@
+[gd_scene load_steps=6 format=3 uid="uid://vifaaniwbdnv"]
+
+[ext_resource type="Script" uid="uid://cimqxeik4xdhh" path="res://projectiles/blade_projectile.gd" id="1"]
+[ext_resource type="Texture2D" uid="uid://bng34woae2g8q" path="res://assets/foxy/blade/blade_throw_1.png" id="2_kj2ao"]
+[ext_resource type="Script" uid="uid://xqvgljx4hk1s" path="res://scripts/hit_area_2d.gd" id="3_w0xp1"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_1qqcv"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_45h00"]
+
+[node name="BladeProjectile" type="Area2D"]
+collision_layer = 0
+collision_mask = 3
+script = ExtResource("1")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = ExtResource("2_kj2ao")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("CircleShape2D_1qqcv")
+
+[node name="HitArea2D" type="Area2D" parent="."]
+collision_layer = 0
+collision_mask = 16
+script = ExtResource("3_w0xp1")
+metadata/_custom_type_script = "uid://xqvgljx4hk1s"
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="HitArea2D"]
+shape = SubResource("CircleShape2D_45h00")

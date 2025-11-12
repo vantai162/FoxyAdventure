@@ -37,6 +37,12 @@ func control_attack() -> bool:
 		change_state(fsm.states.attack)
 		return true
 	return false
+
+func control_throw() -> bool:
+	if Input.is_action_just_pressed("throw_blade") && obj.can_throw_blade():
+		change_state(fsm.states.throw)
+		return true
+	return false
 	
 func control_dash() ->bool:
 	if(obj.CoolDown["Dash"]>0):
