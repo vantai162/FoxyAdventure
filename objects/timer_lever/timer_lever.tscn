@@ -1,0 +1,44 @@
+[gd_scene load_steps=6 format=3 uid="uid://yv24bc7sjvlq"]
+
+[ext_resource type="Script" uid="uid://cx312msgqy81" path="res://objects/timer_lever/timer_lever.gd" id="1_fh2se"]
+[ext_resource type="Texture2D" uid="uid://ckq5abjaq2l54" path="res://assets/island/lever/tile_0065.png" id="2_mni3o"]
+[ext_resource type="Texture2D" uid="uid://do3e011shcvl0" path="res://assets/island/lever/tile_0064.png" id="3_ahe26"]
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_32p3d"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("2_mni3o")
+}],
+"loop": false,
+"name": &"off",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("3_ahe26")
+}],
+"loop": false,
+"name": &"on",
+"speed": 5.0
+}]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_jsbxn"]
+size = Vector2(32, 36)
+
+[node name="TimerLever" type="Area2D"]
+collision_mask = 2
+script = ExtResource("1_fh2se")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+sprite_frames = SubResource("SpriteFrames_32p3d")
+animation = &"on"
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(0, -1)
+shape = SubResource("RectangleShape2D_jsbxn")
+
+[node name="Timer" type="Timer" parent="."]
+
+[connection signal="body_entered" from="." to="." method="_on_body_entered"]
+[connection signal="body_exited" from="." to="." method="_on_body_exited"]

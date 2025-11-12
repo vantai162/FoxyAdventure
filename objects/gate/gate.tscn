@@ -1,11 +1,12 @@
-[gd_scene load_steps=7 format=3 uid="uid://b1s0k5ycu513v"]
+[gd_scene load_steps=8 format=3 uid="uid://ctr1b8p1h6p8y"]
 
 [ext_resource type="Texture2D" uid="uid://n3egda6mo0ja" path="res://assets/island/gate/Cartoon_Medieval_Field_Work_Level_Set_Building - Pillar 02.png" id="1_5f8fv"]
+[ext_resource type="Script" uid="uid://dhal0q6qe5n1b" path="res://objects/gate/gate.gd" id="1_lak10"]
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_lak10"]
-size = Vector2(9, 128)
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_5f8fv"]
+size = Vector2(11, 128)
 
-[sub_resource type="Animation" id="Animation_0wvmo"]
+[sub_resource type="Animation" id="Animation_lak10"]
 length = 0.001
 tracks/0/type = "value"
 tracks/0/imported = false
@@ -20,7 +21,7 @@ tracks/0/keys = {
 "values": [Vector2(0, 0)]
 }
 
-[sub_resource type="Animation" id="Animation_lak10"]
+[sub_resource type="Animation" id="Animation_0wvmo"]
 resource_name = "close"
 tracks/0/type = "value"
 tracks/0/imported = false
@@ -32,7 +33,7 @@ tracks/0/keys = {
 "times": PackedFloat32Array(0, 1),
 "transitions": PackedFloat32Array(1, 1),
 "update": 0,
-"values": [Vector2(0, -152), Vector2(0, 0)]
+"values": [Vector2(0, -160), Vector2(0, 0)]
 }
 
 [sub_resource type="Animation" id="Animation_5f8fv"]
@@ -47,28 +48,32 @@ tracks/0/keys = {
 "times": PackedFloat32Array(0, 1),
 "transitions": PackedFloat32Array(1, 1),
 "update": 0,
-"values": [Vector2(0, 0), Vector2(0, -152)]
+"values": [Vector2(0, 0), Vector2(0, -160)]
 }
 
-[sub_resource type="AnimationLibrary" id="AnimationLibrary_fkssu"]
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_lak10"]
 _data = {
-&"RESET": SubResource("Animation_0wvmo"),
-&"close": SubResource("Animation_lak10"),
+&"RESET": SubResource("Animation_lak10"),
+&"close": SubResource("Animation_0wvmo"),
 &"open": SubResource("Animation_5f8fv")
 }
 
-[node name="Gate" type="AnimatableBody2D"]
+[node name="Gate" type="Node2D"]
+script = ExtResource("1_lak10")
 
-[node name="Sprite2D" type="Sprite2D" parent="."]
-position = Vector2(2, -9)
-scale = Vector2(0.21875, 0.40625)
+[node name="Gate" type="AnimatableBody2D" parent="."]
+script = ExtResource("1_lak10")
+
+[node name="Sprite2D" type="Sprite2D" parent="Gate"]
+scale = Vector2(0.219, 0.406)
 texture = ExtResource("1_5f8fv")
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-position = Vector2(1.5, -7)
-shape = SubResource("RectangleShape2D_lak10")
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Gate"]
+position = Vector2(0.5, 0)
+shape = SubResource("RectangleShape2D_5f8fv")
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+root_node = NodePath("../Gate")
 libraries = {
-&"": SubResource("AnimationLibrary_fkssu")
+&"": SubResource("AnimationLibrary_lak10")
 }

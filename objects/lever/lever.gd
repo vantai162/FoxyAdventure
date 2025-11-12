@@ -5,6 +5,9 @@ class_name Lever
 # Biến để lưu trạng thái của cần gạt (đang bật hay tắt)
 @export var is_activated: bool = false
 
+signal lever_activated
+signal lever_deactivated
+
 # Biến để theo dõi xem player có đang ở gần không
 var player_is_near: bool = false
 
@@ -19,17 +22,15 @@ func _process(delta: float) -> void:
 		activate()
 
 func activate() -> void:
-	# Đảo ngược trạng thái: true -> false, false -> true
 	is_activated = not is_activated
-	
 	update_animation()
 
 	if is_activated:
 		print("ACTIVATED")
-		# Gửi tín hiệu hoặc gọi hàm để mở cửa ở đây
+		lever_activated.emit()
 	else:
 		print("DEACTIVATED")
-		# Gửi tín hiệu hoặc gọi hàm để đóng cửa ở đây
+		lever_deactivated.emit()
 
 func update_animation() -> void:
 	if is_activated:
