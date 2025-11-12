@@ -311,3 +311,5 @@ position = Vector2(-0.5, -1)
 shape = SubResource("RectangleShape2D_u75vx")
 
 [connection signal="hurt" from="Direction/HurtArea2D" to="." method="_on_hurt_area_2d_hurt"]
+[node name="FloorRayCast2D" type="RayCast2D" parent="."]
+target_position = Vector2(-1, 16)
