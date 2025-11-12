@@ -1,6 +1,6 @@
 [gd_scene load_steps=14 format=3 uid="uid://bmic0j4cnluey"]
 
-[ext_resource type="Script" uid="uid://bs46jtbsim1fq" path="res://checkpoint/checkpoint.gd" id="1_4j5vx"]
+[ext_resource type="Script" uid="uid://bs46jtbsim1fq" path="res://objects/checkpoint/checkpoint.gd" id="1_4j5vx"]
 [ext_resource type="Texture2D" uid="uid://su1n1v38j582" path="res://assets/island/ship_helm/ship_helm_turn_01.png" id="1_blpwx"]
 [ext_resource type="Texture2D" uid="uid://dijnwuyponiw8" path="res://assets/island/ship_helm/ship_helm_turn_02.png" id="2_uived"]
 [ext_resource type="Texture2D" uid="uid://bjxj1x8l1ied6" path="res://assets/island/ship_helm/ship_helm_turn_03.png" id="3_kfkgi"]
