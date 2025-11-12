@@ -2,7 +2,7 @@
 .godot/
 /android/
 /.vs/FoxyAdventure/FileContentIndex
-
+/godot-git-plugin-v3.2.1/*
 .tmp
 .github
 /.vs/FoxyAdventure/CopilotIndices/17.14.1204.46620/CodeChunks.db
