@@ -1,4 +1,4 @@
-[gd_scene load_steps=11 format=4 uid="uid://fm22mgp2q845"]
+[gd_scene load_steps=12 format=4 uid="uid://fm22mgp2q845"]
 
 [ext_resource type="TileSet" uid="uid://xt3l8n15jbfm" path="res://assets/island/tileset.tres" id="1_33rtp"]
 [ext_resource type="PackedScene" uid="uid://bs816w0pr8all" path="res://player/foxy.tscn" id="2_dwsf3"]
@@ -9,6 +9,7 @@
 [ext_resource type="PackedScene" uid="uid://bmgv5cgan4yt" path="res://enemy/mushroom/mushroom.tscn" id="8_1p8jb"]
 [ext_resource type="PackedScene" uid="uid://ufmc2gkfnv58" path="res://enemy/crab/crab.tscn" id="9_4x5ew"]
 [ext_resource type="PackedScene" uid="uid://b1a2s3d4f5g6h" path="res://enemy/aggressive_tribe/aggressive_tribe.tscn" id="10_lq01q"]
+[ext_resource type="PackedScene" uid="uid://dqdstpxycbomj" path="res://effect_Item/BladeItem/blade.tscn" id="11_1603u"]
 [ext_resource type="PackedScene" uid="uid://bdkss15p4gbma" path="res://enemy/seahorse/seahorse.tscn" id="11_sdmob"]
 
 [node name="Stage" type="Node2D"]
@@ -45,3 +46,6 @@ position = Vector2(674, -206)
 position = Vector2(883, -215)
 
 [node name="Bullets" type="Node" parent="."]
+
+[node name="Blade" parent="." instance=ExtResource("11_1603u")]
+position = Vector2(118, 154)
