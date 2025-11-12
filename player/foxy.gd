@@ -10,12 +10,30 @@ var attack_cooldown=1
 	"Slow":0,
 	"Invicibility":0
 }
-@export var KeySkill={
-	"HasBlade":false
-}
+
+# Blade inventory system
+var blade_count: int = 0
+var max_blade_capacity: int = 1
+var has_unlocked_blade: bool = false  # Track if player ever collected blade (for sprite switching)
 
 func can_attack():
-	return KeySkill["HasBlade"]&& Effect["Stun"]<=0
+	return blade_count > 0 && Effect["Stun"] <= 0
+
+func can_throw_blade():
+	return blade_count > 0 && Effect["Stun"] <= 0
+
+func consume_blade():
+	if blade_count > 0:
+		blade_count -= 1
+
+func return_blade():
+	if blade_count < max_blade_capacity:
+		blade_count += 1
+
+func increase_blade_capacity():
+	max_blade_capacity = min(max_blade_capacity + 1, 3)
+	# Also grant one blade when capacity increases
+	return_blade()
 @export var CoolDown={
 	"Dash":0
 }
@@ -32,12 +50,12 @@ var last_ground_time=-1211
 func _ready() -> void:
 	super._ready()
 	fsm=FSM.new(self,$States,$States/Idle)
-	if KeySkill["HasBlade"]==true:
-		_collect_blade()
 	
 func _collect_blade():
-	KeySkill["HasBlade"]=true
-	set_animated_sprite($Direction/BladeAnimatedSprite2D)
+	if not has_unlocked_blade:
+		has_unlocked_blade = true
+		set_animated_sprite($Direction/BladeAnimatedSprite2D)
+	return_blade()
 
 func _applyeffect(name:String,time:float):
 	Effect[name]=time
@@ -86,7 +104,9 @@ func set_cool_down(skillname:String):
 func save_state() -> Dictionary:
 	return {
 		"position": [global_position.x, global_position.y],
-		"has_blade": KeySkill["HasBlade"],
+		"blade_count": blade_count,
+		"max_blade_capacity": max_blade_capacity,
+		"has_unlocked_blade": has_unlocked_blade,
 		"health": health
 	}
 
@@ -95,11 +115,21 @@ func load_state(data: Dictionary) -> void:
 	if data.has("position"):
 		var pos_array = data["position"]
 		global_position = Vector2(pos_array[0], pos_array[1])
-	if data.has("has_blade"):
-		if data["has_blade"] == true:
-			# GỌI HÀM NÀY ĐỂ HIỂN THỊ LẠI KIẾM
-			_collect_blade() 
-		else:
-			KeySkill["HasBlade"] = false
+	
+	if data.has("blade_count"):
+		blade_count = data["blade_count"]
+	if data.has("max_blade_capacity"):
+		max_blade_capacity = data["max_blade_capacity"]
+	if data.has("has_unlocked_blade"):
+		has_unlocked_blade = data["has_unlocked_blade"]
+		if has_unlocked_blade:
+			set_animated_sprite($Direction/BladeAnimatedSprite2D)
+	
+	# Legacy support for old save format
+	if data.has("has_blade") && data["has_blade"] == true:
+		has_unlocked_blade = true
+		blade_count = max(blade_count, 1)
+		set_animated_sprite($Direction/BladeAnimatedSprite2D)
+	
 	if data.has("health"):
 		health = data["health"]
