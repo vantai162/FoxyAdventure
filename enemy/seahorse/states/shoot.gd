@@ -28,6 +28,5 @@ func _update(delta: float) -> void:
 
 func fire_bullet() -> void:
 	var bullet := obj.bullet_factory.create() as RigidBody2D
-	get_tree().current_scene.add_child(bullet)
 	bullet.global_position = obj.global_position
 	bullet.apply_impulse(Vector2(obj.bullet_speed * obj.direction, 0))

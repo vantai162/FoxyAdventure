@@ -8,7 +8,7 @@ signal created(product)
 
 func create(_product_packed_scene := product_packed_scene) -> Node2D:
 	var product: Node2D = _product_packed_scene.instantiate()
-	var container = find_parent("Stage").find_child(target_container_name)
+	var container = get_tree().root.find_child(target_container_name,true,false)
 	container.add_child(product)
 	product.global_position = global_position 
 	print(product.global_position)

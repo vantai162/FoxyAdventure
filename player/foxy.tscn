@@ -234,7 +234,6 @@ size = Vector2(23, 30)
 
 [node name="Foxy" type="CharacterBody2D" groups=["player"]]
 collision_layer = 2
-collision_mask = 9
 script = ExtResource("1_wod02")
 metadata/_custom_type_script = "uid://w7xdmsdvf5vd"
 
@@ -256,6 +255,8 @@ sprite_frames = SubResource("SpriteFrames_2mww5")
 animation = &"run"
 
 [node name="HitArea2D" type="Area2D" parent="Direction"]
+collision_layer = 0
+collision_mask = 16
 script = ExtResource("31_ys6s8")
 metadata/_custom_type_script = "uid://xqvgljx4hk1s"
 
@@ -264,6 +265,8 @@ position = Vector2(21, 0)
 shape = SubResource("CapsuleShape2D_34yrj")
 
 [node name="HurtArea2D" type="Area2D" parent="Direction"]
+collision_layer = 4
+collision_mask = 0
 script = ExtResource("32_camrd")
 metadata/_custom_type_script = "uid://csu2b21cwchqw"
 
@@ -307,5 +310,6 @@ collision_mask = 512
 position = Vector2(-0.5, -1)
 shape = SubResource("RectangleShape2D_u75vx")
 
+[connection signal="hurt" from="Direction/HurtArea2D" to="." method="_on_hurt_area_2d_hurt"]
 [node name="FloorRayCast2D" type="RayCast2D" parent="."]
 target_position = Vector2(-1, 16)
