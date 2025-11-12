@@ -12,6 +12,7 @@ func _update(_delta: float):
 	if(obj.Effect["Stun"]<=0): 
 		if control_jump():
 			return
+		control_throw()
 		control_attack()
 		if not control_moving():
 			waited+=_delta

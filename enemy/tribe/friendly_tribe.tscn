@@ -179,7 +179,6 @@ position = Vector2(23.4375, 1.47059)
 target_position = Vector2(-1.5625, 48.5293)
 
 [node name="DetectPlayerArea2D" type="Area2D" parent="Direction"]
-visible = false
 collision_layer = 0
 collision_mask = 2
 
@@ -199,7 +198,6 @@ position = Vector2(-5, 4)
 shape = SubResource("CircleShape2D_w111s")
 
 [node name="HurtArea2d" parent="." instance=ExtResource("32_0lx5c")]
-visible = false
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="HurtArea2d"]
 position = Vector2(-5, 4)
