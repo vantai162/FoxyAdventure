@@ -238,6 +238,8 @@ shape = SubResource("RectangleShape2D_ang66")
 
 [node name="HurtArea2D" type="Area2D" parent="Direction"]
 position = Vector2(-21, 3)
+collision_layer = 16
+collision_mask = 0
 script = ExtResource("20_iqs6i")
 metadata/_custom_type_script = "uid://csu2b21cwchqw"
 

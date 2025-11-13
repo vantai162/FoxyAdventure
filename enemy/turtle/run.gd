@@ -9,8 +9,6 @@ func _update(delta):
 	obj.velocity.x = obj.direction * obj.movement_speed
 	if _should_turn_around():
 		obj.turn_around()
-	if Input.is_action_just_pressed("jump"):
-		change_state(fsm.states.hide)
 
 func _should_turn_around() -> bool:
 	if obj.is_touch_wall():
