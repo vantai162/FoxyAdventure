@@ -6,7 +6,7 @@
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_tcnf6"]
 size = Vector2(13, 10)
 
-[node name="Blade" type="Area2D"]
+[node name="Blade" type="Area2D" groups=["player_attack"]]
 collision_layer = 0
 collision_mask = 2
 script = ExtResource("1_tcnf6")

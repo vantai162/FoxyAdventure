@@ -255,7 +255,7 @@ visible = false
 sprite_frames = SubResource("SpriteFrames_2mww5")
 animation = &"run"
 
-[node name="HitArea2D" type="Area2D" parent="Direction"]
+[node name="HitArea2D" type="Area2D" parent="Direction" groups=["player_attack"]]
 script = ExtResource("31_ys6s8")
 metadata/_custom_type_script = "uid://xqvgljx4hk1s"
 
