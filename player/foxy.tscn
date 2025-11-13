@@ -1,10 +1,12 @@
-[gd_scene load_steps=52 format=3 uid="uid://bs816w0pr8all"]
+[gd_scene load_steps=55 format=3 uid="uid://bs816w0pr8all"]
 
 [ext_resource type="Script" uid="uid://brl5yy4w7wich" path="res://player/foxy.gd" id="1_wod02"]
 [ext_resource type="Texture2D" uid="uid://m4di78taixns" path="res://assets/foxy/fox_hat/fox_defeat_1.png" id="2_70n8a"]
 [ext_resource type="Texture2D" uid="uid://b2iyrbygs0b7c" path="res://assets/foxy/fox_hat/fox_idle_1.png" id="2_aku5n"]
+[ext_resource type="Script" uid="uid://drpkfms2xf5ox" path="res://player/camera_2d.gd" id="2_rsc2w"]
 [ext_resource type="Texture2D" uid="uid://b6jgthsrynctr" path="res://assets/foxy/fox_hat/fox_defeat_2.png" id="3_4yctv"]
 [ext_resource type="Texture2D" uid="uid://c8uke6n7xj17g" path="res://assets/foxy/fox_hat/fox_idle_2.png" id="3_bhbat"]
+[ext_resource type="PackedScene" uid="uid://vifaaniwbdnv" path="res://projectiles/blade_projectile.tscn" id="3_blade"]
 [ext_resource type="Texture2D" uid="uid://fii540ugfj5n" path="res://assets/foxy/fox_hat/fox_defeat_3.png" id="4_3c4yu"]
 [ext_resource type="Texture2D" uid="uid://6gko14qsmmw4" path="res://assets/foxy/fox_hat/fox_fall_1.png" id="5_t8rxx"]
 [ext_resource type="Texture2D" uid="uid://yom7r0j05to2" path="res://assets/foxy/fox_hat/fox_hurt_1.png" id="6_2ri0v"]
@@ -44,7 +46,9 @@
 [ext_resource type="Script" uid="uid://devihpb45ajdr" path="res://player/hurt.gd" id="36_reoh7"]
 [ext_resource type="Script" path="res://player/dash.gd" id="37_reoh7"]
 [ext_resource type="Script" uid="uid://ntfj07p0fh86" path="res://player/throw.gd" id="39_6yfce"]
-[ext_resource type="Script" path="res://player/attack.gd" id="39_kvcfx"]
+
+[ext_resource type="Script" uid="uid://bhv3i7yhtjluc" path="res://player/attack.gd" id="39_kvcfx"]
+[ext_resource type="Script" uid="uid://bifti36mnutt4" path="res://player/wall_cling.gd" id="47_333wc"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_8r8n2"]
 size = Vector2(21, 30)
@@ -232,13 +236,16 @@ size = Vector2(20, 29)
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_u75vx"]
 size = Vector2(23, 30)
 
-[node name="Foxy" type="CharacterBody2D" groups=["player"]]
+[node name="Foxy" type="CharacterBody2D"]
 collision_layer = 2
 collision_mask = 9
 script = ExtResource("1_wod02")
+blade_projectile_scene = ExtResource("3_blade")
+max_health = 4
 metadata/_custom_type_script = "uid://w7xdmsdvf5vd"
 
 [node name="Camera2D" type="Camera2D" parent="."]
+script = ExtResource("2_rsc2w")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 position = Vector2(-0.5, -1)
@@ -248,14 +255,17 @@ shape = SubResource("RectangleShape2D_8r8n2")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="Direction"]
 sprite_frames = SubResource("SpriteFrames_7xt5n")
-animation = &"dead"
+animation = &"jump"
 
 [node name="BladeAnimatedSprite2D" type="AnimatedSprite2D" parent="Direction"]
 visible = false
 sprite_frames = SubResource("SpriteFrames_2mww5")
-animation = &"run"
+animation = &"idle"
 
 [node name="HitArea2D" type="Area2D" parent="Direction" groups=["player_attack"]]
+collision_layer = 0
+collision_mask = 16
+
 script = ExtResource("31_ys6s8")
 metadata/_custom_type_script = "uid://xqvgljx4hk1s"
 
@@ -264,6 +274,8 @@ position = Vector2(21, 0)
 shape = SubResource("CapsuleShape2D_34yrj")
 
 [node name="HurtArea2D" type="Area2D" parent="Direction"]
+collision_layer = 4
+collision_mask = 0
 script = ExtResource("32_camrd")
 metadata/_custom_type_script = "uid://csu2b21cwchqw"
 
@@ -299,6 +311,9 @@ script = ExtResource("39_kvcfx")
 [node name="Throw" type="Node" parent="States"]
 script = ExtResource("39_6yfce")
 
+[node name="WallCling" type="Node" parent="States"]
+script = ExtResource("47_333wc")
+
 [node name="EffectArea" type="Area2D" parent="."]
 collision_layer = 258
 collision_mask = 512
@@ -306,3 +321,8 @@ collision_mask = 512
 [node name="CollisionShape2D" type="CollisionShape2D" parent="EffectArea"]
 position = Vector2(-0.5, -1)
 shape = SubResource("RectangleShape2D_u75vx")
+
+[node name="FloorRayCast2D" type="RayCast2D" parent="."]
+target_position = Vector2(-1, 16)
+
+[connection signal="hurt" from="Direction/HurtArea2D" to="." method="_on_hurt_area_2d_hurt"]

@@ -1,6 +1,7 @@
 extends Player_State
 
 func _enter() -> void:
+	obj.velocity.x=0
 	obj.change_animation("idle")
 
 func _update(delta: float) -> void:

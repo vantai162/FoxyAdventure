@@ -44,6 +44,7 @@ position = Vector2(115, 306)
 position = Vector2(443, 314)
 
 [node name="Starfish" parent="." instance=ExtResource("4_rgpqh")]
+
 position = Vector2(712, 296)
 collision_mask = 1
 

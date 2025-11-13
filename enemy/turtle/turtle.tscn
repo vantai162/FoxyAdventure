@@ -67,27 +67,11 @@ animations = [{
 }]
 
 [node name="Turtle" type="CharacterBody2D"]
+collision_layer = 8
 script = ExtResource("1_raxgc")
 metadata/_custom_type_script = "uid://s4xx82espxdt"
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-shape = SubResource("CircleShape2D_pkty3")
-
-[node name="HitArea2d" parent="." instance=ExtResource("3_raxgc")]
-collision_layer = 0
-collision_mask = 4
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="HitArea2d"]
-shape = SubResource("CircleShape2D_pkty3")
-
-[node name="HurtArea2d" parent="." instance=ExtResource("4_ehiyd")]
-collision_layer = 16
-collision_mask = 0
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="HurtArea2d"]
-shape = SubResource("CircleShape2D_pkty3")
-
-[node name="CollisionShape2D2" type="CollisionShape2D" parent="."]
 shape = SubResource("CircleShape2D_pkty3")
 
 [node name="Direction" type="Node2D" parent="."]
@@ -104,6 +88,20 @@ sprite_frames = SubResource("SpriteFrames_v3mmh")
 animation = &"hide"
 frame_progress = 0.540057
 
+[node name="HitArea2D" parent="Direction" instance=ExtResource("3_raxgc")]
+collision_layer = 0
+collision_mask = 4
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Direction/HitArea2D"]
+shape = SubResource("CircleShape2D_pkty3")
+
+[node name="HurtArea2D" parent="Direction" instance=ExtResource("4_ehiyd")]
+collision_layer = 16
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Direction/HurtArea2D"]
+shape = SubResource("CircleShape2D_pkty3")
+
 [node name="States" type="Node" parent="."]
 
 [node name="Run" type="Node" parent="States"]
@@ -114,3 +112,5 @@ script = ExtResource("6_nvedk")
 
 [node name="Hurt" type="Node" parent="States"]
 script = ExtResource("7_0ekdt")
+
+[connection signal="hurt" from="Direction/HurtArea2D" to="." method="_on_hurt_area_2d_hurt"]

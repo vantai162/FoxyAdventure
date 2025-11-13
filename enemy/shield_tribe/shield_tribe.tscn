@@ -37,10 +37,16 @@ radius = 29.0
 animations = [{
 "frames": [{
 "duration": 1.0,
-"texture": ExtResource("22_idle_1")
+"texture": ExtResource("24_idle_3")
 }, {
 "duration": 1.0,
-"texture": ExtResource("23_idle_2")
+"texture": ExtResource("17_hurt_4")
+}, {
+"duration": 1.0,
+"texture": ExtResource("18_hurt_5")
+}, {
+"duration": 1.0,
+"texture": ExtResource("19_hurt_6")
 }, {
 "duration": 1.0,
 "texture": ExtResource("24_idle_3")
@@ -106,9 +112,6 @@ animations = [{
 "texture": ExtResource("19_hurt_6")
 }, {
 "duration": 1.0,
-"texture": ExtResource("20_vt5fp")
-}, {
-"duration": 1.0,
 "texture": ExtResource("21_hurt_8")
 }],
 "loop": false,
@@ -172,7 +175,7 @@ animations = [{
 }]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_ang66"]
-size = Vector2(36, 27)
+size = Vector2(67, 18)
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_p7fv1"]
 radius = 27.0
@@ -180,17 +183,19 @@ radius = 27.0
 [node name="ShieldTribe" type="CharacterBody2D"]
 collision_layer = 8
 script = ExtResource("1_shield_gd")
-spear_thrust_distance = 36.0
+spear_thrust_distance = 72.0
+spear_thrust_out_time = 0.6
 metadata/_custom_type_script = "uid://s4xx82espxdt"
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(-8, 3)
 shape = SubResource("CircleShape2D_body")
 
 [node name="Direction" type="Node2D" parent="."]
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="Direction"]
 sprite_frames = SubResource("SpriteFrames_tribe")
-animation = &"defend"
+animation = &"attack"
 
 [node name="DetectPlayerArea2D" type="Area2D" parent="Direction"]
 collision_layer = 0
@@ -216,18 +221,19 @@ texture = ExtResource("20_vt5fp")
 flip_v = true
 
 [node name="Spear" type="Node2D" parent="Direction"]
-position = Vector2(6, 0)
+position = Vector2(-3, 16)
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="Direction/Spear"]
-position = Vector2(-8, 0)
+position = Vector2(-18, 0)
 rotation = 1.5708
 scale = Vector2(0.36, 0.77)
 sprite_frames = SubResource("SpriteFrames_s34ix")
 animation = &"attack"
+frame = 8
 frame_progress = 1.0
-speed_scale = 3.0
 
 [node name="SpearHitArea" type="Area2D" parent="Direction/Spear"]
+position = Vector2(16, 0)
 collision_layer = 0
 collision_mask = 4
 monitoring = false
@@ -238,6 +244,8 @@ shape = SubResource("RectangleShape2D_ang66")
 
 [node name="HurtArea2D" type="Area2D" parent="Direction"]
 position = Vector2(-21, 3)
+collision_layer = 16
+collision_mask = 0
 script = ExtResource("20_iqs6i")
 metadata/_custom_type_script = "uid://csu2b21cwchqw"
 

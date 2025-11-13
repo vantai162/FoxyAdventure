@@ -9,6 +9,7 @@ func _enter():
 	timer = 1.0
 
 	obj.velocity.x = 0
+	obj.get_node("Direction/HurtArea2D/CollisionShape2D").disabled = true
 
 
 func _update(delta):

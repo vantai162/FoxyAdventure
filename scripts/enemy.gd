@@ -92,6 +92,14 @@ func _on_body_exited(_body: CharacterBody2D) -> void:
 	_on_player_not_in_sight()
 
 func _on_hurt_area_2d_hurt(_direction: Vector2, _damage: float) -> void:
+	# Face the attacker if hit from behind
+	# Direction points FROM attacker TO us, so we need to face the OPPOSITE direction
+	if _direction.x != 0:
+		var attacker_side = -sign(_direction.x)  # Negate to get attacker's position
+		# If we're facing away from the attacker, turn around immediately
+		if attacker_side != direction:
+			change_direction(attacker_side)
+	
 	_take_damage_from_dir(_direction, _damage)
 
 # called when player is in sight

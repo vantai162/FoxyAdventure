@@ -1,4 +1,4 @@
-[gd_scene load_steps=40 format=3 uid="uid://duryp3ufmd0be"]
+[gd_scene load_steps=42 format=3 uid="uid://duryp3ufmd0be"]
 
 [ext_resource type="Script" uid="uid://ci0q7faxk47ee" path="res://enemy/tribe/friendly_tribe.gd" id="1_icd28"]
 [ext_resource type="Texture2D" uid="uid://lrtt52fguxfv" path="res://assets/monsters/tribe_temporary/Sprites/4-Enemy-Big Guy/2-Run/1.png" id="2_fi330"]
@@ -36,6 +36,8 @@
 [ext_resource type="Script" uid="uid://rht0fd7y8qg8" path="res://enemy/tribe/surprise.gd" id="34_w111s"]
 [ext_resource type="Script" uid="uid://css0l7i18js2k" path="res://enemy/tribe/flee.gd" id="35_dmqik"]
 [ext_resource type="Texture2D" uid="uid://bgnbj6qy3a2ow" path="res://assets/monsters/tribe_temporary/problem.png" id="36_ron27"]
+[ext_resource type="Script" uid="uid://upv05vewgw7y" path="res://enemy/tribe/hurt.gd" id="37_kkiwi"]
+[ext_resource type="Script" uid="uid://bqqw7lo6i8ld5" path="res://enemy/tribe/dead.gd" id="38_s06mn"]
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_icd28"]
 animations = [{
@@ -154,11 +156,12 @@ animations = [{
 radius = 84.7172
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_w111s"]
-radius = 30.0832
+radius = 34.7385
 
 [node name="FriendlyTribe" type="CharacterBody2D"]
 position = Vector2(-23, 20)
 scale = Vector2(0.64, 0.680001)
+collision_layer = 8
 script = ExtResource("1_icd28")
 metadata/_custom_type_script = "uid://s4xx82espxdt"
 
@@ -167,8 +170,6 @@ metadata/_custom_type_script = "uid://s4xx82espxdt"
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="Direction"]
 sprite_frames = SubResource("SpriteFrames_icd28")
 animation = &"suprise"
-frame = 2
-frame_progress = 1.0
 
 [node name="FrontRayCast2D" type="RayCast2D" parent="Direction"]
 position = Vector2(23.4375, 0)
@@ -193,13 +194,15 @@ position = Vector2(16.8281, -30.8823)
 scale = Vector2(0.0380249, 0.0344669)
 texture = ExtResource("36_ron27")
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+[node name="HurtArea2D" parent="Direction" instance=ExtResource("32_0lx5c")]
+collision_layer = 16
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Direction/HurtArea2D"]
 position = Vector2(-5, 4)
 shape = SubResource("CircleShape2D_w111s")
 
-[node name="HurtArea2d" parent="." instance=ExtResource("32_0lx5c")]
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="HurtArea2d"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 position = Vector2(-5, 4)
 shape = SubResource("CircleShape2D_w111s")
 
@@ -213,3 +216,11 @@ script = ExtResource("34_w111s")
 
 [node name="Flee" type="Node" parent="States"]
 script = ExtResource("35_dmqik")
+
+[node name="Hurt" type="Node" parent="States"]
+script = ExtResource("37_kkiwi")
+
+[node name="Dead" type="Node" parent="States"]
+script = ExtResource("38_s06mn")
+
+[connection signal="hurt" from="Direction/HurtArea2D" to="." method="_on_hurt_area_2d_hurt"]

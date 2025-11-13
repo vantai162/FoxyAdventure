@@ -1,0 +1,38 @@
+[gd_scene load_steps=5 format=3 uid="uid://xjj18m8if4v5"]
+
+[ext_resource type="Script" uid="uid://cf4d0wmc23711" path="res://objects/platform/breakable_platform_slow.gd" id="1_bbjf5"]
+[ext_resource type="Texture2D" uid="uid://d3b5gpgx21c1s" path="res://assets/platform/moving_platform.png" id="2_25dck"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_d2rl0"]
+size = Vector2(41, 7.5)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_78hnd"]
+size = Vector2(41, 2)
+
+[node name="BreakablePlatformSlow" type="StaticBody2D"]
+position = Vector2(38, 19)
+script = ExtResource("1_bbjf5")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+modulate = Color(0.192157, 0.168627, 1, 1)
+position = Vector2(-10.8105, -14.8804)
+scale = Vector2(0.48966, 0.610054)
+texture = ExtResource("2_25dck")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(-10.5, -15.25)
+shape = SubResource("RectangleShape2D_d2rl0")
+one_way_collision = true
+
+[node name="Timer" type="Timer" parent="."]
+one_shot = true
+
+[node name="InteractiveArea2D" type="Area2D" parent="."]
+collision_layer = 0
+collision_mask = 2
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="InteractiveArea2D"]
+position = Vector2(-11, -19)
+shape = SubResource("RectangleShape2D_78hnd")
+
+[connection signal="body_entered" from="InteractiveArea2D" to="." method="_on_interactive_area_2d_body_entered"]
