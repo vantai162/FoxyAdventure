@@ -167,4 +167,4 @@ func load_state(data: Dictionary) -> void:
 
 func _on_hurt_area_2d_hurt(direction: Vector2, damage: float) -> void:
 	fsm.current_state.take_damage(damage)
-	pass # Replace with function body.
+

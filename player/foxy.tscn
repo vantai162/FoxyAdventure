@@ -235,7 +235,7 @@ size = Vector2(20, 29)
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_u75vx"]
 size = Vector2(23, 30)
 
-[node name="Foxy" type="CharacterBody2D" groups=["player"]]
+[node name="Foxy" type="CharacterBody2D"]
 collision_layer = 2
 collision_mask = 9
 script = ExtResource("1_wod02")
@@ -254,9 +254,10 @@ shape = SubResource("RectangleShape2D_8r8n2")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="Direction"]
 sprite_frames = SubResource("SpriteFrames_7xt5n")
-animation = &"idle"
+animation = &"jump"
 
 [node name="BladeAnimatedSprite2D" type="AnimatedSprite2D" parent="Direction"]
+visible = false
 sprite_frames = SubResource("SpriteFrames_2mww5")
 animation = &"idle"
 

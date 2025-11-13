@@ -24,11 +24,6 @@ SaveSystem="*res://scripts/autoload/save_system.gd"
 
 project/assembly_name="FoxyAdventure"
 
-[global_group]
-
-ground=""
-player=""
-
 [input]
 
 right={
