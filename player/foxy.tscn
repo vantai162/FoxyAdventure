@@ -1,4 +1,4 @@
-[gd_scene load_steps=53 format=3 uid="uid://bs816w0pr8all"]
+[gd_scene load_steps=54 format=3 uid="uid://bs816w0pr8all"]
 
 [ext_resource type="Script" uid="uid://brl5yy4w7wich" path="res://player/foxy.gd" id="1_wod02"]
 [ext_resource type="Texture2D" uid="uid://m4di78taixns" path="res://assets/foxy/fox_hat/fox_defeat_1.png" id="2_70n8a"]
@@ -46,6 +46,7 @@
 [ext_resource type="Script" uid="uid://dp045kw80ykvv" path="res://player/dash.gd" id="37_reoh7"]
 [ext_resource type="Script" uid="uid://ntfj07p0fh86" path="res://player/throw.gd" id="39_6yfce"]
 [ext_resource type="Script" uid="uid://bhv3i7yhtjluc" path="res://player/attack.gd" id="39_kvcfx"]
+[ext_resource type="Script" uid="uid://bifti36mnutt4" path="res://player/wall_cling.gd" id="47_333wc"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_8r8n2"]
 size = Vector2(21, 30)
@@ -253,7 +254,6 @@ sprite_frames = SubResource("SpriteFrames_7xt5n")
 animation = &"dead"
 
 [node name="BladeAnimatedSprite2D" type="AnimatedSprite2D" parent="Direction"]
-visible = false
 sprite_frames = SubResource("SpriteFrames_2mww5")
 animation = &"run"
 
@@ -304,6 +304,9 @@ script = ExtResource("39_kvcfx")
 
 [node name="Throw" type="Node" parent="States"]
 script = ExtResource("39_6yfce")
+
+[node name="WallCling" type="Node" parent="States"]
+script = ExtResource("47_333wc")
 
 [node name="EffectArea" type="Area2D" parent="."]
 collision_layer = 258

@@ -7,7 +7,8 @@ func _enter() -> void:
 
 func _update(_delta: float):
 	if(obj.Effect["Stun"]<=0):
-		control_moving()
+		if !fsm.previous_state==fsm.states.wallcling:
+			control_moving()
 		control_attack()
 		control_jump()
 		control_dash()
@@ -16,4 +17,6 @@ func _update(_delta: float):
 	#If velocity.y is greater than 0 change to fall
 	if obj.velocity.y > 0:
 		change_state(fsm.states.fall)
+	if obj.is_on_wall_only():
+		fsm.change_state(fsm.states.wallcling)
 	pass
