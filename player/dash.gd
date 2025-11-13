@@ -1,14 +1,47 @@
 extends Player_State
+var ghost_interval:float=0.05
+var ghost_timer=0
 func _enter():
-	obj.change_animation("hurt")
+	obj.change_animation("run")
+	
 	obj.velocity.x = 400 * obj.direction
 	obj.velocity.y =0
 	timer = 0.3
-
+	obj.Effect["Invicibility"]=0.3
 
 func _update( delta: float):
 	obj.velocity.x = 400 * obj.direction
 	obj.velocity.y =0
+	ghost_timer+=delta
+	if(ghost_timer>ghost_interval):
+		create_ghost_trail()
+		ghost_timer=0
 	if update_timer(delta):
 		obj.set_cool_down("Dash")
 		change_state(fsm.previous_state)
+	if obj.is_on_wall_only():
+		fsm.change_state(fsm.states.wallcling)
+
+func create_ghost_trail():
+	var original = $"../../Direction/AnimatedSprite2D"
+	
+	# Create a simple Sprite2D instead of duplicating
+	var ghost = Sprite2D.new()
+	ghost.texture = original.sprite_frames.get_frame_texture(
+		original.animation,
+		original.frame
+	)
+	
+	# Match the original's properties
+	ghost.global_position = original.global_position
+	ghost.scale = original.get_parent().scale
+	print(ghost.global_scale)
+	ghost.modulate = Color(1, 1, 1, 0.4)
+	
+	# Add to the scene root so it doesn't move with the player
+	get_tree().root.add_child(ghost)
+	
+	# Fade out and delete
+	var tween = create_tween()
+	tween.tween_property(ghost, "modulate:a", 0.0, 1)
+	tween.tween_callback(ghost.queue_free)

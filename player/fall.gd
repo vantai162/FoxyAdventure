@@ -1,23 +1,30 @@
 extends Player_State
 
 func _enter() -> void:
+	#Change animation to fall
 	obj.change_animation("fall")
+	pass
 
 func _update(_delta: float) -> void:
-	if obj._checkcoyotea():
+	var is_moving=false
+	var jumped=false
+	if(obj._checkcoyotea()):
 		control_jump()
-	
-	if obj.Effect["Stun"] <= 0:
-		var is_moving = control_moving()
+	#Control moving
+	if(obj.Effect["Stun"]<=0):
+		is_moving = control_moving()
 		control_throw()
 		control_attack()
 		control_jump()
 		control_dash()
 	else:
-		obj.velocity.x = 0
-	
+		obj.velocity.x=0
+	#If on floor change to idle if not moving and not jumping
+	if obj.is_on_floor() and not is_moving:
+		change_state(fsm.states.idle)
 	if obj.is_on_floor():
-		obj.jump_count = 0
-		obj.dashed_on_air = false
-		if not control_moving():
-			change_state(fsm.states.idle)
+		obj.jump_count=0
+		obj.dashed_on_air=false
+	if obj.is_on_wall_only():
+		fsm.change_state(fsm.states.wallcling)
+	pass

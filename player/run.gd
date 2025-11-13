@@ -31,4 +31,6 @@ func _update(_delta: float):
 	#If not on floor change to fall
 	if not obj.is_on_floor():
 		change_state(fsm.states.fall)
+	if obj.is_on_wall_only():
+		fsm.change_state(fsm.states.wallcling)
 	pass
