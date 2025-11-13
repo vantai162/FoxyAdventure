@@ -1,0 +1,21 @@
+[gd_scene load_steps=4 format=3 uid="uid://dvjr8elgnjvcw"]
+
+[ext_resource type="Script" uid="uid://ckr7y2h7kp2d0" path="res://objects/platform/circular_moving_platform.gd" id="1_mjkwu"]
+[ext_resource type="Texture2D" uid="uid://d3b5gpgx21c1s" path="res://assets/platform/moving_platform.png" id="2_pphjr"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_u0f25"]
+size = Vector2(64.5, 8)
+
+[node name="CircularMovingPlatform" type="AnimatableBody2D"]
+script = ExtResource("1_mjkwu")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+position = Vector2(1, 2.38419e-07)
+scale = Vector2(0.770588, 0.6875)
+texture = ExtResource("2_pphjr")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(0.75, 0)
+shape = SubResource("RectangleShape2D_u0f25")
+
+[node name="Timer" type="Timer" parent="."]

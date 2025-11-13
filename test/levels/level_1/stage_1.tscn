@@ -1,4 +1,4 @@
-[gd_scene load_steps=17 format=4 uid="uid://fm22mgp2q845"]
+[gd_scene load_steps=18 format=4 uid="uid://fm22mgp2q845"]
 
 [ext_resource type="TileSet" uid="uid://xt3l8n15jbfm" path="res://assets/island/tileset.tres" id="1_33rtp"]
 [ext_resource type="TileSet" uid="uid://0yf5cmwk6u1i" path="res://assets/island/terrain/ice_tile_set.tres" id="2_1603u"]
@@ -6,7 +6,6 @@
 [ext_resource type="PackedScene" uid="uid://c1bijw8i8erx5" path="res://enemy/turtle/turtle.tscn" id="3_1hwaj"]
 [ext_resource type="PackedScene" uid="uid://duryp3ufmd0be" path="res://enemy/tribe/friendly_tribe.tscn" id="4_sdmob"]
 [ext_resource type="PackedScene" uid="uid://bxfs4fsx7ot6m" path="res://enemy/starfish/starfish.tscn" id="5_1603u"]
-[ext_resource type="PackedScene" uid="uid://dav8b7a6d5e4f" path="res://enemy/shield_tribe/shield_tribe.tscn" id="6_o8rrw"]
 [ext_resource type="PackedScene" uid="uid://bmgv5cgan4yt" path="res://enemy/mushroom/mushroom.tscn" id="8_1p8jb"]
 [ext_resource type="PackedScene" uid="uid://ufmc2gkfnv58" path="res://enemy/crab/crab.tscn" id="9_4x5ew"]
 [ext_resource type="PackedScene" uid="uid://b1a2s3d4f5g6h" path="res://enemy/aggressive_tribe/aggressive_tribe.tscn" id="10_lq01q"]
@@ -16,6 +15,8 @@
 [ext_resource type="PackedScene" uid="uid://xjj18m8if4v5" path="res://objects/platform/breakable_platform_slow.tscn" id="14_37uqy"]
 [ext_resource type="PackedScene" uid="uid://buygo1gficx5m" path="res://objects/platform/horizontal_moving_platform.tscn" id="15_1p8jb"]
 [ext_resource type="PackedScene" uid="uid://bp4fcvlg5b31p" path="res://objects/platform/vertical_moving_platform.tscn" id="16_4x5ew"]
+[ext_resource type="PackedScene" uid="uid://dvjr8elgnjvcw" path="res://objects/platform/circular_moving_platform.tscn" id="16_lq01q"]
+[ext_resource type="PackedScene" uid="uid://dav8b7a6d5e4f" path="res://enemy/shield_tribe/shield_tribe.tscn" id="17_lq01q"]
 
 [node name="Stage" type="Node2D"]
 
@@ -70,3 +71,9 @@ position = Vector2(-226, 43)
 
 [node name="VerticalMovingPlatform" parent="." instance=ExtResource("16_4x5ew")]
 position = Vector2(-269, -118)
+
+[node name="CircularMovingPlatform" parent="." instance=ExtResource("16_lq01q")]
+position = Vector2(-413, -2)
+
+[node name="ShieldTribe" parent="." instance=ExtResource("17_lq01q")]
+position = Vector2(1095, -78)
