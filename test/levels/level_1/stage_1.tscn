@@ -1,4 +1,4 @@
-[gd_scene load_steps=15 format=4 uid="uid://fm22mgp2q845"]
+[gd_scene load_steps=17 format=4 uid="uid://fm22mgp2q845"]
 
 [ext_resource type="TileSet" uid="uid://xt3l8n15jbfm" path="res://assets/island/tileset.tres" id="1_33rtp"]
 [ext_resource type="TileSet" uid="uid://0yf5cmwk6u1i" path="res://assets/island/terrain/ice_tile_set.tres" id="2_1603u"]
@@ -14,6 +14,8 @@
 [ext_resource type="PackedScene" uid="uid://bdkss15p4gbma" path="res://enemy/seahorse/seahorse.tscn" id="11_sdmob"]
 [ext_resource type="PackedScene" uid="uid://qdde77yqam1l" path="res://objects/platform/breakable_platform.tscn" id="13_o8rrw"]
 [ext_resource type="PackedScene" uid="uid://xjj18m8if4v5" path="res://objects/platform/breakable_platform_slow.tscn" id="14_37uqy"]
+[ext_resource type="PackedScene" uid="uid://buygo1gficx5m" path="res://objects/platform/horizontal_moving_platform.tscn" id="15_1p8jb"]
+[ext_resource type="PackedScene" uid="uid://bp4fcvlg5b31p" path="res://objects/platform/vertical_moving_platform.tscn" id="16_4x5ew"]
 
 [node name="Stage" type="Node2D"]
 
@@ -60,5 +62,11 @@ position = Vector2(-265, 131)
 [node name="BreakablePlatform" parent="." instance=ExtResource("13_o8rrw")]
 position = Vector2(-96, 89)
 
-[node name="BreakablePlatform2" parent="." instance=ExtResource("14_37uqy")]
-position = Vector2(-164, 88)
+[node name="BreakablePlatformSlow" parent="." instance=ExtResource("14_37uqy")]
+position = Vector2(-160, 89)
+
+[node name="HorizontalMovingPlatform" parent="." instance=ExtResource("15_1p8jb")]
+position = Vector2(-226, 43)
+
+[node name="VerticalMovingPlatform" parent="." instance=ExtResource("16_4x5ew")]
+position = Vector2(-269, -118)
