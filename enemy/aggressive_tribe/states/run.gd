@@ -4,16 +4,6 @@ func _enter() -> void:
 	obj.change_animation("run")
 
 func _update(_delta: float) -> void:
-	if obj.is_winding_up:
-		obj.velocity.x = 0
-		obj.change_animation("idle")
-		return
-	
-	if obj.is_attacking:
-		obj.velocity.x = 0
-		obj.change_animation("idle")
-		return
-	
 	obj.change_animation("run")
 	obj.velocity.x = obj.direction * obj.movement_speed
 	
