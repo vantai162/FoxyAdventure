@@ -1,4 +1,4 @@
-[gd_scene load_steps=14 format=4 uid="uid://fm22mgp2q845"]
+[gd_scene load_steps=15 format=4 uid="uid://fm22mgp2q845"]
 
 [ext_resource type="TileSet" uid="uid://xt3l8n15jbfm" path="res://assets/island/tileset.tres" id="1_33rtp"]
 [ext_resource type="TileSet" uid="uid://0yf5cmwk6u1i" path="res://assets/island/terrain/ice_tile_set.tres" id="2_1603u"]
@@ -13,6 +13,7 @@
 [ext_resource type="PackedScene" uid="uid://dqdstpxycbomj" path="res://effect_Item/BladeItem/blade.tscn" id="11_1603u"]
 [ext_resource type="PackedScene" uid="uid://bdkss15p4gbma" path="res://enemy/seahorse/seahorse.tscn" id="11_sdmob"]
 [ext_resource type="PackedScene" uid="uid://qdde77yqam1l" path="res://objects/platform/breakable_platform.tscn" id="13_o8rrw"]
+[ext_resource type="PackedScene" uid="uid://xjj18m8if4v5" path="res://objects/platform/breakable_platform_slow.tscn" id="14_37uqy"]
 
 [node name="Stage" type="Node2D"]
 
@@ -25,7 +26,7 @@ tile_map_data = PackedByteArray("AAD3/woAAAAJAAUAAAD4/woAAAAJAAUAAAD5/woAAAAJAAU
 tile_set = ExtResource("2_1603u")
 
 [node name="Player" parent="." instance=ExtResource("2_dwsf3")]
-position = Vector2(63, 115)
+position = Vector2(56, 121)
 
 [node name="Turtle" parent="." instance=ExtResource("3_1hwaj")]
 position = Vector2(222, 39)
@@ -61,3 +62,6 @@ position = Vector2(-265, 131)
 
 [node name="BreakablePlatform" parent="." instance=ExtResource("13_o8rrw")]
 position = Vector2(-96, 89)
+
+[node name="BreakablePlatform2" parent="." instance=ExtResource("14_37uqy")]
+position = Vector2(-164, 88)
