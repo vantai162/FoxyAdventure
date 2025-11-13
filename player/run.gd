@@ -30,4 +30,3 @@ func _update(_delta: float):
 		change_state(fsm.states.fall)
 	if obj.is_on_wall_only():
 		fsm.change_state(fsm.states.wallcling)
-

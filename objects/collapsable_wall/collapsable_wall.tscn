@@ -21,6 +21,7 @@ texture = ExtResource("1_ghv8o")
 shape = SubResource("RectangleShape2D_heo48")
 
 [node name="HitBox" type="Area2D" parent="."]
+collision_mask = 64
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="HitBox"]
 position = Vector2(-11.5, -0.5)
@@ -31,5 +32,3 @@ stream = ExtResource("3_bfbso")
 
 [node name="DustEffect" parent="." instance=ExtResource("5_bno5q")]
 visible = false
-
-[connection signal="area_entered" from="HitBox" to="." method="_on_hitbox_area_entered"]

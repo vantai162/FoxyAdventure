@@ -25,4 +25,3 @@ func _update(_delta: float) -> void:
 		obj.dashed_on_air=false
 	if obj.is_on_wall_only():
 		fsm.change_state(fsm.states.wallcling)
-
