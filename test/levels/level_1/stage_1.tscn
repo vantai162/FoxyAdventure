@@ -1,4 +1,4 @@
-[gd_scene load_steps=13 format=4 uid="uid://fm22mgp2q845"]
+[gd_scene load_steps=14 format=4 uid="uid://fm22mgp2q845"]
 
 [ext_resource type="TileSet" uid="uid://xt3l8n15jbfm" path="res://assets/island/tileset.tres" id="1_33rtp"]
 [ext_resource type="TileSet" uid="uid://0yf5cmwk6u1i" path="res://assets/island/terrain/ice_tile_set.tres" id="2_1603u"]
@@ -12,6 +12,7 @@
 [ext_resource type="PackedScene" uid="uid://b1a2s3d4f5g6h" path="res://enemy/aggressive_tribe/aggressive_tribe.tscn" id="10_lq01q"]
 [ext_resource type="PackedScene" uid="uid://dqdstpxycbomj" path="res://effect_Item/BladeItem/blade.tscn" id="11_1603u"]
 [ext_resource type="PackedScene" uid="uid://bdkss15p4gbma" path="res://enemy/seahorse/seahorse.tscn" id="11_sdmob"]
+[ext_resource type="PackedScene" uid="uid://qdde77yqam1l" path="res://objects/platform/breakable_platform.tscn" id="13_o8rrw"]
 
 [node name="Stage" type="Node2D"]
 
@@ -57,3 +58,6 @@ position = Vector2(118, 154)
 
 [node name="Starfish2" parent="." instance=ExtResource("5_1603u")]
 position = Vector2(-265, 131)
+
+[node name="BreakablePlatform" parent="." instance=ExtResource("13_o8rrw")]
+position = Vector2(-96, 89)
