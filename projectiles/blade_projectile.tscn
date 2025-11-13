@@ -5,13 +5,21 @@
 [ext_resource type="Script" uid="uid://xqvgljx4hk1s" path="res://scripts/hit_area_2d.gd" id="3_w0xp1"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_1qqcv"]
+radius = 8.0
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_45h00"]
+radius = 8.0
 
 [node name="BladeProjectile" type="Area2D"]
 collision_layer = 0
 collision_mask = 3
 script = ExtResource("1")
+first_bounce_upward_force = 366.6
+close_bounce_speed_multiplier = 0.75
+far_bounce_speed_multiplier = 0.75
+rotation_speed_flying = 27.0
+rotation_speed_bouncing = 36.0
+trail_texture = ExtResource("2_kj2ao")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 texture = ExtResource("2_kj2ao")
