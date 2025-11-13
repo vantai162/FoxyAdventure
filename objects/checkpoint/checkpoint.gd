@@ -18,19 +18,17 @@ var is_activated: bool = false
 func _ready() -> void:
 	if checkpoint_id.is_empty():
 		checkpoint_id = str(get_path())
-	# Check if this checkpoint was already activated
 	$AnimatedSprite2D.play("idle")
 	if GameManager.current_checkpoint_id == checkpoint_id:
 		activate_visual_only()
 
 
 func _on_body_entered(body: Node2D) -> void:
-	# Only activate if it's the player
 	if body is Player:
 		activate()
 
 
-#activate checkpoint
+
 func activate() -> void:
 	print("ĐÃ CHẠM VÀ KÍCH HOẠT CHECKPOINT!")
 	if is_activated:
@@ -39,7 +37,7 @@ func activate() -> void:
 	$AnimatedSprite2D.play("active")
 
 	GameManager.save_checkpoint(checkpoint_id)
-	GameManager.save_checkpoint_data()  # Save to persistent storage
+	GameManager.save_checkpoint_data()
 	checkpoint_activated.emit(checkpoint_id)
 	await get_tree().create_timer(1.0).timeout
 

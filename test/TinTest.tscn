@@ -1,16 +1,22 @@
-[gd_scene load_steps=9 format=3 uid="uid://crudlf4aa7qs7"]
+[gd_scene load_steps=12 format=3 uid="uid://crudlf4aa7qs7"]
 
 [ext_resource type="Script" uid="uid://bl4jqlw4aef0m" path="res://test/tin_test.gd" id="1_gsook"]
 [ext_resource type="PackedScene" uid="uid://bn3w2ymt5pkh7" path="res://test/wall.tscn" id="1_triev"]
 [ext_resource type="PackedScene" uid="uid://bs816w0pr8all" path="res://player/foxy.tscn" id="2_5hnfj"]
+[ext_resource type="PackedScene" uid="uid://b336fup0h7gp5" path="res://objects/collapsable_wall/collapsable_wall.tscn" id="4_2fpa6"]
 [ext_resource type="PackedScene" uid="uid://bdkss15p4gbma" path="res://enemy/seahorse/seahorse.tscn" id="4_jxs2h"]
 [ext_resource type="PackedScene" uid="uid://bxfs4fsx7ot6m" path="res://enemy/starfish/starfish.tscn" id="4_rgpqh"]
 [ext_resource type="PackedScene" uid="uid://bmic0j4cnluey" path="res://objects/checkpoint/checkpoint.tscn" id="6_5rqqf"]
 [ext_resource type="PackedScene" uid="uid://dqdstpxycbomj" path="res://effect_Item/BladeItem/blade.tscn" id="8_nvngk"]
 [ext_resource type="PackedScene" uid="uid://ca1f6r665b1nr" path="res://objects/lever/lever.tscn" id="8_svsm2"]
+[ext_resource type="PackedScene" uid="uid://ctr1b8p1h6p8y" path="res://objects/gate/gate.tscn" id="9_svsm2"]
+[ext_resource type="PackedScene" uid="uid://yv24bc7sjvlq" path="res://objects/timer_lever/timer_lever.tscn" id="10_u5x0e"]
 
 [node name="TinTest" type="Node2D"]
 script = ExtResource("1_gsook")
+
+[node name="Gate2" parent="." instance=ExtResource("9_svsm2")]
+position = Vector2(-1, 147)
 
 [node name="Wall" parent="." instance=ExtResource("1_triev")]
 position = Vector2(1117, 269)
@@ -22,14 +28,25 @@ position = Vector2(-28, 272)
 position = Vector2(547, 384)
 scale = Vector2(10, 1)
 
+[node name="Gate" parent="." instance=ExtResource("9_svsm2")]
+position = Vector2(291, 262)
+
+[node name="CollapsableWall" parent="." instance=ExtResource("4_2fpa6")]
+position = Vector2(539, 262)
+
 [node name="Checkpoint" parent="." instance=ExtResource("6_5rqqf")]
 position = Vector2(221, 308)
 
 [node name="Lever" parent="." instance=ExtResource("8_svsm2")]
 position = Vector2(115, 306)
 
+[node name="TimerLever" parent="." instance=ExtResource("10_u5x0e")]
+position = Vector2(443, 314)
+
 [node name="Starfish" parent="." instance=ExtResource("4_rgpqh")]
-position = Vector2(736, 247)
+
+position = Vector2(712, 296)
+collision_mask = 1
 
 [node name="Foxy" parent="." instance=ExtResource("2_5hnfj")]
 position = Vector2(54, 294)
@@ -41,3 +58,8 @@ position = Vector2(-46, 161)
 
 [node name="Blade" parent="." instance=ExtResource("8_nvngk")]
 position = Vector2(330, 321)
+
+[connection signal="lever_activated" from="Lever" to="Gate" method="open_gate"]
+[connection signal="lever_deactivated" from="Lever" to="Gate" method="close_gate"]
+[connection signal="lever_activated" from="TimerLever" to="Gate2" method="open_gate"]
+[connection signal="lever_deactivated" from="TimerLever" to="Gate2" method="close_gate"]
