@@ -9,7 +9,7 @@ extends CharacterBody2D
 var current_speed
 @export var attack_damage: int = 1
 @export var max_health: int = 3
-var health: int = max_health
+var health: int
 @onready var floor_ray_cast: RayCast2D = $FloorRayCast2D
 @export var accelecrationValue = 0.01 # gia tri tang toc khi truot
 @export var slideValue = 0.01
@@ -25,6 +25,7 @@ var _next_direction: int = 1
 var _next_animated_sprite: AnimatedSprite2D = null
 
 func _ready() -> void:
+	health=max_health
 	set_animated_sprite($Direction/AnimatedSprite2D)
 	
 func _physics_process(delta: float) -> void:
@@ -69,8 +70,8 @@ func stop_move() -> void:
 	velocity.y = 0
 
 func take_damage(damage: int) -> void:
+	print(damage)
 	health -= damage
-
 # Change the animation of the character on the next frame
 func change_animation(new_animation: String) -> void:
 	_next_animation = new_animation

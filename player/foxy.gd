@@ -11,12 +11,14 @@ var attack_cooldown=1
 	"Invicibility":0
 }
 
+enum attack_direction{
+	Left,Right,Down,Up
+}
+
 # Blade inventory system
 var blade_count: int = 0
 var max_blade_capacity: int = 1
 var has_unlocked_blade: bool = false  # Track if player ever collected blade (for sprite switching)
-
-
 
 func can_attack():
 	return blade_count > 0 && Effect["Stun"] <= 0
@@ -93,6 +95,8 @@ func _process(delta: float) -> void:
 		
 func take_damage(damage: int) -> void:
 	if(Effect["Invicibility"]<=0):
+		if has_node("Camera2D"):
+			$Camera2D.shake(8.0)
 		super.take_damage(damage)
 		fsm.change_state(fsm.states.hurt)
 		
@@ -140,6 +144,5 @@ func load_state(data: Dictionary) -> void:
 
 
 func _on_hurt_area_2d_hurt(direction: Vector2, damage: float) -> void:
-	print("hit")
 	fsm.current_state.take_damage(damage)
 	pass # Replace with function body.
