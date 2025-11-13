@@ -4,9 +4,7 @@ var waited=0
 func _enter() -> void:
 	runwaittimer=0.1
 	waited=0
-	#Change animation to run
 	obj.change_animation("run")
-	pass
 
 func _update(_delta: float):
 	if(obj.Effect["Stun"]<=0): 
@@ -28,9 +26,8 @@ func _update(_delta: float):
 	else:
 		change_state(fsm.states.idle)
 		obj.velocity.x=0
-	#If not on floor change to fall
 	if not obj.is_on_floor():
 		change_state(fsm.states.fall)
 	if obj.is_on_wall_only():
 		fsm.change_state(fsm.states.wallcling)
-	pass
+

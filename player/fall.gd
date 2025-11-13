@@ -1,9 +1,7 @@
 extends Player_State
 
 func _enter() -> void:
-	#Change animation to fall
 	obj.change_animation("fall")
-	pass
 
 func _update(_delta: float) -> void:
 	var is_moving=false
@@ -27,4 +25,4 @@ func _update(_delta: float) -> void:
 		obj.dashed_on_air=false
 	if obj.is_on_wall_only():
 		fsm.change_state(fsm.states.wallcling)
-	pass
+
