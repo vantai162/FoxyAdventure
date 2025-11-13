@@ -1,4 +1,4 @@
-[gd_scene load_steps=54 format=3 uid="uid://bs816w0pr8all"]
+[gd_scene load_steps=55 format=3 uid="uid://bs816w0pr8all"]
 
 [ext_resource type="Script" uid="uid://brl5yy4w7wich" path="res://player/foxy.gd" id="1_wod02"]
 [ext_resource type="Texture2D" uid="uid://m4di78taixns" path="res://assets/foxy/fox_hat/fox_defeat_1.png" id="2_70n8a"]
@@ -253,11 +253,11 @@ shape = SubResource("RectangleShape2D_8r8n2")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="Direction"]
 sprite_frames = SubResource("SpriteFrames_7xt5n")
-animation = &"dead"
+animation = &"idle"
 
 [node name="BladeAnimatedSprite2D" type="AnimatedSprite2D" parent="Direction"]
 sprite_frames = SubResource("SpriteFrames_2mww5")
-animation = &"run"
+animation = &"idle"
 
 [node name="HitArea2D" type="Area2D" parent="Direction"]
 collision_layer = 0

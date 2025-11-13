@@ -1,6 +1,6 @@
 extends StaticBody2D
 
-@export var break_delay: float = 1.0        # thời gian chờ trước khi vỡ
+@export var break_delay: float = 3.0        # thời gian chờ trước khi vỡ CHAM
 @export var shake_intensity: float = 4.0    # biên độ rung
 @export var shake_speed: float = 0.05       # tốc độ rung
 @export var disappear_time: float = 0.2     # thời gian biến mất (fade out)
