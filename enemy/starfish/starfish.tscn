@@ -113,7 +113,7 @@ animation = &"attack"
 
 [node name="FrontRayCast2D" type="RayCast2D" parent="Direction"]
 position = Vector2(9, -4)
-target_position = Vector2(14, 0)
+target_position = Vector2(18, 0)
 
 [node name="DownRayCast2D" type="RayCast2D" parent="Direction"]
 position = Vector2(14, -4)
@@ -160,3 +160,6 @@ script = ExtResource("17_10osh")
 
 [node name="Dead" type="Node" parent="States"]
 script = ExtResource("18_w8tu1")
+
+[node name="FloorRayCast2D" type="RayCast2D" parent="."]
+target_position = Vector2(0, 16)

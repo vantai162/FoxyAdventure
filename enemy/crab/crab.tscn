@@ -1,4 +1,4 @@
-[gd_scene load_steps=14 format=3 uid="uid://ufmc2gkfnv58"]
+[gd_scene load_steps=15 format=3 uid="uid://ufmc2gkfnv58"]
 
 [ext_resource type="Script" uid="uid://ck0wjguotjbcs" path="res://enemy/crab/crab.gd" id="1_wf64l"]
 [ext_resource type="Texture2D" uid="uid://boxmc12qq7a8a" path="res://assets/monsters/crab/crab_hurt_02.png" id="2_mdcuw"]
@@ -10,6 +10,7 @@
 [ext_resource type="Script" uid="uid://xiou1t8t4fyo" path="res://enemy/crab/run.gd" id="7_mekln"]
 [ext_resource type="Script" uid="uid://d3rue3v1os1bt" path="res://enemy/crab/hurt.gd" id="9_mdcuw"]
 [ext_resource type="Script" uid="uid://yuoupvpkqxoc" path="res://enemy/crab/dead.gd" id="10_0eync"]
+[ext_resource type="Script" uid="uid://csu2b21cwchqw" path="res://scripts/hurt_area_2d.gd" id="11_mdcuw"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_5qelw"]
 size = Vector2(35, 27)
@@ -76,13 +77,23 @@ target_position = Vector2(14, 0)
 position = Vector2(14, -4)
 target_position = Vector2(0, 36)
 
-[node name="HitArea2D" type="Area2D" parent="."]
+[node name="HurtArea2D" type="Area2D" parent="Direction"]
+collision_layer = 16
+collision_mask = 0
+script = ExtResource("11_mdcuw")
+metadata/_custom_type_script = "uid://csu2b21cwchqw"
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Direction/HurtArea2D"]
+position = Vector2(-0.5, -0.5)
+shape = SubResource("RectangleShape2D_5qelw")
+
+[node name="HitArea2D" type="Area2D" parent="Direction"]
 collision_layer = 0
 collision_mask = 4
 script = ExtResource("7_h3mse")
 metadata/_custom_type_script = "uid://xqvgljx4hk1s"
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="HitArea2D"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Direction/HitArea2D"]
 position = Vector2(-0.5, -0.5)
 shape = SubResource("RectangleShape2D_c1mj8")
 
@@ -96,3 +107,5 @@ script = ExtResource("9_mdcuw")
 
 [node name="Dead" type="Node" parent="States"]
 script = ExtResource("10_0eync")
+
+[connection signal="hurt" from="Direction/HurtArea2D" to="." method="_on_hurt_area_2d_hurt"]

@@ -194,15 +194,15 @@ position = Vector2(16.8281, -30.8823)
 scale = Vector2(0.0380249, 0.0344669)
 texture = ExtResource("36_ron27")
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-position = Vector2(-5, 4)
-shape = SubResource("CircleShape2D_w111s")
-
-[node name="HurtArea2d" parent="." instance=ExtResource("32_0lx5c")]
+[node name="HurtArea2D" parent="Direction" instance=ExtResource("32_0lx5c")]
 collision_layer = 16
 collision_mask = 0
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="HurtArea2d"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Direction/HurtArea2D"]
+position = Vector2(-5, 4)
+shape = SubResource("CircleShape2D_w111s")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 position = Vector2(-5, 4)
 shape = SubResource("CircleShape2D_w111s")
 
@@ -223,4 +223,4 @@ script = ExtResource("37_kkiwi")
 [node name="Dead" type="Node" parent="States"]
 script = ExtResource("38_s06mn")
 
-[connection signal="hurt" from="HurtArea2d" to="." method="_on_hurt_area_2d_hurt"]
+[connection signal="hurt" from="Direction/HurtArea2D" to="." method="_on_hurt_area_2d_hurt"]

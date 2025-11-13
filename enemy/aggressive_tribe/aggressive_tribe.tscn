@@ -1,14 +1,22 @@
-[gd_scene load_steps=24 format=3 uid="uid://b1a2s3d4f5g6h"]
+[gd_scene load_steps=33 format=3 uid="uid://b1a2s3d4f5g6h"]
 
 [ext_resource type="Script" uid="uid://b2fd24g8c861e" path="res://enemy/aggressive_tribe/aggressive_tribe.gd" id="1_tribe_gd"]
 [ext_resource type="PackedScene" uid="uid://ct1tqxgwkuvbe" path="res://scripts/hurt_area_2d.tscn" id="2_hurt_area"]
 [ext_resource type="PackedScene" uid="uid://d1h2w3e4r5t6y" path="res://projectiles/coconut.tscn" id="2_o5hof"]
 [ext_resource type="PackedScene" uid="uid://d2e3f4g5h6i7j" path="res://projectiles/slowing_coconut.tscn" id="3_aecud"]
 [ext_resource type="Script" uid="uid://dpcf5xwvvbw55" path="res://enemy/aggressive_tribe/states/run.gd" id="3_run_state"]
+[ext_resource type="Texture2D" uid="uid://b5gd3du4l8yd7" path="res://assets/monsters/tribe_temporary/Sprites/4-Enemy-Big Guy/12-Hit/1.png" id="4_divti"]
+[ext_resource type="Texture2D" uid="uid://be0sd1vgcgy4g" path="res://assets/monsters/tribe_temporary/Sprites/4-Enemy-Big Guy/13-Dead Hit/1.png" id="4_fkllq"]
 [ext_resource type="Texture2D" uid="uid://lrtt52fguxfv" path="res://assets/monsters/tribe_temporary/Sprites/4-Enemy-Big Guy/2-Run/1.png" id="4_run_1"]
+[ext_resource type="Texture2D" uid="uid://b86ql86s6gx3c" path="res://assets/monsters/tribe_temporary/Sprites/4-Enemy-Big Guy/12-Hit/2.png" id="5_0ng6r"]
+[ext_resource type="Texture2D" uid="uid://co3ydhean6cji" path="res://assets/monsters/tribe_temporary/Sprites/4-Enemy-Big Guy/13-Dead Hit/2.png" id="5_8f4c1"]
 [ext_resource type="Texture2D" uid="uid://cwswug1rr4a7s" path="res://assets/monsters/tribe_temporary/Sprites/4-Enemy-Big Guy/2-Run/2.png" id="5_run_2"]
+[ext_resource type="Texture2D" uid="uid://yedcbgxgub6d" path="res://assets/monsters/tribe_temporary/Sprites/4-Enemy-Big Guy/12-Hit/3.png" id="6_d2rkk"]
+[ext_resource type="Texture2D" uid="uid://dh83j4tufc4ee" path="res://assets/monsters/tribe_temporary/Sprites/4-Enemy-Big Guy/13-Dead Hit/3.png" id="6_rs4e5"]
 [ext_resource type="Texture2D" uid="uid://etiegitqokmt" path="res://assets/monsters/tribe_temporary/Sprites/4-Enemy-Big Guy/2-Run/3.png" id="6_run_3"]
+[ext_resource type="Texture2D" uid="uid://crbuyhw7ul5cu" path="res://assets/monsters/tribe_temporary/Sprites/4-Enemy-Big Guy/12-Hit/4.png" id="7_fkllq"]
 [ext_resource type="Texture2D" uid="uid://ctu8fjuvan4nu" path="res://assets/monsters/tribe_temporary/Sprites/4-Enemy-Big Guy/2-Run/4.png" id="7_run_4"]
+[ext_resource type="Texture2D" uid="uid://dswx6yxguqwrk" path="res://assets/monsters/tribe_temporary/Sprites/4-Enemy-Big Guy/12-Hit/5.png" id="8_8f4c1"]
 [ext_resource type="Texture2D" uid="uid://dtmlqclnvle2m" path="res://assets/monsters/tribe_temporary/Sprites/4-Enemy-Big Guy/2-Run/5.png" id="8_run_5"]
 [ext_resource type="Texture2D" uid="uid://3cohpwgofimt" path="res://assets/monsters/tribe_temporary/Sprites/4-Enemy-Big Guy/2-Run/6.png" id="9_run_6"]
 [ext_resource type="Texture2D" uid="uid://1h70v7lq8t38" path="res://assets/monsters/tribe_temporary/Sprites/4-Enemy-Big Guy/2-Run/7.png" id="10_run_7"]
@@ -19,6 +27,7 @@
 [ext_resource type="Texture2D" uid="uid://cm4namhqyxhj3" path="res://assets/monsters/tribe_temporary/Sprites/4-Enemy-Big Guy/2-Run/12.png" id="15_run_12"]
 [ext_resource type="Texture2D" uid="uid://vidwepsj4vpt" path="res://assets/monsters/tribe_temporary/Sprites/4-Enemy-Big Guy/2-Run/13.png" id="16_run_13"]
 [ext_resource type="Script" uid="uid://d5i3ol6vyi0b" path="res://enemy/aggressive_tribe/states/hurt.gd" id="17_73cdu"]
+[ext_resource type="Script" uid="uid://b7ewwnsf37mqg" path="res://enemy/aggressive_tribe/dead.gd" id="20_aecud"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_body"]
 radius = 29.0
@@ -27,22 +36,36 @@ radius = 29.0
 animations = [{
 "frames": [{
 "duration": 1.0,
-"texture": ExtResource("4_run_1")
+"texture": ExtResource("4_fkllq")
 }, {
 "duration": 1.0,
-"texture": ExtResource("5_run_2")
+"texture": ExtResource("5_8f4c1")
 }, {
 "duration": 1.0,
-"texture": ExtResource("6_run_3")
-}, {
-"duration": 1.0,
-"texture": ExtResource("7_run_4")
-}, {
-"duration": 1.0,
-"texture": ExtResource("8_run_5")
+"texture": ExtResource("6_rs4e5")
 }],
-"loop": true,
-"name": &"idle",
+"loop": false,
+"name": &"dead",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("4_divti")
+}, {
+"duration": 1.0,
+"texture": ExtResource("5_0ng6r")
+}, {
+"duration": 1.0,
+"texture": ExtResource("6_d2rkk")
+}, {
+"duration": 1.0,
+"texture": ExtResource("7_fkllq")
+}, {
+"duration": 1.0,
+"texture": ExtResource("8_8f4c1")
+}],
+"loop": false,
+"name": &"hurt",
 "speed": 5.0
 }, {
 "frames": [{
@@ -112,7 +135,7 @@ shape = SubResource("CircleShape2D_body")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="Direction"]
 sprite_frames = SubResource("SpriteFrames_tribe_run")
-animation = &"idle"
+animation = &"hurt"
 
 [node name="FrontRayCast2D" type="RayCast2D" parent="Direction"]
 position = Vector2(15, -10)
@@ -160,6 +183,9 @@ script = ExtResource("3_run_state")
 
 [node name="Hurt" type="Node" parent="States"]
 script = ExtResource("17_73cdu")
+
+[node name="Dead" type="Node" parent="States"]
+script = ExtResource("20_aecud")
 
 [connection signal="timeout" from="ThrowTimer" to="." method="_on_throw_timer_timeout"]
 [connection signal="timeout" from="AttackTimer" to="." method="_on_throw_timer_timeout"]
