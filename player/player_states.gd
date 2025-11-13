@@ -71,9 +71,7 @@ func control_dash() ->bool:
 	
 func take_damage(damage) -> void:
 	#Player take damage
-	
 	obj.take_damage(damage)
-	
 	#Player die if health is 0 and change to dead state
 	if obj.health <= 0:
 		change_state(fsm.states.dead)
