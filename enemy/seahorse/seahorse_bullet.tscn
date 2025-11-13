@@ -14,6 +14,8 @@ radius = 4.0
 collision_layer = 32
 mass = 0.001
 gravity_scale = 0.0
+contact_monitor = true
+max_contacts_reported = 2
 script = ExtResource("1_2brjt")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]

@@ -101,7 +101,7 @@ size = Vector2(28, 31)
 radius = 17.1172
 
 [node name="Starfish" type="CharacterBody2D"]
-collision_mask = 3
+collision_layer = 8
 script = ExtResource("1_chqr0")
 metadata/_custom_type_script = "uid://s4xx82espxdt"
 
@@ -121,6 +121,7 @@ target_position = Vector2(0, 8)
 
 [node name="HurtArea2D" type="Area2D" parent="Direction"]
 collision_layer = 16
+collision_mask = 0
 script = ExtResource("13_coy4h")
 metadata/_custom_type_script = "uid://csu2b21cwchqw"
 
@@ -129,6 +130,7 @@ position = Vector2(-2, -1)
 shape = SubResource("CircleShape2D_sl7t3")
 
 [node name="HitArea2D" type="Area2D" parent="Direction"]
+collision_layer = 0
 collision_mask = 4
 script = ExtResource("14_jmb5p")
 metadata/_custom_type_script = "uid://xqvgljx4hk1s"

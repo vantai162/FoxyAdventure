@@ -21,9 +21,9 @@ func _update(_delta: float):
 		else:
 			if control_dash():
 				return
-			if(runwaittimer>0&&obj.direction>0&&Input.is_action_just_pressed("right")):
+			if(runwaittimer>waited&&obj.direction>0&&Input.is_action_just_pressed("right")):
 				obj.current_speed=obj.runspeed
-			elif (runwaittimer>0&&obj.direction<0&&Input.is_action_just_pressed("left")):
+			elif (runwaittimer>waited&&obj.direction<0&&Input.is_action_just_pressed("left")):
 				obj.current_speed=obj.runspeed
 	else:
 		change_state(fsm.states.idle)
