@@ -237,6 +237,7 @@ size = Vector2(23, 30)
 
 [node name="Foxy" type="CharacterBody2D" groups=["player"]]
 collision_layer = 2
+collision_mask = 9
 script = ExtResource("1_wod02")
 blade_projectile_scene = ExtResource("3_blade")
 max_health = 4

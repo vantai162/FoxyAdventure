@@ -7,7 +7,7 @@
 
 [sub_resource type="PhysicsMaterial" id="PhysicsMaterial_bounce"]
 friction = 0.25
-bounce = 1.36
+bounce = 0.8
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_1"]
 radius = 8.0
@@ -16,13 +16,13 @@ radius = 8.0
 
 [node name="SlowingCoconut" type="RigidBody2D"]
 collision_layer = 32
-mass = 0.2
+mass = 0.5
 physics_material_override = SubResource("PhysicsMaterial_bounce")
 gravity_scale = 0.9
 continuous_cd = 1
 contact_monitor = true
 max_contacts_reported = 3
-linear_damp = 0.05
+linear_damp = 0.01
 angular_damp = 0.35
 script = ExtResource("1_slowing_coconut_gd")
 slow_puddle_scene = ExtResource("2_3w3nw")

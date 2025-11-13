@@ -13,5 +13,12 @@ func _on_player_not_in_sight() -> void:
 		fsm.change_state(fsm.states.run)
 		
 func _on_hurt_area_2d_hurt(direction: Vector2, damage: float) -> void:
-	_take_damage_from_dir(direction,damage)
+	# Turn to face attacker if hit from behind (immediately, before knockback)
+	# Direction points FROM attacker TO us, so negate to get attacker's position
+	if direction.x != 0:
+		var attacker_side = -sign(direction.x)
+		if attacker_side != self.direction:
+			change_direction(attacker_side)
+	
+	_take_damage_from_dir(direction, damage)
 	fsm.change_state(fsm.states.hurt)

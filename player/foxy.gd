@@ -53,6 +53,10 @@ func consume_blade() -> void:
 func return_blade() -> void:
 	if blade_count < max_blade_capacity:
 		blade_count += 1
+		
+		# Switch back to blade sprite when getting a blade back
+		if has_unlocked_blade and blade_count > 0:
+			set_animated_sprite($Direction/BladeAnimatedSprite2D)
 
 func increase_blade_capacity() -> void:
 	max_blade_capacity = min(max_blade_capacity + 1, 3)
@@ -70,6 +74,10 @@ func throw_blade_projectile() -> void:
 	blade.launch(direction, self)
 	
 	consume_blade()
+	
+	# Switch back to unarmed sprite when out of blades
+	if blade_count == 0:
+		set_animated_sprite($Direction/AnimatedSprite2D)
 
 func _ready() -> void:
 	super._ready()

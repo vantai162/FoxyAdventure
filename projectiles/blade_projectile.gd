@@ -33,30 +33,44 @@ var damage: int = 1
 
 @export_group("Grounded")
 @export var pickup_delay_seconds: float = 6.5
+@export var grounded_glow_color: Color = Color(1.5, 1.3, 0.5, 1.0)  ## Highlight color for grounded blade (bright yellow)
+@export var glow_blink_speed: float = 4.0  ## Speed of blink effect
+@export var glow_off_brightness: float = 1.0  ## Brightness when "off" (normal sprite)
+@export var glow_on_brightness: float = 2.5  ## Brightness when "on" (super bright)
+
+@export_group("Magnetism")
+@export var magnet_enabled: bool = true
+@export var magnet_range_grounded: float = 120.0  ## Pull range when blade is on ground
+@export var magnet_range_airborne: float = 80.0  ## Pull range when blade is airborne (bouncing)
+@export var magnet_strength_grounded: float = 800.0  ## Pull force when on ground
+@export var magnet_strength_airborne: float = 400.0  ## Pull force when airborne
+@export var intent_threshold: float = 50.0  ## Minimum player speed towards blade to trigger magnetism
 
 # Internal state
 var distance_traveled: float = 0.0
 var thrower: Player = null
-var ground_timer: Timer = null
 var throw_direction: int = 1
-var hit_area: Area2D = null
 var trail_spawn_timer: float = 0.0
+var glow_time: float = 0.0  # For pulsing glow effect
+
+@onready var ground_timer: Timer = $GroundTimer
+@onready var hit_area: Area2D = $HitArea2D
+@onready var spinning_sprite: Sprite2D = $Sprite2D
+@onready var landed_sprite: Sprite2D = $Sprite2D2
 
 func _ready() -> void:
-	collision_layer = 0
-	collision_mask = 1 + 2
-	gravity_space_override = Area2D.SPACE_OVERRIDE_DISABLED
-	
 	body_entered.connect(_on_body_entered)
 	area_entered.connect(_on_area_entered)
 	
-	ground_timer = Timer.new()
-	add_child(ground_timer)
-	ground_timer.wait_time = pickup_delay_seconds
-	ground_timer.one_shot = true
+	# Only set if not already configured in editor
+	if ground_timer.wait_time == 0:
+		ground_timer.wait_time = pickup_delay_seconds
+	if not ground_timer.one_shot:
+		ground_timer.one_shot = true
 	ground_timer.timeout.connect(_on_ground_timer_timeout)
 	
-	hit_area = get_node_or_null("HitArea2D")
+	if hit_area.damage == 0:
+		hit_area.damage = damage
 
 func launch(direction: int, from_player: Player) -> void:
 	thrower = from_player
@@ -72,7 +86,10 @@ func _physics_process(delta: float) -> void:
 			_update_flying(delta)
 		State.BOUNCED:
 			_update_bounced(delta)
+			_apply_magnetism(delta, magnet_range_airborne, magnet_strength_airborne)
 		State.GROUNDED:
+			_update_grounded_visual(delta)
+			_apply_magnetism(delta, magnet_range_grounded, magnet_strength_grounded)
 			return
 	
 	if trail_enabled:
@@ -86,7 +103,7 @@ func _update_flying(delta: float) -> void:
 		return
 	
 	position += velocity * delta
-	rotation += rotation_speed_flying * delta
+	rotation += rotation_speed_flying * delta * throw_direction
 
 func _update_bounced(delta: float) -> void:
 	var gravity = ProjectSettings.get_setting("physics/2d/default_gravity")
@@ -121,7 +138,7 @@ func _update_bounced(delta: float) -> void:
 			return
 	
 	position += motion
-	rotation += rotation_speed_bouncing * delta
+	rotation += rotation_speed_bouncing * delta * throw_direction
 
 func _update_trail(delta: float) -> void:
 	var speed = velocity.length()
@@ -155,6 +172,54 @@ func _spawn_trail() -> void:
 	tween.tween_property(trail, "modulate:a", 0.0, trail_ghost_fade_time)
 	tween.tween_callback(trail.queue_free)
 
+func _apply_magnetism(delta: float, pull_range: float, pull_strength: float) -> void:
+	if not magnet_enabled or not thrower:
+		return
+	
+	var distance_to_player = global_position.distance_to(thrower.global_position)
+	
+	# Out of range, no magnetism
+	if distance_to_player > pull_range:
+		return
+	
+	# Check player intent: is player moving towards the blade?
+	var direction_to_blade = (global_position - thrower.global_position).normalized()
+	var player_velocity_towards_blade = thrower.velocity.dot(direction_to_blade)
+	
+	# Player must be moving towards blade at minimum speed to trigger magnetism
+	if player_velocity_towards_blade < intent_threshold:
+		return
+	
+	# Apply magnetic pull towards player
+	var pull_direction = (thrower.global_position - global_position).normalized()
+	var distance_factor = 1.0 - (distance_to_player / pull_range)  # Stronger when closer
+	var pull_force = pull_direction * pull_strength * distance_factor * delta
+	
+	if current_state == State.GROUNDED:
+		# Grounded blade pulls itself towards player
+		global_position += pull_force
+	elif current_state == State.BOUNCED:
+		# Airborne blade adjusts velocity towards player
+		velocity += pull_force * 60.0  # Scale up for velocity-based movement
+
+func _update_grounded_visual(delta: float) -> void:
+	if not landed_sprite.visible:
+		return
+	
+	# Blink effect with sharp on/off transitions
+	glow_time += delta * glow_blink_speed
+	var blink_cycle = fmod(glow_time, 1.0)  # 0 to 1 repeating cycle
+	
+	# Sharp square wave blink (50% on, 50% off)
+	var brightness: float
+	if blink_cycle < 0.5:
+		brightness = glow_on_brightness  # BRIGHT
+	else:
+		brightness = glow_off_brightness  # Normal
+	
+	# Apply glow color with blinking brightness
+	landed_sprite.modulate = grounded_glow_color * brightness
+
 func _transition_to_arc_down() -> void:
 	current_state = State.BOUNCED
 	velocity.x *= speed_after_max_distance
@@ -173,38 +238,30 @@ func _transition_to_ricochet(_impact_normal: Vector2) -> void:
 func _transition_to_grounded() -> void:
 	current_state = State.GROUNDED
 	velocity = Vector2.ZERO
-	rotation = 0
-	collision_mask = 2
+	rotation = 0  # Orient blade upright
+	collision_mask = 2  # Only detect player for pickup
 	ground_timer.start()
 	
-	if hit_area:
-		hit_area.set_deferred("monitoring", false)
+	hit_area.monitoring = false
+	spinning_sprite.visible = false
+	landed_sprite.visible = true
+	glow_time = 0.0  # Reset glow animation
 
 func _on_body_entered(body: Node) -> void:
+	# Pickup by player
 	if body == thrower:
 		_pickup_by_player()
 		return
 	
+	# Ricochet off ANY solid body during flight (walls, ground, enemies, shields)
 	if current_state == State.FLYING:
-		if body is EnemyCharacter and body.has_method("take_damage"):
-			body.take_damage(damage)
-		
-		if body is TileMapLayer or body is StaticBody2D or body is CharacterBody2D:
-			_transition_to_ricochet(Vector2.ZERO)
-	
-	elif current_state == State.BOUNCED:
-		if body is EnemyCharacter and body.has_method("take_damage"):
-			body.take_damage(damage)
+		_transition_to_ricochet(Vector2.ZERO)
 
 func _on_area_entered(area: Area2D) -> void:
+	# Pickup by player's HurtArea or other areas
 	if area.get_parent() == thrower:
 		_pickup_by_player()
 		return
-	
-	if area.owner is EnemyCharacter and area.owner.has_method("take_damage"):
-		area.owner.take_damage(damage)
-		if current_state == State.FLYING:
-			_transition_to_ricochet(Vector2.ZERO)
 
 func _pickup_by_player() -> void:
 	if thrower and thrower.has_method("return_blade"):

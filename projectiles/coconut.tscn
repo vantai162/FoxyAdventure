@@ -21,7 +21,7 @@ gravity_scale = 0.9
 continuous_cd = 1
 contact_monitor = true
 max_contacts_reported = 3
-linear_damp = 0.05
+linear_damp = 0.01
 angular_damp = 0.35
 script = ExtResource("1_coconut_gd")
 

@@ -6,9 +6,9 @@ class_name ShieldTribe
 @export_group("Combat")
 @export var spear_damage: int = 1
 @export var attack_interval: float = 2.0
-@export var spear_thrust_distance: float = 30.0  # How far the spear extends
-@export var spear_thrust_out_time: float = 0.2  # Time to thrust out
-@export var spear_hold_time: float = 0.3  # Time to hold extended (hit detection active)
+@export var spear_thrust_distance: float = 30.0  ## How far the spear extends
+@export var spear_thrust_out_time: float = 0.2  ## Time to thrust out
+@export var spear_hold_time: float = 0.6  ## Time to hold extended (hit detection active)
 
 # Calculated total attack duration (read-only, computed from thrust timings)
 var attack_animation_duration: float:
@@ -17,6 +17,7 @@ var attack_animation_duration: float:
 
 @export_group("Defense")
 @export var jump_react_range: float = 60.0
+@export var jump_react_velocity_threshold: float = -100.0  ## Minimum upward velocity to trigger block jump
 @export var jump_cooldown: float = 1.0
 @export var sight_range: float = 85.0
 @export var turn_delay: float = 0.35
@@ -41,12 +42,21 @@ func _ready() -> void:
 
 func _on_hurt_area_2d_hurt(attack_direction: Vector2, damage: float) -> void:
 	if fsm.current_state.name == "defend" or fsm.current_state.name == "attack":
-		var attack_side = sign(attack_direction.x)
-		if attack_side == 0:
-			attack_side = 1
+		# Direction points FROM attacker TO us
+		var attacker_side = -sign(attack_direction.x)
+		if attacker_side == 0:
+			attacker_side = 1
 		
-		if attack_side == direction:
+		# If shield is blocking the attack, ignore damage
+		if attacker_side == direction:
 			return
+	
+	# Turn to face attacker if hit from behind (immediately, before knockback)
+	# Direction points FROM attacker TO us, so negate to get attacker's position
+	if attack_direction.x != 0:
+		var attacker_side = -sign(attack_direction.x)
+		if attacker_side != direction:
+			change_direction(attacker_side)
 	
 	take_damage(damage)
 	if health > 0:
@@ -87,16 +97,19 @@ func perform_spear_attack() -> void:
 	spear.show()
 	spear_sprite.play("attack")
 	
-	var spear_base_pos = Vector2(50, 0)
-	spear.position = spear_base_pos
+	# Get the spear's initial position from the scene (not hardcoded!)
+	var spear_start_pos = spear.position
+	
+	# Enable hit detection IMMEDIATELY when spear starts moving
+	spear_hit_area.monitoring = true
 	
 	var tween = create_tween()
-	tween.tween_property(spear, "position", spear_base_pos + Vector2(spear_thrust_distance, 0), spear_thrust_out_time)
-	tween.tween_callback(func(): spear_hit_area.monitoring = true)
+	tween.tween_property(spear, "position", spear_start_pos + Vector2(spear_thrust_distance, 0), spear_thrust_out_time)
 	tween.tween_interval(spear_hold_time)
 	tween.tween_callback(func(): 
 		spear_hit_area.monitoring = false
 		spear.hide()
+		spear.position = spear_start_pos  # Reset to start position
 	)
 
 func show_shield() -> void:
