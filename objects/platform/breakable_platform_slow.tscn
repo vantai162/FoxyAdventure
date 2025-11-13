@@ -9,7 +9,7 @@ size = Vector2(41, 7.5)
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_78hnd"]
 size = Vector2(41, 2)
 
-[node name="BreakablePlatform" type="StaticBody2D"]
+[node name="BreakablePlatformSlow" type="StaticBody2D"]
 position = Vector2(38, 19)
 script = ExtResource("1_bbjf5")
 

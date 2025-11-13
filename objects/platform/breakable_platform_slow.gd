@@ -43,7 +43,6 @@ func _on_timer_timeout():
 	break_platform()
 
 func break_platform():
-	print("vkl")
 	collision.disabled = true
 	detector.monitoring = false
 	
@@ -61,7 +60,6 @@ func break_platform():
 	respawn_platform()
 
 func respawn_platform():
-	print("alo")
 	visible = true
 	collision.disabled = false
 	detector.monitoring = true
