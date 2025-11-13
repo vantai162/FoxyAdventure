@@ -1,15 +1,26 @@
 extends EnemyState
-@export var follow_move: float = 300.0
+@export var follow_move: float = 250.0
 func _enter() -> void:
 	obj.change_animation("run")
 
 func _update(delta):
-	if not  obj.is_player_in_sight():
-		obj.velocity.x = obj.direction * obj.movement_speed
-	else:
-		obj.velocity.x = obj.direction * follow_move
-	if _should_turn_around():
+	
+	if obj.found_player == null:
+		print("het")
+		change_state(fsm.states.sleep)
+		return
+
+	var player_pos = obj.found_player.global_position
+
+	# Nếu enemy đang quay mặt về phía player thì quay lại
+	if sign(player_pos.x - obj.global_position.x) != obj.direction:
 		obj.turn_around()
+
+	# Chạy trốn ngược hướng player
+	obj.velocity.x = obj.direction * follow_move
+	
+	
+	
 
 func _should_turn_around() -> bool:
 	if obj.is_touch_wall():
