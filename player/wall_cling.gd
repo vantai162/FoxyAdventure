@@ -3,6 +3,7 @@ extends Player_State
 func _enter() -> void:
 	obj.change_animation("idle")
 	obj.jump_count=0
+	obj.dashed_on_air=false
 	pass
 
 func _update(_delta: float):
