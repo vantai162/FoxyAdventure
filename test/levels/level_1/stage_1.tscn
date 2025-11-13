@@ -1,4 +1,4 @@
-[gd_scene load_steps=14 format=4 uid="uid://fm22mgp2q845"]
+[gd_scene load_steps=18 format=4 uid="uid://fm22mgp2q845"]
 
 [ext_resource type="TileSet" uid="uid://xt3l8n15jbfm" path="res://assets/island/tileset.tres" id="1_33rtp"]
 [ext_resource type="TileSet" uid="uid://0yf5cmwk6u1i" path="res://assets/island/terrain/ice_tile_set.tres" id="2_1603u"]
