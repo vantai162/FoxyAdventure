@@ -1,7 +1,7 @@
 [gd_scene load_steps=5 format=3 uid="uid://qdde77yqam1l"]
 
 [ext_resource type="Script" uid="uid://b4462lq5a4l4o" path="res://objects/platform/breakable_platform.gd" id="1_2wltc"]
-[ext_resource type="Texture2D" uid="uid://d3b5gpgx21c1s" path="res://assets/platform/moving_platform.png" id="2_2wltc"]
+[ext_resource type="Texture2D" uid="uid://d3b5gpgx21c1s" path="res://assets/objects/platform/moving_platform.png" id="2_2wltc"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_d2rl0"]
 size = Vector2(41, 7.5)

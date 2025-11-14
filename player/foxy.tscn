@@ -1,4 +1,4 @@
-[gd_scene load_steps=54 format=3 uid="uid://bs816w0pr8all"]
+[gd_scene load_steps=53 format=3 uid="uid://bs816w0pr8all"]
 
 [ext_resource type="Script" uid="uid://brl5yy4w7wich" path="res://player/foxy.gd" id="1_wod02"]
 [ext_resource type="Texture2D" uid="uid://m4di78taixns" path="res://assets/foxy/fox_hat/fox_defeat_1.png" id="2_70n8a"]
@@ -40,9 +40,9 @@
 [ext_resource type="Texture2D" uid="uid://cr8a68nw3dww1" path="res://assets/foxy/fox_hat_blade/fox_run_2.png" id="28_rsc2w"]
 [ext_resource type="Texture2D" uid="uid://d0jfmp24jrfcy" path="res://assets/foxy/fox_hat_blade/fox_run_3.png" id="29_333wc"]
 [ext_resource type="Texture2D" uid="uid://ce35c6mn7dcok" path="res://assets/foxy/fox_hat_blade/fox_run_4.png" id="30_ajtvx"]
-[ext_resource type="Script" uid="uid://csu2b21cwchqw" path="res://scripts/hurt_area_2d.gd" id="32_camrd"]
 [ext_resource type="Script" uid="uid://0146uckcta6p" path="res://player/dead.gd" id="35_veeyl"]
 [ext_resource type="Script" uid="uid://devihpb45ajdr" path="res://player/hurt.gd" id="36_reoh7"]
+[ext_resource type="PackedScene" uid="uid://ct1tqxgwkuvbe" path="res://scripts/hurt_area_2d.tscn" id="37_333wc"]
 [ext_resource type="Script" uid="uid://dp045kw80ykvv" path="res://player/dash.gd" id="37_reoh7"]
 [ext_resource type="Script" uid="uid://ntfj07p0fh86" path="res://player/throw.gd" id="39_6yfce"]
 [ext_resource type="Script" uid="uid://bhv3i7yhtjluc" path="res://player/attack.gd" id="39_kvcfx"]
@@ -228,9 +228,6 @@ animations = [{
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_34yrj"]
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_pm71f"]
-size = Vector2(20, 29)
-
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_u75vx"]
 size = Vector2(23, 30)
 
@@ -268,14 +265,13 @@ collision_mask = 16
 position = Vector2(21, 0)
 shape = SubResource("CapsuleShape2D_34yrj")
 
-[node name="HurtArea2D" type="Area2D" parent="Direction"]
+[node name="HurtArea2d" parent="Direction" instance=ExtResource("37_333wc")]
 collision_layer = 4
 collision_mask = 0
-script = ExtResource("32_camrd")
-metadata/_custom_type_script = "uid://csu2b21cwchqw"
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Direction/HurtArea2D"]
-shape = SubResource("RectangleShape2D_pm71f")
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Direction/HurtArea2d"]
+position = Vector2(21, 0)
+shape = SubResource("CapsuleShape2D_34yrj")
 
 [node name="States" type="Node" parent="."]
 
@@ -320,4 +316,4 @@ shape = SubResource("RectangleShape2D_u75vx")
 [node name="FloorRayCast2D" type="RayCast2D" parent="."]
 target_position = Vector2(-1, 16)
 
-[connection signal="hurt" from="Direction/HurtArea2D" to="." method="_on_hurt_area_2d_hurt"]
+[connection signal="hurt" from="Direction/HurtArea2d" to="." method="_on_hurt_area_2d_hurt"]

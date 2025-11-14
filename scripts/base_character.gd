@@ -121,4 +121,7 @@ func _is_on_ice():
 	if not collider: return false
 	
 	return collider.name == "IceBlock"
+
+func spring():
+	velocity.y = -400
 	
