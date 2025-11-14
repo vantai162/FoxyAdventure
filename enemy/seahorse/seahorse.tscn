@@ -1,8 +1,7 @@
-[gd_scene load_steps=20 format=3 uid="uid://bdkss15p4gbma"]
+[gd_scene load_steps=19 format=3 uid="uid://bdkss15p4gbma"]
 
 [ext_resource type="Script" uid="uid://bjinydvnjpo0x" path="res://enemy/seahorse/seahorse_state.gd" id="1_ao4iv"]
 [ext_resource type="Texture2D" uid="uid://ch0hp25m7evv1" path="res://assets/monsters/barrel/barrel_hurt_01.png" id="2_5djrk"]
-[ext_resource type="Script" uid="uid://csu2b21cwchqw" path="res://scripts/hurt_area_2d.gd" id="2_r4ccg"]
 [ext_resource type="Texture2D" uid="uid://ckjp4ccybo5i6" path="res://assets/monsters/barrel/barrel_hurt_02.png" id="3_r4ccg"]
 [ext_resource type="Texture2D" uid="uid://dfnk2rp7cs1vg" path="res://assets/monsters/barrel/barrel_01.png" id="4_nles5"]
 [ext_resource type="Texture2D" uid="uid://bwg8hpav3cy74" path="res://assets/monsters/barrel/barrel_02.png" id="5_htoel"]
@@ -14,14 +13,12 @@
 [ext_resource type="Script" uid="uid://ifyit1vg4ktq" path="res://scripts/node2d_factory.gd" id="11_jkhqg"]
 [ext_resource type="PackedScene" uid="uid://bmabvmpusba5l" path="res://enemy/seahorse/seahorse_bullet.tscn" id="12_sk3dx"]
 [ext_resource type="Script" uid="uid://dmcx88tdtqlvo" path="res://enemy/seahorse/states/idle.gd" id="13_gmpqy"]
+[ext_resource type="PackedScene" uid="uid://ct1tqxgwkuvbe" path="res://scripts/hurt_area_2d.tscn" id="13_r4ccg"]
 [ext_resource type="Script" uid="uid://dbl2s02x2ct5o" path="res://enemy/seahorse/states/shoot.gd" id="14_u53s0"]
 [ext_resource type="Script" uid="uid://budybf78cqjcn" path="res://enemy/seahorse/hurt.gd" id="15_5djrk"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_pdnpt"]
 size = Vector2(20, 22)
-
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_nles5"]
-size = Vector2(22, 22)
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_vpg65"]
 resource_local_to_scene = true
@@ -80,16 +77,6 @@ shape = SubResource("RectangleShape2D_pdnpt")
 
 [node name="Direction" type="Node2D" parent="."]
 
-[node name="HurtArea2D" type="Area2D" parent="Direction"]
-collision_layer = 16
-collision_mask = 0
-script = ExtResource("2_r4ccg")
-metadata/_custom_type_script = "uid://csu2b21cwchqw"
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Direction/HurtArea2D"]
-position = Vector2(0, 6)
-shape = SubResource("RectangleShape2D_nles5")
-
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="Direction"]
 sprite_frames = SubResource("SpriteFrames_vpg65")
 animation = &"hurt"
@@ -99,6 +86,14 @@ position = Vector2(10, 10)
 script = ExtResource("11_jkhqg")
 product_packed_scene = ExtResource("12_sk3dx")
 target_container_name = &"Bullets"
+
+[node name="HurtArea2d" parent="Direction" instance=ExtResource("13_r4ccg")]
+collision_layer = 16
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Direction/HurtArea2d"]
+position = Vector2(0, 6)
+shape = SubResource("RectangleShape2D_pdnpt")
 
 [node name="States" type="Node" parent="."]
 
@@ -111,4 +106,4 @@ script = ExtResource("14_u53s0")
 [node name="Hurt" type="Node" parent="States"]
 script = ExtResource("15_5djrk")
 
-[connection signal="hurt" from="Direction/HurtArea2D" to="." method="_on_hurt_area_2d_hurt"]
+[connection signal="hurt" from="Direction/HurtArea2d" to="." method="_on_hurt_area_2d_hurt"]

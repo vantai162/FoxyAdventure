@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://cgvyk7565cmvr"
-path="res://.godot/imported/breakable_platform.png-569d6e6dfb405777ea7f362f58a076e9.ctex"
+path="res://.godot/imported/breakable_platform.png-93a100ad2aefd2b326ee303814639f88.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/platform/breakable_platform.png"
-dest_files=["res://.godot/imported/breakable_platform.png-569d6e6dfb405777ea7f362f58a076e9.ctex"]
+source_file="res://assets/objects/platform/breakable_platform.png"
+dest_files=["res://.godot/imported/breakable_platform.png-93a100ad2aefd2b326ee303814639f88.ctex"]
 
 [params]
 
