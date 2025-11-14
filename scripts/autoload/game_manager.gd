@@ -16,6 +16,7 @@ var is_respawning_from_checkpoint: bool = false
 var _pending_player_spawn_data: Dictionary = {}
 var player_spawn_requested: bool = false
 var player_spawn_data: Dictionary = {}
+var paused=false
 
 func _ready() -> void:
 	load_checkpoint_data()
@@ -194,3 +195,11 @@ func request_player_spawn() -> void:
 	spawn_player(player_spawn_data)
 	player_spawn_requested = false
 	player_spawn_data.clear()
+
+func pause_game():
+		Engine.time_scale=0
+		paused=true
+		
+func unpause():
+		Engine.time_scale=1
+		paused=false

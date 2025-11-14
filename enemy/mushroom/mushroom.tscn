@@ -12,8 +12,8 @@
 [ext_resource type="Texture2D" uid="uid://b251p3vy88f5o" path="res://assets/monsters/mushroom/sleep.png" id="8_wkm5k"]
 [ext_resource type="Texture2D" uid="uid://bgnbj6qy3a2ow" path="res://assets/monsters/tribe_temporary/problem.png" id="9_of5h1"]
 [ext_resource type="PackedScene" uid="uid://nr5uby15sfha" path="res://enemy/mushroom/toxic gas.tscn" id="11_wkm5k"]
-[ext_resource type="Script" uid="uid://cavpnqu3khnvu" path="res://enemy/mushroom/sleep.gd" id="12_nf052"]
-[ext_resource type="Script" uid="uid://6d2q0k0lymd6" path="res://enemy/mushroom/surprise.gd" id="14_vwwmg"]
+[ext_resource type="Script" path="res://enemy/mushroom/sleep.gd" id="12_nf052"]
+[ext_resource type="Script" path="res://enemy/mushroom/surprise.gd" id="14_vwwmg"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_vwwmg"]
 size = Vector2(27, 24)

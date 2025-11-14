@@ -1,4 +1,4 @@
-[gd_scene load_steps=54 format=3 uid="uid://bs816w0pr8all"]
+[gd_scene load_steps=55 format=3 uid="uid://bs816w0pr8all"]
 
 [ext_resource type="Script" uid="uid://brl5yy4w7wich" path="res://player/foxy.gd" id="1_wod02"]
 [ext_resource type="Texture2D" uid="uid://m4di78taixns" path="res://assets/foxy/fox_hat/fox_defeat_1.png" id="2_70n8a"]
@@ -40,6 +40,7 @@
 [ext_resource type="Texture2D" uid="uid://cr8a68nw3dww1" path="res://assets/foxy/fox_hat_blade/fox_run_2.png" id="28_rsc2w"]
 [ext_resource type="Texture2D" uid="uid://d0jfmp24jrfcy" path="res://assets/foxy/fox_hat_blade/fox_run_3.png" id="29_333wc"]
 [ext_resource type="Texture2D" uid="uid://ce35c6mn7dcok" path="res://assets/foxy/fox_hat_blade/fox_run_4.png" id="30_ajtvx"]
+[ext_resource type="Script" uid="uid://xqvgljx4hk1s" path="res://scripts/hit_area_2d.gd" id="31_ys6s8"]
 [ext_resource type="Script" uid="uid://csu2b21cwchqw" path="res://scripts/hurt_area_2d.gd" id="32_camrd"]
 [ext_resource type="Script" uid="uid://0146uckcta6p" path="res://player/dead.gd" id="35_veeyl"]
 [ext_resource type="Script" uid="uid://devihpb45ajdr" path="res://player/hurt.gd" id="36_reoh7"]
@@ -236,7 +237,6 @@ size = Vector2(23, 30)
 
 [node name="Foxy" type="CharacterBody2D"]
 collision_layer = 2
-collision_mask = 9
 script = ExtResource("1_wod02")
 blade_projectile_scene = ExtResource("3_blade")
 max_health = 4
@@ -261,8 +261,10 @@ sprite_frames = SubResource("SpriteFrames_2mww5")
 animation = &"idle"
 
 [node name="HitArea2D" type="Area2D" parent="Direction" groups=["player_attack"]]
-collision_layer = 64
+collision_layer = 0
 collision_mask = 16
+script = ExtResource("31_ys6s8")
+metadata/_custom_type_script = "uid://xqvgljx4hk1s"
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Direction/HitArea2D"]
 position = Vector2(21, 0)

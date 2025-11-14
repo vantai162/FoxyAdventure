@@ -28,7 +28,11 @@ enum attack_direction {
 @export var InitCoolDown = {
 	"Dash": 2
 }
-
+@export var KeySkillUnlocked={
+	"Dash":false,
+	"HasCollectedBlade":false,
+	"DoubleJump":false
+}
 var attack_cooldown: int = 1
 var jump_count: int = 0
 var dashed_on_air: bool = false
