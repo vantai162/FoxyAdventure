@@ -7,7 +7,7 @@ var current_checkpoint_id: String = ""
 var checkpoint_data: Dictionary = {}
 @onready var fade_rect = $FadeLayer/ColorRect
 @export var player_scene: PackedScene
-
+var key_manager:KeyManager=KeyManager.new()
 var current_stage = ""
 var player: Player = null
 var arriving_door_name: String = "" # New variable to signal arrival animation
@@ -20,7 +20,7 @@ var paused=false
 
 func _ready() -> void:
 	load_checkpoint_data()
-	
+	key_manager._get_key_dictionary_from_input_map()
 	current_checkpoint_id = ""
 	checkpoint_data.clear()
 	
@@ -203,3 +203,7 @@ func pause_game():
 func unpause():
 		Engine.time_scale=1
 		paused=false
+#handling key
+func _input(event: InputEvent) -> void:
+	if(key_manager.is_listening):
+		key_manager.handle_input(event)

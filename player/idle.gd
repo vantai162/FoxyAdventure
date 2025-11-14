@@ -15,5 +15,7 @@ func _update(delta: float) -> void:
 	if(Input.is_action_just_pressed("kill")):
 		if(obj.health > 0):
 			change_state(fsm.states.hurt)
+			take_damage(1)
+			print(obj.health)
 		if(obj.health < 1):
 			change_state(fsm.states.dead)
