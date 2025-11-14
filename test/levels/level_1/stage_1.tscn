@@ -1,4 +1,4 @@
-[gd_scene load_steps=19 format=4 uid="uid://fm22mgp2q845"]
+[gd_scene load_steps=22 format=4 uid="uid://fm22mgp2q845"]
 
 [ext_resource type="TileSet" uid="uid://xt3l8n15jbfm" path="res://assets/island/tileset.tres" id="1_33rtp"]
 [ext_resource type="Script" uid="uid://dpabmmeqo234t" path="res://test/levels/level_1/stage_1.gd" id="1_kwr08"]
@@ -19,6 +19,8 @@
 [ext_resource type="PackedScene" uid="uid://dvjr8elgnjvcw" path="res://objects/platform/circular_moving_platform.tscn" id="16_lq01q"]
 [ext_resource type="PackedScene" uid="uid://dav8b7a6d5e4f" path="res://enemy/shield_tribe/shield_tribe.tscn" id="17_lq01q"]
 [ext_resource type="PackedScene" uid="uid://cc07u3qfgccmq" path="res://objects/spring/spring.tscn" id="18_kwr08"]
+[ext_resource type="PackedScene" uid="uid://mikmney07ycb" path="res://objects/platform/one_way_platform.tscn" id="20_kvxrx"]
+[ext_resource type="PackedScene" uid="uid://b336fup0h7gp5" path="res://objects/collapsable_wall/collapsable_wall.tscn" id="21_463cb"]
 
 [node name="Stage" type="Node2D"]
 script = ExtResource("1_kwr08")
@@ -69,17 +71,23 @@ position = Vector2(-96, 89)
 [node name="BreakablePlatformSlow" parent="." instance=ExtResource("14_37uqy")]
 position = Vector2(-160, 89)
 
-[node name="HorizontalMovingPlatform" parent="." instance=ExtResource("15_1p8jb")]
+[node name="HorizontalMovingPlatform" parent="." groups=["one_way_platform"] instance=ExtResource("15_1p8jb")]
 position = Vector2(-226, 43)
 
-[node name="VerticalMovingPlatform" parent="." instance=ExtResource("16_4x5ew")]
+[node name="VerticalMovingPlatform" parent="." groups=["one_way_platform"] instance=ExtResource("16_4x5ew")]
 position = Vector2(-269, -118)
 
-[node name="CircularMovingPlatform" parent="." instance=ExtResource("16_lq01q")]
+[node name="CircularMovingPlatform" parent="." groups=["one_way_platform"] instance=ExtResource("16_lq01q")]
 position = Vector2(-413, -2)
 
 [node name="ShieldTribe" parent="." groups=["enemy"] instance=ExtResource("17_lq01q")]
 position = Vector2(1095, -78)
 
 [node name="Spring" parent="." instance=ExtResource("18_kwr08")]
-position = Vector2(86, -129)
+position = Vector2(-40, -159)
+
+[node name="OneWayPlatform" parent="." instance=ExtResource("20_kvxrx")]
+position = Vector2(19, 14)
+
+[node name="CollapsableWall" parent="." instance=ExtResource("21_463cb")]
+position = Vector2(333, -1)

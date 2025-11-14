@@ -87,11 +87,11 @@ script = ExtResource("11_jkhqg")
 product_packed_scene = ExtResource("12_sk3dx")
 target_container_name = &"Bullets"
 
-[node name="HurtArea2d" parent="Direction" instance=ExtResource("13_r4ccg")]
+[node name="HurtArea2D" parent="Direction" instance=ExtResource("13_r4ccg")]
 collision_layer = 16
 collision_mask = 0
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Direction/HurtArea2d"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Direction/HurtArea2D"]
 position = Vector2(0, 6)
 shape = SubResource("RectangleShape2D_pdnpt")
 
@@ -106,4 +106,4 @@ script = ExtResource("14_u53s0")
 [node name="Hurt" type="Node" parent="States"]
 script = ExtResource("15_5djrk")
 
-[connection signal="hurt" from="Direction/HurtArea2d" to="." method="_on_hurt_area_2d_hurt"]
+[connection signal="hurt" from="Direction/HurtArea2D" to="." method="_on_hurt_area_2d_hurt"]

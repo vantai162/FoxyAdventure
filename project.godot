@@ -30,6 +30,7 @@ ground=""
 player=""
 player_attack=""
 enemy=""
+one_way_platform=""
 
 [input]
 

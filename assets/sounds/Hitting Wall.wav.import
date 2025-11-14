@@ -3,12 +3,12 @@
 importer="wav"
 type="AudioStreamWAV"
 uid="uid://6jhhcbxb10mi"
-path="res://.godot/imported/Hitting Wall.wav-f5ba59cdc72ae93816c88c8439d2400b.sample"
+path="res://.godot/imported/Hitting Wall.wav-befb511dc2cc0111563202a557344dc7.sample"
 
 [deps]
 
-source_file="res://sounds/wall-break/Hitting Wall.wav"
-dest_files=["res://.godot/imported/Hitting Wall.wav-f5ba59cdc72ae93816c88c8439d2400b.sample"]
+source_file="res://assets/sounds/Hitting Wall.wav"
+dest_files=["res://.godot/imported/Hitting Wall.wav-befb511dc2cc0111563202a557344dc7.sample"]
 
 [params]
 
