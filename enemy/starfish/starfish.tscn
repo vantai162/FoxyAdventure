@@ -130,11 +130,11 @@ shape = SubResource("RectangleShape2D_sp3cf")
 target_position = Vector2(100, 0)
 collision_mask = 3
 
-[node name="HurtArea2d" parent="Direction" instance=ExtResource("18_naonh")]
+[node name="HurtArea2D" parent="Direction" instance=ExtResource("18_naonh")]
 collision_layer = 80
 collision_mask = 0
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Direction/HurtArea2d"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Direction/HurtArea2D"]
 position = Vector2(-2, -1.5)
 shape = SubResource("RectangleShape2D_sp3cf")
 
@@ -159,4 +159,4 @@ script = ExtResource("18_w8tu1")
 [node name="FloorRayCast2D" type="RayCast2D" parent="."]
 target_position = Vector2(0, 16)
 
-[connection signal="hurt" from="Direction/HurtArea2d" to="." method="_on_hurt_area_2d_hurt"]
+[connection signal="hurt" from="Direction/HurtArea2D" to="." method="_on_hurt_area_2d_hurt"]

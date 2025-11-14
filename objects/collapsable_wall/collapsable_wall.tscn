@@ -2,7 +2,7 @@
 
 [ext_resource type="Texture2D" uid="uid://c282obbfo5jrj" path="res://assets/island/collapsable_wall/bricks.png" id="1_ghv8o"]
 [ext_resource type="Script" uid="uid://b8kbi0bog5jnd" path="res://objects/collapsable_wall/collapsable_wall.gd" id="1_heo48"]
-[ext_resource type="AudioStream" uid="uid://6jhhcbxb10mi" path="res://sounds/wall-break/Hitting Wall.wav" id="3_bfbso"]
+[ext_resource type="AudioStream" uid="uid://6jhhcbxb10mi" path="res://assets/sounds/Hitting Wall.wav" id="3_bfbso"]
 [ext_resource type="PackedScene" uid="uid://demnc46qmnrje" path="res://objects/collapsable_wall/dust_effect.tscn" id="5_bno5q"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_heo48"]
@@ -21,6 +21,7 @@ texture = ExtResource("1_ghv8o")
 shape = SubResource("RectangleShape2D_heo48")
 
 [node name="HitBox" type="Area2D" parent="."]
+collision_layer = 0
 collision_mask = 64
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="HitBox"]
@@ -32,3 +33,5 @@ stream = ExtResource("3_bfbso")
 
 [node name="DustEffect" parent="." instance=ExtResource("5_bno5q")]
 visible = false
+
+[connection signal="area_entered" from="HitBox" to="." method="_on_hit_box_area_entered"]

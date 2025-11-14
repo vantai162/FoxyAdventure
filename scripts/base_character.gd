@@ -38,6 +38,8 @@ func _physics_process(delta: float) -> void:
 	# Direction
 	_check_changed_direction()
 	
+	
+	
 
 
 func _update_movement(delta: float) -> void:
@@ -121,7 +123,22 @@ func _is_on_ice():
 	if not collider: return false
 	
 	return collider.name == "IceBlock"
+	
+func _is_on_one_way_platform():
+	var collider = floor_ray_cast.get_collider()
+	if not collider: return false
+	
+	return collider.name == "OneWayPlatform"
+	
 
 func spring():
 	velocity.y = -400
+	
+		
+func drop_down_platform():
+	var PLATFORM_LAYER = 1
+	print("alo")
+	set_collision_mask_value(PLATFORM_LAYER, false)
+	await get_tree().create_timer(0.25).timeout
+	set_collision_mask_value(PLATFORM_LAYER, true)
 	

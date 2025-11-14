@@ -6,7 +6,8 @@ func control_moving() -> bool:
 		return false
 	var dir: float = Input.get_action_strength("right") - Input.get_action_strength("left")
 	var is_moving: bool = abs(dir) > 0.1
-	
+	if obj.is_on_floor() and Input.is_action_pressed("down") and obj._is_on_one_way_platform():
+		obj.drop_down_platform()
 	if obj.current_speed == 0:
 		obj.current_speed = obj.movement_speed
 	if obj.Effect["Slow"] > 0:
