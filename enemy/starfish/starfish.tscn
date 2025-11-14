@@ -1,4 +1,4 @@
-[gd_scene load_steps=27 format=3 uid="uid://bxfs4fsx7ot6m"]
+[gd_scene load_steps=26 format=3 uid="uid://bxfs4fsx7ot6m"]
 
 [ext_resource type="Script" uid="uid://dlg2emkwgklma" path="res://enemy/starfish/starfish.gd" id="1_chqr0"]
 [ext_resource type="Texture2D" uid="uid://div7ykrnkcmbm" path="res://assets/monsters/starfish/starfish_atk_01.png" id="2_fpeau"]
@@ -16,11 +16,11 @@
 [ext_resource type="Texture2D" uid="uid://c8cs1hwh7venp" path="res://assets/foxy/smoke/jump_smoke_4.png" id="11_coy4h"]
 [ext_resource type="Texture2D" uid="uid://cqc7ruwipvqko" path="res://assets/monsters/starfish/starfish_02.png" id="11_naonh"]
 [ext_resource type="Texture2D" uid="uid://dejbsdoig628p" path="res://assets/monsters/starfish/starfish_03.png" id="12_06xrr"]
-[ext_resource type="Script" uid="uid://csu2b21cwchqw" path="res://scripts/hurt_area_2d.gd" id="13_coy4h"]
 [ext_resource type="Script" uid="uid://xqvgljx4hk1s" path="res://scripts/hit_area_2d.gd" id="14_jmb5p"]
 [ext_resource type="Script" uid="uid://bmohdbn74hvul" path="res://enemy/starfish/states/run.gd" id="15_s0u86"]
 [ext_resource type="Script" uid="uid://jcw10mo6pgth" path="res://enemy/starfish/states/hurt.gd" id="16_qrjr3"]
 [ext_resource type="Script" uid="uid://ym7l8lknvi2o" path="res://enemy/starfish/states/attack.gd" id="17_10osh"]
+[ext_resource type="PackedScene" uid="uid://ct1tqxgwkuvbe" path="res://scripts/hurt_area_2d.tscn" id="18_naonh"]
 [ext_resource type="Script" uid="uid://8nk1e0hupl7j" path="res://enemy/starfish/states/dead.gd" id="18_w8tu1"]
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_hanlh"]
@@ -91,9 +91,6 @@ animations = [{
 "speed": 5.0
 }]
 
-[sub_resource type="CircleShape2D" id="CircleShape2D_sl7t3"]
-radius = 21.2132
-
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_sp3cf"]
 size = Vector2(28, 31)
 
@@ -119,16 +116,6 @@ target_position = Vector2(18, 0)
 position = Vector2(14, -4)
 target_position = Vector2(0, 8)
 
-[node name="HurtArea2D" type="Area2D" parent="Direction"]
-collision_layer = 16
-collision_mask = 0
-script = ExtResource("13_coy4h")
-metadata/_custom_type_script = "uid://csu2b21cwchqw"
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Direction/HurtArea2D"]
-position = Vector2(-2, -1)
-shape = SubResource("CircleShape2D_sl7t3")
-
 [node name="HitArea2D" type="Area2D" parent="Direction"]
 collision_layer = 0
 collision_mask = 4
@@ -142,6 +129,14 @@ shape = SubResource("RectangleShape2D_sp3cf")
 [node name="DetectPlayerRayCast2D" type="RayCast2D" parent="Direction"]
 target_position = Vector2(100, 0)
 collision_mask = 3
+
+[node name="HurtArea2d" parent="Direction" instance=ExtResource("18_naonh")]
+collision_layer = 80
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Direction/HurtArea2d"]
+position = Vector2(-2, -1.5)
+shape = SubResource("RectangleShape2D_sp3cf")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 position = Vector2(-2, -1)
@@ -163,3 +158,5 @@ script = ExtResource("18_w8tu1")
 
 [node name="FloorRayCast2D" type="RayCast2D" parent="."]
 target_position = Vector2(0, 16)
+
+[connection signal="hurt" from="Direction/HurtArea2d" to="." method="_on_hurt_area_2d_hurt"]
