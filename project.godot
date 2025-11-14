@@ -29,6 +29,7 @@ project/assembly_name="FoxyAdventure"
 ground=""
 player=""
 player_attack=""
+enemy=""
 
 [input]
 

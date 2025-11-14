@@ -18,6 +18,7 @@
 [ext_resource type="PackedScene" path="res://objects/platform/vertical_moving_platform.tscn" id="16_4x5ew"]
 [ext_resource type="PackedScene" path="res://objects/platform/circular_moving_platform.tscn" id="16_lq01q"]
 [ext_resource type="PackedScene" uid="uid://dav8b7a6d5e4f" path="res://enemy/shield_tribe/shield_tribe.tscn" id="17_lq01q"]
+[ext_resource type="PackedScene" uid="uid://cc07u3qfgccmq" path="res://objects/spring/spring.tscn" id="18_kwr08"]
 
 [node name="Stage" type="Node2D"]
 script = ExtResource("1_kwr08")
@@ -30,28 +31,28 @@ tile_set = ExtResource("1_33rtp")
 tile_map_data = PackedByteArray("AAD3/woAAAAJAAUAAAD4/woAAAAJAAUAAAD5/woAAAAJAAUAAAD6/woAAAAJAAUAAAD3/wsAAAACAAYAAAD4/wsAAAACAAYAAAD5/wsAAAACAAYAAAD6/wsAAAACAAYAAAD2/wsAAAACAAYAAAD1/wsAAAACAAYAAAD0/wsAAAACAAYAAADz/wsAAAACAAYAAAD2/woAAAAJAAUAAAD1/woAAAAJAAUAAAD0/woAAAAJAAUAAADz/woAAAAJAAUAAADy/woAAAAJAAUAAADx/woAAAAJAAUAAADw/woAAAAJAAUAAADv/woAAAAJAAUAAADu/woAAAAJAAUAAADt/woAAAAJAAUAAADy/wsAAAACAAYAAADx/wsAAAACAAYAAADw/wsAAAACAAYAAADv/wsAAAACAAYAAADu/wsAAAACAAYAAADt/wsAAAACAAYAAADs/woAAAAIAAUAAADr/woAAAAIAAUAAADq/woAAAAIAAUAAADp/woAAAAIAAUAAADo/woAAAAIAAUAAADn/woAAAAIAAUAAADm/woAAAAIAAUAAADm/wkAAAAIAAUAAADm/wsAAAACAAYAAADn/wsAAAACAAYAAADo/wsAAAACAAYAAADp/wsAAAACAAYAAADq/wsAAAACAAYAAADr/wsAAAACAAYAAADs/wsAAAACAAYAAAD6/wkAAAAIAAUAAAD6/wgAAAAIAAUAAADm/wgAAAAIAAUAAAA=")
 tile_set = ExtResource("2_1603u")
 
-[node name="Player" parent="." instance=ExtResource("2_dwsf3")]
+[node name="Player" parent="." groups=["player"] instance=ExtResource("2_dwsf3")]
 position = Vector2(56, 121)
 
-[node name="Turtle" parent="." instance=ExtResource("3_1hwaj")]
+[node name="Turtle" parent="." groups=["enemy"] instance=ExtResource("3_1hwaj")]
 position = Vector2(222, 39)
 
-[node name="FriendlyTribe" parent="." instance=ExtResource("4_sdmob")]
+[node name="FriendlyTribe" parent="." groups=["enemy"] instance=ExtResource("4_sdmob")]
 position = Vector2(289, 127)
 
-[node name="Starfish" parent="." instance=ExtResource("5_1603u")]
+[node name="Starfish" parent="." groups=["enemy"] instance=ExtResource("5_1603u")]
 position = Vector2(-75, 216)
 
-[node name="Mushroom" parent="." instance=ExtResource("8_1p8jb")]
+[node name="Mushroom" parent="." groups=["enemy"] instance=ExtResource("8_1p8jb")]
 position = Vector2(744, -53)
 
-[node name="Crab" parent="." instance=ExtResource("9_4x5ew")]
-position = Vector2(70, -125)
+[node name="Crab" parent="." groups=["enemy"] instance=ExtResource("9_4x5ew")]
+position = Vector2(239, -116)
 
-[node name="AggressiveTribe" parent="." instance=ExtResource("10_lq01q")]
+[node name="AggressiveTribe" parent="." groups=["enemy"] instance=ExtResource("10_lq01q")]
 position = Vector2(674, -206)
 
-[node name="Barrel" parent="." instance=ExtResource("11_sdmob")]
+[node name="Barrel" parent="." groups=["enemy"] instance=ExtResource("11_sdmob")]
 position = Vector2(883, -215)
 
 [node name="Bullets" type="Node" parent="."]
@@ -59,7 +60,7 @@ position = Vector2(883, -215)
 [node name="Blade" parent="." instance=ExtResource("11_1603u")]
 position = Vector2(118, 154)
 
-[node name="Starfish2" parent="." instance=ExtResource("5_1603u")]
+[node name="Starfish2" parent="." groups=["enemy"] instance=ExtResource("5_1603u")]
 position = Vector2(-265, 131)
 
 [node name="BreakablePlatform" parent="." instance=ExtResource("13_o8rrw")]
@@ -77,5 +78,8 @@ position = Vector2(-269, -118)
 [node name="CircularMovingPlatform" parent="." instance=ExtResource("16_lq01q")]
 position = Vector2(-413, -2)
 
-[node name="ShieldTribe" parent="." instance=ExtResource("17_lq01q")]
+[node name="ShieldTribe" parent="." groups=["enemy"] instance=ExtResource("17_lq01q")]
 position = Vector2(1095, -78)
+
+[node name="Spring" parent="." instance=ExtResource("18_kwr08")]
+position = Vector2(86, -129)
