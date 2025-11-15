@@ -232,7 +232,7 @@ animations = [{
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_u75vx"]
 size = Vector2(23, 30)
 
-[node name="Foxy" type="CharacterBody2D"]
+[node name="Foxy" type="CharacterBody2D" groups=["can_interact_with_water"]]
 collision_layer = 2
 script = ExtResource("1_wod02")
 blade_projectile_scene = ExtResource("3_blade")
