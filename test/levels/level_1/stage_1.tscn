@@ -1,4 +1,4 @@
-[gd_scene load_steps=19 format=4 uid="uid://fm22mgp2q845"]
+[gd_scene load_steps=20 format=4 uid="uid://fm22mgp2q845"]
 
 [ext_resource type="TileSet" uid="uid://xt3l8n15jbfm" path="res://assets/island/tileset.tres" id="1_33rtp"]
 [ext_resource type="Script" uid="uid://dpabmmeqo234t" path="res://test/levels/level_1/stage_1.gd" id="1_kwr08"]

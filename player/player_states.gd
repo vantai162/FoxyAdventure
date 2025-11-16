@@ -7,7 +7,8 @@ func control_moving() -> bool:
 	var dir: float = Input.get_action_strength("right") - Input.get_action_strength("left")
 	var is_moving: bool = abs(dir) > 0.1
 	
-	
+	if obj.current_speed==0:
+		obj.current_speed=obj.movement_speed
 	
 	if is_moving and not obj._is_on_ice():
 		dir = sign(dir)
