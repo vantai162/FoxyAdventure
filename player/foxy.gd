@@ -87,6 +87,26 @@ func _ready() -> void:
 	super._ready()
 	fsm = FSM.new(self, $States, $States/Idle)
 	$Direction/HitArea2D/CollisionShape2D.disabled = true
+	call_deferred("_connect_water_signals")
+	
+func _connect_water_signals():
+	for water in get_tree().get_nodes_in_group("water"):
+		if not water.player_entered_water.is_connected(_on_enter_water):
+			water.player_entered_water.connect(_on_enter_water)
+		if not water.player_exited_water.is_connected(_on_exit_water):
+			water.player_exited_water.connect(_on_exit_water)
+
+		
+func _on_enter_water(body):
+	if body == self:
+		is_in_water = true
+		gravity = 300
+		fsm.change_state(fsm.states.swim)
+
+func _on_exit_water(body):
+	if body == self:
+		is_in_water = false
+		gravity = 700
 
 func _process(delta: float) -> void:
 	_updateeffect(delta)

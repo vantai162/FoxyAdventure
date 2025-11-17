@@ -7,6 +7,7 @@ func _enter() -> void:
 	obj.change_animation("run")
 
 func _update(_delta: float):
+	obj.current_oxygen = min(obj.max_oxygen, obj.current_oxygen + 1.5 * _delta)
 	if(obj.Effect["Stun"]<=0): 
 		if control_jump():
 			return
@@ -30,3 +31,5 @@ func _update(_delta: float):
 		change_state(fsm.states.fall)
 	if obj.is_on_wall_only():
 		fsm.change_state(fsm.states.wallcling)
+	if obj.is_in_water:
+		fsm.change_state(fsm.states.swim)
