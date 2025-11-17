@@ -1,0 +1,59 @@
+[gd_scene load_steps=5 format=3 uid="uid://bg3bfewcihuv0"]
+
+[ext_resource type="Script" uid="uid://d8ywon8hmum7" path="res://objects/sign/sign.gd" id="1_rvb5v"]
+[ext_resource type="Texture2D" uid="uid://diyecotaig0a2" path="res://assets/objects/sign/Cartoon_Medieval_Field_Work_Level_Set_Environment - Quest Board.png" id="2_hlhu2"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_etn6b"]
+size = Vector2(56, 42)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_rvb5v"]
+bg_color = Color(0.783523, 0.783523, 0.783523, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[node name="Sign" type="Area2D"]
+collision_mask = 2
+script = ExtResource("1_rvb5v")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+position = Vector2(4.76837e-07, -12)
+scale = Vector2(0.282227, 0.282227)
+texture = ExtResource("2_hlhu2")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(-1, 2)
+shape = SubResource("RectangleShape2D_etn6b")
+
+[node name="Panel" type="Panel" parent="."]
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -133.0
+offset_top = -72.0
+offset_right = 133.0
+offset_bottom = -35.0
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_styles/panel = SubResource("StyleBoxFlat_rvb5v")
+
+[node name="Label" type="Label" parent="Panel"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -0.5
+offset_top = -11.5
+offset_right = 0.5
+offset_bottom = 11.5
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+
+[connection signal="body_entered" from="." to="." method="_on_body_entered"]
+[connection signal="body_exited" from="." to="." method="_on_body_exited"]

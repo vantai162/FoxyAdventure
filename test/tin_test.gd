@@ -21,3 +21,7 @@ func _ready() -> void:
 		GameManager.target_portal_name = ""
 	
 	await GameManager.fade_from_black()
+
+
+func _on_body_entered(body: Node2D) -> void:
+	pass # Replace with function body.
