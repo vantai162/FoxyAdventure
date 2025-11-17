@@ -5,6 +5,7 @@ func _enter() -> void:
 	obj.change_animation("idle")
 
 func _update(delta: float) -> void:
+	obj.current_oxygen = min(obj.max_oxygen, obj.current_oxygen + 1.5 * delta)
 	if(obj.Effect["Stun"]<=0):
 		control_throw()
 		control_attack()

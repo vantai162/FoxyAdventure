@@ -32,6 +32,7 @@ player_attack=""
 enemy=""
 one_way_platform=""
 can_interact_with_water=""
+water=""
 
 [input]
 

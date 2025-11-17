@@ -15,6 +15,13 @@ var health: int
 @export var slideValue = 0.01
 @export var fullStopValue = 15
 
+var is_in_water: bool = false
+@export var max_oxygen := 5.0          # số giây có thể ở dưới nước
+@export var oxygen_decrease_rate := 1.0  # mỗi giây giảm bao nhiêu oxy
+@export var damage_per_second := 1      # mất HP mỗi giây khi đã hết oxy
+var current_oxygen := max_oxygen
+
+var swim_speed: float = 180.0
 var jump_speed: float = 320.0
 var fsm: FSM = null
 var current_animation = null

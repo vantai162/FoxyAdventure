@@ -81,6 +81,36 @@ func control_dash() -> bool:
 			return false
 	return false
 
+
+func control_swimming() -> bool:
+	if GameManager.paused:
+		return false
+
+	# Thoát khỏi nước
+	if not obj.is_in_water:
+		change_state(fsm.states.idle)
+		return true
+
+	var input_vec = Vector2.ZERO
+	input_vec.x = Input.get_action_strength("right") - Input.get_action_strength("left")
+	input_vec.y = Input.get_action_strength("down") - Input.get_action_strength("up")
+
+	# Không bơi = đứng/treo trong nước
+	if input_vec == Vector2.ZERO:
+		obj.velocity = obj.velocity.lerp(Vector2.ZERO, 0.1)
+		return false
+
+	input_vec = input_vec.normalized()
+
+	obj.change_direction(sign(input_vec.x) if input_vec.x != 0 else obj.direction)
+
+	obj.velocity = obj.velocity.lerp(
+		 input_vec * obj.swim_speed,
+		0.15
+	)
+	return true
+
+
 func take_damage(damage: int) -> void:
 	obj.take_damage(damage)
 	

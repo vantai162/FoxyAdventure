@@ -22,11 +22,15 @@ var recently_splashed: bool = false
 var surface_line: Line2D
 var fill_polygon: Polygon2D
 
+signal player_entered_water(body)
+signal player_exited_water(body)
+
 @export_tool_button("Update Water") var update_water_button: Callable = func():
 	_ready()
 	update_visuals()
 
 func _ready() -> void:
+	add_to_group("water")
 	for i in get_children():
 		i.queue_free()
 	_initiate_water()
@@ -150,9 +154,12 @@ func splash(splash_pos:Vector2, splash_velocity:float) -> void:
 	
 func _on_body_entered(body: Node2D) -> void:
 	if body.is_in_group("can_interact_with_water"):
-		print("nc")
 		splash(body.global_position, -body.velocity.y * player_splash_mutiplier)
+		if body.is_in_group("player"):
+			emit_signal("player_entered_water", body)
 
 func _on_body_exited(body: Node2D) -> void:
 	if body.is_in_group("can_interact_with_water"):
 		splash(body.global_position, body.velocity.y * player_splash_mutiplier)
+		if body.is_in_group("player"):
+			emit_signal("player_exited_water", body)
