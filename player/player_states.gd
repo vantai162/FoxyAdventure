@@ -8,34 +8,37 @@ func control_moving() -> bool:
 	var is_moving: bool = abs(dir) > 0.1
 	if obj.is_on_floor() and Input.is_action_pressed("down") and obj._is_on_one_way_platform():
 		obj.drop_down_platform()
-	if obj.current_speed == 0:
-		obj.current_speed = obj.movement_speed
+	var final_speed = obj.movement_speed
 	if obj.Effect["Slow"] > 0:
-		obj.current_speed *= 0.5
-	
-	if is_moving and not obj._is_on_ice():
+		final_speed *= 0.5
+	if obj.current_speed == 0:
+		obj.current_speed = final_speed
+	if is_moving:
 		dir = sign(dir)
 		obj.change_direction(dir)
-		obj.velocity.x = obj.current_speed * dir
+		var target_velocity_x = obj.current_speed * dir
+		if obj.wind_velocity != Vector2.ZERO:
+			target_velocity_x += obj.wind_velocity.x
+		if not obj._is_on_ice():
+			obj.velocity.x = target_velocity_x
+		else:
+			obj.velocity.x = lerp(obj.velocity.x, target_velocity_x, obj.accelecrationValue)
 		if obj.is_on_floor():
 			change_state(fsm.states.run)
-		return true
-	elif is_moving and obj._is_on_ice():
-		dir = sign(dir)
-		obj.change_direction(dir)
-		obj.velocity.x = lerp(obj.velocity.x, dir * obj.current_speed, obj.accelecrationValue)
-		if obj.is_on_floor():
-			change_state(fsm.states.run)
-		return true
+			return true
 	elif not is_moving and obj._is_on_ice():
-		obj.velocity.x = lerp(obj.velocity.x, 0.0, obj.slideValue)
-		if obj.velocity.x < obj.fullStopValue and obj.velocity.x > -obj.fullStopValue:
+		var stop_target = 0.0
+		if obj.wind_velocity != Vector2.ZERO:
+			stop_target = obj.wind_velocity.x
+		obj.velocity.x = lerp(obj.velocity.x, stop_target, obj.slideValue)
+		if abs(obj.velocity.x) < obj.fullStopValue and obj.wind_velocity == Vector2.ZERO:
 			obj.velocity.x = 0
+	elif obj.wind_velocity != Vector2.ZERO:
+		obj.velocity.x = lerp(obj.velocity.x, obj.wind_velocity.x, 0.1)
 	else:
 		obj.current_speed = 0
 		obj.velocity.x = 0
 	return false
-
 func control_jump() -> bool:
 	if(GameManager.paused):
 		return false
