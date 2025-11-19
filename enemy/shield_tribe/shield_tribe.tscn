@@ -1,55 +1,52 @@
-[gd_scene load_steps=37 format=3 uid="uid://dav8b7a6d5e4f"]
+[gd_scene load_steps=33 format=3 uid="uid://dav8b7a6d5e4f"]
 
 [ext_resource type="Script" uid="uid://cbxut3mc1715v" path="res://enemy/shield_tribe/shield_tribe.gd" id="1_shield_gd"]
+[ext_resource type="Texture2D" uid="uid://c442cyaadrt51" path="res://assets/spear/spear_10.png" id="3_c7sff"]
 [ext_resource type="Script" uid="uid://bc2n7c2iivd3m" path="res://enemy/shield_tribe/states/idle.gd" id="3_idle_state"]
+[ext_resource type="Texture2D" uid="uid://dpc3dd0qxfe1j" path="res://assets/spear/spear_11.png" id="4_a258x"]
 [ext_resource type="Script" uid="uid://b3wwyk586fklm" path="res://enemy/shield_tribe/states/defend.gd" id="4_defend_state"]
 [ext_resource type="Script" uid="uid://cjxtooa4rw4us" path="res://enemy/shield_tribe/states/attack.gd" id="5_attack_state"]
+[ext_resource type="Texture2D" uid="uid://ywa1706wc6ln" path="res://assets/spear/spear_12.png" id="5_lj2gn"]
 [ext_resource type="Script" uid="uid://dh6yqcqg2wyd5" path="res://enemy/shield_tribe/states/hurt.gd" id="6_hurt_state"]
+[ext_resource type="Texture2D" uid="uid://0hyoor4j6h83" path="res://assets/spear/spear_13.png" id="6_q0raq"]
 [ext_resource type="Script" uid="uid://xqvgljx4hk1s" path="res://scripts/hit_area_2d.gd" id="7_hit_area_gd"]
-[ext_resource type="Texture2D" uid="uid://be0sd1vgcgy4g" path="res://assets/monsters/tribe_temporary/Sprites/4-Enemy-Big Guy/13-Dead Hit/1.png" id="8_dead_1"]
-[ext_resource type="Texture2D" uid="uid://co3ydhean6cji" path="res://assets/monsters/tribe_temporary/Sprites/4-Enemy-Big Guy/13-Dead Hit/2.png" id="9_dead_2"]
-[ext_resource type="Texture2D" uid="uid://dh83j4tufc4ee" path="res://assets/monsters/tribe_temporary/Sprites/4-Enemy-Big Guy/13-Dead Hit/3.png" id="10_dead_3"]
-[ext_resource type="Texture2D" uid="uid://33bs4eqmu6qr" path="res://assets/monsters/tribe_temporary/Sprites/4-Enemy-Big Guy/13-Dead Hit/4.png" id="11_dead_4"]
-[ext_resource type="Texture2D" uid="uid://b5rhxefsci06v" path="res://assets/monsters/tribe_temporary/Sprites/4-Enemy-Big Guy/13-Dead Hit/5.png" id="12_dead_5"]
-[ext_resource type="Texture2D" uid="uid://d2qyt3m2cxph" path="res://assets/monsters/tribe_temporary/Sprites/4-Enemy-Big Guy/13-Dead Hit/6.png" id="13_dead_6"]
-[ext_resource type="Texture2D" uid="uid://b5gd3du4l8yd7" path="res://assets/monsters/tribe_temporary/Sprites/4-Enemy-Big Guy/12-Hit/1.png" id="14_hurt_1"]
-[ext_resource type="Texture2D" uid="uid://b86ql86s6gx3c" path="res://assets/monsters/tribe_temporary/Sprites/4-Enemy-Big Guy/12-Hit/2.png" id="15_hurt_2"]
-[ext_resource type="Texture2D" uid="uid://yedcbgxgub6d" path="res://assets/monsters/tribe_temporary/Sprites/4-Enemy-Big Guy/12-Hit/3.png" id="16_hurt_3"]
-[ext_resource type="Texture2D" uid="uid://crbuyhw7ul5cu" path="res://assets/monsters/tribe_temporary/Sprites/4-Enemy-Big Guy/12-Hit/4.png" id="17_hurt_4"]
-[ext_resource type="Texture2D" uid="uid://dswx6yxguqwrk" path="res://assets/monsters/tribe_temporary/Sprites/4-Enemy-Big Guy/12-Hit/5.png" id="18_hurt_5"]
+[ext_resource type="Texture2D" uid="uid://cd0374kgo2x75" path="res://assets/spear/spear_14.png" id="7_kdn0t"]
+[ext_resource type="Texture2D" uid="uid://c3j8qr0fo55s7" path="res://assets/spear/spear_17.png" id="8_s34ix"]
+[ext_resource type="Texture2D" uid="uid://dbvjeadib6li4" path="res://assets/spear/spear_18.png" id="9_ang66"]
+[ext_resource type="Texture2D" uid="uid://cm5p07mre2k3y" path="res://assets/spear/spear_15.png" id="10_dlx46"]
+[ext_resource type="Texture2D" uid="uid://q87dd7lkbomb" path="res://assets/spear/spear_16.png" id="11_ibwmu"]
+[ext_resource type="Texture2D" uid="uid://drk1n4i01r1t8" path="res://assets/spear/spear_1.png" id="12_yje0y"]
+[ext_resource type="Texture2D" uid="uid://vcsssr1ka8a8" path="res://assets/spear/spear_2.png" id="13_b6srq"]
+[ext_resource type="Texture2D" uid="uid://bg2g5h1xj5r80" path="res://assets/spear/spear_7.png" id="14_n7o8p"]
+[ext_resource type="Texture2D" uid="uid://b3g1rrki58fy4" path="res://assets/spear/spear_3.png" id="15_va7r6"]
+[ext_resource type="Texture2D" uid="uid://dyae0hvsn4fq" path="res://assets/spear/spear_4.png" id="16_f6i7y"]
 [ext_resource type="Texture2D" uid="uid://cdfstbry7qcvi" path="res://assets/monsters/tribe_temporary/Sprites/7-Objects/1-BOMB/3-Explotion/9.png" id="19_a258x"]
-[ext_resource type="Texture2D" uid="uid://c7vuolusvlmu0" path="res://assets/monsters/tribe_temporary/Sprites/4-Enemy-Big Guy/12-Hit/6.png" id="19_hurt_6"]
 [ext_resource type="Texture2D" uid="uid://c2ixrq1jflbvm" path="res://assets/monsters/tribe_temporary/Sprites/7-Objects/1-BOMB/3-Explotion/5.png" id="20_a258x"]
-[ext_resource type="Script" uid="uid://csu2b21cwchqw" path="res://scripts/hurt_area_2d.gd" id="20_iqs6i"]
-[ext_resource type="Texture2D" uid="uid://cccowqh7kcwbn" path="res://assets/island/front_palm_trees/front_palm_tree_regular.png" id="20_vt5fp"]
-[ext_resource type="Texture2D" uid="uid://f5xd7xmtei4s" path="res://assets/monsters/tribe_temporary/Sprites/4-Enemy-Big Guy/12-Hit/8.png" id="21_hurt_8"]
 [ext_resource type="Texture2D" uid="uid://bic2tcjurxfou" path="res://assets/monsters/tribe_temporary/Sprites/7-Objects/1-BOMB/3-Explotion/6.png" id="21_lj2gn"]
-[ext_resource type="Texture2D" uid="uid://dssxdgn6aae74" path="res://assets/monsters/tribe_temporary/Sprites/4-Enemy-Big Guy/6-Ground/1.png" id="22_idle_1"]
+[ext_resource type="PackedScene" uid="uid://ct1tqxgwkuvbe" path="res://scripts/hurt_area_2d.tscn" id="22_p7fv1"]
 [ext_resource type="Texture2D" uid="uid://ctoeskfpde3l3" path="res://assets/monsters/tribe_temporary/Sprites/7-Objects/1-BOMB/3-Explotion/7.png" id="22_q0raq"]
-[ext_resource type="Texture2D" uid="uid://b8efw1wqoioqt" path="res://assets/monsters/tribe_temporary/Sprites/4-Enemy-Big Guy/6-Ground/2.png" id="23_idle_2"]
 [ext_resource type="Texture2D" uid="uid://bcwx324p4jehn" path="res://assets/monsters/tribe_temporary/Sprites/7-Objects/1-BOMB/3-Explotion/8.png" id="23_kdn0t"]
-[ext_resource type="Texture2D" uid="uid://bcg3sjvoxlhqh" path="res://assets/monsters/tribe_temporary/Sprites/4-Enemy-Big Guy/6-Ground/3.png" id="24_idle_3"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_body"]
-radius = 29.0
+radius = 26.0192
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_tribe"]
 animations = [{
 "frames": [{
 "duration": 1.0,
-"texture": ExtResource("24_idle_3")
+"texture": ExtResource("3_c7sff")
 }, {
 "duration": 1.0,
-"texture": ExtResource("17_hurt_4")
+"texture": ExtResource("4_a258x")
 }, {
 "duration": 1.0,
-"texture": ExtResource("18_hurt_5")
+"texture": ExtResource("5_lj2gn")
 }, {
 "duration": 1.0,
-"texture": ExtResource("19_hurt_6")
+"texture": ExtResource("6_q0raq")
 }, {
 "duration": 1.0,
-"texture": ExtResource("24_idle_3")
+"texture": ExtResource("7_kdn0t")
 }],
 "loop": false,
 "name": &"attack",
@@ -57,80 +54,62 @@ animations = [{
 }, {
 "frames": [{
 "duration": 1.0,
-"texture": ExtResource("8_dead_1")
+"texture": ExtResource("8_s34ix")
 }, {
 "duration": 1.0,
-"texture": ExtResource("9_dead_2")
-}, {
-"duration": 1.0,
-"texture": ExtResource("10_dead_3")
-}, {
-"duration": 1.0,
-"texture": ExtResource("11_dead_4")
-}, {
-"duration": 1.0,
-"texture": ExtResource("12_dead_5")
-}, {
-"duration": 1.0,
-"texture": ExtResource("13_dead_6")
+"texture": ExtResource("9_ang66")
 }],
 "loop": false,
 "name": &"dead",
-"speed": 6.0
+"speed": 2.0
 }, {
 "frames": [{
 "duration": 1.0,
-"texture": ExtResource("22_idle_1")
+"texture": ExtResource("3_c7sff")
 }, {
 "duration": 1.0,
-"texture": ExtResource("23_idle_2")
+"texture": ExtResource("7_kdn0t")
 }, {
 "duration": 1.0,
-"texture": ExtResource("24_idle_3")
+"texture": ExtResource("10_dlx46")
 }],
 "loop": true,
 "name": &"defend",
-"speed": 3.0
+"speed": 5.0
 }, {
 "frames": [{
 "duration": 1.0,
-"texture": ExtResource("14_hurt_1")
+"texture": ExtResource("11_ibwmu")
 }, {
 "duration": 1.0,
-"texture": ExtResource("15_hurt_2")
+"texture": ExtResource("8_s34ix")
 }, {
 "duration": 1.0,
-"texture": ExtResource("16_hurt_3")
-}, {
-"duration": 1.0,
-"texture": ExtResource("17_hurt_4")
-}, {
-"duration": 1.0,
-"texture": ExtResource("18_hurt_5")
-}, {
-"duration": 1.0,
-"texture": ExtResource("19_hurt_6")
-}, {
-"duration": 1.0,
-"texture": ExtResource("21_hurt_8")
+"texture": ExtResource("9_ang66")
 }],
 "loop": false,
 "name": &"hurt",
-"speed": 8.0
+"speed": 3.0
 }, {
 "frames": [{
 "duration": 1.0,
-"texture": ExtResource("22_idle_1")
+"texture": ExtResource("12_yje0y")
 }, {
 "duration": 1.0,
-"texture": ExtResource("23_idle_2")
+"texture": ExtResource("13_b6srq")
 }, {
 "duration": 1.0,
-"texture": ExtResource("24_idle_3")
+"texture": ExtResource("14_n7o8p")
+}, {
+"duration": 1.0,
+"texture": ExtResource("15_va7r6")
+}, {
+"duration": 1.0,
+"texture": ExtResource("16_f6i7y")
 }],
 "loop": true,
 "name": &"idle",
-"speed": 3.0
+"speed": 4.0
 }]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_detect"]
@@ -177,9 +156,6 @@ animations = [{
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_ang66"]
 size = Vector2(67, 18)
 
-[sub_resource type="CircleShape2D" id="CircleShape2D_p7fv1"]
-radius = 27.0
-
 [node name="ShieldTribe" type="CharacterBody2D"]
 collision_layer = 8
 script = ExtResource("1_shield_gd")
@@ -194,6 +170,8 @@ shape = SubResource("CircleShape2D_body")
 [node name="Direction" type="Node2D" parent="."]
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="Direction"]
+position = Vector2(3, 6.5)
+scale = Vector2(1.09375, 1.20313)
 sprite_frames = SubResource("SpriteFrames_tribe")
 animation = &"attack"
 
@@ -212,13 +190,6 @@ collision_mask = 2
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Direction/Shield"]
 shape = SubResource("RectangleShape2D_shield")
-
-[node name="Sprite2D" type="Sprite2D" parent="Direction/Shield"]
-texture = ExtResource("20_vt5fp")
-
-[node name="Sprite2D2" type="Sprite2D" parent="Direction/Shield"]
-texture = ExtResource("20_vt5fp")
-flip_v = true
 
 [node name="Spear" type="Node2D" parent="Direction"]
 position = Vector2(-3, 16)
@@ -242,15 +213,13 @@ script = ExtResource("7_hit_area_gd")
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Direction/Spear/SpearHitArea"]
 shape = SubResource("RectangleShape2D_ang66")
 
-[node name="HurtArea2D" type="Area2D" parent="Direction"]
-position = Vector2(-21, 3)
+[node name="HurtArea2d" parent="Direction" instance=ExtResource("22_p7fv1")]
 collision_layer = 16
 collision_mask = 0
-script = ExtResource("20_iqs6i")
-metadata/_custom_type_script = "uid://csu2b21cwchqw"
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Direction/HurtArea2D"]
-shape = SubResource("CircleShape2D_p7fv1")
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Direction/HurtArea2d"]
+position = Vector2(-8, 3)
+shape = SubResource("CircleShape2D_body")
 
 [node name="AttackTimer" type="Timer" parent="."]
 wait_time = 2.0
@@ -270,4 +239,5 @@ script = ExtResource("5_attack_state")
 [node name="Hurt" type="Node" parent="States"]
 script = ExtResource("6_hurt_state")
 
+[connection signal="hurt" from="Direction/HurtArea2d" to="." method="_on_hurt_area_2d_hurt"]
 [connection signal="timeout" from="AttackTimer" to="States/Defend" method="_on_attack_timer_timeout"]

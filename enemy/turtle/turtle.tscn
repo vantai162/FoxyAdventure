@@ -1,65 +1,53 @@
 [gd_scene load_steps=16 format=3 uid="uid://c1bijw8i8erx5"]
 
 [ext_resource type="Script" uid="uid://bessfwihwj0hf" path="res://enemy/turtle/turtle.gd" id="1_raxgc"]
-[ext_resource type="Texture2D" uid="uid://5ganj1pgjcjn" path="res://assets/monsters/turtle_temporary/Little_Turtle.png" id="2_1m0ji"]
+[ext_resource type="Texture2D" uid="uid://c4cikv5rwcywi" path="res://assets/turtle/turtle_blue_05.png" id="2_p2yqw"]
+[ext_resource type="Texture2D" uid="uid://dd47b1gdvohc2" path="res://assets/turtle/turtle_blue_04.png" id="3_n3t07"]
 [ext_resource type="PackedScene" uid="uid://cbjbo6gtyss6f" path="res://scripts/hit_area_2d.tscn" id="3_raxgc"]
 [ext_resource type="PackedScene" uid="uid://ct1tqxgwkuvbe" path="res://scripts/hurt_area_2d.tscn" id="4_ehiyd"]
+[ext_resource type="Texture2D" uid="uid://7hte3rp2thdv" path="res://assets/turtle/turtle_blue_03.png" id="4_yt53j"]
 [ext_resource type="Script" uid="uid://11bngkdi5rr8" path="res://enemy/turtle/run.gd" id="5_ehiyd"]
+[ext_resource type="Texture2D" uid="uid://d2uo75yv7f5bl" path="res://assets/turtle/turtle_blue_01.png" id="5_jolqy"]
+[ext_resource type="Texture2D" uid="uid://dm32dj4ri3uc8" path="res://assets/turtle/turtle_blue_02.png" id="6_eo1cv"]
 [ext_resource type="Script" uid="uid://c3vt7rpl6ep63" path="res://enemy/turtle/hide.gd" id="6_nvedk"]
 [ext_resource type="Script" uid="uid://ckk2lgo3gjnvk" path="res://enemy/turtle/hurt.gd" id="7_0ekdt"]
+[ext_resource type="Texture2D" uid="uid://bq7nxdv5i1ha5" path="res://assets/turtle/turtle_blue_walk_01.png" id="7_livia"]
+[ext_resource type="Texture2D" uid="uid://cgt4s4vn5nfar" path="res://assets/turtle/turtle_blue_walk_02.png" id="8_e4l57"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_pkty3"]
 radius = 13.0384
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_4on02"]
-atlas = ExtResource("2_1m0ji")
-region = Rect2(0, 156, 48, 52)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_raxgc"]
-atlas = ExtResource("2_1m0ji")
-region = Rect2(48, 156, 48, 52)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_ehiyd"]
-atlas = ExtResource("2_1m0ji")
-region = Rect2(96, 156, 48, 52)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_nvedk"]
-atlas = ExtResource("2_1m0ji")
-region = Rect2(0, 54, 48, 54)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_0ekdt"]
-atlas = ExtResource("2_1m0ji")
-region = Rect2(48, 54, 48, 54)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_5xs4q"]
-atlas = ExtResource("2_1m0ji")
-region = Rect2(96, 54, 48, 54)
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_v3mmh"]
 animations = [{
 "frames": [{
 "duration": 1.0,
-"texture": SubResource("AtlasTexture_4on02")
+"texture": ExtResource("2_p2yqw")
 }, {
 "duration": 1.0,
-"texture": SubResource("AtlasTexture_raxgc")
+"texture": ExtResource("3_n3t07")
 }, {
 "duration": 1.0,
-"texture": SubResource("AtlasTexture_ehiyd")
+"texture": ExtResource("4_yt53j")
+}, {
+"duration": 1.0,
+"texture": ExtResource("5_jolqy")
+}, {
+"duration": 1.0,
+"texture": ExtResource("6_eo1cv")
 }],
-"loop": true,
+"loop": false,
 "name": &"hide",
 "speed": 5.0
 }, {
 "frames": [{
 "duration": 1.0,
-"texture": SubResource("AtlasTexture_nvedk")
+"texture": ExtResource("7_livia")
 }, {
 "duration": 1.0,
-"texture": SubResource("AtlasTexture_0ekdt")
+"texture": ExtResource("8_e4l57")
 }, {
 "duration": 1.0,
-"texture": SubResource("AtlasTexture_5xs4q")
+"texture": ExtResource("2_p2yqw")
 }],
 "loop": true,
 "name": &"run",
@@ -85,8 +73,7 @@ target_position = Vector2(0, 29)
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="Direction"]
 sprite_frames = SubResource("SpriteFrames_v3mmh")
-animation = &"hide"
-frame_progress = 0.540057
+animation = &"run"
 
 [node name="HitArea2D" parent="Direction" instance=ExtResource("3_raxgc")]
 collision_layer = 0
