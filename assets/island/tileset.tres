@@ -1,6 +1,6 @@
 [gd_resource type="TileSet" load_steps=15 format=3 uid="uid://xt3l8n15jbfm"]
 
-[ext_resource type="Texture2D" uid="uid://v2dtejovry7r" path="res://assets/island/terrain/terrain_32x32.png" id="1_x61fc"]
+[ext_resource type="Texture2D" uid="uid://v2dtejovry7r" path="res://assets/terrain/terrain_32x32.png" id="1_x61fc"]
 [ext_resource type="Texture2D" uid="uid://cccowqh7kcwbn" path="res://assets/island/front_palm_trees/front_palm_tree_regular.png" id="2_ysup1"]
 [ext_resource type="Texture2D" uid="uid://ca8553fkc524f" path="res://assets/island/front_palm_trees/front_palm_tree_left.png" id="3_fgag5"]
 [ext_resource type="Texture2D" uid="uid://d1jboc5q1i0tj" path="res://assets/island/front_palm_trees/front_palm_tree_right.png" id="4_7a5rw"]

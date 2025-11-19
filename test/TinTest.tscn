@@ -35,6 +35,9 @@ position = Vector2(291, 262)
 [node name="CollapsableWall" parent="." instance=ExtResource("4_2fpa6")]
 position = Vector2(539, 262)
 
+[node name="Checkpoint2" parent="." instance=ExtResource("6_5rqqf")]
+position = Vector2(375, 311)
+
 [node name="Checkpoint" parent="." instance=ExtResource("6_5rqqf")]
 position = Vector2(221, 308)
 
