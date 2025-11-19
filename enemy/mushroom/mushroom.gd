@@ -1,6 +1,7 @@
 extends EnemyCharacter
 
 
+
 func _ready() -> void:
 	fsm = FSM.new(self, $States, $States/Sleep)
 	super._ready()

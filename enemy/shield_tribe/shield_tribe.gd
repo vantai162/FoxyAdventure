@@ -59,8 +59,7 @@ func _on_hurt_area_2d_hurt(attack_direction: Vector2, damage: float) -> void:
 			change_direction(attacker_side)
 	
 	take_damage(damage)
-	if health > 0:
-		fsm.change_state(fsm.states.hurt)
+	fsm.change_state(fsm.states.hurt)
 
 func _on_player_in_sight(_player_pos: Vector2) -> void:
 	if fsm.current_state.name != "defend" and fsm.current_state.name != "attack":

@@ -273,7 +273,6 @@ collision_layer = 4
 collision_mask = 0
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Direction/HurtArea2d"]
-position = Vector2(21, 0)
 shape = SubResource("CapsuleShape2D_34yrj")
 
 [node name="States" type="Node" parent="."]

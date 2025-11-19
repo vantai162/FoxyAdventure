@@ -1,7 +1,7 @@
 extends EnemyState
 
 func _enter() -> void:
-	obj.change_animation("idle")
+	obj.change_animation("attack")
 	obj.velocity.x = 0
 	
 	# Face player during windup
