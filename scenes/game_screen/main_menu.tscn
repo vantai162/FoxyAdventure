@@ -1,14 +1,13 @@
 [gd_scene load_steps=10 format=3 uid="uid://485meohsiugp"]
 
 [ext_resource type="Script" uid="uid://c3jinqop44upq" path="res://scenes/game_screen/main_menu.gd" id="1_ab5lu"]
-[ext_resource type="Texture2D" uid="uid://dsbqb07wytgwj" path="res://assets/island/background/Day/Background.png" id="1_jdxg6"]
 [ext_resource type="Texture2D" uid="uid://bm66ag0j7y3qi" path="res://assets/ui/popup.png" id="1_p4sw0"]
+[ext_resource type="Texture2D" uid="uid://def6hgd6kpijr" path="res://assets/background/Free-Summer-Pixel-Art-Backgrounds6.jpg" id="2_ab5lu"]
 [ext_resource type="FontFile" uid="uid://bf742t4mxgd7l" path="res://assets/fonts/big_font.fnt" id="2_jdxg6"]
 [ext_resource type="FontFile" uid="uid://gdaeropw621v" path="res://assets/fonts/daydream_3/Daydream DEMO.otf" id="4_snmln"]
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_snmln"]
-texture = ExtResource("1_jdxg6")
-modulate_color = Color(0.344076, 0.344076, 0.344076, 1)
+texture = ExtResource("2_ab5lu")
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_jdxg6"]
 bg_color = Color(0.6, 0.6, 0.6, 0)
