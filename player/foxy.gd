@@ -3,7 +3,7 @@ extends BaseCharacter
 
 @export var runspeed: int = 300
 @export var Attack_Speed: int = 0
-@export var invi_time: float = 0.5
+@export var invi_time: float = 2.0
 @export var jump_buffer: float
 @export var coyote_time: float
 

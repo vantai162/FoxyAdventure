@@ -1,10 +1,11 @@
-[gd_scene load_steps=22 format=3 uid="uid://b01cdevi245kn"]
+[gd_scene load_steps=23 format=3 uid="uid://b01cdevi245kn"]
 
 [ext_resource type="Script" uid="uid://bu5q6hr2otikg" path="res://objects/flame/flame.gd" id="1_6rt4k"]
 [ext_resource type="Texture2D" uid="uid://5to5ysqlevmf" path="res://assets/objects/flame/FlammeActive.png" id="1_7g0ri"]
 [ext_resource type="Texture2D" uid="uid://d1j4q4yvkdgn6" path="res://assets/objects/flame/FlammeEnd.png" id="2_6rt4k"]
 [ext_resource type="Texture2D" uid="uid://cr8kgfqd0xp2d" path="res://assets/objects/flame/FlammeStart.png" id="3_qpa8o"]
 [ext_resource type="Script" uid="uid://csu2b21cwchqw" path="res://scripts/hurt_area_2d.gd" id="4_b2iij"]
+[ext_resource type="Script" uid="uid://xqvgljx4hk1s" path="res://scripts/hit_area_2d.gd" id="5_qpa8o"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_oklhg"]
 atlas = ExtResource("1_7g0ri")
@@ -124,30 +125,35 @@ radius = 31.0
 height = 120.0
 
 [node name="Flame" type="Node2D"]
+scale = Vector2(0.5, 0.5)
 script = ExtResource("1_6rt4k")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
 sprite_frames = SubResource("SpriteFrames_hapyr")
 animation = &"active"
 
-[node name="HurtArea2D" type="Area2D" parent="."]
+[node name="HitArea2D" type="Area2D" parent="."]
 collision_layer = 0
-collision_mask = 2
-script = ExtResource("4_b2iij")
-metadata/_custom_type_script = "uid://csu2b21cwchqw"
+collision_mask = 4
+script = ExtResource("5_qpa8o")
+metadata/_custom_type_script = "uid://xqvgljx4hk1s"
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="HurtArea2D"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="HitArea2D"]
+light_mask = 0
+visibility_layer = 0
 position = Vector2(-23, 0)
 rotation = 1.5708
 shape = SubResource("CapsuleShape2D_qpa8o")
 
-[node name="HurtArea2D2" type="Area2D" parent="."]
+[node name="HitArea2D2" type="Area2D" parent="."]
 collision_layer = 0
-collision_mask = 2
+collision_mask = 4
 script = ExtResource("4_b2iij")
 metadata/_custom_type_script = "uid://csu2b21cwchqw"
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="HurtArea2D2"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="HitArea2D2"]
+light_mask = 0
+visibility_layer = 0
 position = Vector2(73, -1)
 rotation = 1.5708
 shape = SubResource("CapsuleShape2D_b2iij")
