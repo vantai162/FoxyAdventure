@@ -73,7 +73,7 @@ animations = [{
 size = Vector2(93.5, 82.5)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_dcy5h"]
-size = Vector2(542, 20)
+size = Vector2(570, 129)
 
 [node name="Mushroom" type="CharacterBody2D"]
 collision_layer = 8
@@ -126,7 +126,7 @@ collision_layer = 0
 collision_mask = 2
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Direction/DetectPlayerArea2D"]
-position = Vector2(14, 3)
+position = Vector2(0, -0.5)
 shape = SubResource("RectangleShape2D_dcy5h")
 
 [node name="States" type="Node" parent="."]

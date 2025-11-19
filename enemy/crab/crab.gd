@@ -1,5 +1,8 @@
 extends EnemyCharacter
 
 func _ready() -> void:
-	fsm = FSM.new(self, $States, $States/Run)
 	super._ready()
+
+
+func _on_active_area_2d_body_entered(body: Node2D) -> void:
+	fsm = FSM.new(self, $States, $States/Run)

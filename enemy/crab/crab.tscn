@@ -1,4 +1,4 @@
-[gd_scene load_steps=15 format=3 uid="uid://ufmc2gkfnv58"]
+[gd_scene load_steps=16 format=3 uid="uid://ufmc2gkfnv58"]
 
 [ext_resource type="Script" uid="uid://ck0wjguotjbcs" path="res://enemy/crab/crab.gd" id="1_wf64l"]
 [ext_resource type="Texture2D" uid="uid://boxmc12qq7a8a" path="res://assets/monsters/crab/crab_hurt_02.png" id="2_mdcuw"]
@@ -54,6 +54,9 @@ animations = [{
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_c1mj8"]
 size = Vector2(35, 27)
 
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_mdcuw"]
+size = Vector2(527, 237)
+
 [node name="Crab" type="CharacterBody2D"]
 collision_layer = 8
 script = ExtResource("1_wf64l")
@@ -95,6 +98,14 @@ collision_mask = 0
 position = Vector2(-0.5, -0.5)
 shape = SubResource("RectangleShape2D_c1mj8")
 
+[node name="ActiveArea2D" type="Area2D" parent="Direction"]
+collision_layer = 0
+collision_mask = 2
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Direction/ActiveArea2D"]
+position = Vector2(1, -1.5)
+shape = SubResource("RectangleShape2D_mdcuw")
+
 [node name="States" type="Node" parent="."]
 
 [node name="Run" type="Node" parent="States"]
@@ -107,3 +118,4 @@ script = ExtResource("9_mdcuw")
 script = ExtResource("10_0eync")
 
 [connection signal="hurt" from="Direction/HurtArea2D" to="." method="_on_hurt_area_2d_hurt"]
+[connection signal="body_entered" from="Direction/ActiveArea2D" to="." method="_on_active_area_2d_body_entered"]
