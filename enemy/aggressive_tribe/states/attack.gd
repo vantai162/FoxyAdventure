@@ -3,7 +3,7 @@ extends EnemyState
 var throw_count: int = 0
 
 func _enter() -> void:
-	obj.change_animation("idle")
+	obj.change_animation("attack")
 	throw_count = 0
 	obj.velocity.x = 0
 	_throw_next_coconut()

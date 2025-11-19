@@ -14,7 +14,6 @@
 [ext_resource type="Texture2D" uid="uid://c3j8qr0fo55s7" path="res://assets/spear/spear_17.png" id="8_s34ix"]
 [ext_resource type="Texture2D" uid="uid://dbvjeadib6li4" path="res://assets/spear/spear_18.png" id="9_ang66"]
 [ext_resource type="Texture2D" uid="uid://cm5p07mre2k3y" path="res://assets/spear/spear_15.png" id="10_dlx46"]
-[ext_resource type="Texture2D" uid="uid://q87dd7lkbomb" path="res://assets/spear/spear_16.png" id="11_ibwmu"]
 [ext_resource type="Texture2D" uid="uid://drk1n4i01r1t8" path="res://assets/spear/spear_1.png" id="12_yje0y"]
 [ext_resource type="Texture2D" uid="uid://vcsssr1ka8a8" path="res://assets/spear/spear_2.png" id="13_b6srq"]
 [ext_resource type="Texture2D" uid="uid://bg2g5h1xj5r80" path="res://assets/spear/spear_7.png" id="14_n7o8p"]
@@ -26,9 +25,6 @@
 [ext_resource type="PackedScene" uid="uid://ct1tqxgwkuvbe" path="res://scripts/hurt_area_2d.tscn" id="22_p7fv1"]
 [ext_resource type="Texture2D" uid="uid://ctoeskfpde3l3" path="res://assets/monsters/tribe_temporary/Sprites/7-Objects/1-BOMB/3-Explotion/7.png" id="22_q0raq"]
 [ext_resource type="Texture2D" uid="uid://bcwx324p4jehn" path="res://assets/monsters/tribe_temporary/Sprites/7-Objects/1-BOMB/3-Explotion/8.png" id="23_kdn0t"]
-
-[sub_resource type="CircleShape2D" id="CircleShape2D_body"]
-radius = 26.0192
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_tribe"]
 animations = [{
@@ -79,9 +75,6 @@ animations = [{
 }, {
 "frames": [{
 "duration": 1.0,
-"texture": ExtResource("11_ibwmu")
-}, {
-"duration": 1.0,
 "texture": ExtResource("8_s34ix")
 }, {
 "duration": 1.0,
@@ -89,7 +82,7 @@ animations = [{
 }],
 "loop": false,
 "name": &"hurt",
-"speed": 3.0
+"speed": 2.0
 }, {
 "frames": [{
 "duration": 1.0,
@@ -156,16 +149,18 @@ animations = [{
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_ang66"]
 size = Vector2(67, 18)
 
+[sub_resource type="CircleShape2D" id="CircleShape2D_body"]
+radius = 10.0499
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_iqs6i"]
+size = Vector2(18, 34)
+
 [node name="ShieldTribe" type="CharacterBody2D"]
 collision_layer = 8
 script = ExtResource("1_shield_gd")
 spear_thrust_distance = 72.0
 spear_thrust_out_time = 0.6
 metadata/_custom_type_script = "uid://s4xx82espxdt"
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-position = Vector2(-8, 3)
-shape = SubResource("CircleShape2D_body")
 
 [node name="Direction" type="Node2D" parent="."]
 
@@ -218,7 +213,7 @@ collision_layer = 16
 collision_mask = 0
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Direction/HurtArea2d"]
-position = Vector2(-8, 3)
+position = Vector2(-1, 2)
 shape = SubResource("CircleShape2D_body")
 
 [node name="AttackTimer" type="Timer" parent="."]
@@ -238,6 +233,10 @@ script = ExtResource("5_attack_state")
 
 [node name="Hurt" type="Node" parent="States"]
 script = ExtResource("6_hurt_state")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(0, 8)
+shape = SubResource("RectangleShape2D_iqs6i")
 
 [connection signal="hurt" from="Direction/HurtArea2d" to="." method="_on_hurt_area_2d_hurt"]
 [connection signal="timeout" from="AttackTimer" to="States/Defend" method="_on_attack_timer_timeout"]

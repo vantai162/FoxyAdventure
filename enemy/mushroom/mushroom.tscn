@@ -1,4 +1,4 @@
-[gd_scene load_steps=19 format=3 uid="uid://bmgv5cgan4yt"]
+[gd_scene load_steps=21 format=3 uid="uid://bmgv5cgan4yt"]
 
 [ext_resource type="Script" uid="uid://bmwcsascradew" path="res://enemy/mushroom/mushroom.gd" id="1_jlpow"]
 [ext_resource type="Texture2D" uid="uid://dnlagy1ygfmpg" path="res://assets/monsters/mushroom/mushroom_hurt_03.png" id="2_lprww"]
@@ -11,9 +11,11 @@
 [ext_resource type="Script" uid="uid://bec5oo64fsxp5" path="res://enemy/mushroom/explode.gd" id="8_jlpow"]
 [ext_resource type="Texture2D" uid="uid://b251p3vy88f5o" path="res://assets/monsters/mushroom/sleep.png" id="8_wkm5k"]
 [ext_resource type="Texture2D" uid="uid://bgnbj6qy3a2ow" path="res://assets/monsters/tribe_temporary/problem.png" id="9_of5h1"]
+[ext_resource type="PackedScene" uid="uid://ct1tqxgwkuvbe" path="res://scripts/hurt_area_2d.tscn" id="10_7hsqw"]
 [ext_resource type="PackedScene" uid="uid://nr5uby15sfha" path="res://enemy/mushroom/toxic gas.tscn" id="11_wkm5k"]
 [ext_resource type="Script" uid="uid://cavpnqu3khnvu" path="res://enemy/mushroom/sleep.gd" id="12_nf052"]
 [ext_resource type="Script" uid="uid://6d2q0k0lymd6" path="res://enemy/mushroom/surprise.gd" id="14_vwwmg"]
+[ext_resource type="Script" uid="uid://bu8pu40bboyoc" path="res://enemy/mushroom/hurt.gd" id="15_dcy5h"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_vwwmg"]
 size = Vector2(27, 24)
@@ -45,6 +47,20 @@ animations = [{
 "loop": false,
 "name": &"explode",
 "speed": 10.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("4_ky03m")
+}, {
+"duration": 1.0,
+"texture": ExtResource("3_jlpow")
+}, {
+"duration": 1.0,
+"texture": ExtResource("2_lprww")
+}],
+"loop": true,
+"name": &"hurt",
+"speed": 3.0
 }, {
 "frames": [{
 "duration": 1.0,
@@ -88,7 +104,7 @@ shape = SubResource("RectangleShape2D_vwwmg")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="Direction"]
 sprite_frames = SubResource("SpriteFrames_dcy5h")
-animation = &"sleep"
+animation = &"hurt"
 
 [node name="FrontRayCast2D" type="RayCast2D" parent="Direction"]
 position = Vector2(9, -4)
@@ -129,6 +145,14 @@ collision_mask = 2
 position = Vector2(14, 3)
 shape = SubResource("RectangleShape2D_dcy5h")
 
+[node name="HurtArea2d" parent="Direction" instance=ExtResource("10_7hsqw")]
+collision_layer = 16
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Direction/HurtArea2d"]
+position = Vector2(0.5, 0)
+shape = SubResource("RectangleShape2D_vwwmg")
+
 [node name="States" type="Node" parent="."]
 
 [node name="Run" type="Node" parent="States"]
@@ -144,4 +168,8 @@ script = ExtResource("12_nf052")
 [node name="Surprise" type="Node" parent="States"]
 script = ExtResource("14_vwwmg")
 
+[node name="Hurt" type="Node" parent="States"]
+script = ExtResource("15_dcy5h")
+
 [connection signal="body_entered" from="Direction/ExplodeArea2D" to="." method="_on_detect_player_area_body_entered"]
+[connection signal="hurt" from="Direction/HurtArea2d" to="." method="_on_hurt_area_2d_hurt"]
