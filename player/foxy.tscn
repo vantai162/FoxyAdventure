@@ -1,4 +1,4 @@
-[gd_scene load_steps=55 format=3 uid="uid://bs816w0pr8all"]
+[gd_scene load_steps=56 format=3 uid="uid://bs816w0pr8all"]
 
 [ext_resource type="Script" uid="uid://brl5yy4w7wich" path="res://player/foxy.gd" id="1_wod02"]
 [ext_resource type="Texture2D" uid="uid://m4di78taixns" path="res://assets/foxy/fox_hat/fox_defeat_1.png" id="2_70n8a"]
@@ -230,6 +230,10 @@ animations = [{
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_34yrj"]
 
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_2mww5"]
+radius = 11.0
+height = 34.0
+
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_u75vx"]
 size = Vector2(23, 30)
 
@@ -273,7 +277,9 @@ collision_layer = 4
 collision_mask = 0
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Direction/HurtArea2d"]
-shape = SubResource("CapsuleShape2D_34yrj")
+position = Vector2(-1, -3)
+shape = SubResource("CapsuleShape2D_2mww5")
+
 
 [node name="States" type="Node" parent="."]
 

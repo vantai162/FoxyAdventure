@@ -1,6 +1,6 @@
 [gd_scene load_steps=3 format=3 uid="uid://coqrny0yf5swy"]
 
-[ext_resource type="Script" uid="uid://bj7arxmrqub4q" path="res://objects/new folder/wind_area.gd" id="1_3t54o"]
+[ext_resource type="Script" uid="uid://bj7arxmrqub4q" path="res://objects/winarea/wind_area.gd" id="1_3t54o"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_uiemc"]
 size = Vector2(238, 99)
