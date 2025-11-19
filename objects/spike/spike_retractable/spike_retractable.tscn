@@ -1,0 +1,24 @@
+[gd_scene load_steps=5 format=3 uid="uid://b0h8a022mpy26"]
+
+[ext_resource type="Script" uid="uid://bon77da3yap55" path="res://objects/spike/spike_retractable/spike_retractable.gd" id="1_oa2u3"]
+[ext_resource type="Texture2D" uid="uid://dkcqiqg0lsqx6" path="res://assets/monsters/spikes/spikes.png" id="1_xmkwv"]
+[ext_resource type="Script" uid="uid://xqvgljx4hk1s" path="res://scripts/hit_area_2d.gd" id="2_urrha"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_17rlb"]
+size = Vector2(29, 13)
+
+[node name="Spike_Retractable" type="Node2D"]
+script = ExtResource("1_oa2u3")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = ExtResource("1_xmkwv")
+
+[node name="HitArea2D" type="Area2D" parent="."]
+collision_layer = 0
+collision_mask = 4
+script = ExtResource("2_urrha")
+metadata/_custom_type_script = "uid://xqvgljx4hk1s"
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="HitArea2D"]
+position = Vector2(-0.5, 10.5)
+shape = SubResource("RectangleShape2D_17rlb")
