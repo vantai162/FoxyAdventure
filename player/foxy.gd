@@ -6,7 +6,7 @@ extends BaseCharacter
 @export var invi_time: float = 0.5
 @export var jump_buffer: float
 @export var coyote_time: float
-
+signal health_changed
 @export_group("Blade")
 @export var blade_projectile_scene: PackedScene
 
@@ -88,6 +88,7 @@ func _ready() -> void:
 	fsm = FSM.new(self, $States, $States/Idle)
 	$Direction/HitArea2D/CollisionShape2D.disabled = true
 	call_deferred("_connect_water_signals")
+	emit_signal("health_changed")
 	
 func _connect_water_signals():
 	for water in get_tree().get_nodes_in_group("water"):
@@ -191,3 +192,4 @@ func load_state(data: Dictionary) -> void:
 
 func _on_hurt_area_2d_hurt(direction: Vector2, damage: float) -> void:
 	fsm.current_state.take_damage(damage)
+	health_changed.emit()
