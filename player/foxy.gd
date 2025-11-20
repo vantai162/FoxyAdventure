@@ -29,6 +29,16 @@ extends BaseCharacter
 @export var double_jump_power_multiplier: float = 0.8
 @export var run_idle_wait_time: float = 0.1
 
+@export_group("Attack")
+@export var attack_duration: float = 0.2
+@export var air_slash_spawn_delay: float = 0.05
+@export var air_slash_speed: float = 300.0
+@export var air_slash_deceleration: float = 500.0
+@export var air_slash_fade_in_time: float = 0.1
+@export var air_slash_active_time: float = 0.3
+@export var air_slash_fade_out_time: float = 0.3
+@export var air_slash_total_time: float = 0.8
+
 @export_group("Swimming")
 @export var swim_gravity: float = 300.0
 @export var swim_deceleration: float = 0.1
@@ -38,6 +48,7 @@ var air_control: float = 1.0
 signal health_changed
 @export_group("Blade")
 @export var blade_projectile_scene: PackedScene
+@export var air_slash_scene: PackedScene
 
 @export var Effect = {
 	"Stun": 0,
@@ -111,6 +122,28 @@ func throw_blade_projectile() -> void:
 	# Switch back to unarmed sprite when out of blades
 	if blade_count == 0:
 		set_animated_sprite($Direction/AnimatedSprite2D)
+
+func spawn_air_slash() -> void:
+	if not air_slash_scene:
+		return
+	
+	var air_slash = air_slash_scene.instantiate()
+	get_tree().current_scene.add_child(air_slash)
+	
+	# Configure air slash with player settings
+	air_slash.initial_speed = air_slash_speed
+	air_slash.deceleration = air_slash_deceleration
+	air_slash.fade_in_time = air_slash_fade_in_time
+	air_slash.active_time = air_slash_active_time
+	air_slash.fade_out_time = air_slash_fade_out_time
+	air_slash.total_time = air_slash_total_time
+	
+	# Spawn at HitArea2D position
+	var hit_area = $Direction/HitArea2D
+	air_slash.global_position = hit_area.global_position
+	
+	# Launch in facing direction
+	air_slash.launch(direction)
 
 func _ready() -> void:
 	super._ready()

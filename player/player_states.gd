@@ -11,6 +11,7 @@ func control_moving() -> bool:
 	var final_speed = obj.movement_speed
 	if obj.Effect["Slow"] > 0:
 		final_speed *= 0.5
+	# Initialize current_speed if it's been reset (0 means player stopped)
 	if obj.current_speed == 0:
 		obj.current_speed = final_speed
 	if is_moving:
