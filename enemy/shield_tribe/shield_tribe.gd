@@ -41,22 +41,29 @@ func _ready() -> void:
 	spear_hit_area.monitoring = false
 
 func _on_hurt_area_2d_hurt(attack_direction: Vector2, damage: float) -> void:
-	if fsm.current_state.name == "defend" or fsm.current_state.name == "attack":
-		# Direction points FROM attacker TO us
-		var attacker_side = -sign(attack_direction.x)
-		if attacker_side == 0:
-			attacker_side = 1
+	# Allow blocking in Idle, Defend, and Attack states (but not Hurt or Dead)
+	if fsm.current_state.name != "hurt" and fsm.current_state.name != "dead":
+		# attack_direction points in the direction the projectile is TRAVELING
+		# Shield blocks when attack travels in OPPOSITE direction from where we face
+		# Example: Face left (direction=-1), attack travels left (attack_direction.x=-1) = from behind
+		# Example: Face left (direction=-1), attack travels right (attack_direction.x=1) = from front, BLOCK
+		var attack_side = sign(attack_direction.x)
+		if attack_side == 0:
+			attack_side = 1
 		
-		# If shield is blocking the attack, ignore damage
-		if attacker_side == direction:
+		# Block if attack travels in opposite direction from our facing
+		if attack_side != direction:
+			# Optional: If blocked while idle, wake up to defend
+			if fsm.current_state.name == "idle":
+				fsm.change_state(fsm.states.defend)
 			return
 	
 	# Turn to face attacker if hit from behind (immediately, before knockback)
-	# Direction points FROM attacker TO us, so negate to get attacker's position
+	# attack_direction shows direction of attack travel, so reverse it to face attacker
 	if attack_direction.x != 0:
-		var attacker_side = -sign(attack_direction.x)
-		if attacker_side != direction:
-			change_direction(attacker_side)
+		var attacker_position_side = -sign(attack_direction.x)
+		if attacker_position_side != direction:
+			change_direction(attacker_position_side)
 	
 	take_damage(damage)
 	fsm.change_state(fsm.states.hurt)
@@ -71,6 +78,10 @@ func _on_player_not_in_sight() -> void:
 		fsm.change_state(fsm.states.idle)
 
 func face_player() -> void:
+	# Don't turn during attack - too difficult for player
+	if fsm.current_state.name == "attack":
+		return
+		
 	if found_player:
 		var desired: int = 1 if found_player.global_position.x > global_position.x else -1
 

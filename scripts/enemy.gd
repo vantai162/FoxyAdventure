@@ -11,6 +11,7 @@ var down_ray_cast: RayCast2D;
 var detect_player_area: Area2D;
 var found_player: Player = null
 var detect_ray_cast:RayCast2D;
+var detect_ray_casts: Array[RayCast2D] = []  # Multiple raycasts for vision cone
 var detection_distance: float = 100.0
 
 func _ready() -> void:
@@ -29,6 +30,14 @@ func _init_ray_cast():
 		down_ray_cast = $Direction/DownRayCast2D
 	if has_node("Direction/DetectPlayerRayCast2D"):
 		detect_ray_cast = $Direction/DetectPlayerRayCast2D
+		detect_ray_casts.append(detect_ray_cast)
+	
+	# Collect additional detection raycasts for vision cone (if they exist)
+	for i in range(1, 5):  # Support up to 4 additional raycasts
+		var ray_name = "Direction/DetectPlayerRayCast2D" + str(i)
+		if has_node(ray_name):
+			var ray = get_node(ray_name) as RayCast2D
+			detect_ray_casts.append(ray)
 
 
 #init detect player area
@@ -72,6 +81,10 @@ func enable_check_player_in_sight() -> void:
 		detect_player_area.get_node("CollisionShape2D").disabled = false
 	if detect_ray_cast != null:
 		detect_ray_cast.enabled = true
+	# Enable all vision cone raycasts
+	for ray in detect_ray_casts:
+		if ray != null:
+			ray.enabled = true
 
 #disable check player in sight
 func disable_check_player_in_sight() -> void:
@@ -79,9 +92,13 @@ func disable_check_player_in_sight() -> void:
 		detect_player_area.get_node("CollisionShape2D").disabled = true
 	if detect_ray_cast != null:
 		detect_ray_cast.enabled = false
-		if found_player != null:
-			found_player = null
-			_on_player_not_in_sight()
+	# Disable all vision cone raycasts
+	for ray in detect_ray_casts:
+		if ray != null:
+			ray.enabled = false
+	if found_player != null:
+		found_player = null
+		_on_player_not_in_sight()
 
 func _on_body_entered(_body: CharacterBody2D) -> void:
 	found_player = _body
@@ -144,19 +161,29 @@ func check_player_in_sight(player: Player) -> bool:
 	return false
 
 func _check_player_in_sight() -> void:
-	if detect_ray_cast == null or not detect_ray_cast.enabled:
+	if detect_ray_casts.is_empty():
 		return
-
-	if detect_ray_cast.is_colliding():
-		var collider = detect_ray_cast.get_collider()
-		if collider is Player:
-			if found_player == null:
-				found_player = collider
-				_on_player_in_sight(collider.global_position)
-		else:
-			if found_player != null:
-				found_player = null
-				_on_player_not_in_sight()
+	
+	# Check if any raycast in the vision cone detects the player
+	var player_detected = false
+	var detected_player: Player = null
+	
+	for ray in detect_ray_casts:
+		if ray == null or not ray.enabled:
+			continue
+			
+		if ray.is_colliding():
+			var collider = ray.get_collider()
+			if collider is Player:
+				player_detected = true
+				detected_player = collider
+				break
+	
+	# Update found_player state
+	if player_detected:
+		if found_player == null:
+			found_player = detected_player
+			_on_player_in_sight(detected_player.global_position)
 	else:
 		if found_player != null:
 			found_player = null

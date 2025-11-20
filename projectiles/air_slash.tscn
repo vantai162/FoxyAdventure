@@ -1,0 +1,19 @@
+[gd_scene load_steps=4 format=3 uid="uid://dd41f30mv0ebo"]
+
+[ext_resource type="Script" uid="uid://1wq8gqmtlfsm" path="res://projectiles/air_slash.gd" id="1_air_slash"]
+[ext_resource type="Texture2D" uid="uid://btyei1yd8f0l1" path="res://assets/effects/Clouds_white/Shape7/cloud_shape7_4.png" id="2_ef2vg"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_wwctv"]
+size = Vector2(40, 20)
+
+[node name="AirSlash" type="Area2D"]
+collision_layer = 64
+collision_mask = 16
+script = ExtResource("1_air_slash")
+metadata/_custom_type_script = "uid://xqvgljx4hk1s"
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("RectangleShape2D_wwctv")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = ExtResource("2_ef2vg")
