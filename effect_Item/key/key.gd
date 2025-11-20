@@ -1,8 +1,8 @@
-extends pick_up_item
+extends Area2D
 func _ready() -> void:
 	$AnimatedSprite2D.play("default")
+
 func _on_area_entered(area: Area2D) -> void:
-	print(area)
-	area.get_parent()._applyeffect(effect_name,duration)
+	area.get_parent().inventory.adjust_amount_item("Key",1)
 	queue_free()
 	pass # Replace with function body.

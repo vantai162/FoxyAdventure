@@ -6,7 +6,7 @@ extends BaseCharacter
 @export var invi_time: float = 2.0
 @export var jump_buffer: float
 @export var coyote_time: float
-
+var inventory= Inventory.new()
 @export_group("Blade")
 @export var blade_projectile_scene: PackedScene
 
@@ -28,11 +28,7 @@ enum attack_direction {
 @export var InitCoolDown = {
 	"Dash": 2
 }
-@export var KeySkillUnlocked={
-	"Dash":false,
-	"HasCollectedBlade":false,
-	"DoubleJump":false
-}
+
 var attack_cooldown: int = 1
 var jump_count: int = 0
 var dashed_on_air: bool = false
@@ -188,6 +184,14 @@ func load_state(data: Dictionary) -> void:
 	if data.has("health"):
 		health = data["health"]
 
+func heal(amount:int):
+	if(amount+health>max_health):
+		health=max_health
+	else:
+		health=amount+health
+
+func checkfullhealth()->bool:
+	return health==max_health
 
 func _on_hurt_area_2d_hurt(direction: Vector2, damage: float) -> void:
 	fsm.current_state.take_damage(damage)
