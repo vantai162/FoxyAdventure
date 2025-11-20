@@ -1,0 +1,23 @@
+[gd_scene load_steps=4 format=3 uid="uid://7j0fw4uvbg54"]
+
+[ext_resource type="Texture2D" uid="uid://dkcqiqg0lsqx6" path="res://assets/monsters/spikes/spikes.png" id="1_sjwy0"]
+[ext_resource type="Script" uid="uid://xqvgljx4hk1s" path="res://scripts/hit_area_2d.gd" id="2_cl8ue"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_iu5ju"]
+size = Vector2(13, 32)
+
+[node name="LeftSpike" type="Node2D"]
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+rotation = 1.5708
+texture = ExtResource("1_sjwy0")
+
+[node name="HitArea2D" type="Area2D" parent="."]
+collision_layer = 0
+collision_mask = 4
+script = ExtResource("2_cl8ue")
+metadata/_custom_type_script = "uid://xqvgljx4hk1s"
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="HitArea2D"]
+position = Vector2(-10.5, 1)
+shape = SubResource("RectangleShape2D_iu5ju")

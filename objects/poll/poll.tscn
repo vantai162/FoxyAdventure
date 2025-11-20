@@ -1,0 +1,8 @@
+[gd_scene load_steps=2 format=3 uid="uid://dnqfetueosx76"]
+
+[ext_resource type="Texture2D" uid="uid://c578c81qefem3" path="res://assets/TX Village Props/TX Village Props-30.png" id="1_tx1qk"]
+
+[node name="Poll" type="Node2D"]
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = ExtResource("1_tx1qk")

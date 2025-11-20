@@ -1,0 +1,9 @@
+[gd_scene load_steps=2 format=3 uid="uid://qgov7mnvkq4m"]
+
+[ext_resource type="Texture2D" uid="uid://dkcqiqg0lsqx6" path="res://assets/monsters/spikes/spikes.png" id="1_803r0"]
+
+[node name="FakeSpike" type="Node2D"]
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+rotation = -1.5708
+texture = ExtResource("1_803r0")

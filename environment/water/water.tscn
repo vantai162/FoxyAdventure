@@ -1,0 +1,40 @@
+[gd_scene load_steps=7 format=3 uid="uid://6anvnhaq553w"]
+
+[ext_resource type="Script" uid="uid://ctl7jvo53t5pe" path="res://environment/water/water.gd" id="1_i1jtv"]
+[ext_resource type="Texture2D" uid="uid://b6crd8gbw6t4y" path="res://assets/GandalfHardcore FREE Platformer Assets/GandalfHardcore FREE Platformer Assets/Animated Sprites/GandalfHardcore Water Tiles sheet.png" id="1_ltukw"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_i1jtv"]
+atlas = ExtResource("1_ltukw")
+region = Rect2(0, 0, 160, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_jpb14"]
+atlas = ExtResource("1_ltukw")
+region = Rect2(0, 64, 160, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_150kf"]
+atlas = ExtResource("1_ltukw")
+region = Rect2(0, 128, 160, 64)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_pjamn"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_i1jtv")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_jpb14")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_150kf")
+}],
+"loop": true,
+"name": &"default",
+"speed": 7.0
+}]
+
+[node name="Water" type="Node2D"]
+script = ExtResource("1_i1jtv")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+sprite_frames = SubResource("SpriteFrames_pjamn")
+frame_progress = 0.154186
