@@ -109,7 +109,7 @@ animations = [{
 radius = 84.7172
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_shield"]
-size = Vector2(20, 40)
+size = Vector2(10, 40)
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_s34ix"]
 animations = [{
@@ -153,10 +153,11 @@ size = Vector2(67, 18)
 radius = 10.0499
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_iqs6i"]
-size = Vector2(18, 34)
+size = Vector2(18, 36)
 
 [node name="ShieldTribe" type="CharacterBody2D"]
 collision_layer = 8
+collision_mask = 9
 script = ExtResource("1_shield_gd")
 spear_thrust_distance = 72.0
 spear_thrust_out_time = 0.6
@@ -179,12 +180,10 @@ monitorable = false
 shape = SubResource("CircleShape2D_detect")
 
 [node name="Shield" type="StaticBody2D" parent="Direction"]
-position = Vector2(25, 0)
-collision_layer = 8
-collision_mask = 2
+position = Vector2(15, 10)
+collision_mask = 0
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Direction/Shield"]
-position = Vector2(0, 10)
 shape = SubResource("RectangleShape2D_shield")
 
 [node name="Spear" type="Node2D" parent="Direction"]
@@ -236,7 +235,7 @@ script = ExtResource("5_attack_state")
 script = ExtResource("6_hurt_state")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-position = Vector2(0, 8)
+position = Vector2(0, 10)
 shape = SubResource("RectangleShape2D_iqs6i")
 
 [connection signal="hurt" from="Direction/HurtArea2d" to="." method="_on_hurt_area_2d_hurt"]
