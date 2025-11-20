@@ -2,7 +2,7 @@ extends Player_State
 
 func _enter():
 	obj.change_animation("run")
-	obj.gravity = 300       
+	obj.gravity = obj.swim_gravity       
 
 func _update(delta: float):
 	control_swimming()

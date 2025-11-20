@@ -56,6 +56,7 @@ animations = [{
 
 [node name="Turtle" type="CharacterBody2D"]
 collision_layer = 8
+collision_mask = 9
 script = ExtResource("1_raxgc")
 metadata/_custom_type_script = "uid://s4xx82espxdt"
 
@@ -65,6 +66,7 @@ shape = SubResource("CircleShape2D_pkty3")
 [node name="Direction" type="Node2D" parent="."]
 
 [node name="FrontRayCast2D" type="RayCast2D" parent="Direction"]
+collision_mask = 9
 target_position = Vector2(14, 0)
 
 [node name="DownRayCast2D" type="RayCast2D" parent="Direction"]

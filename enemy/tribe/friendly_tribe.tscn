@@ -162,6 +162,7 @@ radius = 34.7385
 position = Vector2(-23, 20)
 scale = Vector2(0.64, 0.680001)
 collision_layer = 8
+collision_mask = 9
 script = ExtResource("1_icd28")
 metadata/_custom_type_script = "uid://s4xx82espxdt"
 
@@ -172,6 +173,7 @@ sprite_frames = SubResource("SpriteFrames_icd28")
 animation = &"suprise"
 
 [node name="FrontRayCast2D" type="RayCast2D" parent="Direction"]
+collision_mask = 9
 position = Vector2(23.4375, 0)
 target_position = Vector2(21.875, 0)
 

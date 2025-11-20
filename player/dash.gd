@@ -1,18 +1,19 @@
 extends Player_State
-var ghost_interval:float=0.05
-var ghost_timer=0
+
+var ghost_interval: float = 0.05
+var ghost_timer: float = 0.0
+
 func _enter():
 	obj.change_animation("run")
-	
-	obj.velocity.x = 400 * obj.direction
-	obj.velocity.y =0
-	timer = 0.3
-	obj.Effect["Invicibility"]=0.3
+	obj.velocity.x = obj.dash_speed * obj.direction
+	obj.velocity.y = 0
+	timer = obj.dash_duration
+	obj.Effect["Invicibility"] = obj.dash_duration
 
-func _update( delta: float):
-	obj.velocity.x = 400 * obj.direction
-	obj.velocity.y =0
-	ghost_timer+=delta
+func _update(delta: float):
+	obj.velocity.x = obj.dash_speed * obj.direction
+	obj.velocity.y = 0
+	ghost_timer += delta
 	if(ghost_timer>ghost_interval):
 		create_ghost_trail()
 		ghost_timer=0
