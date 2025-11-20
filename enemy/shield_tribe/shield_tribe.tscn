@@ -35,7 +35,7 @@ animations = [{
 "duration": 1.0,
 "texture": ExtResource("4_a258x")
 }, {
-"duration": 1.0,
+"duration": 2.0,
 "texture": ExtResource("5_lj2gn")
 }, {
 "duration": 1.0,
@@ -109,7 +109,7 @@ animations = [{
 radius = 84.7172
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_shield"]
-size = Vector2(20, 70)
+size = Vector2(20, 40)
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_s34ix"]
 animations = [{
@@ -184,6 +184,7 @@ collision_layer = 8
 collision_mask = 2
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Direction/Shield"]
+position = Vector2(0, 10)
 shape = SubResource("RectangleShape2D_shield")
 
 [node name="Spear" type="Node2D" parent="Direction"]

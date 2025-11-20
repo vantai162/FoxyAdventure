@@ -13,7 +13,7 @@
 [ext_resource type="PackedScene" uid="uid://ctr1b8p1h6p8y" path="res://objects/gate/gate.tscn" id="9_svsm2"]
 [ext_resource type="PackedScene" uid="uid://yv24bc7sjvlq" path="res://objects/timer_lever/timer_lever.tscn" id="10_u5x0e"]
 [ext_resource type="PackedScene" uid="uid://qdxeur6m6cgm" path="res://objects/spike/spike_wall_moving/spike_wall_moving.tscn" id="14_1ui5k"]
-[ext_resource type="PackedScene" uid="uid://coqrny0yf5swy" path="res://objects/winarea/WindArea.tscn" id="14_rj3ps"]
+[ext_resource type="PackedScene" uid="uid://coqrny0yf5swy" path="res://objects/wind/WindArea.tscn" id="14_rj3ps"]
 [ext_resource type="PackedScene" uid="uid://bmgv5cgan4yt" path="res://enemy/mushroom/mushroom.tscn" id="15_rj3ps"]
 [ext_resource type="PackedScene" uid="uid://b01cdevi245kn" path="res://objects/flame/flame.tscn" id="16_hp18n"]
 

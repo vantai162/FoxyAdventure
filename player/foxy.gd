@@ -6,6 +6,35 @@ extends BaseCharacter
 @export var invi_time: float = 2.0
 @export var jump_buffer: float
 @export var coyote_time: float
+
+@export_group("Movement Physics")
+@export var ground_friction: float = 0.25
+@export var min_stop_speed: float = 10.0
+@export var air_drag_multiplier: float = 0.5
+
+@export_group("Wall Jump")
+@export var wall_jump_force: float = 100.0
+@export var wall_jump_air_control: float = 0.05
+@export var wall_jump_control_delay: float = 0.15
+@export var wall_jump_control_fade_duration: float = 0.4
+@export var wall_slide_friction: float = 0.3
+
+@export_group("Abilities")
+@export var dash_speed: float = 400.0
+@export var dash_duration: float = 0.3
+@export var hurt_knockback_vertical: float = 250.0
+@export var hurt_stun_duration: float = 0.5
+@export var dead_delay_before_respawn: float = 0.5
+@export var throw_duration: float = 0.2
+@export var double_jump_power_multiplier: float = 0.8
+@export var run_idle_wait_time: float = 0.1
+
+@export_group("Swimming")
+@export var swim_gravity: float = 300.0
+@export var swim_deceleration: float = 0.1
+@export var swim_acceleration: float = 0.15
+
+var air_control: float = 1.0
 signal health_changed
 @export_group("Blade")
 @export var blade_projectile_scene: PackedScene
