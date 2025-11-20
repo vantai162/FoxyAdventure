@@ -20,7 +20,10 @@ func control_moving() -> bool:
 		if obj.wind_velocity != Vector2.ZERO:
 			target_velocity_x += obj.wind_velocity.x
 		if not obj._is_on_ice():
-			obj.velocity.x = target_velocity_x
+			if obj.is_on_floor():
+				obj.velocity.x = lerp(obj.velocity.x, target_velocity_x, obj.ground_friction)
+			else:
+				obj.velocity.x = lerp(obj.velocity.x, target_velocity_x, obj.air_control)
 		else:
 			obj.velocity.x = lerp(obj.velocity.x, target_velocity_x, obj.accelecrationValue)
 		if obj.is_on_floor():
@@ -35,16 +38,20 @@ func control_moving() -> bool:
 			obj.velocity.x = 0
 	elif obj.wind_velocity != Vector2.ZERO:
 		obj.velocity.x = lerp(obj.velocity.x, obj.wind_velocity.x, 0.1)
-	else:
+	elif obj.is_on_floor():
+		obj.velocity.x = lerp(obj.velocity.x, 0.0, obj.ground_friction)
+		if abs(obj.velocity.x) < obj.min_stop_speed:
+			obj.velocity.x = 0
 		obj.current_speed = 0
-		obj.velocity.x = 0
+	else:
+		obj.velocity.x = lerp(obj.velocity.x, 0.0, obj.air_control * obj.air_drag_multiplier)
 	return false
 func control_jump() -> bool:
 	if(GameManager.paused):
 		return false
 	if (Input.is_action_just_pressed("jump") and obj.jump_count < 2) or (obj._checkbuffer() and obj.is_on_floor()):
 		if obj.jump_count == 1:
-			obj.jump(obj.jump_speed*0.8)
+			obj.jump(obj.jump_speed * obj.double_jump_power_multiplier)
 		else:
 			obj.jump(obj.jump_speed)
 		obj.jump_count += 1
@@ -100,7 +107,7 @@ func control_swimming() -> bool:
 
 	# Không bơi = đứng/treo trong nước
 	if input_vec == Vector2.ZERO:
-		obj.velocity = obj.velocity.lerp(Vector2.ZERO, 0.1)
+		obj.velocity = obj.velocity.lerp(Vector2.ZERO, obj.swim_deceleration)
 		return false
 
 	input_vec = input_vec.normalized()
@@ -109,7 +116,7 @@ func control_swimming() -> bool:
 
 	obj.velocity = obj.velocity.lerp(
 		 input_vec * obj.swim_speed,
-		0.15
+		obj.swim_acceleration
 	)
 	return true
 

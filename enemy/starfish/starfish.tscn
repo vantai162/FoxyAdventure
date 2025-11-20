@@ -99,6 +99,7 @@ radius = 17.1172
 
 [node name="Starfish" type="CharacterBody2D"]
 collision_layer = 8
+collision_mask = 9
 script = ExtResource("1_chqr0")
 metadata/_custom_type_script = "uid://s4xx82espxdt"
 
@@ -109,7 +110,8 @@ sprite_frames = SubResource("SpriteFrames_hanlh")
 animation = &"attack"
 
 [node name="FrontRayCast2D" type="RayCast2D" parent="Direction"]
-position = Vector2(9, 4)
+collision_mask = 9
+position = Vector2(9, -4)
 target_position = Vector2(18, 0)
 
 [node name="DownRayCast2D" type="RayCast2D" parent="Direction"]

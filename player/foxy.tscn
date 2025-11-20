@@ -240,6 +240,10 @@ size = Vector2(23, 30)
 [node name="Foxy" type="CharacterBody2D" groups=["can_interact_with_water", "player"]]
 collision_layer = 2
 script = ExtResource("1_wod02")
+ground_friction = 0.15
+wall_jump_force = 136.0
+wall_jump_control_delay = 0.25
+wall_jump_control_fade_duration = 0.6
 blade_projectile_scene = ExtResource("3_blade")
 max_health = 4
 metadata/_custom_type_script = "uid://w7xdmsdvf5vd"

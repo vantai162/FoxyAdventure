@@ -59,6 +59,7 @@ size = Vector2(527, 237)
 
 [node name="Crab" type="CharacterBody2D"]
 collision_layer = 8
+collision_mask = 9
 script = ExtResource("1_wf64l")
 metadata/_custom_type_script = "uid://s4xx82espxdt"
 
@@ -73,6 +74,7 @@ sprite_frames = SubResource("SpriteFrames_x3h0i")
 animation = &"dead"
 
 [node name="FrontRayCast2D" type="RayCast2D" parent="Direction"]
+collision_mask = 9
 position = Vector2(9, -4)
 target_position = Vector2(14, 0)
 
