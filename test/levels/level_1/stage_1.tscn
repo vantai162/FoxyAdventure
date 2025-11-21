@@ -99,13 +99,11 @@ position = Vector2(19, 14)
 position = Vector2(333, -1)
 
 [node name="water" type="Node2D" parent="." groups=["water"]]
-z_index = -1
+z_index = 10
 position = Vector2(-793, -50)
 script = ExtResource("22_06vob")
 water_size = Vector2(330, 250)
-player_splash_mutiplier = 0.15
-surface_color = Color(0.160784, 0.713726, 0.956863, 1)
-water_fill_color = Color(0, 0.590664, 0.839505, 1)
+player_splash_mutiplier = 0.36
 metadata/_custom_type_script = "uid://b3s1m3fi6lhf5"
 
 [node name="World" type="TileMapLayer" parent="."]

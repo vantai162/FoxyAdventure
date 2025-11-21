@@ -12,13 +12,17 @@ var current_speed
 @export var max_health: int = 3
 var health: int
 @onready var floor_ray_cast: RayCast2D = $FloorRayCast2D
-@export var accelecrationValue = 0.01 # gia tri tang toc khi truot
-@export var slideValue = 0.01
-@export var fullStopValue = 15
+
+## Ice Physics - Designer configurable values
+@export_group("Ice Physics")
+@export var accelecrationValue: float = 0.08  ## Acceleration rate on ice (higher = more responsive)
+@export var slideValue: float = 0.03  ## Deceleration rate when sliding on ice (lower = more slippery)
+@export var fullStopValue: float = 15.0  ## Velocity threshold for full stop on ice
 
 var is_in_water: bool = false
 @export var max_oxygen := 5.0          # số giây có thể ở dưới nước
 @export var oxygen_decrease_rate := 1.0  # mỗi giây giảm bao nhiêu oxy
+@export var oxygen_increase_rate := 1.5  # mỗi giây tăng bao nhiêu oxy khi ở trên mặt nước/đất
 @export var damage_per_second := 1      # mất HP mỗi giây khi đã hết oxy
 var current_oxygen := max_oxygen
 
@@ -131,6 +135,13 @@ func _is_on_ice():
 	var collider = floor_ray_cast.get_collider()
 	if not collider: return false
 	
+	# Check if the collider has a PhysicsMaterial2D with low friction (ice-like)
+	if collider is StaticBody2D or collider is CharacterBody2D or collider is RigidBody2D:
+		var physics_material = collider.physics_material_override
+		if physics_material and physics_material.friction < 0.3:  # Ice threshold
+			return true
+	
+	# Fallback to name check for backward compatibility
 	return collider.name == "IceBlock"
 	
 func _is_on_one_way_platform():

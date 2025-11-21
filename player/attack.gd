@@ -11,7 +11,10 @@ func _enter() -> void:
 		obj.change_animation("Jump_attack")
 
 	timer = obj.attack_duration
-	obj.velocity.x = 0
+	
+	# Stop player on normal ground, but preserve momentum on ice
+	if not (obj.is_on_floor() and obj._is_on_ice()):
+		obj.velocity.x = 0
 
 	# Enable collision shape of hit area
 	obj.get_node("Direction/HitArea2D/CollisionShape2D").disabled = false
