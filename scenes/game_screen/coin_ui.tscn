@@ -1,0 +1,30 @@
+[gd_scene load_steps=4 format=3 uid="uid://k1cvcu80rfmm"]
+
+[ext_resource type="Texture2D" uid="uid://cpcg358wuu50i" path="res://assets/coin/01.png" id="1_63h2f"]
+[ext_resource type="Script" uid="uid://b8c2q3dlil8ib" path="res://scenes/game_screen/coin_ui.gd" id="1_fmoxf"]
+[ext_resource type="FontFile" uid="uid://dmn322frb0n8t" path="res://assets/fonts/pixel_operator/PixelOperator.ttf" id="2_fmoxf"]
+
+[node name="CoinUI" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_fmoxf")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+position = Vector2(1.5, 11.5)
+scale = Vector2(1.1875, 1.1875)
+texture = ExtResource("1_63h2f")
+
+[node name="Label" type="Label" parent="."]
+layout_mode = 0
+offset_left = 13.0
+offset_top = -3.0
+offset_right = 38.0
+offset_bottom = 29.0
+scale = Vector2(0.859829, 0.80711)
+theme_override_fonts/font = ExtResource("2_fmoxf")
+theme_override_font_sizes/font_size = 32
+text = "0"

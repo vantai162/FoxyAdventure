@@ -9,6 +9,7 @@ class_name Inventory
 	"Coin":0,
 	"Key":0
 }
+signal item_amount_changed(item_name, new_amount)
 
 func add_new_key_skill(skill_name:String):
 	if(KeySkillUnlocked.get(skill_name)!=null):
@@ -34,6 +35,7 @@ func adjust_amount_item(item_name:String,amount:int):
 			AmountItem[item_name]+=amount
 			print(item_name)
 			print(AmountItem[item_name])
+			item_amount_changed.emit(item_name, AmountItem[item_name])
 		else:
 			print("Not enough item")
 	else:
