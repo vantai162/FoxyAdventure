@@ -1,4 +1,4 @@
-[gd_resource type="TileSet" load_steps=47 format=3 uid="uid://bmuxyu21ya31y"]
+[gd_resource type="TileSet" load_steps=49 format=3 uid="uid://bmuxyu21ya31y"]
 
 [ext_resource type="Texture2D" uid="uid://v2dtejovry7r" path="res://assets/terrain/terrain_32x32.png" id="1_6gm7o"]
 [ext_resource type="Texture2D" uid="uid://blamh8wdme7oi" path="res://assets/TX Village Props/TX Village Props-2.png" id="2_fcvr3"]
@@ -26,6 +26,7 @@
 [ext_resource type="PackedScene" uid="uid://bp4fcvlg5b31p" path="res://objects/platform/vertical_moving_platform.tscn" id="13_51cmh"]
 [ext_resource type="PackedScene" uid="uid://6anvnhaq553w" path="res://environment/water/water.tscn" id="14_20ewd"]
 [ext_resource type="PackedScene" uid="uid://qgov7mnvkq4m" path="res://objects/spike/fake_spike/fake_spike.tscn" id="14_tvqo2"]
+[ext_resource type="PackedScene" uid="uid://lrdkn2gv1v1m" path="res://effect_Item/coin/coin.tscn" id="21_040ux"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_nmr65"]
 texture = ExtResource("1_6gm7o")
@@ -717,6 +718,10 @@ texture_region_size = Vector2i(32, 32)
 resource_name = "ceiling_spike"
 scenes/1/scene = ExtResource("2_uyjym")
 
+[sub_resource type="TileSetScenesCollectionSource" id="TileSetScenesCollectionSource_4fte4"]
+resource_name = "coin"
+scenes/1/scene = ExtResource("21_040ux")
+
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_uyjym"]
 texture = ExtResource("2_fcvr3")
 texture_region_size = Vector2i(32, 32)
@@ -1359,3 +1364,4 @@ sources/16 = SubResource("TileSetScenesCollectionSource_xcxv2")
 sources/17 = SubResource("TileSetScenesCollectionSource_325i5")
 sources/18 = SubResource("TileSetScenesCollectionSource_tvqo2")
 sources/19 = SubResource("TileSetAtlasSource_b6r2m")
+sources/20 = SubResource("TileSetScenesCollectionSource_4fte4")

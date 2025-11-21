@@ -47,6 +47,7 @@ var inventory= Inventory.new()
 
 var air_control: float = 1.0
 signal health_changed
+signal coin_changed
 @export_group("Blade")
 @export var blade_projectile_scene: PackedScene
 @export var air_slash_scene: PackedScene
@@ -68,12 +69,6 @@ enum attack_direction {
 
 @export var InitCoolDown = {
 	"Dash": 2
-}
-
-@export var KeySkillUnlocked={ 
-	"Dash":false,
-	"HasCollectedBlade":false,
-	"DoubleJump":false
 }
 
 var attack_cooldown: int = 1
