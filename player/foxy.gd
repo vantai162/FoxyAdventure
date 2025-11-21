@@ -10,11 +10,11 @@ extends BaseCharacter
 @export_group("Movement Physics")
 @export var ground_friction: float = 0.25
 @export var min_stop_speed: float = 10.0
-@export var air_drag_multiplier: float = 0.5
+@export var slow_effect_multiplier: float = 0.5  ## Speed multiplier when slow effect is active
+@export var wind_influence_factor: float = 0.1  ## How quickly player adjusts to wind when not moving
 
 @export_group("Wall Jump")
 @export var wall_jump_force: float = 100.0
-@export var wall_jump_air_control: float = 0.05
 @export var wall_jump_control_delay: float = 0.15
 @export var wall_jump_control_fade_duration: float = 0.4
 @export var wall_slide_friction: float = 0.3
@@ -43,8 +43,17 @@ extends BaseCharacter
 @export var swim_gravity: float = 300.0
 @export var swim_deceleration: float = 0.1
 @export var swim_acceleration: float = 0.15
+@export var head_offset_y: float = 8.0  ## Distance from player origin to head, negative in Y-axis (head is above origin)
 
-var air_control: float = 1.0
+@export_group("Air Control")
+@export var air_acceleration: float = 0.3  ## Air steering responsiveness when actively moving (0.0-1.0, lower = more momentum/inertia visible)
+@export var air_deceleration: float = 0.08  ## Air drag when no input (0.0-1.0, lower = longer coast/momentum preservation)
+@export var wall_jump_air_acceleration: float = 0.08  ## Restricted air control during wall jump (creates commitment)
+
+## Runtime state for wall jump air restriction (managed by jump state)
+var wall_jump_restriction_timer: float = -1.0  ## -1 = not active, >=0 = active countdown
+
+var current_water: Node2D = null  ## Reference to current water body player is in
 signal health_changed
 @export_group("Blade")
 @export var blade_projectile_scene: PackedScene
@@ -83,6 +92,24 @@ var last_ground_time: float = -1211.0
 var blade_count: int = 0
 var max_blade_capacity: int = 1
 var has_unlocked_blade: bool = false
+
+## Get current air acceleration value based on wall jump restriction state
+func get_current_air_acceleration() -> float:
+	if wall_jump_restriction_timer < 0:
+		return air_acceleration
+	
+	# Wall jump restriction active - check phase
+	if wall_jump_restriction_timer < wall_jump_control_delay:
+		return wall_jump_air_acceleration  # Locked phase: minimal control
+	
+	# Fade phase: smooth transition back to full control
+	var fade_time = wall_jump_restriction_timer - wall_jump_control_delay
+	if fade_time < wall_jump_control_fade_duration:
+		var blend = fade_time / wall_jump_control_fade_duration
+		return lerp(wall_jump_air_acceleration, air_acceleration, blend)
+	
+	# Fully restored
+	return air_acceleration
 
 func can_attack() -> bool:
 	return blade_count > 0 and Effect["Stun"] <= 0
@@ -151,6 +178,12 @@ func _ready() -> void:
 	$Direction/HitArea2D/CollisionShape2D.disabled = true
 	call_deferred("_connect_water_signals")
 	emit_signal("health_changed")
+	
+	# Sync sprite to blade inventory state after base initialization
+	# This handles respawn scenarios where blade state persists but sprite resets
+	if has_unlocked_blade and blade_count > 0:
+		set_animated_sprite($Direction/BladeAnimatedSprite2D)
+	# else: already using unarmed sprite from super._ready()
 	
 func _connect_water_signals():
 	for water in get_tree().get_nodes_in_group("water"):

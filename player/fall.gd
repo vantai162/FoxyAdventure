@@ -15,8 +15,8 @@ func _update(_delta: float) -> void:
 		control_attack()
 		control_jump()
 		control_dash()
-	else:
-		obj.velocity.x=0
+	# Note: When stunned, control_moving() is not called, so velocity persists
+	# This allows stunned player to slide on ice naturally
 	#If on floor change to idle if not moving and not jumping
 	if obj.is_on_floor() and not is_moving:
 		change_state(fsm.states.idle)

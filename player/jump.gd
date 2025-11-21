@@ -1,41 +1,37 @@
 extends Player_State
 
-var stored_air_control: float = 1.0
-var wall_jump_timer: float = 0.0
-
 func _enter() -> void:
 	obj.change_animation("jump")
+	
+	# If coming from wall cling, activate wall jump air restriction
 	if fsm.previous_state == fsm.states.wallcling:
-		stored_air_control = obj.air_control if "air_control" in obj else 1.0
-		wall_jump_timer = 0.0
-		obj.air_control = obj.wall_jump_air_control
+		obj.wall_jump_restriction_timer = 0.0
 	else:
-		obj.air_control = 1.0
-		wall_jump_timer = -1.0
+		obj.wall_jump_restriction_timer = -1.0  # Normal jump: no restriction
 
 func _exit() -> void:
-	if wall_jump_timer >= 0:
-		obj.air_control = stored_air_control
+	# Timer naturally expires or gets reset by next jump
+	pass
 
 func _update(delta: float):
-	if wall_jump_timer >= 0:
-		wall_jump_timer += delta
-		if wall_jump_timer >= obj.wall_jump_control_fade_duration:
-			obj.air_control = stored_air_control
-			wall_jump_timer = -1.0
-		else:
-			var blend = wall_jump_timer / obj.wall_jump_control_fade_duration
-			obj.air_control = lerp(obj.wall_jump_air_control, stored_air_control, blend)
+	# Update wall jump restriction timer if active
+	if obj.wall_jump_restriction_timer >= 0:
+		obj.wall_jump_restriction_timer += delta
 	
 	if obj.Effect["Stun"] <= 0:
-		if wall_jump_timer < 0 or wall_jump_timer >= obj.wall_jump_control_delay:
+		# Wall jump control delay: restrict control_moving during initial frames
+		var can_control = obj.wall_jump_restriction_timer < 0 or \
+						  obj.wall_jump_restriction_timer >= obj.wall_jump_control_delay
+		
+		if can_control:
 			control_moving()
+		
 		control_throw()
 		control_attack()
 		control_jump()
 		control_dash()
-	else:
-		obj.velocity.x = 0
+	# Note: When stunned, control_moving() is not called, so velocity persists
+	# This allows stunned player to maintain jump arc naturally
 	
 	if obj.velocity.y > 0:
 		change_state(fsm.states.fall)
