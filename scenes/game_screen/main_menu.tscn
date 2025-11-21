@@ -1,0 +1,173 @@
+[gd_scene load_steps=10 format=3 uid="uid://485meohsiugp"]
+
+[ext_resource type="Script" uid="uid://c3jinqop44upq" path="res://scenes/game_screen/main_menu.gd" id="1_ab5lu"]
+[ext_resource type="Texture2D" uid="uid://bm66ag0j7y3qi" path="res://assets/ui/popup.png" id="1_p4sw0"]
+[ext_resource type="Texture2D" uid="uid://def6hgd6kpijr" path="res://assets/background/Free-Summer-Pixel-Art-Backgrounds6.jpg" id="2_ab5lu"]
+[ext_resource type="FontFile" uid="uid://bf742t4mxgd7l" path="res://assets/fonts/big_font.fnt" id="2_jdxg6"]
+[ext_resource type="FontFile" uid="uid://gdaeropw621v" path="res://assets/fonts/daydream_3/Daydream DEMO.otf" id="4_snmln"]
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_snmln"]
+texture = ExtResource("2_ab5lu")
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_jdxg6"]
+bg_color = Color(0.6, 0.6, 0.6, 0)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_p4sw0"]
+bg_color = Color(0.6, 0.6, 0.6, 0)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_snmln"]
+bg_color = Color(0.6, 0.6, 0.6, 0.00392157)
+shadow_offset = Vector2(0, 3.41)
+
+[node name="MainMenu" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_ab5lu")
+
+[node name="Panel" type="Panel" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxTexture_snmln")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+layout_mode = 0
+offset_left = 387.0
+offset_top = 264.0
+offset_right = 759.0
+offset_bottom = 578.0
+theme_override_constants/separation = 13
+alignment = 1
+
+[node name="StartGameRect" type="NinePatchRect" parent="VBoxContainer"]
+custom_minimum_size = Vector2(160, 96)
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+texture = ExtResource("1_p4sw0")
+region_rect = Rect2(0, 0, 96, 96)
+patch_margin_left = 32
+patch_margin_top = 32
+patch_margin_right = 32
+patch_margin_bottom = 32
+axis_stretch_horizontal = 1
+axis_stretch_vertical = 1
+
+[node name="StartButton" type="Button" parent="VBoxContainer/StartGameRect"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -85.5
+offset_top = -25.0
+offset_right = 85.5
+offset_bottom = 25.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_fonts/font = ExtResource("2_jdxg6")
+theme_override_font_sizes/font_size = 17
+theme_override_styles/hover_pressed = SubResource("StyleBoxFlat_jdxg6")
+theme_override_styles/hover = SubResource("StyleBoxFlat_p4sw0")
+theme_override_styles/normal = SubResource("StyleBoxFlat_snmln")
+text = "START GAME"
+
+[node name="OptionsRect" type="NinePatchRect" parent="VBoxContainer"]
+custom_minimum_size = Vector2(160, 96)
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+texture = ExtResource("1_p4sw0")
+patch_margin_left = 32
+patch_margin_top = 32
+patch_margin_right = 32
+patch_margin_bottom = 32
+axis_stretch_horizontal = 1
+axis_stretch_vertical = 1
+
+[node name="OptionsButton" type="Button" parent="VBoxContainer/OptionsRect"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -85.5
+offset_top = -25.0
+offset_right = 85.5
+offset_bottom = 25.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_fonts/font = ExtResource("2_jdxg6")
+theme_override_font_sizes/font_size = 20
+theme_override_styles/hover_pressed = SubResource("StyleBoxFlat_jdxg6")
+theme_override_styles/hover = SubResource("StyleBoxFlat_p4sw0")
+theme_override_styles/normal = SubResource("StyleBoxFlat_snmln")
+text = "OPTIONS"
+
+[node name="NinePatchRect" type="NinePatchRect" parent="VBoxContainer"]
+custom_minimum_size = Vector2(160, 96)
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+texture = ExtResource("1_p4sw0")
+patch_margin_left = 32
+patch_margin_top = 32
+patch_margin_right = 32
+patch_margin_bottom = 32
+axis_stretch_horizontal = 1
+axis_stretch_vertical = 1
+
+[node name="QuitButton" type="Button" parent="VBoxContainer/NinePatchRect"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -85.5
+offset_top = -25.0
+offset_right = 85.5
+offset_bottom = 25.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_fonts/font = ExtResource("2_jdxg6")
+theme_override_font_sizes/font_size = 20
+theme_override_styles/hover_pressed = SubResource("StyleBoxFlat_jdxg6")
+theme_override_styles/hover = SubResource("StyleBoxFlat_p4sw0")
+theme_override_styles/normal = SubResource("StyleBoxFlat_snmln")
+text = "QUIT"
+
+[node name="Label" type="Label" parent="."]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -251.0
+offset_top = -212.0
+offset_right = 252.0
+offset_bottom = -111.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/line_spacing = 11
+theme_override_constants/shadow_offset_x = 6
+theme_override_constants/outline_size = 7
+theme_override_fonts/font = ExtResource("4_snmln")
+theme_override_font_sizes/font_size = 30
+text = "FOXY ADVENTURE
+Voyage of oblivion"
+horizontal_alignment = 1
+
+[connection signal="pressed" from="VBoxContainer/StartGameRect/StartButton" to="." method="_on_start_button_pressed"]
+[connection signal="pressed" from="VBoxContainer/OptionsRect/OptionsButton" to="." method="_on_options_button_pressed"]
+[connection signal="pressed" from="VBoxContainer/NinePatchRect/QuitButton" to="." method="_on_quit_button_pressed"]

@@ -1,0 +1,15 @@
+[gd_scene load_steps=3 format=3 uid="uid://ddcloveonpfdf"]
+
+[ext_resource type="Texture2D" uid="uid://bbvwg7byudvoe" path="res://assets/TX Village Props/TX Village Props-208.png" id="1_hwrqn"]
+
+[sub_resource type="SegmentShape2D" id="SegmentShape2D_rd3iu"]
+a = Vector2(-51, -29)
+b = Vector2(53, 29)
+
+[node name="StairCase" type="StaticBody2D"]
+
+[node name="Stair" type="Sprite2D" parent="."]
+texture = ExtResource("1_hwrqn")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("SegmentShape2D_rd3iu")

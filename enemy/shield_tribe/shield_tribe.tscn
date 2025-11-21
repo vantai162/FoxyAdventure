@@ -1,4 +1,4 @@
-[gd_scene load_steps=33 format=3 uid="uid://dav8b7a6d5e4f"]
+[gd_scene load_steps=38 format=3 uid="uid://dav8b7a6d5e4f"]
 
 [ext_resource type="Script" uid="uid://cbxut3mc1715v" path="res://enemy/shield_tribe/shield_tribe.gd" id="1_shield_gd"]
 [ext_resource type="Texture2D" uid="uid://c442cyaadrt51" path="res://assets/spear/spear_10.png" id="3_c7sff"]
@@ -9,11 +9,15 @@
 [ext_resource type="Texture2D" uid="uid://ywa1706wc6ln" path="res://assets/spear/spear_12.png" id="5_lj2gn"]
 [ext_resource type="Script" uid="uid://dh6yqcqg2wyd5" path="res://enemy/shield_tribe/states/hurt.gd" id="6_hurt_state"]
 [ext_resource type="Texture2D" uid="uid://0hyoor4j6h83" path="res://assets/spear/spear_13.png" id="6_q0raq"]
+[ext_resource type="Texture2D" uid="uid://8usoreyem8l6" path="res://assets/foxy/smoke/jump_smoke_1.png" id="7_c7sff"]
 [ext_resource type="Script" uid="uid://xqvgljx4hk1s" path="res://scripts/hit_area_2d.gd" id="7_hit_area_gd"]
 [ext_resource type="Texture2D" uid="uid://cd0374kgo2x75" path="res://assets/spear/spear_14.png" id="7_kdn0t"]
+[ext_resource type="Texture2D" uid="uid://jtpy308mqnwi" path="res://assets/foxy/smoke/jump_smoke_2.png" id="8_a258x"]
 [ext_resource type="Texture2D" uid="uid://c3j8qr0fo55s7" path="res://assets/spear/spear_17.png" id="8_s34ix"]
 [ext_resource type="Texture2D" uid="uid://dbvjeadib6li4" path="res://assets/spear/spear_18.png" id="9_ang66"]
+[ext_resource type="Texture2D" uid="uid://cbk136ktae42o" path="res://assets/foxy/smoke/jump_smoke_3.png" id="9_lj2gn"]
 [ext_resource type="Texture2D" uid="uid://cm5p07mre2k3y" path="res://assets/spear/spear_15.png" id="10_dlx46"]
+[ext_resource type="Texture2D" uid="uid://c8cs1hwh7venp" path="res://assets/foxy/smoke/jump_smoke_4.png" id="10_q0raq"]
 [ext_resource type="Texture2D" uid="uid://drk1n4i01r1t8" path="res://assets/spear/spear_1.png" id="12_yje0y"]
 [ext_resource type="Texture2D" uid="uid://vcsssr1ka8a8" path="res://assets/spear/spear_2.png" id="13_b6srq"]
 [ext_resource type="Texture2D" uid="uid://bg2g5h1xj5r80" path="res://assets/spear/spear_7.png" id="14_n7o8p"]
@@ -25,6 +29,7 @@
 [ext_resource type="PackedScene" uid="uid://ct1tqxgwkuvbe" path="res://scripts/hurt_area_2d.tscn" id="22_p7fv1"]
 [ext_resource type="Texture2D" uid="uid://ctoeskfpde3l3" path="res://assets/monsters/tribe_temporary/Sprites/7-Objects/1-BOMB/3-Explotion/7.png" id="22_q0raq"]
 [ext_resource type="Texture2D" uid="uid://bcwx324p4jehn" path="res://assets/monsters/tribe_temporary/Sprites/7-Objects/1-BOMB/3-Explotion/8.png" id="23_kdn0t"]
+[ext_resource type="Script" uid="uid://eoq715nnbh57" path="res://enemy/shield_tribe/dead.gd" id="30_a258x"]
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_tribe"]
 animations = [{
@@ -35,7 +40,7 @@ animations = [{
 "duration": 1.0,
 "texture": ExtResource("4_a258x")
 }, {
-"duration": 1.0,
+"duration": 2.0,
 "texture": ExtResource("5_lj2gn")
 }, {
 "duration": 1.0,
@@ -50,14 +55,20 @@ animations = [{
 }, {
 "frames": [{
 "duration": 1.0,
-"texture": ExtResource("8_s34ix")
+"texture": ExtResource("7_c7sff")
 }, {
 "duration": 1.0,
-"texture": ExtResource("9_ang66")
+"texture": ExtResource("8_a258x")
+}, {
+"duration": 1.0,
+"texture": ExtResource("9_lj2gn")
+}, {
+"duration": 1.0,
+"texture": ExtResource("10_q0raq")
 }],
 "loop": false,
 "name": &"dead",
-"speed": 2.0
+"speed": 5.0
 }, {
 "frames": [{
 "duration": 1.0,
@@ -106,10 +117,10 @@ animations = [{
 }]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_detect"]
-radius = 84.7172
+radius = 105.72
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_shield"]
-size = Vector2(20, 70)
+size = Vector2(10, 40)
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_s34ix"]
 animations = [{
@@ -153,10 +164,11 @@ size = Vector2(67, 18)
 radius = 10.0499
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_iqs6i"]
-size = Vector2(18, 34)
+size = Vector2(18, 36)
 
 [node name="ShieldTribe" type="CharacterBody2D"]
 collision_layer = 8
+collision_mask = 9
 script = ExtResource("1_shield_gd")
 spear_thrust_distance = 72.0
 spear_thrust_out_time = 0.6
@@ -168,7 +180,9 @@ metadata/_custom_type_script = "uid://s4xx82espxdt"
 position = Vector2(3, 6.5)
 scale = Vector2(1.09375, 1.20313)
 sprite_frames = SubResource("SpriteFrames_tribe")
-animation = &"attack"
+animation = &"dead"
+frame = 3
+frame_progress = 1.0
 
 [node name="DetectPlayerArea2D" type="Area2D" parent="Direction"]
 collision_layer = 0
@@ -179,9 +193,8 @@ monitorable = false
 shape = SubResource("CircleShape2D_detect")
 
 [node name="Shield" type="StaticBody2D" parent="Direction"]
-position = Vector2(25, 0)
-collision_layer = 8
-collision_mask = 2
+position = Vector2(15, 10)
+collision_mask = 0
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Direction/Shield"]
 shape = SubResource("RectangleShape2D_shield")
@@ -234,8 +247,11 @@ script = ExtResource("5_attack_state")
 [node name="Hurt" type="Node" parent="States"]
 script = ExtResource("6_hurt_state")
 
+[node name="Dead" type="Node" parent="States"]
+script = ExtResource("30_a258x")
+
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-position = Vector2(0, 8)
+position = Vector2(0, 10)
 shape = SubResource("RectangleShape2D_iqs6i")
 
 [connection signal="hurt" from="Direction/HurtArea2d" to="." method="_on_hurt_area_2d_hurt"]

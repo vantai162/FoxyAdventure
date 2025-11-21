@@ -7,3 +7,7 @@ func open_gate() -> void:
 
 func close_gate() -> void:
 	$AnimationPlayer.play("close")
+
+
+func _on_lever_lever_activated() -> void:
+	pass # Replace with function body.

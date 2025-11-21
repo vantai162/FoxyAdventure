@@ -6,7 +6,7 @@ func _enter() -> void:
 	else:
 		obj.change_animation("Jump_attack")
 	
-	timer = 0.2
+	timer = obj.throw_duration
 	obj.velocity.x = 0
 	obj.throw_blade_projectile()
 

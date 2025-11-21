@@ -1,0 +1,83 @@
+[gd_scene load_steps=9 format=3 uid="uid://ckg60yh6cg6vr"]
+
+[ext_resource type="Script" uid="uid://c32eiccpjbvi7" path="res://objects/npc/npc.gd" id="1_rn7i7"]
+[ext_resource type="Texture2D" uid="uid://db66xjg0he18d" path="res://assets/monsters/tribe_temporary/Sprites/5-Enemy-Captain/11-Dead Ground/1.png" id="2_rn7i7"]
+[ext_resource type="Texture2D" uid="uid://c8mpeyq4l0dya" path="res://assets/monsters/tribe_temporary/Sprites/5-Enemy-Captain/11-Dead Ground/2.png" id="3_aqpri"]
+[ext_resource type="Texture2D" uid="uid://kjtvt5no2lts" path="res://assets/monsters/tribe_temporary/Sprites/5-Enemy-Captain/11-Dead Ground/3.png" id="4_m6gh1"]
+[ext_resource type="Texture2D" uid="uid://battoycsxlqp1" path="res://assets/monsters/tribe_temporary/Sprites/5-Enemy-Captain/11-Dead Ground/4.png" id="5_qs0fi"]
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_tlxjv"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("2_rn7i7")
+}, {
+"duration": 1.0,
+"texture": ExtResource("3_aqpri")
+}, {
+"duration": 1.0,
+"texture": ExtResource("4_m6gh1")
+}, {
+"duration": 1.0,
+"texture": ExtResource("5_qs0fi")
+}],
+"loop": true,
+"name": &"default",
+"speed": 5.0
+}]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_etn6b"]
+size = Vector2(52, 38)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_rvb5v"]
+bg_color = Color(0.783523, 0.783523, 0.783523, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[node name="Npc" type="Area2D"]
+collision_mask = 2
+script = ExtResource("1_rn7i7")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+position = Vector2(-8.88889, -8)
+scale = Vector2(0.777778, 0.777778)
+sprite_frames = SubResource("SpriteFrames_tlxjv")
+frame_progress = 0.257043
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(-11, 0)
+shape = SubResource("RectangleShape2D_etn6b")
+
+[node name="Panel" type="Panel" parent="."]
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -133.0
+offset_top = -72.0
+offset_right = 133.0
+offset_bottom = -35.0
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_styles/panel = SubResource("StyleBoxFlat_rvb5v")
+
+[node name="Label" type="Label" parent="Panel"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -0.5
+offset_top = -11.5
+offset_right = 0.5
+offset_bottom = 11.5
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+
+[connection signal="body_entered" from="." to="." method="_on_body_entered"]
+[connection signal="body_exited" from="." to="." method="_on_body_exited"]

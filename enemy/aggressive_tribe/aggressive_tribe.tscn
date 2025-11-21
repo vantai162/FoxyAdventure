@@ -134,6 +134,7 @@ radius = 32.0
 [node name="AggressiveTribe" type="CharacterBody2D"]
 scale = Vector2(0.85, 0.85)
 collision_layer = 8
+collision_mask = 9
 script = ExtResource("1_tribe_gd")
 windup_time = 1.0
 normal_coconut_scene = ExtResource("2_o5hof")
@@ -154,6 +155,7 @@ frame_progress = 0.862752
 [node name="FrontRayCast2D" type="RayCast2D" parent="Direction"]
 position = Vector2(15, 16)
 target_position = Vector2(30, 0)
+collision_mask = 9
 
 [node name="DownRayCast2D" type="RayCast2D" parent="Direction"]
 position = Vector2(15, 0)
@@ -165,6 +167,16 @@ position = Vector2(30, -20)
 [node name="DetectPlayerRayCast2D" type="RayCast2D" parent="Direction"]
 position = Vector2(0, 16)
 target_position = Vector2(300, 0)
+collision_mask = 2
+
+[node name="DetectPlayerRayCast2D1" type="RayCast2D" parent="Direction"]
+position = Vector2(0, 16)
+target_position = Vector2(300, -30)
+collision_mask = 2
+
+[node name="DetectPlayerRayCast2D2" type="RayCast2D" parent="Direction"]
+position = Vector2(0, 16)
+target_position = Vector2(300, 30)
 collision_mask = 2
 
 [node name="HurtArea2D" parent="Direction" instance=ExtResource("2_hurt_area")]

@@ -1,23 +1,15 @@
 extends Player_State
 
-# Hàm _enter này lấy từ File 1, vì nó chi tiết và đúng logic hơn
 func _enter() -> void:
-	# 1. Dừng di chuyển và chạy animation "dead"
 	obj.velocity = Vector2.ZERO
-
 	obj.change_animation("dead")
 	
-	# 2. Đợi animation chết chạy xong (từ File 1, tốt hơn timer 2 giây)
 	await obj.animated_sprite.animation_finished
+	await get_tree().create_timer(obj.dead_delay_before_respawn).timeout
 	
-	# 3. Đợi một chút cho kịch tính (từ File 1)
-	await get_tree().create_timer(0.5).timeout
-	
-	# 4. Xử lý logic hồi sinh (từ File 1)
 	if GameManager.has_checkpoint():
 		await GameManager.respawn_at_checkpoint()
 	else:
-		# Hồi sinh tại chỗ (tải lại màn) nếu không có checkpoint
 		await respawn_at_default_position()
 
 

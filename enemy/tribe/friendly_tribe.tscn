@@ -1,4 +1,4 @@
-[gd_scene load_steps=42 format=3 uid="uid://duryp3ufmd0be"]
+[gd_scene load_steps=43 format=3 uid="uid://duryp3ufmd0be"]
 
 [ext_resource type="Script" uid="uid://ci0q7faxk47ee" path="res://enemy/tribe/friendly_tribe.gd" id="1_icd28"]
 [ext_resource type="Texture2D" uid="uid://lrtt52fguxfv" path="res://assets/monsters/tribe_temporary/Sprites/4-Enemy-Big Guy/2-Run/1.png" id="2_fi330"]
@@ -158,10 +158,14 @@ radius = 84.7172
 [sub_resource type="CircleShape2D" id="CircleShape2D_w111s"]
 radius = 34.7385
 
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_s06mn"]
+size = Vector2(46.875, 51.4705)
+
 [node name="FriendlyTribe" type="CharacterBody2D"]
 position = Vector2(-23, 20)
 scale = Vector2(0.64, 0.680001)
 collision_layer = 8
+collision_mask = 9
 script = ExtResource("1_icd28")
 metadata/_custom_type_script = "uid://s4xx82espxdt"
 
@@ -174,6 +178,7 @@ animation = &"suprise"
 [node name="FrontRayCast2D" type="RayCast2D" parent="Direction"]
 position = Vector2(23.4375, 0)
 target_position = Vector2(21.875, 0)
+collision_mask = 9
 
 [node name="DownRayCast2D" type="RayCast2D" parent="Direction"]
 position = Vector2(23.4375, 1.47059)
@@ -203,8 +208,8 @@ position = Vector2(-5, 4)
 shape = SubResource("CircleShape2D_w111s")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-position = Vector2(-5, 4)
-shape = SubResource("CircleShape2D_w111s")
+position = Vector2(-6.25, 11.0294)
+shape = SubResource("RectangleShape2D_s06mn")
 
 [node name="States" type="Node" parent="."]
 

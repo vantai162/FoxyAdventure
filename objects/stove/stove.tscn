@@ -1,0 +1,62 @@
+[gd_scene load_steps=10 format=3 uid="uid://cn3voni8ehej1"]
+
+[ext_resource type="Script" uid="uid://qndrayrby2hi" path="res://objects/stove/stove.gd" id="1_m2p6u"]
+[ext_resource type="Texture2D" uid="uid://dbjgb5sbv0cke" path="res://assets/GandalfHardcore FREE Platformer Assets/GandalfHardcore FREE Platformer Assets/Pixel Art Furnace and Sawmill.png" id="2_76hjg"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_7f2wu"]
+atlas = ExtResource("2_76hjg")
+region = Rect2(0, 0, 64, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_dr0q2"]
+atlas = ExtResource("2_76hjg")
+region = Rect2(64, 0, 64, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_lkiuo"]
+atlas = ExtResource("2_76hjg")
+region = Rect2(128, 0, 64, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_v6khi"]
+atlas = ExtResource("2_76hjg")
+region = Rect2(192, 0, 64, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_0w48y"]
+atlas = ExtResource("2_76hjg")
+region = Rect2(256, 0, 64, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_oax41"]
+atlas = ExtResource("2_76hjg")
+region = Rect2(320, 0, 64, 64)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_1mtth"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_7f2wu")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_dr0q2")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_lkiuo")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_v6khi")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_0w48y")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_oax41")
+}],
+"loop": true,
+"name": &"default",
+"speed": 12.0
+}]
+
+[node name="Stove" type="Node2D"]
+script = ExtResource("1_m2p6u")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+position = Vector2(0, 8)
+sprite_frames = SubResource("SpriteFrames_1mtth")
+frame_progress = 0.730128
