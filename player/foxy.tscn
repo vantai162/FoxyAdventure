@@ -246,6 +246,7 @@ wall_jump_force = 136.0
 wall_jump_control_delay = 0.25
 wall_jump_control_fade_duration = 0.6
 air_slash_spawn_delay = 0.1
+swim_acceleration = 0.36
 blade_projectile_scene = ExtResource("3_blade")
 air_slash_scene = ExtResource("3_6e2ll")
 max_health = 4
