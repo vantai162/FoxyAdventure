@@ -1,0 +1,59 @@
+[gd_scene load_steps=12 format=3 uid="uid://b3rfttffyg1qj"]
+
+[ext_resource type="Script" uid="uid://dh4g5dyslwbew" path="res://effect_Item/key/key.gd" id="1_xhbjd"]
+[ext_resource type="Texture2D" uid="uid://bi8gkhc5c20e0" path="res://assets/key/key_1.png" id="2_vmgph"]
+[ext_resource type="Texture2D" uid="uid://blv7kgyiqt01l" path="res://assets/key/key_2.png" id="3_6e2kg"]
+[ext_resource type="Texture2D" uid="uid://dpgxe41c6tp3m" path="res://assets/key/key_3.png" id="4_qd4vn"]
+[ext_resource type="Texture2D" uid="uid://b2fklcxyt1g5p" path="res://assets/key/key_4.png" id="5_fpumv"]
+[ext_resource type="Texture2D" uid="uid://doeicojwnpmr0" path="res://assets/key/key_5.png" id="6_w21s2"]
+[ext_resource type="Texture2D" uid="uid://kwii40eev3k4" path="res://assets/key/key_6.png" id="7_ite6y"]
+[ext_resource type="Texture2D" uid="uid://dl0uivnixr1sr" path="res://assets/key/key_7.png" id="8_el8ge"]
+[ext_resource type="Texture2D" uid="uid://cjbbl0pvwtmv7" path="res://assets/key/key_8.png" id="9_51gf1"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_lyipc"]
+size = Vector2(20, 24)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_iq7b5"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("2_vmgph")
+}, {
+"duration": 1.0,
+"texture": ExtResource("3_6e2kg")
+}, {
+"duration": 1.0,
+"texture": ExtResource("4_qd4vn")
+}, {
+"duration": 1.0,
+"texture": ExtResource("5_fpumv")
+}, {
+"duration": 1.0,
+"texture": ExtResource("6_w21s2")
+}, {
+"duration": 1.0,
+"texture": ExtResource("7_ite6y")
+}, {
+"duration": 1.0,
+"texture": ExtResource("8_el8ge")
+}, {
+"duration": 1.0,
+"texture": ExtResource("9_51gf1")
+}],
+"loop": true,
+"name": &"default",
+"speed": 5.0
+}]
+
+[node name="Key" type="Area2D"]
+collision_layer = 0
+collision_mask = 2
+script = ExtResource("1_xhbjd")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("RectangleShape2D_lyipc")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+sprite_frames = SubResource("SpriteFrames_iq7b5")
+
+[connection signal="area_entered" from="." to="." method="_on_area_entered"]

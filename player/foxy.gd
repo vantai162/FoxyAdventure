@@ -6,6 +6,7 @@ extends BaseCharacter
 @export var invi_time: float = 2.0
 @export var jump_buffer: float
 @export var coyote_time: float
+var inventory= Inventory.new()
 
 @export_group("Movement Physics")
 @export var ground_friction: float = 0.25
@@ -68,11 +69,13 @@ enum attack_direction {
 @export var InitCoolDown = {
 	"Dash": 2
 }
-@export var KeySkillUnlocked={
+
+@export var KeySkillUnlocked={ 
 	"Dash":false,
 	"HasCollectedBlade":false,
 	"DoubleJump":false
 }
+
 var attack_cooldown: int = 1
 var jump_count: int = 0
 var dashed_on_air: bool = false
@@ -243,14 +246,18 @@ func load_state(data: Dictionary) -> void:
 		if has_unlocked_blade:
 			set_animated_sprite($Direction/BladeAnimatedSprite2D)
 	
-	if data.has("has_blade") and data["has_blade"] == true:
-		has_unlocked_blade = true
-		blade_count = max(blade_count, 1)
-		set_animated_sprite($Direction/BladeAnimatedSprite2D)
-	
 	if data.has("health"):
 		health = data["health"]
+	# Đã loại bỏ logic: if data.has("has_blade") and data["has_blade"] == true:
 
+func heal(amount:int): # Giữ: func heal
+	if(amount+health>max_health):
+		health=max_health
+	else:
+		health=amount+health
+
+func checkfullhealth()->bool: # Giữ: func checkfullhealth
+	return health==max_health
 
 func _on_hurt_area_2d_hurt(direction: Vector2, damage: float) -> void:
 	fsm.current_state.take_damage(damage)
