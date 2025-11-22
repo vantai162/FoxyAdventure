@@ -1,4 +1,4 @@
-[gd_scene load_steps=64 format=4 uid="uid://30po03m850f6"]
+[gd_scene load_steps=65 format=4 uid="uid://30po03m850f6"]
 
 [ext_resource type="PackedScene" uid="uid://dytm3c86oshmd" path="res://scenes/game_screen/hud.tscn" id="1_7oiq3"]
 [ext_resource type="Script" uid="uid://bl4jqlw4aef0m" path="res://test/stage.gd" id="1_7qv11"]
@@ -43,7 +43,8 @@
 [ext_resource type="PackedScene" uid="uid://cn3voni8ehej1" path="res://objects/stove/stove.tscn" id="24_1ge8b"]
 [ext_resource type="PackedScene" uid="uid://b336fup0h7gp5" path="res://objects/collapsable_wall/collapsable_wall.tscn" id="26_fpaxw"]
 [ext_resource type="PackedScene" uid="uid://bmic0j4cnluey" path="res://objects/checkpoint/checkpoint.tscn" id="41_u4gqf"]
-[ext_resource type="PackedScene" uid="uid://b3cbk6lmh2cc3" path="res://effect_Item/heal_potion/health_potion.tscn" id="44_8nic6"]
+[ext_resource type="AudioStream" uid="uid://bxavmfuoonbd0" path="res://assets/sounds/game_sound.mp3" id="44_8nic6"]
+[ext_resource type="PackedScene" uid="uid://b3cbk6lmh2cc3" path="res://effect_Item/heal_potion/health_potion.tscn" id="45_7s41y"]
 [ext_resource type="PackedScene" uid="uid://dl1jqgf5ab7l" path="res://effect_Item/chest/gold_chest.tscn" id="46_7s41y"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_yiwfi"]
@@ -3741,9 +3742,10 @@ position = Vector2(2536, 242)
 position = Vector2(4568, 337)
 
 [node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("44_8nic6")
 max_polyphony = 50
 
-[node name="HealthPotion" parent="." instance=ExtResource("44_8nic6")]
+[node name="HealthPotion" parent="." instance=ExtResource("45_7s41y")]
 position = Vector2(839, 244)
 
 [node name="GoldChest" parent="." instance=ExtResource("46_7s41y")]
@@ -3751,20 +3753,20 @@ position = Vector2(4093, -53)
 
 [connection signal="area_entered" from="Layer1/Key" to="Layer1/Key" method="_on_area_entered"]
 [connection signal="area_entered" from="Layer1/Coin" to="Layer1/Coin" method="_on_area_entered"]
-[connection signal="area_entered" from="Layer1/@Area2D@46963" to="Layer1/@Area2D@46963" method="_on_area_entered"]
-[connection signal="area_entered" from="Layer1/@Area2D@46964" to="Layer1/@Area2D@46964" method="_on_area_entered"]
-[connection signal="area_entered" from="Layer1/@Area2D@46965" to="Layer1/@Area2D@46965" method="_on_area_entered"]
-[connection signal="area_entered" from="Layer1/@Area2D@46966" to="Layer1/@Area2D@46966" method="_on_area_entered"]
-[connection signal="area_entered" from="Layer1/@Area2D@46967" to="Layer1/@Area2D@46967" method="_on_area_entered"]
-[connection signal="area_entered" from="Layer1/@Area2D@46968" to="Layer1/@Area2D@46968" method="_on_area_entered"]
-[connection signal="area_entered" from="Layer1/@Area2D@46969" to="Layer1/@Area2D@46969" method="_on_area_entered"]
-[connection signal="area_entered" from="Layer1/@Area2D@46970" to="Layer1/@Area2D@46970" method="_on_area_entered"]
-[connection signal="area_entered" from="Layer1/@Area2D@46971" to="Layer1/@Area2D@46971" method="_on_area_entered"]
-[connection signal="area_entered" from="Layer1/@Area2D@46972" to="Layer1/@Area2D@46972" method="_on_area_entered"]
-[connection signal="area_entered" from="Layer1/@Area2D@46973" to="Layer1/@Area2D@46973" method="_on_area_entered"]
-[connection signal="area_entered" from="Layer1/@Area2D@46974" to="Layer1/@Area2D@46974" method="_on_area_entered"]
-[connection signal="area_entered" from="Layer1/@Area2D@46975" to="Layer1/@Area2D@46975" method="_on_area_entered"]
-[connection signal="area_entered" from="Layer1/@Area2D@46976" to="Layer1/@Area2D@46976" method="_on_area_entered"]
+[connection signal="area_entered" from="Layer1/@Area2D@25445" to="Layer1/@Area2D@25445" method="_on_area_entered"]
+[connection signal="area_entered" from="Layer1/@Area2D@25446" to="Layer1/@Area2D@25446" method="_on_area_entered"]
+[connection signal="area_entered" from="Layer1/@Area2D@25447" to="Layer1/@Area2D@25447" method="_on_area_entered"]
+[connection signal="area_entered" from="Layer1/@Area2D@25448" to="Layer1/@Area2D@25448" method="_on_area_entered"]
+[connection signal="area_entered" from="Layer1/@Area2D@25449" to="Layer1/@Area2D@25449" method="_on_area_entered"]
+[connection signal="area_entered" from="Layer1/@Area2D@25450" to="Layer1/@Area2D@25450" method="_on_area_entered"]
+[connection signal="area_entered" from="Layer1/@Area2D@25451" to="Layer1/@Area2D@25451" method="_on_area_entered"]
+[connection signal="area_entered" from="Layer1/@Area2D@25452" to="Layer1/@Area2D@25452" method="_on_area_entered"]
+[connection signal="area_entered" from="Layer1/@Area2D@25453" to="Layer1/@Area2D@25453" method="_on_area_entered"]
+[connection signal="area_entered" from="Layer1/@Area2D@25454" to="Layer1/@Area2D@25454" method="_on_area_entered"]
+[connection signal="area_entered" from="Layer1/@Area2D@25455" to="Layer1/@Area2D@25455" method="_on_area_entered"]
+[connection signal="area_entered" from="Layer1/@Area2D@25456" to="Layer1/@Area2D@25456" method="_on_area_entered"]
+[connection signal="area_entered" from="Layer1/@Area2D@25457" to="Layer1/@Area2D@25457" method="_on_area_entered"]
+[connection signal="area_entered" from="Layer1/@Area2D@25458" to="Layer1/@Area2D@25458" method="_on_area_entered"]
 [connection signal="body_entered" from="Objects/Lever" to="Objects/Gate" method="open_gate"]
 [connection signal="body_exited" from="Objects/Lever" to="Objects/Gate" method="close_gate"]
 [connection signal="lever_activated" from="Objects/Lever" to="Objects/Gate" method="open_gate"]
