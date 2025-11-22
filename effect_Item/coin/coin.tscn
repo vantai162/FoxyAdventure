@@ -1,10 +1,13 @@
-[gd_scene load_steps=8 format=3 uid="uid://lrdkn2gv1v1m"]
+[gd_scene load_steps=11 format=3 uid="uid://lrdkn2gv1v1m"]
 
 [ext_resource type="Script" uid="uid://r0aq8j6rseuv" path="res://effect_Item/coin/coin.gd" id="1_0mg7h"]
-[ext_resource type="Texture2D" uid="uid://cpcg358wuu50i" path="res://assets/coin/01.png" id="2_adbkm"]
-[ext_resource type="Texture2D" uid="uid://cast16eu1ka7p" path="res://assets/coin/02.png" id="3_rf40d"]
-[ext_resource type="Texture2D" uid="uid://im347baaq2w5" path="res://assets/coin/03.png" id="4_rlexy"]
-[ext_resource type="Texture2D" uid="uid://bn4wcasxcy8d1" path="res://assets/coin/04.png" id="5_op7k5"]
+[ext_resource type="Texture2D" uid="uid://ca3uk72ltyi3i" path="res://assets/objects/coin/effect/01.png" id="2_rlexy"]
+[ext_resource type="Texture2D" uid="uid://7815uhsg0yyi" path="res://assets/objects/coin/effect/02.png" id="3_op7k5"]
+[ext_resource type="Texture2D" uid="uid://dua5jlj37y4u4" path="res://assets/objects/coin/effect/03.png" id="4_542nd"]
+[ext_resource type="Texture2D" uid="uid://cpcg358wuu50i" path="res://assets/objects/coin/01.png" id="5_rlexy"]
+[ext_resource type="Texture2D" uid="uid://cast16eu1ka7p" path="res://assets/objects/coin/02.png" id="6_op7k5"]
+[ext_resource type="Texture2D" uid="uid://im347baaq2w5" path="res://assets/objects/coin/03.png" id="7_542nd"]
+[ext_resource type="Texture2D" uid="uid://bn4wcasxcy8d1" path="res://assets/objects/coin/04.png" id="8_cm8v6"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_6yphk"]
 size = Vector2(11, 11)
@@ -13,16 +16,30 @@ size = Vector2(11, 11)
 animations = [{
 "frames": [{
 "duration": 1.0,
-"texture": ExtResource("2_adbkm")
+"texture": ExtResource("2_rlexy")
 }, {
 "duration": 1.0,
-"texture": ExtResource("3_rf40d")
+"texture": ExtResource("3_op7k5")
 }, {
 "duration": 1.0,
-"texture": ExtResource("4_rlexy")
+"texture": ExtResource("4_542nd")
+}],
+"loop": false,
+"name": &"collected",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("5_rlexy")
 }, {
 "duration": 1.0,
-"texture": ExtResource("5_op7k5")
+"texture": ExtResource("6_op7k5")
+}, {
+"duration": 1.0,
+"texture": ExtResource("7_542nd")
+}, {
+"duration": 1.0,
+"texture": ExtResource("8_cm8v6")
 }],
 "loop": true,
 "name": &"default",

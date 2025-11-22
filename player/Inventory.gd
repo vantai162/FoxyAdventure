@@ -40,3 +40,16 @@ func adjust_amount_item(item_name:String,amount:int):
 			print("Not enough item")
 	else:
 		print("Amount item not found")
+
+func has_key():
+	return AmountItem["Key"] > 0
+
+func use_key(amount:int):
+	if AmountItem.has("Key"):
+		if AmountItem["Key"] >= amount:
+			AmountItem["Key"] -= amount
+			item_amount_changed.emit("Key", AmountItem["Key"])
+		else:
+			print("Not enough keys to use")
+	else:
+		print("Key item not found")

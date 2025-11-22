@@ -1,0 +1,66 @@
+[gd_scene load_steps=13 format=3 uid="uid://dl1jqgf5ab7l"]
+
+[ext_resource type="Texture2D" uid="uid://b25cckde0264v" path="res://assets/objects/chest/chest_gold_close_01.png" id="1_rvdi5"]
+[ext_resource type="Script" uid="uid://p82std4rn15x" path="res://effect_Item/chest/gold_chest.gd" id="1_yraig"]
+[ext_resource type="Texture2D" uid="uid://bjd2vm2wg43n" path="res://assets/objects/chest/chest_gold_close_02.png" id="2_yraig"]
+[ext_resource type="Texture2D" uid="uid://typ8dtg6b2o4" path="res://assets/objects/chest/chest_gold_close_03.png" id="3_ohoey"]
+[ext_resource type="Texture2D" uid="uid://duwk5x5pje1x" path="res://assets/objects/chest/chest_gold_close_04.png" id="4_k83nh"]
+[ext_resource type="Texture2D" uid="uid://c1oe2ajw3hwdp" path="res://assets/objects/chest/chest_gold_open_01.png" id="5_tdjlt"]
+[ext_resource type="Texture2D" uid="uid://cc8424juwfrr0" path="res://assets/objects/chest/chest_gold_open_02.png" id="6_h6raq"]
+[ext_resource type="Texture2D" uid="uid://db1k53jjooxc0" path="res://assets/objects/chest/chest_gold_open_03.png" id="7_4xxnl"]
+[ext_resource type="Texture2D" uid="uid://c4m2ji6v3v1sj" path="res://assets/objects/chest/chest_gold_open_04.png" id="8_vqrlj"]
+[ext_resource type="Texture2D" uid="uid://rklpp03vtdqy" path="res://assets/objects/chest/chest_gold_open_05.png" id="9_yif3n"]
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_5xl5c"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("1_rvdi5")
+}, {
+"duration": 1.0,
+"texture": ExtResource("2_yraig")
+}, {
+"duration": 1.0,
+"texture": ExtResource("3_ohoey")
+}, {
+"duration": 1.0,
+"texture": ExtResource("4_k83nh")
+}],
+"loop": false,
+"name": &"close",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("5_tdjlt")
+}, {
+"duration": 1.0,
+"texture": ExtResource("6_h6raq")
+}, {
+"duration": 1.0,
+"texture": ExtResource("7_4xxnl")
+}, {
+"duration": 1.0,
+"texture": ExtResource("8_vqrlj")
+}, {
+"duration": 1.0,
+"texture": ExtResource("9_yif3n")
+}],
+"loop": true,
+"name": &"open",
+"speed": 5.0
+}]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_rvdi5"]
+size = Vector2(31, 33)
+
+[node name="GoldChest" type="Area2D"]
+script = ExtResource("1_yraig")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+sprite_frames = SubResource("SpriteFrames_5xl5c")
+animation = &"open"
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(-0.5, 6.5)
+shape = SubResource("RectangleShape2D_rvdi5")
