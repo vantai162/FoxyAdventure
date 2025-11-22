@@ -1,0 +1,62 @@
+[gd_scene load_steps=12 format=3 uid="uid://cd4x3xoe8plsn"]
+
+[ext_resource type="Texture2D" uid="uid://bidl5brkimhxo" path="res://assets/objects/chest/chest_close_01.png" id="1_7i0xs"]
+[ext_resource type="Script" uid="uid://dmc64fa61i1jm" path="res://effect_Item/chest/chest.gd" id="1_pfej2"]
+[ext_resource type="Texture2D" uid="uid://bjcqjfm23puad" path="res://assets/objects/chest/chest_close_02.png" id="2_ai15b"]
+[ext_resource type="Texture2D" uid="uid://dqrogefu4p788" path="res://assets/objects/chest/chest_close_03.png" id="3_h2mrb"]
+[ext_resource type="Texture2D" uid="uid://btnwd6wmuxmda" path="res://assets/objects/chest/chest_open_01.png" id="13_s7mlb"]
+[ext_resource type="Texture2D" uid="uid://dkn0i1fahffwr" path="res://assets/objects/chest/chest_open_02.png" id="14_tn4xr"]
+[ext_resource type="Texture2D" uid="uid://br8hwwry0gxvd" path="res://assets/objects/chest/chest_open_03.png" id="15_ym54j"]
+[ext_resource type="Texture2D" uid="uid://b67b2vn864ieo" path="res://assets/objects/chest/chest_open_04.png" id="16_ka0fh"]
+[ext_resource type="Texture2D" uid="uid://bwcclik4ny1ry" path="res://assets/objects/chest/chest_open_05.png" id="17_g02on"]
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_5xl5c"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("1_7i0xs")
+}, {
+"duration": 1.0,
+"texture": ExtResource("2_ai15b")
+}, {
+"duration": 1.0,
+"texture": ExtResource("3_h2mrb")
+}],
+"loop": true,
+"name": &"close",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("13_s7mlb")
+}, {
+"duration": 1.0,
+"texture": ExtResource("14_tn4xr")
+}, {
+"duration": 1.0,
+"texture": ExtResource("15_ym54j")
+}, {
+"duration": 1.0,
+"texture": ExtResource("16_ka0fh")
+}, {
+"duration": 1.0,
+"texture": ExtResource("17_g02on")
+}],
+"loop": false,
+"name": &"open",
+"speed": 5.0
+}]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_kbcjn"]
+size = Vector2(31, 28)
+
+[node name="Chest" type="Area2D"]
+script = ExtResource("1_pfej2")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+sprite_frames = SubResource("SpriteFrames_5xl5c")
+animation = &"close"
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(-0.5, 10)
+shape = SubResource("RectangleShape2D_kbcjn")

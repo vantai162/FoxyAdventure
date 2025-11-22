@@ -277,12 +277,14 @@ func load_state(data: Dictionary) -> void:
 	if data.has("health"):
 		health = data["health"]
 	# Đã loại bỏ logic: if data.has("has_blade") and data["has_blade"] == true:
+	
 
 func heal(amount:int): # Giữ: func heal
 	if(amount+health>max_health):
 		health=max_health
 	else:
 		health=amount+health
+		health_changed.emit()
 
 func checkfullhealth()->bool: # Giữ: func checkfullhealth
 	return health==max_health
