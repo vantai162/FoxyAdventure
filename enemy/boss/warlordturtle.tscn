@@ -151,10 +151,10 @@ animations = [{
 }]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_8hnd2"]
-size = Vector2(67, 67)
+size = Vector2(75, 67)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_dkh1m"]
-size = Vector2(67, 67)
+size = Vector2(74, 67)
 
 [node name="WarlordTurtle" type="CharacterBody2D"]
 collision_layer = 8
@@ -185,7 +185,7 @@ script = ExtResource("22_jostd")
 metadata/_custom_type_script = "uid://xqvgljx4hk1s"
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Direction/HitArea2D"]
-position = Vector2(3.5, 0)
+position = Vector2(-0.5, 0)
 shape = SubResource("RectangleShape2D_8hnd2")
 
 [node name="Boomb" type="Node2D" parent="Direction"]
@@ -214,9 +214,8 @@ script = ExtResource("27_dfhj1")
 script = ExtResource("28_wuglq")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-position = Vector2(3.5, 0.5)
+position = Vector2(0, 0.5)
 shape = SubResource("RectangleShape2D_dkh1m")
 
 [node name="Boomb" parent="." instance=ExtResource("2_wuglq")]
 position = Vector2(4, -21)
-scale = Vector2(0.7, 0.7)
