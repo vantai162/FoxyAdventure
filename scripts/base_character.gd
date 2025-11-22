@@ -3,6 +3,9 @@ extends CharacterBody2D
 
 ## Base character class that provides common functionality for all characters
 
+## SFX
+@onready var sfx_player: AudioStreamPlayer = $SFXPlayer
+
 @export var movement_speed: float = 200.0
 @export var gravity: float = 700.0
 @export var direction: int = 1
@@ -161,4 +164,27 @@ func drop_down_platform():
 	set_collision_mask_value(PLATFORM_LAYER, false)
 	await get_tree().create_timer(0.25).timeout
 	set_collision_mask_value(PLATFORM_LAYER, true)
+	
+# Hàm chung để phát âm thanh
+func play_sfx(stream: AudioStream, random_pitch: bool = true) -> void:
+	if sfx_player == null or stream == null:
+		return
+	
+	# Nếu đang phát đúng bài đó rồi (dành cho loop) thì không reset
+	# (Tùy chọn: dòng này giúp tiếng bước chân không bị lặp lại liên tục gây rát tai)
+	if sfx_player.playing and sfx_player.stream == stream:
+		return
+
+	sfx_player.stream = stream
+	
+	if random_pitch:
+		sfx_player.pitch_scale = randf_range(0.9, 1.1)
+	else:
+		sfx_player.pitch_scale = 1.0
+		
+	sfx_player.play()
+
+func stop_sfx() -> void:
+	if sfx_player:
+		sfx_player.stop()
 	

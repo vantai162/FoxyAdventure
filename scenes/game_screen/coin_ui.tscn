@@ -1,8 +1,9 @@
-[gd_scene load_steps=4 format=3 uid="uid://k1cvcu80rfmm"]
+[gd_scene load_steps=5 format=3 uid="uid://k1cvcu80rfmm"]
 
 [ext_resource type="Texture2D" uid="uid://cpcg358wuu50i" path="res://assets/coin/01.png" id="1_63h2f"]
 [ext_resource type="Script" uid="uid://b8c2q3dlil8ib" path="res://scenes/game_screen/coin_ui.gd" id="1_fmoxf"]
 [ext_resource type="FontFile" uid="uid://dmn322frb0n8t" path="res://assets/fonts/pixel_operator/PixelOperator.ttf" id="2_fmoxf"]
+[ext_resource type="AudioStream" uid="uid://g5vvqhw7d3xp" path="res://assets/sounds/coin.wav" id="4_n4ymy"]
 
 [node name="CoinUI" type="Control"]
 layout_mode = 3
@@ -28,3 +29,6 @@ scale = Vector2(0.859829, 0.80711)
 theme_override_fonts/font = ExtResource("2_fmoxf")
 theme_override_font_sizes/font_size = 32
 text = "0"
+
+[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("4_n4ymy")

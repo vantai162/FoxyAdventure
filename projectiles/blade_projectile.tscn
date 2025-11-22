@@ -1,9 +1,10 @@
-[gd_scene load_steps=7 format=3 uid="uid://vifaaniwbdnv"]
+[gd_scene load_steps=8 format=3 uid="uid://vifaaniwbdnv"]
 
 [ext_resource type="Script" uid="uid://cimqxeik4xdhh" path="res://projectiles/blade_projectile.gd" id="1"]
 [ext_resource type="Texture2D" uid="uid://bng34woae2g8q" path="res://assets/foxy/blade/blade_throw_1.png" id="2_kj2ao"]
 [ext_resource type="Texture2D" uid="uid://baucskhqdceas" path="res://assets/foxy/blade/blade_target_4.png" id="3_1qqcv"]
 [ext_resource type="Script" uid="uid://xqvgljx4hk1s" path="res://scripts/hit_area_2d.gd" id="3_w0xp1"]
+[ext_resource type="AudioStream" uid="uid://d3xkvcdrv0llm" path="res://assets/sounds/sfx-swoosh20.mp3" id="5_1qqcv"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_1qqcv"]
 radius = 8.0
@@ -51,3 +52,8 @@ shape = SubResource("CircleShape2D_45h00")
 [node name="GroundTimer" type="Timer" parent="."]
 wait_time = 6.5
 one_shot = true
+
+[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("5_1qqcv")
+autoplay = true
+parameters/looping = true
