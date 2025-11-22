@@ -1,0 +1,278 @@
+[gd_scene load_steps=41 format=3 uid="uid://ufmc2gkfnv58"]
+
+[ext_resource type="Script" uid="uid://bbdpp5spdag1s" path="res://enemy/king_crab/king_crab.gd" id="1_wf64l"]
+[ext_resource type="Texture2D" uid="uid://8usoreyem8l6" path="res://assets/foxy/smoke/jump_smoke_1.png" id="2_a0e87"]
+[ext_resource type="Texture2D" uid="uid://boxmc12qq7a8a" path="res://assets/monsters/crab/crab_hurt_02.png" id="2_mdcuw"]
+[ext_resource type="Texture2D" uid="uid://b071bg88lou36" path="res://assets/king_crab/King_Crab_13.png" id="2_yfwo5"]
+[ext_resource type="Texture2D" uid="uid://bheixrcxv5gb4" path="res://assets/monsters/crab/crab_hurt_01.png" id="3_0eync"]
+[ext_resource type="Texture2D" uid="uid://jtpy308mqnwi" path="res://assets/foxy/smoke/jump_smoke_2.png" id="3_h3mse"]
+[ext_resource type="Texture2D" uid="uid://dlbyndgbgceyw" path="res://assets/king_crab/King_Crab_14.png" id="3_tcsfm"]
+[ext_resource type="Texture2D" uid="uid://ban1go8lycmpp" path="res://assets/king_crab/King_Crab_15.png" id="4_1ae8q"]
+[ext_resource type="Texture2D" uid="uid://cbk136ktae42o" path="res://assets/foxy/smoke/jump_smoke_3.png" id="4_d7tli"]
+[ext_resource type="Texture2D" uid="uid://c8cs1hwh7venp" path="res://assets/foxy/smoke/jump_smoke_4.png" id="5_4x0fy"]
+[ext_resource type="Texture2D" uid="uid://c36wpg4efd46c" path="res://assets/king_crab/King_Crab_16.png" id="5_ud2bj"]
+[ext_resource type="Texture2D" uid="uid://bbvt4e6fu6qwi" path="res://assets/king_crab/King_Crab_17.png" id="6_114q8"]
+[ext_resource type="Texture2D" uid="uid://dttwi771yhjis" path="res://assets/king_crab/King_Crab_18.png" id="7_7b5u8"]
+[ext_resource type="Script" uid="uid://xqvgljx4hk1s" path="res://scripts/hit_area_2d.gd" id="7_h3mse"]
+[ext_resource type="Script" uid="uid://xiou1t8t4fyo" path="res://enemy/crab/run.gd" id="7_mekln"]
+[ext_resource type="Texture2D" uid="uid://wn070tchkeg3" path="res://assets/king_crab/King_Crab_1.png" id="8_dgrx1"]
+[ext_resource type="PackedScene" uid="uid://ct1tqxgwkuvbe" path="res://scripts/hurt_area_2d.tscn" id="8_mdcuw"]
+[ext_resource type="Texture2D" uid="uid://ccp2i2pnjq71x" path="res://assets/king_crab/King_Crab_2.png" id="9_igmg0"]
+[ext_resource type="Script" uid="uid://d3rue3v1os1bt" path="res://enemy/king_crab/hurt.gd" id="9_mdcuw"]
+[ext_resource type="Script" uid="uid://bvy1bgltu2jm5" path="res://enemy/king_crab/dead.gd" id="10_0eync"]
+[ext_resource type="Texture2D" uid="uid://cmxwu0dm0jrog" path="res://assets/king_crab/King_Crab_3.png" id="10_b3j8w"]
+[ext_resource type="Texture2D" uid="uid://bo3g8ow24yvjo" path="res://assets/king_crab/King_Crab_4.png" id="11_2sgb0"]
+[ext_resource type="Script" uid="uid://ifyit1vg4ktq" path="res://scripts/node2d_factory.gd" id="13_tlcw4"]
+[ext_resource type="Script" uid="uid://chij4tnxwmyjv" path="res://enemy/king_crab/idle.gd" id="17_gkt4h"]
+[ext_resource type="Texture2D" uid="uid://b7nx125mfrhv5" path="res://assets/king_crab/King_Crab_12.png" id="18_0ky5g"]
+[ext_resource type="Script" uid="uid://m8ks6a0rpv66" path="res://enemy/king_crab/walk_to_tree.gd" id="18_vai5q"]
+[ext_resource type="Texture2D" uid="uid://jxlrl4ohf8ro" path="res://assets/king_crab/King_Crab_11.png" id="19_cqoo5"]
+[ext_resource type="Script" uid="uid://bqxlqhcqixjwg" path="res://enemy/king_crab/climb_tree.gd" id="19_e1n1g"]
+[ext_resource type="Texture2D" uid="uid://cll6j7xe8spj1" path="res://assets/king_crab/King_Crab_5.png" id="20_1toqo"]
+[ext_resource type="Script" uid="uid://bnr5h30kbb5at" path="res://enemy/king_crab/throw_coconuts.gd" id="20_dgrx1"]
+[ext_resource type="Texture2D" uid="uid://b7nv7vp51k800" path="res://assets/king_crab/King_Crab_6.png" id="21_dy7kr"]
+[ext_resource type="Script" uid="uid://exyloykb2y6g" path="res://enemy/king_crab/dive_attack.gd" id="21_igmg0"]
+[ext_resource type="Texture2D" uid="uid://dd0b8bvgaunot" path="res://assets/king_crab/King_Crab_7.png" id="22_8edgl"]
+[ext_resource type="Script" uid="uid://pj4ihdp5ihax" path="res://enemy/king_crab/claw_attack.gd" id="22_b3j8w"]
+[ext_resource type="Texture2D" uid="uid://dnssmdlf3g8un" path="res://assets/king_crab/King_Crab_8.png" id="23_waix0"]
+[ext_resource type="Script" uid="uid://d2ni7ngxrsfoc" path="res://enemy/king_crab/roll_bounce.gd" id="27_qldyf"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_5qelw"]
+size = Vector2(57, 57)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_x3h0i"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("2_yfwo5")
+}, {
+"duration": 1.0,
+"texture": ExtResource("3_tcsfm")
+}, {
+"duration": 1.0,
+"texture": ExtResource("4_1ae8q")
+}, {
+"duration": 1.0,
+"texture": ExtResource("5_ud2bj")
+}, {
+"duration": 1.0,
+"texture": ExtResource("6_114q8")
+}, {
+"duration": 1.0,
+"texture": ExtResource("7_7b5u8")
+}],
+"loop": false,
+"name": &"claw_attack",
+"speed": 5.0
+}, {
+"frames": [],
+"loop": true,
+"name": &"climb",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("2_a0e87")
+}, {
+"duration": 1.0,
+"texture": ExtResource("3_h3mse")
+}, {
+"duration": 1.0,
+"texture": ExtResource("4_d7tli")
+}, {
+"duration": 1.0,
+"texture": ExtResource("5_4x0fy")
+}],
+"loop": false,
+"name": &"dead",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("3_0eync")
+}, {
+"duration": 1.0,
+"texture": ExtResource("2_mdcuw")
+}],
+"loop": false,
+"name": &"hurt",
+"speed": 10.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("8_dgrx1")
+}, {
+"duration": 1.0,
+"texture": ExtResource("9_igmg0")
+}, {
+"duration": 1.0,
+"texture": ExtResource("10_b3j8w")
+}, {
+"duration": 1.0,
+"texture": ExtResource("11_2sgb0")
+}],
+"loop": true,
+"name": &"idle",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("8_dgrx1")
+}, {
+"duration": 1.0,
+"texture": ExtResource("18_0ky5g")
+}, {
+"duration": 1.0,
+"texture": ExtResource("19_cqoo5")
+}, {
+"duration": 1.0,
+"texture": ExtResource("2_yfwo5")
+}],
+"loop": true,
+"name": &"jump",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("20_1toqo")
+}, {
+"duration": 1.0,
+"texture": ExtResource("21_dy7kr")
+}, {
+"duration": 1.0,
+"texture": ExtResource("22_8edgl")
+}, {
+"duration": 1.0,
+"texture": ExtResource("23_waix0")
+}],
+"loop": true,
+"name": &"roll",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("8_dgrx1")
+}, {
+"duration": 1.0,
+"texture": ExtResource("9_igmg0")
+}, {
+"duration": 1.0,
+"texture": ExtResource("10_b3j8w")
+}, {
+"duration": 1.0,
+"texture": ExtResource("11_2sgb0")
+}],
+"loop": true,
+"name": &"run",
+"speed": 5.0
+}, {
+"frames": [],
+"loop": true,
+"name": &"throw",
+"speed": 5.0
+}]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_c1mj8"]
+size = Vector2(35, 27)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_mdcuw"]
+size = Vector2(527, 237)
+
+[node name="KingCrab" type="CharacterBody2D"]
+collision_layer = 8
+collision_mask = 9
+script = ExtResource("1_wf64l")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(-0.5, -0.5)
+shape = SubResource("RectangleShape2D_5qelw")
+
+[node name="Direction" type="Node2D" parent="."]
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="Direction"]
+sprite_frames = SubResource("SpriteFrames_x3h0i")
+animation = &"claw_attack"
+frame = 4
+frame_progress = 1.0
+
+[node name="FrontRayCast2D" type="RayCast2D" parent="Direction"]
+position = Vector2(9, -4)
+target_position = Vector2(14, 0)
+collision_mask = 9
+
+[node name="DownRayCast2D" type="RayCast2D" parent="Direction"]
+position = Vector2(14, -4)
+target_position = Vector2(0, 36)
+
+[node name="HitArea2D" type="Area2D" parent="Direction"]
+collision_layer = 0
+collision_mask = 4
+script = ExtResource("7_h3mse")
+metadata/_custom_type_script = "uid://xqvgljx4hk1s"
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Direction/HitArea2D"]
+position = Vector2(-0.5, -0.5)
+shape = SubResource("RectangleShape2D_c1mj8")
+
+[node name="HurtArea2D" parent="Direction" instance=ExtResource("8_mdcuw")]
+collision_layer = 16
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Direction/HurtArea2D"]
+position = Vector2(-0.5, -0.5)
+shape = SubResource("RectangleShape2D_c1mj8")
+
+[node name="DetectPlayerArea2D" type="Area2D" parent="Direction"]
+collision_layer = 0
+collision_mask = 2
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Direction/DetectPlayerArea2D"]
+position = Vector2(1, -1.5)
+shape = SubResource("RectangleShape2D_mdcuw")
+
+[node name="CoconutFactory" type="Marker2D" parent="Direction"]
+script = ExtResource("13_tlcw4")
+metadata/_custom_type_script = "uid://ifyit1vg4ktq"
+
+[node name="ClawFactory" type="Marker2D" parent="Direction"]
+script = ExtResource("13_tlcw4")
+metadata/_custom_type_script = "uid://ifyit1vg4ktq"
+
+[node name="WarningFactory" type="Marker2D" parent="Direction"]
+script = ExtResource("13_tlcw4")
+metadata/_custom_type_script = "uid://ifyit1vg4ktq"
+
+[node name="States" type="Node" parent="."]
+
+[node name="Run" type="Node" parent="States"]
+script = ExtResource("7_mekln")
+
+[node name="Hurt" type="Node" parent="States"]
+script = ExtResource("9_mdcuw")
+
+[node name="Dead" type="Node" parent="States"]
+script = ExtResource("10_0eync")
+
+[node name="Idle" type="Node" parent="States"]
+script = ExtResource("17_gkt4h")
+
+[node name="WalkToTree" type="Node" parent="States"]
+script = ExtResource("18_vai5q")
+
+[node name="ClimbTree" type="Node" parent="States"]
+script = ExtResource("19_e1n1g")
+
+[node name="ThrowCoconuts" type="Node" parent="States"]
+script = ExtResource("20_dgrx1")
+
+[node name="DiveAttack" type="Node" parent="States"]
+script = ExtResource("21_igmg0")
+
+[node name="ClawAttack" type="Node" parent="States"]
+script = ExtResource("22_b3j8w")
+
+[node name="RollBounce" type="Node" parent="States"]
+script = ExtResource("27_qldyf")
+
+[connection signal="hurt" from="Direction/HurtArea2D" to="." method="_on_hurt_area_2d_hurt"]
+[connection signal="body_entered" from="Direction/DetectPlayerArea2D" to="." method="_on_active_area_2d_body_entered"]
