@@ -161,6 +161,7 @@ func spawn_player(spawn_data: Dictionary) -> Player:
 	
 	if not spawn_data.has("health"):
 		new_player.health = new_player.max_health
+		
 	
 	new_player.velocity = Vector2.ZERO
 	
