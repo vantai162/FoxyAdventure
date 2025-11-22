@@ -3,6 +3,7 @@ extends Player_State
 var waited: float = 0.0
 
 func _enter() -> void:
+	super._enter()
 	waited = 0.0
 	obj.change_animation("run")
 

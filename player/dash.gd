@@ -4,6 +4,7 @@ var ghost_interval: float = 0.05
 var ghost_timer: float = 0.0
 
 func _enter():
+	super._enter()
 	obj.change_animation("run")
 	obj.velocity.x = obj.dash_speed * obj.direction
 	obj.velocity.y = 0
@@ -19,7 +20,8 @@ func _update(delta: float):
 		ghost_timer=0
 	if update_timer(delta):
 		obj.set_cool_down("Dash")
-		change_state(fsm.previous_state)
+		## Tin fix chỗ này lại tí nếu có lỗi thì báo lại XDXD
+		change_state(fsm.states.fall)
 	if obj.is_on_wall_only():
 		fsm.change_state(fsm.states.wallcling)
 

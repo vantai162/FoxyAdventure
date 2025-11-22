@@ -4,6 +4,7 @@ var air_slash_timer: float = 0.0
 var air_slash_spawned: bool = false
 
 func _enter() -> void:
+	super._enter()
 	# Change animation to attack
 	if obj.is_on_floor():
 		obj.change_animation("attack")
