@@ -1,0 +1,27 @@
+[gd_scene load_steps=6 format=3 uid="uid://dy012gt2k7xmt"]
+
+[ext_resource type="Texture2D" uid="uid://dcjgi1lf4jyut" path="res://assets/warlord_turle/turtle_bullets/bullet_cannon.png" id="1_8vi56"]
+[ext_resource type="Script" uid="uid://fas3eq4tonw" path="res://enemy/boss/boomb.gd" id="1_l0drh"]
+[ext_resource type="Script" uid="uid://xqvgljx4hk1s" path="res://scripts/hit_area_2d.gd" id="2_l0drh"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_fxee5"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_l0drh"]
+
+[node name="Boomb" type="RigidBody2D"]
+scale = Vector2(0.7, 0.7)
+collision_layer = 8
+script = ExtResource("1_l0drh")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = ExtResource("1_8vi56")
+
+[node name="HitArea2D" type="Area2D" parent="."]
+script = ExtResource("2_l0drh")
+metadata/_custom_type_script = "uid://xqvgljx4hk1s"
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="HitArea2D"]
+shape = SubResource("CircleShape2D_fxee5")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("CircleShape2D_l0drh")
