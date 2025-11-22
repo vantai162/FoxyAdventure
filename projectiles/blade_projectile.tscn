@@ -56,4 +56,3 @@ one_shot = true
 [node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]
 stream = ExtResource("5_1qqcv")
 autoplay = true
-parameters/looping = true
