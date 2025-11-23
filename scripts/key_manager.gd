@@ -14,6 +14,9 @@ func _get_key_dictionary_from_input_map():
 			if event is InputEventKey:
 					KeyDict[action]=event.physical_keycode
 
+func _save_key()->Dictionary:
+	return KeyDict
+
 func _set_key(action:String,key:int):
 	if action=="paused":
 		print("You can not change the paused key")

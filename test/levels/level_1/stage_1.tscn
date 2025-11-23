@@ -1,9 +1,8 @@
-[gd_scene load_steps=29 format=4 uid="uid://fm22mgp2q845"]
+[gd_scene load_steps=28 format=4 uid="uid://fm22mgp2q845"]
 
 [ext_resource type="TileSet" uid="uid://xt3l8n15jbfm" path="res://assets/island/tileset.tres" id="1_33rtp"]
 [ext_resource type="Script" uid="uid://dpabmmeqo234t" path="res://test/levels/level_1/stage_1.gd" id="1_kwr08"]
 [ext_resource type="TileSet" uid="uid://0yf5cmwk6u1i" path="res://assets/island/terrain/ice_tile_set.tres" id="2_1603u"]
-[ext_resource type="PackedScene" uid="uid://bs816w0pr8all" path="res://player/foxy.tscn" id="2_dwsf3"]
 [ext_resource type="PackedScene" uid="uid://c1bijw8i8erx5" path="res://enemy/turtle/turtle.tscn" id="3_1hwaj"]
 [ext_resource type="PackedScene" uid="uid://duryp3ufmd0be" path="res://enemy/tribe/friendly_tribe.tscn" id="4_sdmob"]
 [ext_resource type="PackedScene" uid="uid://bxfs4fsx7ot6m" path="res://enemy/starfish/starfish.tscn" id="5_1603u"]
@@ -40,9 +39,6 @@ tile_set = ExtResource("1_33rtp")
 [node name="IceBlock" type="TileMapLayer" parent="."]
 tile_map_data = PackedByteArray("AAD3/woAAAAJAAUAAAD4/woAAAAJAAUAAAD5/woAAAAJAAUAAAD6/woAAAAJAAUAAAD3/wsAAAACAAYAAAD4/wsAAAACAAYAAAD5/wsAAAACAAYAAAD6/wsAAAACAAYAAAD2/wsAAAACAAYAAAD1/wsAAAACAAYAAAD0/wsAAAACAAYAAADz/wsAAAACAAYAAAD2/woAAAAJAAUAAAD1/woAAAAJAAUAAAD0/woAAAAJAAUAAADz/woAAAAJAAUAAADy/woAAAAJAAUAAADx/woAAAAJAAUAAADw/woAAAAJAAUAAADv/woAAAAJAAUAAADu/woAAAAJAAUAAADt/woAAAAJAAUAAADy/wsAAAACAAYAAADx/wsAAAACAAYAAADw/wsAAAACAAYAAADv/wsAAAACAAYAAADu/wsAAAACAAYAAADt/wsAAAACAAYAAADs/woAAAAIAAUAAADr/woAAAAIAAUAAADq/woAAAAIAAUAAADp/woAAAAIAAUAAADo/woAAAAIAAUAAADn/woAAAAIAAUAAADm/woAAAAIAAUAAADm/wkAAAAIAAUAAADm/wsAAAACAAYAAADn/wsAAAACAAYAAADo/wsAAAACAAYAAADp/wsAAAACAAYAAADq/wsAAAACAAYAAADr/wsAAAACAAYAAADs/wsAAAACAAYAAAD6/wkAAAAIAAUAAAD6/wgAAAAIAAUAAADm/wgAAAAIAAUAAAA=")
 tile_set = ExtResource("2_1603u")
-
-[node name="Player" parent="." instance=ExtResource("2_dwsf3")]
-position = Vector2(205, 146)
 
 [node name="Turtle" parent="." groups=["enemy"] instance=ExtResource("3_1hwaj")]
 position = Vector2(222, 39)

@@ -5,7 +5,7 @@ extends Node
 ## HÃY ĐĂNG KÝ SCRIPT NÀY LÀM AUTOLOAD VỚI TÊN "SaveSystem"
 
 const SAVE_FILE = "user://checkpoint_save.dat"
-
+const SETTING_FILE="user://setting_save.date"
 # Save checkpoint data to file
 func save_checkpoint_data(data: Dictionary) -> void:
 	# Mở file để ghi

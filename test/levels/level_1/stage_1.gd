@@ -2,8 +2,7 @@ class_name StateManager
 extends Node2D
 func _enter_tree() -> void:
 	GameManager.current_stage=self
-	print(GameManager.checkpoint_data)
-	GameManager.respawn_at_checkpoint()
+	
 func _process(delta: float) -> void:
 	if(Input.is_action_just_pressed("pause")):
 		if(GameManager.paused):

@@ -19,13 +19,14 @@ var player_spawn_data: Dictionary = {}
 var paused=false
 
 func _ready() -> void:
+	_set_up()
+	pass
+
+func _set_up():
 	load_checkpoint_data()
 	print(checkpoint_data)
-	respawn_at_checkpoint()
 	key_manager._get_key_dictionary_from_input_map()
-	current_checkpoint_id = ""
-	checkpoint_data.clear()
-	pass
+	spawn_player(checkpoint_data[current_checkpoint_id]["player_state"])
 
 #change stage by path and target portal name
 func change_stage(stage_path: String, _target_portal_name: String = "") -> void:
@@ -52,8 +53,6 @@ func save_player_state(p: Player) -> void:
 	persistent_player_data = p.save_state()
 	if persistent_player_data.has("position"):
 		persistent_player_data.erase("position")
-
-
 
 
 
@@ -119,7 +118,7 @@ func has_checkpoint() -> bool:
 func save_checkpoint_data() -> void:
 	var save_data = {
 		"current_checkpoint_id": current_checkpoint_id,
-		"checkpoint_data": checkpoint_data
+		"checkpoint_data": checkpoint_data,
 	}
 	SaveSystem.save_checkpoint_data(save_data)
 
@@ -176,6 +175,8 @@ func spawn_player(spawn_data: Dictionary) -> Player:
 	else:
 		printerr("Player FSM not initialized!")
 	
+	if(player!=null):
+		player.queue_free()
 	player = new_player
 	return new_player
 
