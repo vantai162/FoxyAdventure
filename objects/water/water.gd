@@ -6,17 +6,29 @@ class_name water
 @export var surface_pos_y: float = 0.5
 @export_range(2,512) var segment_count: int = 64
 
-@export var player_splash_mutiplier: float = 0.12
+@export_group("Visuals")
+@export var surface_line_thickness: float = 1.0
+@export var surface_color: Color = Color("3ce1da")
+@export var water_fill_color: Color = Color(0.216, 0.690, 0.773, 0.6)  ## Semi-transparent blue (adjust alpha in editor)
+
+@export_group("Physics Simulation")
 @export_range(0.0,1000.0) var water_physics_speed: float = 80.0
 @export var water_restoring_force: float = 0.02
 @export var wave_energy_loss: float = 0.04
 @export var wave_strength: float = 0.25
 @export_range(1,64) var wave_spread_updates:int = 8
-@export var surface_line_thickness: float = 1.0
-@export var surface_color: Color = Color("3ce1da")
-@export var water_fill_color: Color = Color(0.216, 0.690, 0.773, 0.6)  ## Semi-transparent blue (adjust alpha in editor)
+
+@export_group("Advanced Physics")
+@export var critical_damping_threshold: float = 10.0  ## Displacement threshold for critical damping
+@export var critical_damping_strength: float = 0.3    ## Extra damping for large displacements
+@export var gradient_damping_threshold: float = 5.0   ## Height diff threshold for wave damping
+@export var gradient_damping_factor: float = 0.5      ## Reduce wave propagation on steep gradients
+
+@export_group("Interaction")
+@export var player_splash_mutiplier: float = 0.12
 
 var segment_data: Array = []
+var segment_rest_height: Array = []  ## Per-segment equilibrium height (allows external depression control)
 var recently_splashed: bool = false
 
 var surface_line: Line2D
@@ -33,9 +45,16 @@ signal player_exited_water(body)
 
 func _ready() -> void:
 	add_to_group("water")
+	# Clean slate - remove any children from editor/previous runs
 	for i in get_children():
 		i.queue_free()
+	# Ensure arrays are truly clean
+	segment_data.clear()
+	segment_rest_height.clear()
 	_initiate_water()
+	# Force immediate update to set initial state
+	if not Engine.is_editor_hint():
+		set_process(true)
 
 
 func _process(delta:float)->void:
@@ -45,6 +64,7 @@ func _process(delta:float)->void:
 	
 func _initiate_water() -> void:
 	segment_data.clear()
+	segment_rest_height.clear()
 	for i in range(segment_count):
 		segment_data.append({
 			"height": surface_pos_y,
@@ -52,6 +72,7 @@ func _initiate_water() -> void:
 			"wave_to_left": 0.0,
 			"wave_to_right": 0.0
 		})
+		segment_rest_height.append(surface_pos_y)  # Default: all segments rest at surface
 	var new_line: Line2D = Line2D.new()
 	new_line.width = surface_line_thickness
 	new_line.default_color = surface_color
@@ -86,41 +107,92 @@ func _initiate_water() -> void:
 
 
 func update_physics(delta: float) -> void:
+	var max_displacement = 0.0
+	var max_idx = -1
+	
 	for i in range(segment_count):
-		var displacement = segment_data[i]["height"] - surface_pos_y
-		var acceleration = -water_restoring_force * displacement - segment_data[i]["velocity"] * wave_energy_loss
+		# Use per-segment rest height (allows whirlpool depressions)
+		var displacement = segment_data[i]["height"] - segment_rest_height[i]
+		
+		if abs(displacement) > abs(max_displacement):
+			max_displacement = displacement
+			max_idx = i
+		
+		# ADAPTIVE DAMPING: The further from rest, the stronger the damping
+		# This creates critically overdamped behavior for large displacements
+		var damping = wave_energy_loss
+		if abs(displacement) > 10.0:
+			# Exponential damping increase for large displacements
+			# At 10px: damping ≈ 0.04
+			# At 20px: damping ≈ 0.44
+			# At 40px: damping ≈ 1.24 (critically overdamped)
+			var excess = abs(displacement) - 10.0
+			damping += excess * 0.04  # Linear scaling: 0.04 per pixel beyond 10px
+		
+		var acceleration = -water_restoring_force * displacement - segment_data[i]["velocity"] * damping
 		
 		segment_data[i]["velocity"] += acceleration * delta * water_physics_speed
+		
+		# VELOCITY LIMITER: Prevent explosive velocities
+		# Max velocity scales with displacement (larger displacements can move faster)
+		var max_velocity = 5.0 + abs(displacement) * 0.2
+		segment_data[i]["velocity"] = clamp(segment_data[i]["velocity"], -max_velocity, max_velocity)
+		
 		segment_data[i]["height"] += segment_data[i]["velocity"] * delta * water_physics_speed
+	
+	# DEBUG: Print max displacement every 10 frames (~0.5 second)
+	if Engine.get_frames_drawn() % 5 == 0 and abs(max_displacement) > 1.0:
+		print("[Water] Frame ", Engine.get_frames_drawn(), " max_displacement=", max_displacement, " at segment ", max_idx, " rest=", segment_rest_height[max_idx], " height=", segment_data[max_idx]["height"])
 		
 	for updates in range(wave_spread_updates):
 		for i in range(segment_count):
 			if i > 0:
-				segment_data[i]["wave_to_left"] = (segment_data[i]["height"] - segment_data[i-1]["height"]) * wave_strength
-				segment_data[i-1]["velocity"] += segment_data[i]["wave_to_left"] * delta * water_physics_speed
+				# CRITICAL: Block wave propagation across depression boundaries
+				# If rest heights differ significantly, segments are in different zones
+				var rest_diff = abs(segment_rest_height[i] - segment_rest_height[i-1])
+				if rest_diff < 5.0:  # Only propagate within same zone
+					var height_diff = segment_data[i]["height"] - segment_data[i-1]["height"]
+					# Reduce wave strength on steep gradients (prevents amplification)
+					var wave_multiplier = 1.0
+					if abs(height_diff) > gradient_damping_threshold:
+						wave_multiplier = gradient_damping_factor
+					segment_data[i]["wave_to_left"] = height_diff * wave_strength * wave_multiplier
+					segment_data[i-1]["velocity"] += segment_data[i]["wave_to_left"] * delta * water_physics_speed
+				else:
+					segment_data[i]["wave_to_left"] = 0.0  # Block cross-zone propagation
 			if i < segment_count - 1:
-				segment_data[i]["wave_to_right"] = (segment_data[i]["height"] - segment_data[i+1]["height"]) * wave_strength
-				segment_data[i+1]["velocity"] += segment_data[i]["wave_to_right"] * delta * water_physics_speed
+				var rest_diff_right = abs(segment_rest_height[i] - segment_rest_height[i+1])
+				if rest_diff_right < 5.0:  # Only propagate within same zone
+					var height_diff_right = segment_data[i]["height"] - segment_data[i+1]["height"]
+					var wave_multiplier_right = 1.0
+					if abs(height_diff_right) > gradient_damping_threshold:
+						wave_multiplier_right = gradient_damping_factor
+					segment_data[i]["wave_to_right"] = height_diff_right * wave_strength * wave_multiplier_right
+					segment_data[i+1]["velocity"] += segment_data[i]["wave_to_right"] * delta * water_physics_speed
+				else:
+					segment_data[i]["wave_to_right"] = 0.0  # Block cross-zone propagation
 		for i in range(segment_count):	
 			if i > 0:
 				segment_data[i-1]["height"] += segment_data[i]["wave_to_left"] * delta * water_physics_speed
 			if i < segment_count - 1:
 				segment_data[i+1]["height"] += segment_data[i]["wave_to_right"] * delta * water_physics_speed
 		
-	segment_data[0]["height"] = surface_pos_y
-	segment_data[1]["height"] = surface_pos_y
+	# Lock edges to their rest heights (not hardcoded surface)
+	segment_data[0]["height"] = segment_rest_height[0]
+	segment_data[1]["height"] = segment_rest_height[1]
 	segment_data[0]["velocity"] = 0.0
 	segment_data[1]["velocity"] = 0.0
 	
-	segment_data[segment_count - 1]["height"] = surface_pos_y
-	segment_data[segment_count - 2]["height"] = surface_pos_y
+	segment_data[segment_count - 1]["height"] = segment_rest_height[segment_count - 1]
+	segment_data[segment_count - 2]["height"] = segment_rest_height[segment_count - 2]
 	segment_data[segment_count - 1]["velocity"] = 0.0
 	segment_data[segment_count - 2]["velocity"] = 0.0
 	
 	if !recently_splashed:
 		var is_still: bool = true
-		for i in surface_line.points:
-			if abs(abs(i.y) - abs(surface_pos_y)) > 0.001:
+		for i in range(segment_count):
+			# Check if segment is at its rest position (not hardcoded surface)
+			if abs(segment_data[i]["height"] - segment_rest_height[i]) > 0.01:
 				is_still = false
 				break
 		set_process(!is_still)
@@ -153,7 +225,7 @@ func splash(splash_pos:Vector2, splash_velocity:float) -> void:
 	var local_x_pos: float = to_local(splash_pos).x
 	var segment_width: float = water_size.x / (segment_count - 1)
 	var index: int = int(clamp(local_x_pos / segment_width, 0 , segment_count - 1))
-	segment_data[index]["velocity"] = splash_velocity
+	segment_data[index]["velocity"] += splash_velocity  # Additive mixing for multiple sources
 	recently_splashed = true
 	set_process(true)
 	
@@ -173,6 +245,16 @@ func _on_body_exited(body: Node2D) -> void:
 
 func get_water_surface_global_y() -> float:
 	return global_position.y + surface_pos_y
+
+func get_water_height_at_global_x(global_x: float) -> float:
+	## Get the exact water surface Y position at a specific global X coordinate
+	## Takes waves, splashes, and whirlpool depressions into account (now physical, not virtual)
+	var local_x = to_local(Vector2(global_x, 0)).x
+	var segment_width = water_size.x / (segment_count - 1)
+	var index = int(clamp(local_x / segment_width, 0, segment_count - 1))
+	
+	# Return actual physical height (includes whirlpool depressions via rest_height modifications)
+	return global_position.y + segment_data[index]["height"]
 
 func _update_collision_shape() -> void:
 	## Dynamically update collision shape SIZE and POSITION to match water level
