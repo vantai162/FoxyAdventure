@@ -21,6 +21,8 @@ var recently_splashed: bool = false
 
 var surface_line: Line2D
 var fill_polygon: Polygon2D
+var water_area: Area2D  ## Reference to dynamically created Area2D
+var water_collision_shape: CollisionShape2D  ## Reference to collision shape for dynamic updates
 
 signal player_entered_water(body)
 signal player_exited_water(body)
@@ -39,6 +41,7 @@ func _ready() -> void:
 func _process(delta:float)->void:
 	update_physics(delta)
 	update_visuals()
+	_update_collision_shape()  # Update collision shape to match water level
 	
 func _initiate_water() -> void:
 	segment_data.clear()
@@ -71,13 +74,15 @@ func _initiate_water() -> void:
 	
 	new_area.visible = false
 	add_child(new_area)
+	water_area = new_area  # Store reference
 	
 	var new_collisionshape : CollisionShape2D = CollisionShape2D.new()
 	var new_shape: RectangleShape2D = RectangleShape2D.new()
 	new_shape.size = water_size
 	new_collisionshape.shape = new_shape
-	new_collisionshape.position = water_size / 2.0 + Vector2(0,surface_pos_y/2.0)
+	new_collisionshape.position = water_size / 2.0 + Vector2(0, surface_pos_y / 2.0)
 	new_area.add_child(new_collisionshape)
+	water_collision_shape = new_collisionshape  # Store reference
 
 
 func update_physics(delta: float) -> void:
@@ -168,3 +173,62 @@ func _on_body_exited(body: Node2D) -> void:
 
 func get_water_surface_global_y() -> float:
 	return global_position.y + surface_pos_y
+
+func _update_collision_shape() -> void:
+	## Dynamically update collision shape SIZE and POSITION to match water level
+	## The water should expand from bottom up, not move as a whole
+	if not water_collision_shape or not water_collision_shape.shape:
+		return
+	
+	var shape = water_collision_shape.shape as RectangleShape2D
+	if not shape:
+		return
+	
+	# Calculate new size: from bottom (water_size.y) to current surface (surface_pos_y)
+	# surface_pos_y is offset from origin, negative = higher up
+	var new_height = water_size.y - surface_pos_y  # Total height from surface to bottom
+	var old_size = shape.size
+	shape.size = Vector2(water_size.x, new_height)
+	
+	# Position: center the shape between surface and bottom
+	# Bottom is at water_size.y, surface is at surface_pos_y
+	var center_y = surface_pos_y + new_height / 2.0
+	var old_pos = water_collision_shape.position
+	water_collision_shape.position = Vector2(water_size.x / 2.0, center_y)
+	
+	# Debug: Log significant changes
+	if abs(old_size.y - new_height) > 1.0:
+		print("[Water] Collision updated: size ", old_size.y, "→", new_height, 
+			  " pos.y ", old_pos.y, "→", center_y, " (surface_pos_y=", surface_pos_y, ")")
+
+## Water level control for boss fights and scripted events
+func raise_water(target_height: float, duration: float = 2.0) -> void:
+	## Smoothly raise water surface to target height
+	## @param target_height: New surface_pos_y value (negative = higher, positive = lower)
+	## @param duration: Time in seconds for transition
+	var tween = create_tween()
+	tween.tween_property(self, "surface_pos_y", target_height, duration)
+	tween.set_trans(Tween.TRANS_CUBIC)
+	tween.set_ease(Tween.EASE_IN_OUT)
+	
+	# Ensure water physics keep updating during transition
+	set_process(true)
+	recently_splashed = true
+
+func lower_water(target_height: float, duration: float = 2.0) -> void:
+	## Smoothly lower water surface to target height
+	## @param target_height: New surface_pos_y value (negative = higher, positive = lower)
+	## @param duration: Time in seconds for transition
+	raise_water(target_height, duration)  # Same implementation
+
+func set_water_level_instant(target_height: float) -> void:
+	## Instantly set water level without animation
+	## Useful for initial setup in boss arenas
+	surface_pos_y = target_height
+	
+	# Reset all segments to new height
+	for segment in segment_data:
+		segment["height"] = surface_pos_y
+		segment["velocity"] = 0.0
+	
+	update_visuals()
