@@ -152,6 +152,7 @@ func _ready() -> void:
 	super._ready()
 	fsm = FSM.new(self, $States, $States/Idle)
 	$Direction/HitArea2D/CollisionShape2D.disabled = true
+	GameManager.player=self
 	call_deferred("_connect_water_signals")
 	emit_signal("health_changed")
 	
@@ -229,7 +230,8 @@ func save_state() -> Dictionary:
 		"blade_count": blade_count,
 		"max_blade_capacity": max_blade_capacity,
 		"has_unlocked_blade": has_unlocked_blade,
-		"health": health
+		"health": health,
+		"Inventory":inventory._save_inventory()
 	}
 
 func load_state(data: Dictionary) -> void:
@@ -248,13 +250,17 @@ func load_state(data: Dictionary) -> void:
 	
 	if data.has("health"):
 		health = data["health"]
+	if data.has("Inventory"):
+		inventory._load_inventory(data["Inventory"])
 	# Đã loại bỏ logic: if data.has("has_blade") and data["has_blade"] == true:
 
 func heal(amount:int): # Giữ: func heal
+	print(health)
 	if(amount+health>max_health):
 		health=max_health
 	else:
 		health=amount+health
+	print(health)
 
 func checkfullhealth()->bool: # Giữ: func checkfullhealth
 	return health==max_health

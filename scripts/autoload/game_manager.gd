@@ -20,10 +20,11 @@ var paused=false
 
 func _ready() -> void:
 	load_checkpoint_data()
+	print(checkpoint_data)
+	respawn_at_checkpoint()
 	key_manager._get_key_dictionary_from_input_map()
 	current_checkpoint_id = ""
 	checkpoint_data.clear()
-	
 	pass
 
 #change stage by path and target portal name
@@ -63,6 +64,7 @@ func save_checkpoint(checkpoint_id: String) -> void:
 	
 	current_checkpoint_id = checkpoint_id
 	var player_state_dict: Dictionary = player.save_state()
+	print(player_state_dict)
 	checkpoint_data[checkpoint_id] = {
 		"player_state": player_state_dict,
 		"stage_path": current_stage.scene_file_path
@@ -126,7 +128,7 @@ func load_checkpoint_data() -> void:
 	if not save_data.is_empty():
 		current_checkpoint_id = save_data.get("current_checkpoint_id", "")
 		checkpoint_data = save_data.get("checkpoint_data", {})
-
+		
 func clear_checkpoint_data() -> void:
 	current_checkpoint_id = ""
 	checkpoint_data.clear()

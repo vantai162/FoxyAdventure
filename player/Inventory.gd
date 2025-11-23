@@ -38,3 +38,15 @@ func adjust_amount_item(item_name:String,amount:int):
 			print("Not enough item")
 	else:
 		print("Amount item not found")
+
+func _save_inventory()->Dictionary:
+	return {
+		"AmountItem":AmountItem,
+		"KeySkillUnlocked":KeySkillUnlocked
+	}
+
+func _load_inventory(data:Dictionary):
+	if(data.has("AmountItem")):
+		AmountItem=data["AmountItem"]
+	if(data.has("KeySkillUnlocked")):
+		KeySkillUnlocked=data["KeySkillUnlocked"]
