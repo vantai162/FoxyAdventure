@@ -13,17 +13,17 @@ class_name FloatingBoatPlatform
 
 ## === BUOYANCY PHYSICS ===
 @export_group("Buoyancy Physics")
-@export var buoyancy_strength: float = 120.0  ## Spring force strength (higher = faster rise)
-@export var float_damping: float = 0.85  ## Velocity damping for stability (0.5-0.95)
-@export var wave_follow_strength: float = 0.25  ## Wave motion influence (0.0-0.5)
+@export var buoyancy_strength: float = 50.0  ## Spring force strength (higher = faster rise)
+@export var float_damping: float = 5.0  ## Velocity damping for stability (higher = less bouncy)
+@export var wave_follow_strength: float = 0.15  ## Wave motion influence (0.0-0.5)
 @export var float_height_offset: float = -8.0  ## Height above water surface (negative = higher)
-@export var underwater_force_multiplier: float = 2.0  ## Extra force when deep underwater
+@export var underwater_force_multiplier: float = 1.5  ## Extra force when deep underwater
 
 ## === SETTLEMENT DETECTION ===
 @export_group("Settlement Detection")
-@export var settlement_threshold: float = 10.0  ## Max velocity_y to be "settled"
-@export var settlement_time: float = 0.5  ## Time stable before gliding starts
-@export var surface_distance_threshold: float = 5.0  ## Max distance from surface to be "at surface"
+@export var settlement_threshold: float = 5.0  ## Max velocity_y to be "settled"
+@export var settlement_time: float = 0.3  ## Time stable before gliding starts
+@export var surface_distance_threshold: float = 15.0  ## Max distance from surface to be "at surface"
 @export var wave_following_distance: float = 20.0  ## Distance from surface to enable wave following
 
 ## === PHYSICS ===
@@ -50,12 +50,6 @@ var is_gliding: bool = false
 func _ready() -> void:
 	sync_to_physics = false
 	
-	if water_detector:
-		water_detector.area_entered.connect(_on_water_entered)
-		water_detector.area_exited.connect(_on_water_exited)
-	else:
-		push_error("[FloatingBoatPlatform] WaterDetector node not found!")
-	
 	if glide_timer:
 		glide_timer.timeout.connect(_on_glide_timer_timeout)
 	
@@ -63,6 +57,7 @@ func _ready() -> void:
 
 func _physics_process(delta: float) -> void:
 	_check_ground_status()
+	_detect_water_by_position()  # New global detection method
 	
 	var should_float = current_water != null and not _is_on_solid_ground()
 	
@@ -98,6 +93,36 @@ func _physics_process(delta: float) -> void:
 		velocity_y = 0.0
 		if not is_floating:
 			velocity_x = 0.0
+
+func _detect_water_by_position() -> void:
+	## Global water detection using position-based checking
+	## Works with any water node in the "water" group - like foam on water
+	var boat_bottom_y = global_position.y + 4  # Bottom edge of boat
+	var detection_range = 20.0  # Detect water within 20px above/below boat
+	var found_water: water = null
+	
+	# Check all water bodies in the scene
+	for water_node in get_tree().get_nodes_in_group("water"):
+		if not water_node is water:
+			continue
+		
+		var water_obj = water_node as water
+		var water_surface_global_y = water_obj.get_water_surface_global_y()
+		var water_bottom_global_y = water_obj.global_position.y + water_obj.water_size.y
+		
+		# Check if boat overlaps with water volume (horizontally and vertically)
+		var boat_local_x = water_obj.to_local(global_position).x
+		if boat_local_x >= 0 and boat_local_x <= water_obj.water_size.x:
+			# Boat is within water's horizontal bounds
+			# Check if boat is near water surface (above or below)
+			var distance_to_surface = boat_bottom_y - water_surface_global_y
+			if distance_to_surface >= -detection_range and boat_bottom_y <= water_bottom_global_y:
+				# Boat is near surface or inside water
+				found_water = water_obj
+				break
+	
+	var prev_water = current_water
+	current_water = found_water
 
 func _is_on_solid_ground() -> bool:
 	if current_water != null:
@@ -140,40 +165,50 @@ func _apply_gravity(delta: float) -> void:
 
 func _update_buoyancy(delta: float) -> void:
 	if not current_water:
+		# Not in water: apply gravity
+		velocity_y += gravity * delta
+		velocity_y = clamp(velocity_y, -max_fall_speed, max_fall_speed)
 		return
-	
+
 	var water_surface_y = current_water.get_water_surface_global_y()
 	var target_y = water_surface_y + float_height_offset
-	
-	if water_surface_y >= global_position.y:
-		pass
-	else:
-		velocity_y = 0.0
+
+	# displacement positive when below target (submerged)
+	var displacement = global_position.y - target_y
+
+	# If boat is well above the surface, behave like normal falling body
+	if displacement < -wave_following_distance:
+		velocity_y += gravity * delta
+		velocity_y = clamp(velocity_y, -max_fall_speed, max_fall_speed)
 		return
-	
-	var raw_displacement = target_y - global_position.y
-	
-	# Only follow waves when near surface
+
+	# Apply wave following when near surface
 	var wave_offset = 0.0
-	if abs(raw_displacement) < wave_following_distance:
+	if abs(displacement) <= wave_following_distance:
 		wave_offset = _sample_water_waves()
+		# Note: sample returns offset relative to surface_pos_y; incorporate gently
 		target_y += wave_offset * wave_follow_strength
+
+	# Recompute displacement after wave offset
+	displacement = global_position.y - target_y
+
+	# Spring force: always pulls/pushes toward target (negative when below, positive when above)
+	# This is key - boat should rest AT the target, not underwater
+	var spring_force = -displacement * buoyancy_strength
 	
-	var displacement = target_y - global_position.y
-	
-	# Stronger force when deep underwater
-	var buoyancy_multiplier = 1.0
-	if displacement < -10.0:
-		buoyancy_multiplier = underwater_force_multiplier
-	
-	var buoyant_acceleration = displacement * buoyancy_strength * buoyancy_multiplier
-	
-	# Less damping when far from surface
-	var damping = float_damping if abs(displacement) < 10.0 else 0.95
-	velocity_y += buoyant_acceleration * delta
-	velocity_y *= damping
-	
-	velocity_y = clampf(velocity_y, -300.0, 300.0)
+	# When underwater (below target), apply extra buoyancy boost
+	if displacement > 0.0:
+		spring_force *= underwater_force_multiplier
+
+	# Damping to stabilize vertical motion (stronger when near target)
+	var damping_factor = float_damping
+	if abs(displacement) < 5.0:
+		damping_factor *= 2.0  # Extra damping near target to settle faster
+	var damping_force = -velocity_y * damping_factor
+
+	# Integrate forces (gravity + spring + damping)
+	velocity_y += (spring_force + damping_force + gravity) * delta
+	velocity_y = clamp(velocity_y, -max_fall_speed, max_fall_speed)
 
 func _sample_water_waves() -> float:
 	## Sample water surface at boat position for wave following
@@ -239,13 +274,3 @@ func _pause_gliding() -> void:
 func _on_glide_timer_timeout() -> void:
 	if is_floating:
 		is_gliding = true
-
-func _on_water_entered(area: Area2D) -> void:
-	var parent = area.get_parent()
-	if parent is water or (parent and parent.is_in_group("water")):
-		current_water = parent
-
-func _on_water_exited(area: Area2D) -> void:
-	var parent = area.get_parent()
-	if (parent is water or (parent and parent.is_in_group("water"))) and parent == current_water:
-		current_water = null

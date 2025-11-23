@@ -49,7 +49,7 @@ size = Vector2(64, 8)
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_water_detector"]
 size = Vector2(64, 64)
 
-[node name="FloatingBoatPlatform" type="AnimatableBody2D" groups=["platform"]]
+[node name="FloatingBoatPlatform" type="AnimatableBody2D" groups=["can_interact_with_water", "platform"]]
 script = ExtResource("1_boat")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
