@@ -1,6 +1,7 @@
 extends Player_State
 
 func _enter() -> void:
+	super._enter()
 	obj.velocity = Vector2.ZERO
 	obj.change_animation("dead")
 	
