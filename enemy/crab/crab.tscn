@@ -13,8 +13,8 @@
 [ext_resource type="Script" uid="uid://xqvgljx4hk1s" path="res://scripts/hit_area_2d.gd" id="7_h3mse"]
 [ext_resource type="Script" uid="uid://xiou1t8t4fyo" path="res://enemy/crab/run.gd" id="7_mekln"]
 [ext_resource type="PackedScene" uid="uid://ct1tqxgwkuvbe" path="res://scripts/hurt_area_2d.tscn" id="8_mdcuw"]
-[ext_resource type="Script" path="res://enemy/king_crab/hurt.gd" id="9_mdcuw"]
-[ext_resource type="Script" path="res://enemy/king_crab/dead.gd" id="10_0eync"]
+[ext_resource type="Script" uid="uid://d3rue3v1os1bt" path="res://enemy/crab/hurt.gd" id="9_mdcuw"]
+[ext_resource type="Script" uid="uid://yuoupvpkqxoc" path="res://enemy/crab/dead.gd" id="10_0eync"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_5qelw"]
 size = Vector2(35, 27)

@@ -19,8 +19,8 @@
 [ext_resource type="Script" uid="uid://dmcx88tdtqlvo" path="res://enemy/seahorse/states/idle.gd" id="13_gmpqy"]
 [ext_resource type="PackedScene" uid="uid://ct1tqxgwkuvbe" path="res://scripts/hurt_area_2d.tscn" id="13_r4ccg"]
 [ext_resource type="Script" uid="uid://dbl2s02x2ct5o" path="res://enemy/seahorse/states/shoot.gd" id="14_u53s0"]
-[ext_resource type="Script" path="res://enemy/king_crab/projectiles/hurt.gd" id="15_5djrk"]
-[ext_resource type="Script" path="res://enemy/king_crab/projectiles/dead.gd" id="17_nles5"]
+[ext_resource type="Script" uid="uid://budybf78cqjcn" path="res://enemy/seahorse/hurt.gd" id="15_5djrk"]
+[ext_resource type="Script" uid="uid://ceivkbcn2nfiw" path="res://enemy/seahorse/dead.gd" id="17_nles5"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_pdnpt"]
 size = Vector2(20, 22)
