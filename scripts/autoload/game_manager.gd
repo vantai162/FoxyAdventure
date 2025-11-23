@@ -8,7 +8,7 @@ var checkpoint_data: Dictionary = {}
 @onready var fade_rect = $FadeLayer/ColorRect
 @export var player_scene: PackedScene
 var key_manager:KeyManager=KeyManager.new()
-var current_stage = ""
+var current_stage=""
 var player: Player = null
 var arriving_door_name: String = "" # New variable to signal arrival animation
 var persistent_player_data: Dictionary = {}
