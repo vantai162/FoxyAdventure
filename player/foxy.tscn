@@ -289,6 +289,7 @@ shape = SubResource("CapsuleShape2D_34yrj")
 [node name="HurtArea2d" parent="Direction" instance=ExtResource("37_333wc")]
 collision_layer = 4
 collision_mask = 0
+metadata/_custom_type_script = "uid://csu2b21cwchqw"
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Direction/HurtArea2d"]
 position = Vector2(-1, -3)
