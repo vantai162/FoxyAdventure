@@ -44,13 +44,16 @@ animations = [{
 }]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_boat_collision"]
-size = Vector2(64, 8)
+size = Vector2(64, 13)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_water_detector"]
 size = Vector2(64, 64)
 
 [node name="FloatingBoatPlatform" type="AnimatableBody2D" groups=["can_interact_with_water", "platform"]]
 script = ExtResource("1_boat")
+glide_distance = 120.0
+glide_pause_time = 0.36
+buoyancy_strength = 36.0
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
 sprite_frames = SubResource("SpriteFrames_hag6e")

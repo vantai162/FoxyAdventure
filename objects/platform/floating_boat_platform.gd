@@ -15,19 +15,18 @@ class_name FloatingBoatPlatform
 @export_group("Buoyancy Physics")
 @export var buoyancy_strength: float = 50.0  ## Spring force strength (higher = faster rise)
 @export var float_damping: float = 5.0  ## Velocity damping for stability (higher = less bouncy)
-@export var wave_follow_strength: float = 0.15  ## Wave motion influence (0.0-0.5)
-@export var float_height_offset: float = -8.0  ## Height above water surface (negative = higher)
-@export var underwater_force_multiplier: float = 1.5  ## Extra force when deep underwater
+@export var wave_follow_strength: float = 0.5  ## How much the boat tilts/moves with waves (0.15 was too low for whirlpools)
+@export var float_height_offset: float = -8.0  ## Target height relative to water surface (negative = above)
 
-## === SETTLEMENT DETECTION ===
-@export_group("Settlement Detection")
+@export_group("Advanced Physics")
+@export var underwater_force_multiplier: float = 1.5  ## Extra force when deep underwater
 @export var settlement_threshold: float = 5.0  ## Max velocity_y to be "settled"
 @export var settlement_time: float = 0.3  ## Time stable before gliding starts
 @export var surface_distance_threshold: float = 15.0  ## Max distance from surface to be "at surface"
 @export var wave_following_distance: float = 20.0  ## Distance from surface to enable wave following
 
 ## === PHYSICS ===
-@export_group("Physics")
+@export_group("General Physics")
 @export var gravity: float = 980.0  ## Gravity when in air
 @export var max_fall_speed: float = 500.0  ## Terminal velocity
 @export var ground_check_distance: float = 2.0  ## Ground raycast length
@@ -170,64 +169,53 @@ func _update_buoyancy(delta: float) -> void:
 		velocity_y = clamp(velocity_y, -max_fall_speed, max_fall_speed)
 		return
 
-	var water_surface_y = current_water.get_water_surface_global_y()
-	var target_y = water_surface_y + float_height_offset
+	# 1. Get baseline water surface (flat)
+	var flat_surface_y = current_water.get_water_surface_global_y()
+	
+	# 2. Get exact water height (waves/whirlpools)
+	var exact_surface_y = flat_surface_y
+	if current_water.has_method("get_water_height_at_global_x"):
+		exact_surface_y = current_water.get_water_height_at_global_x(global_position.x)
+	
+	# 3. Calculate target height with wave influence
+	# wave_follow_strength 0.0 = treat water as flat
+	# wave_follow_strength 1.0 = follow every ripple exactly
+	var wave_displacement = exact_surface_y - flat_surface_y
+	var effective_surface_y = flat_surface_y + (wave_displacement * wave_follow_strength)
+	
+	var target_y = effective_surface_y + float_height_offset
 
-	# displacement positive when below target (submerged)
+	# 4. Calculate displacement (positive = submerged)
 	var displacement = global_position.y - target_y
 
-	# If boat is well above the surface, behave like normal falling body
+	# If boat is well above the surface (e.g. jumped out), behave like normal falling body
+	# Use wave_following_distance as the "capture radius" of the water
 	if displacement < -wave_following_distance:
 		velocity_y += gravity * delta
 		velocity_y = clamp(velocity_y, -max_fall_speed, max_fall_speed)
 		return
 
-	# Apply wave following when near surface
-	var wave_offset = 0.0
-	if abs(displacement) <= wave_following_distance:
-		wave_offset = _sample_water_waves()
-		# Note: sample returns offset relative to surface_pos_y; incorporate gently
-		target_y += wave_offset * wave_follow_strength
-
-	# Recompute displacement after wave offset
-	displacement = global_position.y - target_y
-
-	# Spring force: always pulls/pushes toward target (negative when below, positive when above)
-	# This is key - boat should rest AT the target, not underwater
+	# 5. Apply Spring Force (Buoyancy)
+	# Pulls/pushes toward target_y
 	var spring_force = -displacement * buoyancy_strength
 	
-	# When underwater (below target), apply extra buoyancy boost
+	# When underwater (below target), apply extra buoyancy boost to pop up
 	if displacement > 0.0:
 		spring_force *= underwater_force_multiplier
 
-	# Damping to stabilize vertical motion (stronger when near target)
+	# 6. Apply Damping (Stability)
+	# Stronger damping when near target to prevent endless oscillation
 	var damping_factor = float_damping
 	if abs(displacement) < 5.0:
-		damping_factor *= 2.0  # Extra damping near target to settle faster
+		damping_factor *= 2.0
+	
 	var damping_force = -velocity_y * damping_factor
 
-	# Integrate forces (gravity + spring + damping)
+	# 7. Integrate Forces
 	velocity_y += (spring_force + damping_force + gravity) * delta
 	velocity_y = clamp(velocity_y, -max_fall_speed, max_fall_speed)
 
-func _sample_water_waves() -> float:
-	## Sample water surface at boat position for wave following
-	## Returns average displacement from flat surface
-	if not current_water or not current_water.segment_data:
-		return 0.0
-	
-	var local_x = current_water.to_local(global_position).x
-	var segment_width = current_water.water_size.x / (current_water.segment_count - 1)
-	var index = int(clamp(local_x / segment_width, 0, current_water.segment_count - 1))
-	
-	# Average nearby segments for smoother following
-	var total = 0.0
-	var count = 0
-	for i in range(max(0, index - 2), min(current_water.segment_count, index + 3)):
-		total += current_water.segment_data[i]["height"] - current_water.surface_pos_y
-		count += 1
-	
-	return total / count if count > 0 else 0.0
+# _sample_water_waves removed - replaced by current_water.get_water_height_at_global_x()
 
 func _update_gliding(delta: float) -> void:
 	if not is_gliding:
