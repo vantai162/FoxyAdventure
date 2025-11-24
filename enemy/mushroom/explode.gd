@@ -5,6 +5,7 @@ extends EnemyState
 func _enter() -> void:
 	obj.change_animation("explode")
 	obj.velocity.x = 0
+	obj.get_node("Direction/HurtArea2D/CollisionShape2D").disabled = true
 	await get_tree().create_timer(1.5).timeout  
 	_spawn_toxic_gas()
 	obj.queue_free()

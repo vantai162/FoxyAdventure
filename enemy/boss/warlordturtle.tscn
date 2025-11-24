@@ -1,4 +1,4 @@
-[gd_scene load_steps=36 format=3 uid="uid://bdlk3sxo5ekwn"]
+[gd_scene load_steps=38 format=3 uid="uid://bdlk3sxo5ekwn"]
 
 [ext_resource type="Script" uid="uid://c7a5fg47r6h5l" path="res://enemy/boss/warlordturtle.gd" id="1_ef40p"]
 [ext_resource type="Texture2D" uid="uid://b405sim5qtso5" path="res://assets/warlord_turle/war_lord_turtle20.png" id="2_prdj8"]
@@ -31,6 +31,8 @@
 [ext_resource type="Script" uid="uid://ctyg2m8uocalk" path="res://enemy/boss/skill_2.gd" id="26_tvqld"]
 [ext_resource type="Script" uid="uid://me3i360ygy6a" path="res://enemy/boss/hurt.gd" id="27_dfhj1"]
 [ext_resource type="Script" uid="uid://dnkf3foccvr0j" path="res://enemy/boss/dead.gd" id="28_wuglq"]
+[ext_resource type="Script" uid="uid://dybr8136u5gn6" path="res://enemy/boss/raise_water.gd" id="29_raise"]
+[ext_resource type="Script" uid="uid://btbhb4moahkoo" path="res://enemy/boss/summon_whirlpool.gd" id="30_whirlpool"]
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_ladxf"]
 animations = [{
@@ -176,7 +178,8 @@ collision_layer = 8
 script = ExtResource("1_ef40p")
 boomb_scene = ExtResource("2_wuglq")
 rocket_scene = ExtResource("3_tvqld")
-max_health = 100
+max_health = 20
+oxygen_decrease_rate = 0.0
 metadata/_custom_type_script = "uid://s4xx82espxdt"
 
 [node name="Direction" type="Node2D" parent="."]
@@ -256,6 +259,12 @@ script = ExtResource("27_dfhj1")
 
 [node name="Dead" type="Node" parent="States"]
 script = ExtResource("28_wuglq")
+
+[node name="RaiseWater" type="Node" parent="States"]
+script = ExtResource("29_raise")
+
+[node name="SummonWhirlpool" type="Node" parent="States"]
+script = ExtResource("30_whirlpool")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 position = Vector2(0, 0.5)

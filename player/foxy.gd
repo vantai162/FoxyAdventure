@@ -6,15 +6,16 @@ extends BaseCharacter
 @export var invi_time: float = 2.0
 @export var jump_buffer: float
 @export var coyote_time: float
+var inventory= Inventory.new()
 
 @export_group("Movement Physics")
 @export var ground_friction: float = 0.25
 @export var min_stop_speed: float = 10.0
-@export var air_drag_multiplier: float = 0.5
+@export var slow_effect_multiplier: float = 0.5  ## Speed multiplier when slow effect is active
+@export var wind_influence_factor: float = 0.1  ## How quickly player adjusts to wind when not moving
 
 @export_group("Wall Jump")
 @export var wall_jump_force: float = 100.0
-@export var wall_jump_air_control: float = 0.05
 @export var wall_jump_control_delay: float = 0.15
 @export var wall_jump_control_fade_duration: float = 0.4
 @export var wall_slide_friction: float = 0.3
@@ -43,9 +44,19 @@ extends BaseCharacter
 @export var swim_gravity: float = 300.0
 @export var swim_deceleration: float = 0.1
 @export var swim_acceleration: float = 0.15
+@export var head_offset_y: float = 8.0  ## Distance from player origin to head, negative in Y-axis (head is above origin)
 
-var air_control: float = 1.0
+@export_group("Air Control")
+@export var air_acceleration: float = 0.3  ## Air steering responsiveness when actively moving (0.0-1.0, lower = more momentum/inertia visible)
+@export var air_deceleration: float = 0.08  ## Air drag when no input (0.0-1.0, lower = longer coast/momentum preservation)
+@export var wall_jump_air_acceleration: float = 0.08  ## Restricted air control during wall jump (creates commitment)
+
+## Runtime state for wall jump air restriction (managed by jump state)
+var wall_jump_restriction_timer: float = -1.0  ## -1 = not active, >=0 = active countdown
+
+var current_water: Node2D = null  ## Reference to current water body player is in
 signal health_changed
+signal coin_changed
 @export_group("Blade")
 @export var blade_projectile_scene: PackedScene
 @export var air_slash_scene: PackedScene
@@ -68,11 +79,7 @@ enum attack_direction {
 @export var InitCoolDown = {
 	"Dash": 2
 }
-@export var KeySkillUnlocked={
-	"Dash":false,
-	"HasCollectedBlade":false,
-	"DoubleJump":false
-}
+
 var attack_cooldown: int = 1
 var jump_count: int = 0
 var dashed_on_air: bool = false
@@ -83,6 +90,24 @@ var last_ground_time: float = -1211.0
 var blade_count: int = 0
 var max_blade_capacity: int = 1
 var has_unlocked_blade: bool = false
+
+## Get current air acceleration value based on wall jump restriction state
+func get_current_air_acceleration() -> float:
+	if wall_jump_restriction_timer < 0:
+		return air_acceleration
+	
+	# Wall jump restriction active - check phase
+	if wall_jump_restriction_timer < wall_jump_control_delay:
+		return wall_jump_air_acceleration  # Locked phase: minimal control
+	
+	# Fade phase: smooth transition back to full control
+	var fade_time = wall_jump_restriction_timer - wall_jump_control_delay
+	if fade_time < wall_jump_control_fade_duration:
+		var blend = fade_time / wall_jump_control_fade_duration
+		return lerp(wall_jump_air_acceleration, air_acceleration, blend)
+	
+	# Fully restored
+	return air_acceleration
 
 func can_attack() -> bool:
 	return blade_count > 0 and Effect["Stun"] <= 0
@@ -152,6 +177,12 @@ func _ready() -> void:
 	call_deferred("_connect_water_signals")
 	emit_signal("health_changed")
 	
+	# Sync sprite to blade inventory state after base initialization
+	# This handles respawn scenarios where blade state persists but sprite resets
+	if has_unlocked_blade and blade_count > 0:
+		set_animated_sprite($Direction/BladeAnimatedSprite2D)
+	# else: already using unarmed sprite from super._ready()
+	
 func _connect_water_signals():
 	for water in get_tree().get_nodes_in_group("water"):
 		if not water.player_entered_water.is_connected(_on_enter_water):
@@ -164,12 +195,31 @@ func _on_enter_water(body):
 	if body == self:
 		is_in_water = true
 		gravity = 300
-		fsm.change_state(fsm.states.swim)
+		# Only enter swim state if head is actually underwater (handles whirlpool air pockets)
+		if is_head_underwater():
+			fsm.change_state(fsm.states.swim)
 
 func _on_exit_water(body):
 	if body == self:
 		is_in_water = false
 		gravity = 700
+
+func is_head_underwater(threshold: float = 0.0) -> bool:
+	## Check if player's head is submerged in current water body
+	## Uses centralized water height check (handles waves/whirlpools)
+	if current_water == null:
+		return false
+	
+	# Head Y position (subtracting offset because Y increases downward in Godot)
+	var head_y = global_position.y - head_offset_y
+	var water_surface_y = current_water.get_water_surface_global_y()
+	
+	# Use exact water height if available (handles whirlpools/waves)
+	if current_water.has_method("get_water_height_at_global_x"):
+		water_surface_y = current_water.get_water_height_at_global_x(global_position.x)
+	
+	# If head_y > water_surface_y, head is deeper (further down = more positive Y)
+	return head_y > (water_surface_y + threshold)
 
 func _process(delta: float) -> void:
 	_updateeffect(delta)
@@ -243,14 +293,20 @@ func load_state(data: Dictionary) -> void:
 		if has_unlocked_blade:
 			set_animated_sprite($Direction/BladeAnimatedSprite2D)
 	
-	if data.has("has_blade") and data["has_blade"] == true:
-		has_unlocked_blade = true
-		blade_count = max(blade_count, 1)
-		set_animated_sprite($Direction/BladeAnimatedSprite2D)
-	
 	if data.has("health"):
 		health = data["health"]
+	# Đã loại bỏ logic: if data.has("has_blade") and data["has_blade"] == true:
+	
 
+func heal(amount:int): # Giữ: func heal
+	if(amount+health>max_health):
+		health=max_health
+	else:
+		health=amount+health
+		health_changed.emit()
+
+func checkfullhealth()->bool: # Giữ: func checkfullhealth
+	return health==max_health
 
 func _on_hurt_area_2d_hurt(direction: Vector2, damage: float) -> void:
 	if not invincible:

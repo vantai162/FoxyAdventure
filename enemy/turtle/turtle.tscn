@@ -17,7 +17,7 @@
 [ext_resource type="Script" uid="uid://ckk2lgo3gjnvk" path="res://enemy/turtle/hurt.gd" id="7_0ekdt"]
 [ext_resource type="Texture2D" uid="uid://bq7nxdv5i1ha5" path="res://assets/turtle/turtle_blue_walk_01.png" id="7_livia"]
 [ext_resource type="Texture2D" uid="uid://cgt4s4vn5nfar" path="res://assets/turtle/turtle_blue_walk_02.png" id="8_e4l57"]
-[ext_resource type="Script" uid="uid://k4wow2443kjb" path="res://enemy/turtle/dead.gd" id="14_n3t07"]
+[ext_resource type="Script" path="res://enemy/turtle/dead.gd" id="14_n3t07"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_pkty3"]
 radius = 13.0384
