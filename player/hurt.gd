@@ -7,6 +7,7 @@ func _enter():
 	obj.velocity.y = -obj.hurt_knockback_vertical
 	obj.velocity.x = 0
 	timer = obj.hurt_stun_duration
+	obj.invincible_timer = obj.max_invincible
 
 
 func _update( delta: float):

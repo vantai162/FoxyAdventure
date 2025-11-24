@@ -1,0 +1,196 @@
+[gd_scene load_steps=41 format=3 uid="uid://dduldha4tdymr"]
+
+[ext_resource type="Script" uid="uid://brea73hpegsgo" path="res://enemy/boss/rocket.gd" id="1_2rbxa"]
+[ext_resource type="Texture2D" uid="uid://kndev2dt6wbu" path="res://assets/warlord_turle/turtle_bullets/bullet_rocket.png" id="2_kaj20"]
+[ext_resource type="Script" uid="uid://xqvgljx4hk1s" path="res://scripts/hit_area_2d.gd" id="3_dpw5n"]
+[ext_resource type="Texture2D" uid="uid://dpga4mcsy11iq" path="res://assets/warlord_turle/turtle_bullets/explosion_effect/1_0.png" id="4_wsgno"]
+[ext_resource type="Texture2D" uid="uid://ctugq08boqvwi" path="res://assets/warlord_turle/turtle_bullets/explosion_effect/1_1.png" id="5_oi1fm"]
+[ext_resource type="Texture2D" uid="uid://gttnbt3dn68f" path="res://assets/warlord_turle/turtle_bullets/explosion_effect/1_2.png" id="6_7fsku"]
+[ext_resource type="Texture2D" uid="uid://beetrhdcef6sx" path="res://assets/warlord_turle/turtle_bullets/explosion_effect/1_3.png" id="7_i7f0r"]
+[ext_resource type="Texture2D" uid="uid://b46x211g23dxp" path="res://assets/warlord_turle/turtle_bullets/explosion_effect/1_4.png" id="8_xc23i"]
+[ext_resource type="Texture2D" uid="uid://cigwoaavd78b7" path="res://assets/warlord_turle/turtle_bullets/explosion_effect/1_5.png" id="9_imv1i"]
+[ext_resource type="Texture2D" uid="uid://e0nopxgmp27m" path="res://assets/warlord_turle/turtle_bullets/explosion_effect/1_6.png" id="10_vc2qr"]
+[ext_resource type="Texture2D" uid="uid://cry08q05th1eg" path="res://assets/warlord_turle/turtle_bullets/explosion_effect/1_7.png" id="11_snx3w"]
+[ext_resource type="Texture2D" uid="uid://bvfxcsq070rs4" path="res://assets/warlord_turle/turtle_bullets/explosion_effect/1_8.png" id="12_6n1xc"]
+[ext_resource type="Texture2D" uid="uid://dj0welvg58k14" path="res://assets/warlord_turle/turtle_bullets/explosion_effect/1_9.png" id="13_66np8"]
+[ext_resource type="Texture2D" uid="uid://dyyu248fa17gi" path="res://assets/warlord_turle/turtle_bullets/explosion_effect/1_10.png" id="14_8y40s"]
+[ext_resource type="Texture2D" uid="uid://cgyxijq8cqti6" path="res://assets/warlord_turle/turtle_bullets/explosion_effect/1_11.png" id="15_kevm7"]
+[ext_resource type="Texture2D" uid="uid://kr2l77epjcrc" path="res://assets/warlord_turle/turtle_bullets/explosion_effect/1_12.png" id="16_gs6pr"]
+[ext_resource type="Texture2D" uid="uid://ccnaxce4w3yca" path="res://assets/warlord_turle/turtle_bullets/explosion_effect/1_13.png" id="17_cbh36"]
+[ext_resource type="Texture2D" uid="uid://dtcxudhkw2u4n" path="res://assets/warlord_turle/turtle_bullets/explosion_effect/1_14.png" id="18_62cjh"]
+[ext_resource type="Texture2D" uid="uid://thmendgk4rec" path="res://assets/warlord_turle/turtle_bullets/explosion_effect/1_15.png" id="19_y13ym"]
+[ext_resource type="Texture2D" uid="uid://b268gitq5qvns" path="res://assets/warlord_turle/turtle_bullets/explosion_effect/1_16.png" id="20_qvwns"]
+[ext_resource type="Texture2D" uid="uid://cfimtu3c1b8io" path="res://assets/warlord_turle/turtle_bullets/explosion_effect/1_17.png" id="21_kowlf"]
+[ext_resource type="Texture2D" uid="uid://oxssgy835ba3" path="res://assets/warlord_turle/turtle_bullets/explosion_effect/1_18.png" id="22_w7l0d"]
+[ext_resource type="Texture2D" uid="uid://jwtp3vk2bxwc" path="res://assets/warlord_turle/turtle_bullets/explosion_effect/1_19.png" id="23_aqly3"]
+[ext_resource type="Texture2D" uid="uid://dv14bl5fnqwv4" path="res://assets/warlord_turle/turtle_bullets/explosion_effect/1_20.png" id="24_nu1cj"]
+[ext_resource type="Texture2D" uid="uid://d2h2qvky5f54g" path="res://assets/warlord_turle/turtle_bullets/explosion_effect/1_21.png" id="25_x6pik"]
+[ext_resource type="Texture2D" uid="uid://6druljhuo00b" path="res://assets/warlord_turle/turtle_bullets/explosion_effect/1_22.png" id="26_y0ipw"]
+[ext_resource type="Texture2D" uid="uid://dqr8pff22r5qc" path="res://assets/warlord_turle/turtle_bullets/explosion_effect/1_23.png" id="27_0tuo3"]
+[ext_resource type="Texture2D" uid="uid://bbk1xsryblyv2" path="res://assets/warlord_turle/turtle_bullets/explosion_effect/1_24.png" id="28_1et8l"]
+[ext_resource type="Texture2D" uid="uid://cjd2a22n27cbj" path="res://assets/warlord_turle/turtle_bullets/explosion_effect/1_25.png" id="29_scv4v"]
+[ext_resource type="Texture2D" uid="uid://d38du240i2l0s" path="res://assets/warlord_turle/turtle_bullets/explosion_effect/1_26.png" id="30_133xv"]
+[ext_resource type="Texture2D" uid="uid://dr0182sae1cwp" path="res://assets/warlord_turle/turtle_bullets/explosion_effect/1_27.png" id="31_klp0g"]
+[ext_resource type="Texture2D" uid="uid://b53patsxwtbgh" path="res://assets/warlord_turle/turtle_bullets/explosion_effect/1_28.png" id="32_rt4tm"]
+[ext_resource type="Texture2D" uid="uid://dtsmmatj7m8qm" path="res://assets/warlord_turle/turtle_bullets/explosion_effect/1_29.png" id="33_d4xn8"]
+[ext_resource type="Texture2D" uid="uid://bld3rcmi7k6ln" path="res://assets/warlord_turle/turtle_bullets/explosion_effect/1_30.png" id="34_bsucp"]
+[ext_resource type="Texture2D" uid="uid://b1a22jj0bisf6" path="res://assets/warlord_turle/turtle_bullets/explosion_effect/1_31.png" id="35_opx7f"]
+[ext_resource type="Texture2D" uid="uid://d1fy0r3lsydec" path="res://assets/warlord_turle/turtle_bullets/explosion_effect/1_32.png" id="36_0yjlh"]
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_2rbxa"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_kaj20"]
+radius = 23.0217
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_dpw5n"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("4_wsgno")
+}, {
+"duration": 1.0,
+"texture": ExtResource("5_oi1fm")
+}, {
+"duration": 1.0,
+"texture": ExtResource("6_7fsku")
+}, {
+"duration": 1.0,
+"texture": ExtResource("7_i7f0r")
+}, {
+"duration": 1.0,
+"texture": ExtResource("8_xc23i")
+}, {
+"duration": 1.0,
+"texture": ExtResource("9_imv1i")
+}, {
+"duration": 1.0,
+"texture": ExtResource("10_vc2qr")
+}, {
+"duration": 1.0,
+"texture": ExtResource("11_snx3w")
+}, {
+"duration": 1.0,
+"texture": ExtResource("12_6n1xc")
+}, {
+"duration": 1.0,
+"texture": ExtResource("13_66np8")
+}, {
+"duration": 1.0,
+"texture": ExtResource("14_8y40s")
+}, {
+"duration": 1.0,
+"texture": ExtResource("15_kevm7")
+}, {
+"duration": 1.0,
+"texture": ExtResource("16_gs6pr")
+}, {
+"duration": 1.0,
+"texture": ExtResource("17_cbh36")
+}, {
+"duration": 1.0,
+"texture": ExtResource("18_62cjh")
+}, {
+"duration": 1.0,
+"texture": ExtResource("19_y13ym")
+}, {
+"duration": 1.0,
+"texture": ExtResource("20_qvwns")
+}, {
+"duration": 1.0,
+"texture": ExtResource("21_kowlf")
+}, {
+"duration": 1.0,
+"texture": ExtResource("22_w7l0d")
+}, {
+"duration": 1.0,
+"texture": ExtResource("23_aqly3")
+}, {
+"duration": 1.0,
+"texture": ExtResource("24_nu1cj")
+}, {
+"duration": 1.0,
+"texture": ExtResource("25_x6pik")
+}, {
+"duration": 1.0,
+"texture": ExtResource("26_y0ipw")
+}, {
+"duration": 1.0,
+"texture": ExtResource("27_0tuo3")
+}, {
+"duration": 1.0,
+"texture": ExtResource("28_1et8l")
+}, {
+"duration": 1.0,
+"texture": ExtResource("29_scv4v")
+}, {
+"duration": 1.0,
+"texture": ExtResource("30_133xv")
+}, {
+"duration": 1.0,
+"texture": ExtResource("31_klp0g")
+}, {
+"duration": 1.0,
+"texture": ExtResource("32_rt4tm")
+}, {
+"duration": 1.0,
+"texture": ExtResource("33_d4xn8")
+}, {
+"duration": 1.0,
+"texture": ExtResource("34_bsucp")
+}, {
+"duration": 1.0,
+"texture": ExtResource("35_opx7f")
+}, {
+"duration": 1.0,
+"texture": ExtResource("36_0yjlh")
+}],
+"loop": false,
+"name": &"default",
+"speed": 5.0
+}]
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_kaj20"]
+radius = 13.0
+height = 34.0
+
+[node name="Rocket" type="RigidBody2D"]
+scale = Vector2(1.5, 1.5)
+collision_layer = 8
+script = ExtResource("1_2rbxa")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = ExtResource("2_kaj20")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("CapsuleShape2D_2rbxa")
+
+[node name="HitArea2D" type="Area2D" parent="."]
+collision_layer = 0
+collision_mask = 4
+script = ExtResource("3_dpw5n")
+metadata/_custom_type_script = "uid://xqvgljx4hk1s"
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="HitArea2D"]
+position = Vector2(1, 0)
+shape = SubResource("CircleShape2D_kaj20")
+
+[node name="Timer" type="Timer" parent="."]
+wait_time = 0.5
+
+[node name="Explosion" type="AnimatedSprite2D" parent="."]
+position = Vector2(-3, -23)
+scale = Vector2(1.3, 1.3)
+sprite_frames = SubResource("SpriteFrames_dpw5n")
+frame = 3
+frame_progress = 0.613479
+speed_scale = 2.0
+
+[node name="ExplosionArea2D" type="Area2D" parent="."]
+collision_layer = 8
+collision_mask = 3
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="ExplosionArea2D"]
+shape = SubResource("CapsuleShape2D_kaj20")
+
+[connection signal="timeout" from="Timer" to="." method="_on_timer_timeout"]
+[connection signal="body_entered" from="ExplosionArea2D" to="." method="_on_explosion_area_2d_body_entered"]

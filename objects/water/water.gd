@@ -34,6 +34,13 @@ var segment_data: Array = []
 var segment_rest_height: Array = []  ## Per-segment equilibrium height (allows external depression control)
 var recently_splashed: bool = false
 
+## Water raising state tracking
+var _water_raise_active: bool = false
+var _water_raise_start_heights: Array = []
+var _water_raise_target: float = 0.0
+var _water_raise_duration: float = 0.0
+var _water_raise_elapsed: float = 0.0
+
 var surface_line: Line2D
 var fill_polygon: Polygon2D
 var water_area: Area2D  ## Reference to dynamically created Area2D
@@ -66,6 +73,10 @@ func _process(delta:float)->void:
 		if debug_timer >= debug_interval:
 			_print_water_diagnostics()
 			debug_timer = 0.0
+	
+	# Update water raising animation
+	if _water_raise_active:
+		_update_water_raise(delta)
 	
 	update_physics(delta)
 	update_visuals()
@@ -290,6 +301,20 @@ func raise_water(target_height: float, duration: float = 2.0) -> void:
 	## Smoothly raise water surface to target height
 	## @param target_height: New surface_pos_y value (negative = higher, positive = lower)
 	## @param duration: Time in seconds for transition
+	
+	print("🌊 Water raise_water() called: target=%.2f, duration=%.1f" % [target_height, duration])
+	
+	# Store initial rest heights for smooth interpolation
+	_water_raise_start_heights.clear()
+	for i in range(segment_count):
+		_water_raise_start_heights.append(segment_rest_height[i])
+	
+	_water_raise_target = target_height
+	_water_raise_duration = duration
+	_water_raise_elapsed = 0.0
+	_water_raise_active = true
+	
+	# Tween surface_pos_y for visual reference
 	var tween = create_tween()
 	tween.tween_property(self, "surface_pos_y", target_height, duration)
 	tween.set_trans(Tween.TRANS_CUBIC)
@@ -298,6 +323,23 @@ func raise_water(target_height: float, duration: float = 2.0) -> void:
 	# Ensure water physics keep updating during transition
 	set_process(true)
 	recently_splashed = true
+	
+	print("   Initial rest heights range: %.2f to %.2f" % [_water_raise_start_heights.min(), _water_raise_start_heights.max()])
+
+func _update_water_raise(delta: float) -> void:
+	_water_raise_elapsed += delta
+	var progress = clamp(_water_raise_elapsed / _water_raise_duration, 0.0, 1.0)
+	
+	# Cubic easing to match the tween (smoothstep)
+	var eased_progress = progress * progress * (3.0 - 2.0 * progress)
+	
+	# Smoothly interpolate all segment rest heights
+	for i in range(segment_count):
+		segment_rest_height[i] = lerp(_water_raise_start_heights[i], _water_raise_target, eased_progress)
+	
+	if progress >= 1.0:
+		_water_raise_active = false
+		print("🌊 Water raise complete! Final rest heights at: %.2f" % _water_raise_target)
 
 func lower_water(target_height: float, duration: float = 2.0) -> void:
 	## Smoothly lower water surface to target height

@@ -69,6 +69,7 @@ texture = ExtResource("2_dv4ay")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 shape = SubResource("RectangleShape2D_boat_collision")
+one_way_collision = true
 
 [node name="WaterDetector" type="Area2D" parent="."]
 collision_layer = 0
