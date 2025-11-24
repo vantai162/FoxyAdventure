@@ -212,6 +212,7 @@ metadata/_custom_type_script = "uid://s4xx82espxdt"
 [node name="Direction" type="Node2D" parent="."]
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="Direction"]
+scale = Vector2(1.0483, 1)
 sprite_frames = SubResource("SpriteFrames_ladxf")
 animation = &"summon"
 flip_h = true
@@ -249,16 +250,16 @@ position = Vector2(38, -47.3333)
 position = Vector2(-42, -50.33)
 
 [node name="WariningRocket" parent="Direction/BoomAndRocket" instance=ExtResource("25_eluqr")]
-position = Vector2(146, 11.3333)
+position = Vector2(113.333, 10.6667)
 
 [node name="WariningRocket2" parent="Direction/BoomAndRocket" instance=ExtResource("25_eluqr")]
-position = Vector2(252.667, 10)
+position = Vector2(217.333, 11.3333)
 
 [node name="WariningRocket3" parent="Direction/BoomAndRocket" instance=ExtResource("25_eluqr")]
-position = Vector2(373.333, 8.66667)
+position = Vector2(316, 14)
 
 [node name="WariningRocket4" parent="Direction/BoomAndRocket" instance=ExtResource("25_eluqr")]
-position = Vector2(490.667, 6.66666)
+position = Vector2(428, 16)
 
 [node name="HurtArea2D" type="Area2D" parent="Direction"]
 collision_layer = 16

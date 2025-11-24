@@ -2,7 +2,7 @@ extends EnemyState
 
 func _enter():
 	obj.change_animation("idle")
-	timer = 3.0
+	timer = 1.0
 	
 func _update(delta):
 	if update_timer(delta):
