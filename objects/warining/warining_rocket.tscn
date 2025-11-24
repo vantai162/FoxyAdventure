@@ -1,0 +1,56 @@
+[gd_scene load_steps=12 format=3 uid="uid://p1nb3n6xmbvs"]
+
+[ext_resource type="Texture2D" uid="uid://cunx1yotlnjvu" path="res://assets/warning/WarningSign_PixyFantasy/WarningSign01.png" id="1_nxnws"]
+[ext_resource type="Script" uid="uid://bbhqhx2xoi1j4" path="res://objects/warining/warining_rocket.gd" id="1_ygu3m"]
+[ext_resource type="Texture2D" uid="uid://djgqgfrrcnaho" path="res://assets/warning/WarningSign_PixyFantasy/WarningSign02.png" id="2_ygu3m"]
+[ext_resource type="Texture2D" uid="uid://qotajitkpr51" path="res://assets/warning/WarningSign_PixyFantasy/WarningSign03.png" id="3_jgmgo"]
+[ext_resource type="Texture2D" uid="uid://di6w18k34qu1p" path="res://assets/warning/WarningSign_PixyFantasy/WarningSign04.png" id="4_t614q"]
+[ext_resource type="Texture2D" uid="uid://cltfwxhihfadn" path="res://assets/warning/WarningSign_PixyFantasy/WarningSign05.png" id="5_qsieg"]
+[ext_resource type="Texture2D" uid="uid://bg2lna7jk60um" path="res://assets/warning/WarningSign_PixyFantasy/WarningSign06.png" id="6_s8dt2"]
+[ext_resource type="Texture2D" uid="uid://b813re8mhvelh" path="res://assets/warning/WarningSign_PixyFantasy/WarningSign07.png" id="7_afwcc"]
+[ext_resource type="Texture2D" uid="uid://b3wab7nom0sif" path="res://assets/warning/WarningSign_PixyFantasy/WarningSign08.png" id="8_pb2bh"]
+[ext_resource type="Texture2D" uid="uid://oap02uvo36dd" path="res://assets/warning/WarningSign_PixyFantasy/WarningSign09.png" id="9_cvg8o"]
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_etue0"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("1_nxnws")
+}, {
+"duration": 1.0,
+"texture": ExtResource("2_ygu3m")
+}, {
+"duration": 1.0,
+"texture": ExtResource("3_jgmgo")
+}, {
+"duration": 1.0,
+"texture": ExtResource("4_t614q")
+}, {
+"duration": 1.0,
+"texture": ExtResource("5_qsieg")
+}, {
+"duration": 1.0,
+"texture": ExtResource("6_s8dt2")
+}, {
+"duration": 1.0,
+"texture": ExtResource("7_afwcc")
+}, {
+"duration": 1.0,
+"texture": ExtResource("8_pb2bh")
+}, {
+"duration": 1.0,
+"texture": ExtResource("9_cvg8o")
+}],
+"loop": true,
+"name": &"default",
+"speed": 5.0
+}]
+
+[node name="WariningRocket" type="Node2D"]
+script = ExtResource("1_ygu3m")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+sprite_frames = SubResource("SpriteFrames_etue0")
+frame = 2
+frame_progress = 0.896008
+speed_scale = 3.0
