@@ -44,15 +44,11 @@ signal player_exited_water(body)
 	update_visuals()
 
 func _ready() -> void:
-	add_to_group("water")
-	# Clean slate - remove any children from editor/previous runs
 	for i in get_children():
 		i.queue_free()
-	# Ensure arrays are truly clean
 	segment_data.clear()
 	segment_rest_height.clear()
 	_initiate_water()
-	# Force immediate update to set initial state
 	if not Engine.is_editor_hint():
 		set_process(true)
 
@@ -107,62 +103,39 @@ func _initiate_water() -> void:
 
 
 func update_physics(delta: float) -> void:
-	var max_displacement = 0.0
-	var max_idx = -1
-	
 	for i in range(segment_count):
-		# Use per-segment rest height (allows whirlpool depressions)
 		var displacement = segment_data[i]["height"] - segment_rest_height[i]
 		
-		if abs(displacement) > abs(max_displacement):
-			max_displacement = displacement
-			max_idx = i
-		
-		# ADAPTIVE DAMPING: The further from rest, the stronger the damping
-		# This creates critically overdamped behavior for large displacements
 		var damping = wave_energy_loss
 		if abs(displacement) > 10.0:
-			# Exponential damping increase for large displacements
-			# At 10px: damping ≈ 0.04
-			# At 20px: damping ≈ 0.44
-			# At 40px: damping ≈ 1.24 (critically overdamped)
 			var excess = abs(displacement) - 10.0
-			damping += excess * 0.04  # Linear scaling: 0.04 per pixel beyond 10px
+			damping += excess * 0.04
 		
 		var acceleration = -water_restoring_force * displacement - segment_data[i]["velocity"] * damping
 		
 		segment_data[i]["velocity"] += acceleration * delta * water_physics_speed
 		
-		# VELOCITY LIMITER: Prevent explosive velocities
-		# Max velocity scales with displacement (larger displacements can move faster)
 		var max_velocity = 5.0 + abs(displacement) * 0.2
 		segment_data[i]["velocity"] = clamp(segment_data[i]["velocity"], -max_velocity, max_velocity)
 		
 		segment_data[i]["height"] += segment_data[i]["velocity"] * delta * water_physics_speed
-	
-	# DEBUG: Print max displacement every 10 frames (~0.5 second)
-	if Engine.get_frames_drawn() % 5 == 0 and abs(max_displacement) > 1.0:
-		print("[Water] Frame ", Engine.get_frames_drawn(), " max_displacement=", max_displacement, " at segment ", max_idx, " rest=", segment_rest_height[max_idx], " height=", segment_data[max_idx]["height"])
 		
 	for updates in range(wave_spread_updates):
 		for i in range(segment_count):
 			if i > 0:
-				# CRITICAL: Block wave propagation across depression boundaries
-				# If rest heights differ significantly, segments are in different zones
 				var rest_diff = abs(segment_rest_height[i] - segment_rest_height[i-1])
-				if rest_diff < 5.0:  # Only propagate within same zone
+				if rest_diff < 5.0:
 					var height_diff = segment_data[i]["height"] - segment_data[i-1]["height"]
-					# Reduce wave strength on steep gradients (prevents amplification)
 					var wave_multiplier = 1.0
 					if abs(height_diff) > gradient_damping_threshold:
 						wave_multiplier = gradient_damping_factor
 					segment_data[i]["wave_to_left"] = height_diff * wave_strength * wave_multiplier
 					segment_data[i-1]["velocity"] += segment_data[i]["wave_to_left"] * delta * water_physics_speed
 				else:
-					segment_data[i]["wave_to_left"] = 0.0  # Block cross-zone propagation
+					segment_data[i]["wave_to_left"] = 0.0
 			if i < segment_count - 1:
 				var rest_diff_right = abs(segment_rest_height[i] - segment_rest_height[i+1])
-				if rest_diff_right < 5.0:  # Only propagate within same zone
+				if rest_diff_right < 5.0:
 					var height_diff_right = segment_data[i]["height"] - segment_data[i+1]["height"]
 					var wave_multiplier_right = 1.0
 					if abs(height_diff_right) > gradient_damping_threshold:
@@ -170,7 +143,7 @@ func update_physics(delta: float) -> void:
 					segment_data[i]["wave_to_right"] = height_diff_right * wave_strength * wave_multiplier_right
 					segment_data[i+1]["velocity"] += segment_data[i]["wave_to_right"] * delta * water_physics_speed
 				else:
-					segment_data[i]["wave_to_right"] = 0.0  # Block cross-zone propagation
+					segment_data[i]["wave_to_right"] = 0.0
 		for i in range(segment_count):	
 			if i > 0:
 				segment_data[i-1]["height"] += segment_data[i]["wave_to_left"] * delta * water_physics_speed
@@ -272,16 +245,8 @@ func _update_collision_shape() -> void:
 	var old_size = shape.size
 	shape.size = Vector2(water_size.x, new_height)
 	
-	# Position: center the shape between surface and bottom
-	# Bottom is at water_size.y, surface is at surface_pos_y
 	var center_y = surface_pos_y + new_height / 2.0
-	var old_pos = water_collision_shape.position
 	water_collision_shape.position = Vector2(water_size.x / 2.0, center_y)
-	
-	# Debug: Log significant changes
-	if abs(old_size.y - new_height) > 1.0:
-		print("[Water] Collision updated: size ", old_size.y, "→", new_height, 
-			  " pos.y ", old_pos.y, "→", center_y, " (surface_pos_y=", surface_pos_y, ")")
 
 ## Water level control for boss fights and scripted events
 func raise_water(target_height: float, duration: float = 2.0) -> void:

@@ -244,6 +244,7 @@ height = 34.0
 size = Vector2(23, 30)
 
 [node name="Foxy" type="CharacterBody2D" groups=["can_interact_with_water", "player"]]
+z_index = 1
 collision_layer = 2
 script = ExtResource("1_wod02")
 ground_friction = 0.15

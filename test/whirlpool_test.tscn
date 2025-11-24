@@ -10,15 +10,14 @@
 [node name="Camera2D" type="Camera2D" parent="."]
 zoom = Vector2(0.75, 0.75)
 
-[node name="Water" type="Node2D" parent="."]
+[node name="Water" type="Node2D" parent="." groups=["water"]]
 position = Vector2(-600, 100)
 script = ExtResource("3_water")
 water_size = Vector2(1200, 400)
 
 [node name="Whirlpool" parent="." instance=ExtResource("1_whirlpool")]
-position = Vector2(0, 281)
+position = Vector2(-2, 175)
 strength = 400.0
-radius = 300.0
 damage_dps = 1.0
 lifetime = 20.0
 
@@ -29,10 +28,10 @@ position = Vector2(-250, 80)
 position = Vector2(250, 80)
 
 [node name="Boat3" parent="." instance=ExtResource("2_boat")]
-position = Vector2(0, -50)
+position = Vector2(68, 57)
 
 [node name="Foxy" parent="." instance=ExtResource("4_player")]
 position = Vector2(253, -17)
 
 [node name="Whirlpool2" parent="." instance=ExtResource("1_whirlpool")]
-position = Vector2(395, 282)
+position = Vector2(377, 176)

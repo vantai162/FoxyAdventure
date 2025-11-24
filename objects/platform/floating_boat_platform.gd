@@ -20,9 +20,9 @@ class_name FloatingBoatPlatform
 
 @export_group("Advanced Physics")
 @export var underwater_force_multiplier: float = 1.5  ## Extra force when deep underwater
-@export var settlement_threshold: float = 5.0  ## Max velocity_y to be "settled"
-@export var settlement_time: float = 0.3  ## Time stable before gliding starts
-@export var surface_distance_threshold: float = 15.0  ## Max distance from surface to be "at surface"
+@export var settlement_threshold: float = 15.0  ## Max velocity_y to be "settled" (increased for whirlpool oscillations)
+@export var settlement_time: float = 0.5  ## Time stable before gliding starts
+@export var surface_distance_threshold: float = 25.0  ## Max distance from surface to be "at surface" (increased for whirlpool waves)
 @export var wave_following_distance: float = 20.0  ## Distance from surface to enable wave following
 
 ## === PHYSICS ===
@@ -42,6 +42,8 @@ var is_settled: bool = false
 var settlement_timer: float = 0.0
 var velocity_x: float = 0.0
 var velocity_y: float = 0.0
+var external_force_x: float = 0.0
+var external_force_y: float = 0.0
 var glide_direction: int = 1
 var start_glide_position_x: float = 0.0
 var is_gliding: bool = false
@@ -55,6 +57,11 @@ func _ready() -> void:
 	_check_ground_status()
 
 func _physics_process(delta: float) -> void:
+	velocity_x += external_force_x
+	velocity_y += external_force_y
+	external_force_x = 0.0
+	external_force_y = 0.0
+	
 	_check_ground_status()
 	_detect_water_by_position()  # New global detection method
 	
