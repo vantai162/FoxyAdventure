@@ -3,6 +3,9 @@ extends CharacterBody2D
 
 ## Base character class that provides common functionality for all characters
 
+## SFX
+@onready var sfx_player: AudioStreamPlayer = $SFXPlayer
+
 @export var movement_speed: float = 200.0
 @export var gravity: float = 700.0
 @export var direction: int = 1
@@ -12,13 +15,17 @@ var current_speed
 @export var max_health: int = 3
 var health: int
 @onready var floor_ray_cast: RayCast2D = $FloorRayCast2D
-@export var accelecrationValue = 0.01 # gia tri tang toc khi truot
-@export var slideValue = 0.01
-@export var fullStopValue = 15
+
+## Ice Physics - Designer configurable values
+@export_group("Ice Physics")
+@export var accelecrationValue: float = 0.08  ## Acceleration rate on ice (higher = more responsive)
+@export var slideValue: float = 0.03  ## Deceleration rate when sliding on ice (lower = more slippery)
+@export var fullStopValue: float = 15.0  ## Velocity threshold for full stop on ice
 
 var is_in_water: bool = false
 @export var max_oxygen := 5.0          # số giây có thể ở dưới nước
 @export var oxygen_decrease_rate := 1.0  # mỗi giây giảm bao nhiêu oxy
+@export var oxygen_increase_rate := 1.5  # mỗi giây tăng bao nhiêu oxy khi ở trên mặt nước/đất
 @export var damage_per_second := 1      # mất HP mỗi giây khi đã hết oxy
 var current_oxygen := max_oxygen
 
@@ -131,6 +138,13 @@ func _is_on_ice():
 	var collider = floor_ray_cast.get_collider()
 	if not collider: return false
 	
+	# Check if the collider has a PhysicsMaterial2D with low friction (ice-like)
+	if collider is StaticBody2D or collider is CharacterBody2D or collider is RigidBody2D:
+		var physics_material = collider.physics_material_override
+		if physics_material and physics_material.friction < 0.3:  # Ice threshold
+			return true
+	
+	# Fallback to name check for backward compatibility
 	return collider.name == "IceBlock"
 	
 func _is_on_one_way_platform():
@@ -150,4 +164,27 @@ func drop_down_platform():
 	set_collision_mask_value(PLATFORM_LAYER, false)
 	await get_tree().create_timer(0.25).timeout
 	set_collision_mask_value(PLATFORM_LAYER, true)
+	
+# Hàm chung để phát âm thanh
+func play_sfx(stream: AudioStream, random_pitch: bool = true) -> void:
+	if sfx_player == null or stream == null:
+		return
+	
+	# Nếu đang phát đúng bài đó rồi (dành cho loop) thì không reset
+	# (Tùy chọn: dòng này giúp tiếng bước chân không bị lặp lại liên tục gây rát tai)
+	if sfx_player.playing and sfx_player.stream == stream:
+		return
+
+	sfx_player.stream = stream
+	
+	if random_pitch:
+		sfx_player.pitch_scale = randf_range(0.9, 1.1)
+	else:
+		sfx_player.pitch_scale = 1.0
+		
+	sfx_player.play()
+
+func stop_sfx() -> void:
+	if sfx_player:
+		sfx_player.stop()
 	
