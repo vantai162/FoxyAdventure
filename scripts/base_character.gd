@@ -199,4 +199,25 @@ func play_sfx(stream: AudioStream, random_pitch: bool = true) -> void:
 func stop_sfx() -> void:
 	if sfx_player:
 		sfx_player.stop()
+		
+func die() -> void:
+	# 1. Chặn chết nhiều lần (Nếu đã chết rồi thì không chết nữa)
+	# Kiểm tra xem state hiện tại có phải là dead không (nếu fsm đã setup)
+	if fsm.current_state == fsm.states.get("dead"):
+		return
+		
+	print(name + " has died!")
+
+	# 2. Cập nhật chỉ số
+	health = 0
+	emit_signal("health_changed") # Để thanh máu tụt về 0
+
+	# 3. Kích hoạt State Chết (Logic chính nằm ở đây)
+	# Kiểm tra xem trong danh sách states có "dead" không
+	if fsm.states.has("dead"):
+		fsm.change_state(fsm.states.dead)
+	else:
+		# Fallback: Nếu nhân vật này không có DeadState (ví dụ quái vật thường)
+		# Thì xóa sổ nó luôn
+		queue_free()
 	
