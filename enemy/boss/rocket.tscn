@@ -40,7 +40,7 @@
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_2rbxa"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_kaj20"]
-radius = 23.0217
+radius = 26.3418
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_dpw5n"]
 animations = [{
@@ -180,8 +180,8 @@ shape = SubResource("CircleShape2D_kaj20")
 wait_time = 0.5
 
 [node name="Explosion" type="AnimatedSprite2D" parent="."]
-position = Vector2(-1, -32)
-scale = Vector2(1.8, 1.8)
+position = Vector2(-3, -40)
+scale = Vector2(2.2, 2.2)
 sprite_frames = SubResource("SpriteFrames_dpw5n")
 frame = 3
 frame_progress = 0.613479

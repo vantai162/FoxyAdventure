@@ -31,6 +31,7 @@ max_health = 20
 [node name="WarlordTurtle" parent="." instance=ExtResource("4_dfigs")]
 position = Vector2(243, 73)
 direction = -1
+max_health = 50
 
 [node name="FloatingBoatPlatform" parent="." instance=ExtResource("2_boat")]
 position = Vector2(-259, 114)
