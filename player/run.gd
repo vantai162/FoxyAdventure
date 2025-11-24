@@ -32,5 +32,5 @@ func _update(_delta: float):
 		change_state(fsm.states.fall)
 	if obj.is_on_wall_only():
 		change_state(fsm.states.wallcling)
-	if obj.is_in_water:
+	if obj.is_in_water and obj.is_head_underwater():
 		change_state(fsm.states.swim)

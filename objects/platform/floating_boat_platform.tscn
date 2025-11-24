@@ -1,0 +1,86 @@
+[gd_scene load_steps=11 format=3 uid="uid://demnh2f4ooy6n"]
+
+[ext_resource type="Script" uid="uid://b6v680pl8jvso" path="res://objects/platform/floating_boat_platform.gd" id="1_boat"]
+[ext_resource type="Texture2D" uid="uid://bnyyso8r3xy7h" path="res://assets/foxy/boat/boat_sail_1.png" id="2_4vtxq"]
+[ext_resource type="Texture2D" uid="uid://crflavbexmqg2" path="res://assets/foxy/boat/boat_body.png" id="2_dv4ay"]
+[ext_resource type="Texture2D" uid="uid://vtdtt6qgcrpm" path="res://assets/foxy/boat/boat_sail_2.png" id="3_a8ba2"]
+[ext_resource type="Texture2D" uid="uid://y8tmjcm0d6ki" path="res://assets/foxy/boat/boat_sail_3.png" id="4_twt07"]
+[ext_resource type="Texture2D" uid="uid://bv2po7d5rema6" path="res://assets/foxy/boat/boat_sail_4.png" id="5_s4nlk"]
+[ext_resource type="Texture2D" uid="uid://cbrqqsfiyiei0" path="res://assets/foxy/boat/boat_sail_5.png" id="6_1ieut"]
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_hag6e"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("2_4vtxq")
+}, {
+"duration": 1.0,
+"texture": ExtResource("3_a8ba2")
+}, {
+"duration": 1.0,
+"texture": ExtResource("4_twt07")
+}, {
+"duration": 1.0,
+"texture": ExtResource("5_s4nlk")
+}, {
+"duration": 1.0,
+"texture": ExtResource("6_1ieut")
+}, {
+"duration": 1.0,
+"texture": ExtResource("5_s4nlk")
+}, {
+"duration": 1.0,
+"texture": ExtResource("4_twt07")
+}, {
+"duration": 1.0,
+"texture": ExtResource("3_a8ba2")
+}, {
+"duration": 1.0,
+"texture": ExtResource("2_4vtxq")
+}],
+"loop": true,
+"name": &"default",
+"speed": 5.0
+}]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_boat_collision"]
+size = Vector2(64, 13)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_water_detector"]
+size = Vector2(64, 64)
+
+[node name="FloatingBoatPlatform" type="AnimatableBody2D" groups=["can_interact_with_water", "platform"]]
+script = ExtResource("1_boat")
+glide_distance = 120.0
+glide_pause_time = 0.36
+buoyancy_strength = 36.0
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+sprite_frames = SubResource("SpriteFrames_hag6e")
+autoplay = "default"
+frame_progress = 0.404872
+speed_scale = 0.36
+offset = Vector2(0, -33)
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+modulate = Color(0.8, 0.6, 0.4, 1)
+scale = Vector2(0.77, 0.69)
+texture = ExtResource("2_dv4ay")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("RectangleShape2D_boat_collision")
+
+[node name="WaterDetector" type="Area2D" parent="."]
+collision_layer = 0
+monitorable = false
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="WaterDetector"]
+position = Vector2(0, 16)
+shape = SubResource("RectangleShape2D_water_detector")
+
+[node name="GroundRayCast" type="RayCast2D" parent="."]
+position = Vector2(0, 4)
+target_position = Vector2(0, 12)
+
+[node name="GlideTimer" type="Timer" parent="."]
+one_shot = true

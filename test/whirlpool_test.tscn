@@ -1,0 +1,32 @@
+[gd_scene load_steps=5 format=3 uid="uid://b5mowcfymabkv"]
+
+[ext_resource type="PackedScene" uid="uid://c5m8vno0qh3xy" path="res://objects/whirlpool/whirlpool.tscn" id="1_whirlpool"]
+[ext_resource type="PackedScene" uid="uid://demnh2f4ooy6n" path="res://objects/platform/floating_boat_platform.tscn" id="2_boat"]
+[ext_resource type="Script" uid="uid://b3s1m3fi6lhf5" path="res://objects/water/water.gd" id="3_water"]
+[ext_resource type="PackedScene" uid="uid://bs816w0pr8all" path="res://player/foxy.tscn" id="4_player"]
+
+[node name="WhirlpoolTest" type="Node2D"]
+
+[node name="Camera2D" type="Camera2D" parent="."]
+zoom = Vector2(0.75, 0.75)
+
+[node name="Water" type="Node2D" parent="." groups=["water"]]
+position = Vector2(-600, 100)
+script = ExtResource("3_water")
+water_size = Vector2(1200, 400)
+segment_count = 77
+
+[node name="Boat1" parent="." instance=ExtResource("2_boat")]
+position = Vector2(-250, 80)
+
+[node name="Boat2" parent="." instance=ExtResource("2_boat")]
+position = Vector2(250, 80)
+
+[node name="Boat3" parent="." instance=ExtResource("2_boat")]
+position = Vector2(68, 57)
+
+[node name="Foxy" parent="." instance=ExtResource("4_player")]
+position = Vector2(253, -17)
+
+[node name="Whirlpool" parent="." instance=ExtResource("1_whirlpool")]
+position = Vector2(1, 167)
