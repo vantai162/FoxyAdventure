@@ -2,14 +2,29 @@ extends EnemyCharacter
 
 @export var boomb_scene: PackedScene
 @export var rocket_scene: PackedScene
+
+@export_group("Phase 2 - Water Mechanics")
+@export var water_raise_target_y: float = -69.0  ## Global Y position for raised water (negative = higher)
+@export var water_raise_duration: float = 5.0    ## Duration for water to raise/lower (seconds)
+@export var water_action_cooldown: float = 8.0   ## Cooldown between water raises/lowers (seconds)
+
 @onready var muzzle = $Direction/BoomAndRocket/MuzzleBoom1
 @onready var muzzle2 = $Direction/BoomAndRocket/MuzzleBoom2
 @onready var muzzlerocket1 =  $Direction/BoomAndRocket/MuzzleRocket1
 @onready var muzzlerocket2 =  $Direction/BoomAndRocket/MuzzleRocket2
-@onready var node =$Direction/BoomAndRocket/WariningRocket
+@onready var node = $Direction/BoomAndRocket/WariningRocket
 @onready var node1 = $Direction/BoomAndRocket/WariningRocket2
 @onready var node2 = $Direction/BoomAndRocket/WariningRocket3
 @onready var node3 = $Direction/BoomAndRocket/WariningRocket4
+@onready var HurtArea = $Direction/HurtArea2D/CollisionShape2D
+@onready var hurt_timer = $Direction/HurtArea2D/Timer
+
+## Phase 2 system
+var current_phase: int = 1
+var water_raised: bool = false
+var last_water_action_time: float = 0.0
+var cached_water_node: water = null
+
 func _ready():
 	super._ready()
 	invincible_timer = max_invincible
@@ -55,3 +70,28 @@ func fire_rocket():
 	node3.show_animation()
 	rocket4.shoot(rocket4.global_position,node3.global_position,1.5)
 	
+func enable_hurt_for(seconds: float):
+	HurtArea.disabled = false
+	hurt_timer.start(seconds)
+
+
+func _on_hurt_timer_timeout():
+	HurtArea.disabled = true
+
+func get_water_node() -> water:
+	## Find and cache the water node in the scene
+	if cached_water_node != null and is_instance_valid(cached_water_node):
+		return cached_water_node
+	
+	var water_nodes = get_tree().get_nodes_in_group("water")
+	if water_nodes.size() > 0:
+		cached_water_node = water_nodes[0]
+		return cached_water_node
+	
+	return null
+
+func can_use_water_action() -> bool:
+	## Check if enough time has passed since last water manipulation
+	var current_time = Time.get_ticks_msec() / 1000.0
+	var time_since_last = current_time - last_water_action_time
+	return time_since_last >= water_action_cooldown

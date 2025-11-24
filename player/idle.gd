@@ -1,12 +1,12 @@
 extends Player_State
 
 func _enter() -> void:
-	obj.velocity.x = 0
-	obj.air_control = 1.0
+	# Don't force velocity to 0 - let control_moving() handle deceleration
+	# This allows ice sliding and other physics to work naturally
 	obj.change_animation("idle")
 
 func _update(delta: float) -> void:
-	obj.current_oxygen = min(obj.max_oxygen, obj.current_oxygen + 1.5 * delta)
+	obj.current_oxygen = min(obj.max_oxygen, obj.current_oxygen + obj.oxygen_increase_rate * delta)
 	if obj.Effect["Stun"] <= 0:
 		control_throw()
 		control_attack()

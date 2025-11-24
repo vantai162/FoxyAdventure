@@ -1,0 +1,61 @@
+[gd_scene load_steps=11 format=3 uid="uid://lrdkn2gv1v1m"]
+
+[ext_resource type="Script" uid="uid://r0aq8j6rseuv" path="res://effect_Item/coin/coin.gd" id="1_0mg7h"]
+[ext_resource type="Texture2D" uid="uid://ca3uk72ltyi3i" path="res://assets/objects/coin/effect/01.png" id="2_rlexy"]
+[ext_resource type="Texture2D" uid="uid://7815uhsg0yyi" path="res://assets/objects/coin/effect/02.png" id="3_op7k5"]
+[ext_resource type="Texture2D" uid="uid://dua5jlj37y4u4" path="res://assets/objects/coin/effect/03.png" id="4_542nd"]
+[ext_resource type="Texture2D" uid="uid://cpcg358wuu50i" path="res://assets/objects/coin/01.png" id="5_rlexy"]
+[ext_resource type="Texture2D" uid="uid://cast16eu1ka7p" path="res://assets/objects/coin/02.png" id="6_op7k5"]
+[ext_resource type="Texture2D" uid="uid://im347baaq2w5" path="res://assets/objects/coin/03.png" id="7_542nd"]
+[ext_resource type="Texture2D" uid="uid://bn4wcasxcy8d1" path="res://assets/objects/coin/04.png" id="8_cm8v6"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_6yphk"]
+size = Vector2(11, 11)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_w3adg"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("2_rlexy")
+}, {
+"duration": 1.0,
+"texture": ExtResource("3_op7k5")
+}, {
+"duration": 1.0,
+"texture": ExtResource("4_542nd")
+}],
+"loop": false,
+"name": &"collected",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("5_rlexy")
+}, {
+"duration": 1.0,
+"texture": ExtResource("6_op7k5")
+}, {
+"duration": 1.0,
+"texture": ExtResource("7_542nd")
+}, {
+"duration": 1.0,
+"texture": ExtResource("8_cm8v6")
+}],
+"loop": true,
+"name": &"default",
+"speed": 5.0
+}]
+
+[node name="Coin" type="Area2D"]
+collision_layer = 0
+collision_mask = 2
+script = ExtResource("1_0mg7h")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(0.5, 0.5)
+shape = SubResource("RectangleShape2D_6yphk")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+sprite_frames = SubResource("SpriteFrames_w3adg")
+
+[connection signal="area_entered" from="." to="." method="_on_area_entered"]

@@ -10,47 +10,64 @@ func control_moving() -> bool:
 		obj.drop_down_platform()
 	var final_speed = obj.movement_speed
 	if obj.Effect["Slow"] > 0:
-		final_speed *= 0.5
+		final_speed *= obj.slow_effect_multiplier
 	# Initialize current_speed if it's been reset (0 means player stopped)
 	if obj.current_speed == 0:
 		obj.current_speed = final_speed
+	
+	# MOVING input detected
 	if is_moving:
 		dir = sign(dir)
 		obj.change_direction(dir)
 		var target_velocity_x = obj.current_speed * dir
 		if obj.wind_velocity != Vector2.ZERO:
 			target_velocity_x += obj.wind_velocity.x
-		if not obj._is_on_ice():
-			if obj.is_on_floor():
-				obj.velocity.x = lerp(obj.velocity.x, target_velocity_x, obj.ground_friction)
-			else:
-				obj.velocity.x = lerp(obj.velocity.x, target_velocity_x, obj.air_control)
-		else:
-			obj.velocity.x = lerp(obj.velocity.x, target_velocity_x, obj.accelecrationValue)
+		
+		# Ground movement (ice vs normal)
 		if obj.is_on_floor():
+			if obj._is_on_ice():
+				# Ice: slower acceleration (slippery feel)
+				obj.velocity.x = lerp(obj.velocity.x, target_velocity_x, obj.accelecrationValue)
+			else:
+				# Normal ground: responsive friction
+				obj.velocity.x = lerp(obj.velocity.x, target_velocity_x, obj.ground_friction)
 			change_state(fsm.states.run)
 			return true
-	elif not is_moving and obj._is_on_ice():
-		var stop_target = 0.0
-		if obj.wind_velocity != Vector2.ZERO:
-			stop_target = obj.wind_velocity.x
-		obj.velocity.x = lerp(obj.velocity.x, stop_target, obj.slideValue)
-		if abs(obj.velocity.x) < obj.fullStopValue and obj.wind_velocity == Vector2.ZERO:
-			obj.velocity.x = 0
-	elif obj.wind_velocity != Vector2.ZERO:
-		obj.velocity.x = lerp(obj.velocity.x, obj.wind_velocity.x, 0.1)
-	elif obj.is_on_floor():
-		obj.velocity.x = lerp(obj.velocity.x, 0.0, obj.ground_friction)
-		if abs(obj.velocity.x) < obj.min_stop_speed:
-			obj.velocity.x = 0
-		obj.current_speed = 0
-	else:
-		obj.velocity.x = lerp(obj.velocity.x, 0.0, obj.air_control * obj.air_drag_multiplier)
+		else:
+			# Air movement: player has input, steering against momentum
+			obj.velocity.x = lerp(obj.velocity.x, target_velocity_x, obj.get_current_air_acceleration())
+	
+	# NOT MOVING - deceleration paths
+	elif not is_moving:
+		if obj.is_on_floor() and obj._is_on_ice():
+			# Ice sliding: slow deceleration with optional wind
+			var stop_target = 0.0
+			if obj.wind_velocity != Vector2.ZERO:
+				stop_target = obj.wind_velocity.x
+			obj.velocity.x = lerp(obj.velocity.x, stop_target, obj.slideValue)
+			if abs(obj.velocity.x) < obj.fullStopValue and obj.wind_velocity == Vector2.ZERO:
+				obj.velocity.x = 0
+				obj.current_speed = 0  # Reset speed when fully stopped
+		elif obj.wind_velocity != Vector2.ZERO:
+			# Wind influence (any surface)
+			obj.velocity.x = lerp(obj.velocity.x, obj.wind_velocity.x, obj.wind_influence_factor)
+		elif obj.is_on_floor():
+			# Normal ground stop
+			obj.velocity.x = lerp(obj.velocity.x, 0.0, obj.ground_friction)
+			if abs(obj.velocity.x) < obj.min_stop_speed:
+				obj.velocity.x = 0
+			obj.current_speed = 0
+		else:
+			# Air drag: no input, natural momentum coast
+			obj.velocity.x = lerp(obj.velocity.x, 0.0, obj.air_deceleration)
+	
 	return false
 func control_jump() -> bool:
 	if(GameManager.paused):
 		return false
 	if (Input.is_action_just_pressed("jump") and obj.jump_count < 2) or (obj._checkbuffer() and obj.is_on_floor()):
+		if state_sound:
+			obj.play_sfx(state_sound)
 		if obj.jump_count == 1:
 			obj.jump(obj.jump_speed * obj.double_jump_power_multiplier)
 		else:

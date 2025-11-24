@@ -1,4 +1,4 @@
-[gd_resource type="TileSet" load_steps=47 format=3 uid="uid://bmuxyu21ya31y"]
+[gd_resource type="TileSet" load_steps=56 format=3 uid="uid://bmuxyu21ya31y"]
 
 [ext_resource type="Texture2D" uid="uid://v2dtejovry7r" path="res://assets/terrain/terrain_32x32.png" id="1_6gm7o"]
 [ext_resource type="Texture2D" uid="uid://blamh8wdme7oi" path="res://assets/TX Village Props/TX Village Props-2.png" id="2_fcvr3"]
@@ -26,6 +26,11 @@
 [ext_resource type="PackedScene" uid="uid://bp4fcvlg5b31p" path="res://objects/platform/vertical_moving_platform.tscn" id="13_51cmh"]
 [ext_resource type="PackedScene" uid="uid://6anvnhaq553w" path="res://environment/water/water.tscn" id="14_20ewd"]
 [ext_resource type="PackedScene" uid="uid://qgov7mnvkq4m" path="res://objects/spike/fake_spike/fake_spike.tscn" id="14_tvqo2"]
+[ext_resource type="PackedScene" uid="uid://lrdkn2gv1v1m" path="res://effect_Item/coin/coin.tscn" id="21_040ux"]
+[ext_resource type="PackedScene" uid="uid://cd4x3xoe8plsn" path="res://effect_Item/chest/chest.tscn" id="22_b3j3o"]
+[ext_resource type="PackedScene" uid="uid://dl1jqgf5ab7l" path="res://effect_Item/chest/gold_chest.tscn" id="23_51cmh"]
+[ext_resource type="PackedScene" uid="uid://b3rfttffyg1qj" path="res://effect_Item/key/key.tscn" id="24_aamry"]
+[ext_resource type="PackedScene" uid="uid://b3cbk6lmh2cc3" path="res://effect_Item/heal_potion/health_potion.tscn" id="25_x6xks"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_nmr65"]
 texture = ExtResource("1_6gm7o")
@@ -426,6 +431,27 @@ texture_region_size = Vector2i(32, 32)
 2:4/0 = 0
 2:3/0 = 0
 2:2/0 = 0
+0:0/0 = 0
+0:1/0 = 0
+2:0/0 = 0
+2:1/0 = 0
+3:0/0 = 0
+3:1/0 = 0
+6:0/0 = 0
+6:1/0 = 0
+6:2/0 = 0
+6:3/0 = 0
+10:0/0 = 0
+10:1/0 = 0
+13:1/0 = 0
+13:2/0 = 0
+13:3/0 = 0
+13:4/0 = 0
+14:0/0 = 0
+14:1/0 = 0
+17:1/0 = 0
+17:2/0 = 0
+17:3/0 = 0
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_20ewd"]
 texture = ExtResource("3_uqla6")
@@ -716,6 +742,23 @@ texture_region_size = Vector2i(32, 32)
 [sub_resource type="TileSetScenesCollectionSource" id="TileSetScenesCollectionSource_80oah"]
 resource_name = "ceiling_spike"
 scenes/1/scene = ExtResource("2_uyjym")
+
+[sub_resource type="TileSetScenesCollectionSource" id="TileSetScenesCollectionSource_4fte4"]
+resource_name = "coin"
+scenes/1/scene = ExtResource("21_040ux")
+
+[sub_resource type="TileSetScenesCollectionSource" id="TileSetScenesCollectionSource_aamry"]
+resource_name = "chest_goldchest"
+scenes/1/scene = ExtResource("22_b3j3o")
+scenes/2/scene = ExtResource("23_51cmh")
+
+[sub_resource type="TileSetScenesCollectionSource" id="TileSetScenesCollectionSource_kwu1t"]
+resource_name = "key"
+scenes/1/scene = ExtResource("24_aamry")
+
+[sub_resource type="TileSetScenesCollectionSource" id="TileSetScenesCollectionSource_co6kk"]
+resource_name = "potion"
+scenes/1/scene = ExtResource("25_x6xks")
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_uyjym"]
 texture = ExtResource("2_fcvr3")
@@ -1359,3 +1402,7 @@ sources/16 = SubResource("TileSetScenesCollectionSource_xcxv2")
 sources/17 = SubResource("TileSetScenesCollectionSource_325i5")
 sources/18 = SubResource("TileSetScenesCollectionSource_tvqo2")
 sources/19 = SubResource("TileSetAtlasSource_b6r2m")
+sources/20 = SubResource("TileSetScenesCollectionSource_4fte4")
+sources/21 = SubResource("TileSetScenesCollectionSource_aamry")
+sources/22 = SubResource("TileSetScenesCollectionSource_kwu1t")
+sources/23 = SubResource("TileSetScenesCollectionSource_co6kk")
