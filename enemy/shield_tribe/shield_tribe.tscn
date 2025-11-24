@@ -29,7 +29,7 @@
 [ext_resource type="PackedScene" uid="uid://ct1tqxgwkuvbe" path="res://scripts/hurt_area_2d.tscn" id="22_p7fv1"]
 [ext_resource type="Texture2D" uid="uid://ctoeskfpde3l3" path="res://assets/monsters/tribe_temporary/Sprites/7-Objects/1-BOMB/3-Explotion/7.png" id="22_q0raq"]
 [ext_resource type="Texture2D" uid="uid://bcwx324p4jehn" path="res://assets/monsters/tribe_temporary/Sprites/7-Objects/1-BOMB/3-Explotion/8.png" id="23_kdn0t"]
-[ext_resource type="Script" uid="uid://eoq715nnbh57" path="res://enemy/shield_tribe/dead.gd" id="30_a258x"]
+[ext_resource type="Script" path="res://enemy/shield_tribe/dead.gd" id="30_a258x"]
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_tribe"]
 animations = [{

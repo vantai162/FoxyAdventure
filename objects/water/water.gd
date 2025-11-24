@@ -14,7 +14,7 @@ class_name water
 @export_range(1,64) var wave_spread_updates:int = 8
 @export var surface_line_thickness: float = 1.0
 @export var surface_color: Color = Color("3ce1da")
-@export var water_fill_color: Color = Color("37b0c5")
+@export var water_fill_color: Color = Color(0.216, 0.690, 0.773, 0.6)  ## Semi-transparent blue (adjust alpha in editor)
 
 var segment_data: Array = []
 var recently_splashed: bool = false
@@ -57,7 +57,7 @@ func _initiate_water() -> void:
 	
 	var new_polygon: Polygon2D = Polygon2D.new()
 	new_polygon.color = water_fill_color
-	new_polygon.show_behind_parent = true
+	# Don't use show_behind_parent - we want water to overlay the player
 	surface_line.add_child(new_polygon)
 	fill_polygon = new_polygon
 	
@@ -156,10 +156,15 @@ func _on_body_entered(body: Node2D) -> void:
 	if body.is_in_group("can_interact_with_water"):
 		splash(body.global_position, -body.velocity.y * player_splash_mutiplier)
 		if body.is_in_group("player"):
+			body.current_water = self
 			emit_signal("player_entered_water", body)
 
 func _on_body_exited(body: Node2D) -> void:
 	if body.is_in_group("can_interact_with_water"):
 		splash(body.global_position, body.velocity.y * player_splash_mutiplier)
 		if body.is_in_group("player"):
+			body.current_water = null
 			emit_signal("player_exited_water", body)
+
+func get_water_surface_global_y() -> float:
+	return global_position.y + surface_pos_y
