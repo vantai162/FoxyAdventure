@@ -8,6 +8,7 @@ func _enter() -> void:
 	await get_tree().create_timer(obj.dead_delay_before_respawn).timeout
 	
 	if GameManager.has_checkpoint():
+		print("Wait for checkpoint respawn")
 		await GameManager.respawn_at_checkpoint()
 	else:
 		await respawn_at_default_position()

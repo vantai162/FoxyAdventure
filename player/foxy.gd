@@ -150,6 +150,7 @@ func spawn_air_slash() -> void:
 
 func _ready() -> void:
 	super._ready()
+	print("Player SetUp")
 	fsm = FSM.new(self, $States, $States/Idle)
 	$Direction/HitArea2D/CollisionShape2D.disabled = true
 	GameManager.player=self

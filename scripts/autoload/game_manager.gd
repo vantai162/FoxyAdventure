@@ -24,10 +24,13 @@ func _ready() -> void:
 
 func _set_up():
 	load_checkpoint_data()
-	print(checkpoint_data)
+	current_stage=load(checkpoint_data[current_checkpoint_id]["stage_path"]).instantiate()
 	key_manager._get_key_dictionary_from_input_map()
-	spawn_player(checkpoint_data[current_checkpoint_id]["player_state"])
-
+	if (player==null):
+		spawn_player(checkpoint_data[current_checkpoint_id]["player_state"])
+	else:
+		respawn_at_checkpoint()
+	respawn_at_checkpoint()
 #change stage by path and target portal name
 func change_stage(stage_path: String, _target_portal_name: String = "") -> void:
 	target_portal_name = _target_portal_name
@@ -89,9 +92,9 @@ func respawn_at_checkpoint() -> void:
 	
 	var checkpoint_stage = checkpoint_info.get("stage_path", "")
 	var player_state: Dictionary = checkpoint_info.get("player_state", {})
-	
 	# Inter-scene respawn
 	if current_stage.scene_file_path != checkpoint_stage and not checkpoint_stage.is_empty():
+		print("Inter -scene")
 		_pending_player_spawn_data = player_state
 		await change_stage(checkpoint_stage, "")
 		is_respawning_from_checkpoint = false
@@ -102,12 +105,14 @@ func respawn_at_checkpoint() -> void:
 	
 	# Delete player after screen is black
 	if player != null:
+		print("Nullify player")
 		player.queue_free()
 		player = null
 	
 	await get_tree().process_frame
-	
 	spawn_player(player_state)
+	print(player.global_position)
+	print(player.get_parent())
 	
 	await fade_from_black()
 	is_respawning_from_checkpoint = false
@@ -156,10 +161,12 @@ func spawn_player(spawn_data: Dictionary) -> Player:
 		return null
 	
 	var new_player = player_scene.instantiate() as Player
-	current_stage.add_child(new_player)
-	
 	new_player.load_state(spawn_data)
-	
+	new_player.visible = true
+	get_tree().current_scene.add_child(new_player)
+	print(new_player.get_parent())
+	print("Player set up done")
+	print_tree_pretty()
 	if not spawn_data.has("health"):
 		new_player.health = new_player.max_health
 	
@@ -175,8 +182,6 @@ func spawn_player(spawn_data: Dictionary) -> Player:
 	else:
 		printerr("Player FSM not initialized!")
 	
-	if(player!=null):
-		player.queue_free()
 	player = new_player
 	return new_player
 
