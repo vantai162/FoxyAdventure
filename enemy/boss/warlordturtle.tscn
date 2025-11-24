@@ -161,6 +161,32 @@ animations = [{
 "loop": false,
 "name": &"skill2",
 "speed": 10.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("6_wuglq")
+}, {
+"duration": 1.0,
+"texture": ExtResource("7_tvqld")
+}, {
+"duration": 1.0,
+"texture": ExtResource("14_w6b8g")
+}, {
+"duration": 6.9,
+"texture": ExtResource("15_0m0l7")
+}, {
+"duration": 1.0,
+"texture": ExtResource("14_w6b8g")
+}, {
+"duration": 1.0,
+"texture": ExtResource("7_tvqld")
+}, {
+"duration": 1.0,
+"texture": ExtResource("6_wuglq")
+}],
+"loop": false,
+"name": &"summon",
+"speed": 10.0
 }]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_8hnd2"]
@@ -187,7 +213,7 @@ metadata/_custom_type_script = "uid://s4xx82espxdt"
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="Direction"]
 sprite_frames = SubResource("SpriteFrames_ladxf")
-animation = &"new_animation"
+animation = &"summon"
 flip_h = true
 
 [node name="FrontRayCast2D" type="RayCast2D" parent="Direction"]
