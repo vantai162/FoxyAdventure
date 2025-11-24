@@ -10,6 +10,11 @@ var wind_velocity: Vector2 = Vector2.ZERO
 var current_speed
 @export var attack_damage: int = 1
 @export var max_health: int = 3
+@export var max_invincible: float = 2.0
+
+var invincible: bool = false
+var invincible_timer: float = 0
+
 var health: int
 @onready var floor_ray_cast: RayCast2D = $FloorRayCast2D
 @export var accelecrationValue = 0.01 # gia tri tang toc khi truot
@@ -42,6 +47,11 @@ func _ready() -> void:
 func _physics_process(delta: float) -> void:
 	# Animation
 	_check_changed_animation()
+	if invincible_timer>0:
+		invincible_timer-=delta
+		invincible=true
+		if invincible_timer<=0:
+			invincible=false
 	if fsm != null:
 		fsm._update(delta)
 	# Movement

@@ -1,6 +1,6 @@
 extends RigidBody2D
 
-@export var gravity := 900.0
+@export var gravity := 980.0
 var velocity := Vector2.ZERO
 var direction := 1
 var exploded: = false	
@@ -22,10 +22,12 @@ func _physics_process(delta):
 		sprite.rotation = linear_velocity.angle() + deg_to_rad(90)
 		
 func shoot(from: Vector2, to: Vector2, t: float):
+	global_position = from
+	var g: float = ProjectSettings.get_setting("physics/2d/default_gravity")
 	var dx = to.x - from.x
 	var dy = to.y - from.y
 	var vx = dx / t
-	var vy = (dy - 0.5 * gravity * t * t) / t
+	var vy = (dy - 0.5 * g * t * t) / t
 	velocity = Vector2(vx, vy)
 	linear_velocity = velocity
 func explode():

@@ -24,11 +24,11 @@ position = Vector2(1114, 275)
 position = Vector2(-28, 272)
 
 [node name="Wall3" parent="." instance=ExtResource("1_triev")]
-position = Vector2(547, 384)
+position = Vector2(538, 386)
 scale = Vector2(10, 1)
 
 [node name="CollapsableWall" parent="." instance=ExtResource("4_2fpa6")]
-position = Vector2(539, 255)
+position = Vector2(155, 192)
 
 [node name="Foxy" parent="." instance=ExtResource("2_5hnfj")]
 position = Vector2(628, 301)
@@ -38,11 +38,11 @@ position = Vector2(299, 405)
 wind_force = Vector2(-100, 0)
 
 [node name="WarlordTurtle" parent="." instance=ExtResource("17_ld8w7")]
-position = Vector2(987, 263)
+position = Vector2(891, 268)
 direction = -1
 
 [node name="WarLordTurtle15" type="Sprite2D" parent="."]
-position = Vector2(448, 286)
+position = Vector2(143, 279)
 texture = ExtResource("9_u5x0e")
 
 [node name="BulletRocket" type="Sprite2D" parent="."]
