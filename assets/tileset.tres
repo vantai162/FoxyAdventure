@@ -1,6 +1,6 @@
 [gd_resource type="TileSet" load_steps=56 format=3 uid="uid://bmuxyu21ya31y"]
 
-[ext_resource type="Texture2D" uid="uid://v2dtejovry7r" path="res://assets/terrain/terrain_32x32.png" id="1_6gm7o"]
+[ext_resource type="Texture2D" uid="uid://v2dtejovry7r" path="res://assets/island/terrain/terrain_32x32.png" id="1_6gm7o"]
 [ext_resource type="Texture2D" uid="uid://blamh8wdme7oi" path="res://assets/TX Village Props/TX Village Props-2.png" id="2_fcvr3"]
 [ext_resource type="Texture2D" uid="uid://c72qanp24vq82" path="res://assets/GandalfHardcore FREE Platformer Assets/GandalfHardcore FREE Platformer Assets/Pine Trees.png" id="2_g8n3q"]
 [ext_resource type="PackedScene" uid="uid://p3tugieif4ic" path="res://objects/spike/spike_ceiling/spike_ceiling.tscn" id="2_uyjym"]
