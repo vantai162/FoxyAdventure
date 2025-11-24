@@ -167,7 +167,7 @@ animations = [{
 size = Vector2(75, 67)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_eluqr"]
-size = Vector2(115.333, 95.3333)
+size = Vector2(76.6667, 68)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_dkh1m"]
 size = Vector2(74, 67)
@@ -178,6 +178,7 @@ collision_layer = 8
 script = ExtResource("1_ef40p")
 boomb_scene = ExtResource("2_wuglq")
 rocket_scene = ExtResource("3_tvqld")
+knockback_force = 0.0
 max_health = 20
 oxygen_decrease_rate = 0.0
 metadata/_custom_type_script = "uid://s4xx82espxdt"
@@ -240,7 +241,7 @@ script = ExtResource("25_o1uwu")
 metadata/_custom_type_script = "uid://csu2b21cwchqw"
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Direction/HurtArea2D"]
-position = Vector2(0.333334, 1)
+position = Vector2(-0.333336, 0)
 shape = SubResource("RectangleShape2D_eluqr")
 
 [node name="States" type="Node" parent="."]

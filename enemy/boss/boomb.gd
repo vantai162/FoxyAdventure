@@ -12,12 +12,14 @@ var exploded: = false
 @onready var explosion_area = $HitArea2D 
 @onready var explosion_hitbox = $HitArea2D/CollisionShape2D
 @onready var timer = $Timer
+@onready var explosion_timer = $Explosion_Timer
 
 func _ready() -> void:
 	explosion.visible = false
 	explosion_hitbox.set_deferred("disabled", true)
 	explosion_area.monitoring = false
 	apply_impulse(Vector2(-1*speed,lift_force))
+	explosion_timer.start()
 	
 func _integrate_forces(state):
 	if exploded:
@@ -53,6 +55,12 @@ func _on_timer_timeout() -> void:
 
 
 func _on_direction_area_body_entered(body: Node2D) -> void:
+	explode()
+	explosion_hitbox.set_deferred("disabled", false)
+	explosion_area.monitoring = true
+
+
+func _on_explosion_timer_timeout() -> void:
 	explode()
 	explosion_hitbox.set_deferred("disabled", false)
 	explosion_area.monitoring = true
