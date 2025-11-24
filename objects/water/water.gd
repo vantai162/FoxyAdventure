@@ -27,6 +27,9 @@ class_name water
 @export_group("Interaction")
 @export var player_splash_mutiplier: float = 0.12
 
+@export_group("Debug")
+@export var enable_debug_diagnostics: bool = false  ## Enable water stability monitoring (prints every second)
+
 var segment_data: Array = []
 var segment_rest_height: Array = []  ## Per-segment equilibrium height (allows external depression control)
 var recently_splashed: bool = false
@@ -38,6 +41,10 @@ var water_collision_shape: CollisionShape2D  ## Reference to collision shape for
 
 signal player_entered_water(body)
 signal player_exited_water(body)
+
+## Debug monitoring
+var debug_timer: float = 0.0
+var debug_interval: float = 1.0
 
 @export_tool_button("Update Water") var update_water_button: Callable = func():
 	_ready()
@@ -54,6 +61,12 @@ func _ready() -> void:
 
 
 func _process(delta:float)->void:
+	if enable_debug_diagnostics:
+		debug_timer += delta
+		if debug_timer >= debug_interval:
+			_print_water_diagnostics()
+			debug_timer = 0.0
+	
 	update_physics(delta)
 	update_visuals()
 	_update_collision_shape()  # Update collision shape to match water level
@@ -103,8 +116,19 @@ func _initiate_water() -> void:
 
 
 func update_physics(delta: float) -> void:
+	# Safety: Clamp delta to prevent physics explosion on lag spikes
+	var safe_delta = min(delta, 0.05)  # Cap at 20 FPS worst case
+	
 	for i in range(segment_count):
 		var displacement = segment_data[i]["height"] - segment_rest_height[i]
+		
+		# Critical damping for extreme displacements (runaway prevention)
+		if abs(displacement) > 200.0:
+			# Emergency stabilization: force back toward rest
+			var emergency_correction = -sign(displacement) * abs(displacement) * 0.5
+			segment_data[i]["height"] += emergency_correction * safe_delta
+			segment_data[i]["velocity"] *= 0.5  # Heavy damping
+			continue  # Skip normal physics for this segment
 		
 		var damping = wave_energy_loss
 		if abs(displacement) > 10.0:
@@ -113,16 +137,25 @@ func update_physics(delta: float) -> void:
 		
 		var acceleration = -water_restoring_force * displacement - segment_data[i]["velocity"] * damping
 		
-		segment_data[i]["velocity"] += acceleration * delta * water_physics_speed
+		segment_data[i]["velocity"] += acceleration * safe_delta * water_physics_speed
 		
 		var max_velocity = 5.0 + abs(displacement) * 0.2
 		segment_data[i]["velocity"] = clamp(segment_data[i]["velocity"], -max_velocity, max_velocity)
 		
-		segment_data[i]["height"] += segment_data[i]["velocity"] * delta * water_physics_speed
+		segment_data[i]["height"] += segment_data[i]["velocity"] * safe_delta * water_physics_speed
 		
 	for updates in range(wave_spread_updates):
 		for i in range(segment_count):
+			# Skip segments in emergency mode
+			var i_displacement = abs(segment_data[i]["height"] - segment_rest_height[i])
+			if i_displacement > 200.0:
+				continue
+			
 			if i > 0:
+				var neighbor_displacement = abs(segment_data[i-1]["height"] - segment_rest_height[i-1])
+				if neighbor_displacement > 200.0:
+					continue  # Don't spread from unstable neighbors
+				
 				var rest_diff = abs(segment_rest_height[i] - segment_rest_height[i-1])
 				if rest_diff < 5.0:
 					var height_diff = segment_data[i]["height"] - segment_data[i-1]["height"]
@@ -130,10 +163,14 @@ func update_physics(delta: float) -> void:
 					if abs(height_diff) > gradient_damping_threshold:
 						wave_multiplier = gradient_damping_factor
 					segment_data[i]["wave_to_left"] = height_diff * wave_strength * wave_multiplier
-					segment_data[i-1]["velocity"] += segment_data[i]["wave_to_left"] * delta * water_physics_speed
+					segment_data[i-1]["velocity"] += segment_data[i]["wave_to_left"] * safe_delta * water_physics_speed
 				else:
 					segment_data[i]["wave_to_left"] = 0.0
 			if i < segment_count - 1:
+				var neighbor_displacement_right = abs(segment_data[i+1]["height"] - segment_rest_height[i+1])
+				if neighbor_displacement_right > 200.0:
+					continue
+				
 				var rest_diff_right = abs(segment_rest_height[i] - segment_rest_height[i+1])
 				if rest_diff_right < 5.0:
 					var height_diff_right = segment_data[i]["height"] - segment_data[i+1]["height"]
@@ -141,14 +178,14 @@ func update_physics(delta: float) -> void:
 					if abs(height_diff_right) > gradient_damping_threshold:
 						wave_multiplier_right = gradient_damping_factor
 					segment_data[i]["wave_to_right"] = height_diff_right * wave_strength * wave_multiplier_right
-					segment_data[i+1]["velocity"] += segment_data[i]["wave_to_right"] * delta * water_physics_speed
+					segment_data[i+1]["velocity"] += segment_data[i]["wave_to_right"] * safe_delta * water_physics_speed
 				else:
 					segment_data[i]["wave_to_right"] = 0.0
 		for i in range(segment_count):	
 			if i > 0:
-				segment_data[i-1]["height"] += segment_data[i]["wave_to_left"] * delta * water_physics_speed
+				segment_data[i-1]["height"] += segment_data[i]["wave_to_left"] * safe_delta * water_physics_speed
 			if i < segment_count - 1:
-				segment_data[i+1]["height"] += segment_data[i]["wave_to_right"] * delta * water_physics_speed
+				segment_data[i+1]["height"] += segment_data[i]["wave_to_right"] * safe_delta * water_physics_speed
 		
 	# Lock edges to their rest heights (not hardcoded surface)
 	segment_data[0]["height"] = segment_rest_height[0]
@@ -279,3 +316,33 @@ func set_water_level_instant(target_height: float) -> void:
 		segment["velocity"] = 0.0
 	
 	update_visuals()
+
+func _print_water_diagnostics() -> void:
+	if Engine.is_editor_hint():
+		return
+	
+	var max_displacement: float = 0.0
+	var max_velocity: float = 0.0
+	var total_energy: float = 0.0
+	var runaway_count: int = 0
+	
+	for i in range(segment_count):
+		var displacement = abs(segment_data[i]["height"] - segment_rest_height[i])
+		var velocity = abs(segment_data[i]["velocity"])
+		
+		max_displacement = max(max_displacement, displacement)
+		max_velocity = max(max_velocity, velocity)
+		total_energy += displacement + velocity
+		
+		if displacement > 200.0 or velocity > 50.0:
+			runaway_count += 1
+	
+	var avg_energy = total_energy / segment_count
+	
+	print("[WATER AUDIT] segments=%d | max_disp=%.1f | max_vel=%.1f | avg_energy=%.2f | runaways=%d" % 
+		[segment_count, max_displacement, max_velocity, avg_energy, runaway_count])
+	
+	if runaway_count > 0:
+		print("  ⚠️ WARNING: %d segments exhibiting runaway behavior!" % runaway_count)
+	if max_displacement > 300.0:
+		print("  🔥 CRITICAL: Water displacement exceeding 300px threshold!")
