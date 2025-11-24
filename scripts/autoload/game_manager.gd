@@ -30,7 +30,6 @@ func _set_up():
 		spawn_player(checkpoint_data[current_checkpoint_id]["player_state"])
 	else:
 		respawn_at_checkpoint()
-	respawn_at_checkpoint()
 #change stage by path and target portal name
 func change_stage(stage_path: String, _target_portal_name: String = "") -> void:
 	target_portal_name = _target_portal_name
@@ -104,10 +103,6 @@ func respawn_at_checkpoint() -> void:
 	await fade_to_black()
 	
 	# Delete player after screen is black
-	if player != null:
-		print("Nullify player")
-		player.queue_free()
-		player = null
 	
 	await get_tree().process_frame
 	spawn_player(player_state)
@@ -159,7 +154,10 @@ func spawn_player(spawn_data: Dictionary) -> Player:
 	if player_scene == null:
 		printerr("Player scene not set in GameManager!")
 		return null
-	
+	if player != null:
+		print("Nullify player")
+		player.queue_free()
+		player = null
 	var new_player = player_scene.instantiate() as Player
 	new_player.load_state(spawn_data)
 	new_player.visible = true
