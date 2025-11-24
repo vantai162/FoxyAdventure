@@ -172,7 +172,6 @@ func spring():
 		
 func drop_down_platform():
 	var PLATFORM_LAYER = 1
-	print("alo")
 	set_collision_mask_value(PLATFORM_LAYER, false)
 	await get_tree().create_timer(0.25).timeout
 	set_collision_mask_value(PLATFORM_LAYER, true)

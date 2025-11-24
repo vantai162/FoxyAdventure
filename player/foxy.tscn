@@ -16,7 +16,7 @@
 [ext_resource type="Texture2D" uid="uid://cseha0dkj5lfj" path="res://assets/foxy/fox_hat/fox_run_1.png" id="11_2ri0v"]
 [ext_resource type="Texture2D" uid="uid://b7ko4rnci3koo" path="res://assets/foxy/fox_hat/fox_jump_1.png" id="11_u75vx"]
 [ext_resource type="Texture2D" uid="uid://3g5hdrfwcd2c" path="res://assets/foxy/fox_hat/fox_run_2.png" id="12_fwcd4"]
-[ext_resource type="Texture2D" uid="uid://cg0s41812vukj" path="res://assets/foxy/fox_hat/fox_run.png" id="13_trrpp"]
+[ext_resource type="Texture2D" uid="uid://cg0s41812vukj" path="res://assets/foxy/fox_hat/fox_run_3.png" id="13_trrpp"]
 [ext_resource type="Texture2D" uid="uid://8u26ji11yaua" path="res://assets/foxy/fox_hat/fox_run_4.png" id="14_abt3m"]
 [ext_resource type="Script" uid="uid://cvt7ec5olmdw5" path="res://player/idle.gd" id="15_fwcd4"]
 [ext_resource type="Texture2D" uid="uid://f0k2ocqkmcc2" path="res://assets/foxy/fox_hat_blade/fox_jump_atk_1.png" id="16_tfdy2"]
@@ -270,6 +270,7 @@ shape = SubResource("RectangleShape2D_8r8n2")
 [node name="Direction" type="Node2D" parent="."]
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="Direction"]
+visible = false
 sprite_frames = SubResource("SpriteFrames_7xt5n")
 animation = &"jump"
 

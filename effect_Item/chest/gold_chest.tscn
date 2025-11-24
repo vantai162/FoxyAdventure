@@ -46,7 +46,7 @@ animations = [{
 "duration": 1.0,
 "texture": ExtResource("9_yif3n")
 }],
-"loop": true,
+"loop": false,
 "name": &"open",
 "speed": 5.0
 }]
@@ -55,6 +55,8 @@ animations = [{
 size = Vector2(31, 33)
 
 [node name="GoldChest" type="Area2D"]
+collision_layer = 0
+collision_mask = 2
 script = ExtResource("1_yraig")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
@@ -64,3 +66,6 @@ animation = &"open"
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 position = Vector2(-0.5, 6.5)
 shape = SubResource("RectangleShape2D_rvdi5")
+
+[connection signal="body_entered" from="." to="." method="_on_body_entered"]
+[connection signal="body_exited" from="." to="." method="_on_body_exited"]

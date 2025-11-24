@@ -108,6 +108,10 @@ func respawn_at_checkpoint() -> void:
 	
 	spawn_player(player_state)
 	
+	var hp_bar = current_stage.get_node("CanvasLayer/TextureProgressBar")
+	var coin_ui = current_stage.get_node("CanvasLayer/CoinUI")
+	hp_bar.setup()
+	coin_ui.setup()
 	await fade_from_black()
 	is_respawning_from_checkpoint = false
 
