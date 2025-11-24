@@ -1,27 +1,42 @@
-[gd_scene load_steps=4 format=3 uid="uid://c5m8vno0qh3xy"]
+[gd_scene load_steps=6 format=3 uid="uid://c5m8vno0qh3xy"]
 
 [ext_resource type="Script" uid="uid://dqrqnlexfmp7s" path="res://objects/whirlpool/whirlpool.gd" id="1_whirlpool"]
-[ext_resource type="Script" uid="uid://bdqd464cx7o6q" path="res://objects/whirlpool/placeholder_sprite.gd" id="2_placeholder"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_avkd6"]
 size = Vector2(160, 200)
+
+[sub_resource type="Gradient" id="Gradient_lba4k"]
+colors = PackedColorArray(1, 1, 1, 1, 0.301961, 0.65098, 1, 1)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_avkd6"]
+gradient = SubResource("Gradient_lba4k")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_lba4k"]
+particle_flag_disable_z = true
+emission_shape = 1
+emission_sphere_radius = 12.0
+direction = Vector3(0, -1, 0)
+spread = 36.0
+initial_velocity_min = 50.0
+initial_velocity_max = 100.0
+gravity = Vector3(0, 36, 0)
+radial_accel_min = -30.0
+radial_accel_max = 30.0
+scale_over_velocity_min = 0.5
+scale_over_velocity_max = 2.0
+color_ramp = SubResource("GradientTexture1D_avkd6")
 
 [node name="Whirlpool" type="Area2D" groups=["hazard", "whirlpool"]]
 collision_layer = 32
 collision_mask = 3
 monitorable = false
 script = ExtResource("1_whirlpool")
+damage_dps = 1.0
 
 [node name="PullRadius" type="CollisionShape2D" parent="."]
 shape = SubResource("RectangleShape2D_avkd6")
 debug_color = Color(0.941176, 0.196078, 0.509804, 0.0901961)
 
-[node name="Visuals" type="Node2D" parent="."]
-
-[node name="PlaceholderSprite" type="Sprite2D" parent="Visuals"]
-scale = Vector2(3, 3)
-script = ExtResource("2_placeholder")
-
-[node name="CenterMarker" type="Marker2D" parent="."]
-
-[node name="ParticleEffects" type="Node2D" parent="."]
+[node name="WaterParticles" type="GPUParticles2D" parent="."]
+amount = 136
+process_material = SubResource("ParticleProcessMaterial_lba4k")
