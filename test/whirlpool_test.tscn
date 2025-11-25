@@ -25,6 +25,7 @@ segment_count = 77
 
 [node name="Foxy" parent="." instance=ExtResource("4_player")]
 position = Vector2(-394, 86)
+max_health = 14
 
 [node name="WarlordTurtle" parent="." instance=ExtResource("4_dfigs")]
 position = Vector2(243, 73)

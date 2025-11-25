@@ -226,9 +226,10 @@ func update_visuals() -> void:
 	var segment_width: float = water_size.x / (segment_count - 1)
 	for i in range(segment_count):
 		points.append(Vector2(i * segment_width, segment_data[i]["height"]))
-		
-	var left_static_point: Vector2 = Vector2(points[0].x,surface_pos_y)
-	var right_static_point: Vector2 = Vector2(points[points.size()-1].x,surface_pos_y)
+	
+	# Surface line: connect left edge → wave points → right edge
+	var left_static_point: Vector2 = Vector2(points[0].x, segment_data[0]["height"])
+	var right_static_point: Vector2 = Vector2(points[points.size()-1].x, segment_data[segment_count-1]["height"])
 	
 	var final_points: Array[Vector2] = []
 	final_points.append(left_static_point)
@@ -237,9 +238,11 @@ func update_visuals() -> void:
 	
 	surface_line.points = final_points
 	
-	var bottom_y: float = surface_pos_y + water_size.y
-	final_points.append(Vector2(water_size.x,bottom_y))
-	final_points.append(Vector2(0,bottom_y))
+	# Fill polygon: water body from surface down to FIXED bottom
+	# Bottom is always at water_size.y (relative to node origin), regardless of surface position
+	var bottom_y: float = water_size.y
+	final_points.append(Vector2(water_size.x, bottom_y))
+	final_points.append(Vector2(0, bottom_y))
 	fill_polygon.polygon = final_points
 
 func splash(splash_pos:Vector2, splash_velocity:float) -> void:
