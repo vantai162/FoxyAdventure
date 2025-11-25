@@ -1,39 +1,42 @@
 extends EnemyState
 
-# King Crab Idle - Choose next action
-var idle_time: float = 0.0
-var next_action_delay: float = 1.5
+## King Crab Idle - Simple timer-based attack selection (like Warlord Turtle)
 
 func _enter() -> void:
 	obj.change_animation("idle")
 	obj.velocity = Vector2.ZERO
-	idle_time = 0.0
+	timer = 1.5  # Wait before first attack
 
 func _update(delta: float) -> void:
-	idle_time += delta
+	# Use built-in timer from FSMState
+	if update_timer(delta):
+		_choose_next_action()
+
+func _choose_next_action() -> void:
+	# Phase 1: Dive or throw coconuts
+	# Phase 2: Add claw attack and roll bounce
 	
-	if idle_time < next_action_delay:
-		return
-	
-	# Phase 2: Add roll bounce to rotation
-	if obj.current_phase == 2 and obj.found_player and randf() < 0.3:
-		change_state(fsm.states.roll_bounce)
-		return
-	
-	# Decision tree: coconut throw > dive > claw
-	if obj.can_throw_coconut and obj.found_player:
-		obj.target_tree = obj.find_nearest_tree()
-		if obj.target_tree:
-			change_state(fsm.states.walk_to_tree)
-			return
-	
-	if obj.can_dive and obj.found_player:
-		change_state(fsm.states.dive_attack)
-		return
-	
-	if obj.can_claw and obj.found_player and obj.current_phase == 2:
-		change_state(fsm.states.claw_attack)
-		return
-	
-	# No action available, wait longer
-	idle_time = 0.0
+	if obj.current_phase == 1:
+		# Randomly pick dive or coconut throw
+		if randf() < 0.5:
+			change_state(fsm.states.diveattack)
+		else:
+			var tree = obj.find_nearest_tree()
+			if tree:
+				change_state(fsm.states.walktotree)
+			else:
+				change_state(fsm.states.diveattack)
+	else:
+		# Phase 2: All attacks available
+		var actions = [fsm.states.diveattack]
+		
+		# Add coconut throw if trees exist
+		if obj.find_nearest_tree():
+			actions.append(fsm.states.walktotree)
+		
+		# Phase 2 exclusive attacks
+		actions.append(fsm.states.clawattack)
+		actions.append(fsm.states.rollbounce)
+		
+		var chosen = actions[randi() % actions.size()]
+		change_state(chosen)

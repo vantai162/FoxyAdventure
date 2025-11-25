@@ -33,6 +33,7 @@ enemy=""
 one_way_platform=""
 can_interact_with_water=""
 water=""
+coconut_tree=""
 
 [input]
 

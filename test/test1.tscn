@@ -1,7 +1,7 @@
 [gd_scene load_steps=4 format=3 uid="uid://dy6cmmwsmdx2r"]
 
 [ext_resource type="PackedScene" uid="uid://bs816w0pr8all" path="res://player/foxy.tscn" id="1_c086n"]
-[ext_resource type="PackedScene" uid="uid://ufmc2gkfnv58" path="res://enemy/king_crab/king_crab.tscn" id="2_c086n"]
+[ext_resource type="PackedScene" uid="uid://ufmc2gkfnv58" path="res://enemy/crab/crab.tscn" id="2_c086n"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_my5ub"]
 size = Vector2(658.5, 87)

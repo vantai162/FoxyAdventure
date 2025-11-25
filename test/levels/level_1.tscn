@@ -1,4 +1,4 @@
-[gd_scene load_steps=74 format=4 uid="uid://30po03m850f6"]
+[gd_scene load_steps=75 format=4 uid="uid://30po03m850f6"]
 
 [ext_resource type="PackedScene" uid="uid://dytm3c86oshmd" path="res://scenes/game_screen/hud.tscn" id="1_7oiq3"]
 [ext_resource type="Script" uid="uid://bl4jqlw4aef0m" path="res://test/stage.gd" id="1_7qv11"]
@@ -12,7 +12,7 @@
 [ext_resource type="PackedScene" uid="uid://bg3bfewcihuv0" path="res://objects/sign/sign.tscn" id="5_symkc"]
 [ext_resource type="Texture2D" uid="uid://danqmrply2lgh" path="res://assets/GandalfHardcore FREE Platformer Assets/GandalfHardcore FREE Platformer Assets/GandalfHardcore Background layers/Normal BG/GandalfHardcore Background layers_layer 3.png" id="5_v26dd"]
 [ext_resource type="Texture2D" uid="uid://bk77qlt12fa3j" path="res://assets/GandalfHardcore FREE Platformer Assets/GandalfHardcore FREE Platformer Assets/GandalfHardcore Background layers/Normal BG/GandalfHardcore Background layers_layer 2.png" id="6_ek11w"]
-[ext_resource type="PackedScene" uid="uid://ufmc2gkfnv58" path="res://enemy/king_crab/king_crab.tscn" id="6_g6ve3"]
+[ext_resource type="PackedScene" uid="uid://ufmc2gkfnv58" path="res://enemy/crab/crab.tscn" id="6_g6ve3"]
 [ext_resource type="Texture2D" uid="uid://byx63r517naeu" path="res://assets/GandalfHardcore FREE Platformer Assets/GandalfHardcore FREE Platformer Assets/Tree1.png" id="6_y8tn8"]
 [ext_resource type="Texture2D" uid="uid://bptbd831rvqdf" path="res://assets/GandalfHardcore FREE Platformer Assets/GandalfHardcore FREE Platformer Assets/GandalfHardcore Background layers/Normal BG/GandalfHardcore Background layers_layer 1.png" id="7_e1q3p"]
 [ext_resource type="PackedScene" uid="uid://6anvnhaq553w" path="res://environment/water/water.tscn" id="7_ek11w"]
@@ -51,6 +51,7 @@
 [ext_resource type="PackedScene" uid="uid://b3cbk6lmh2cc3" path="res://effect_Item/heal_potion/health_potion.tscn" id="45_7s41y"]
 [ext_resource type="PackedScene" uid="uid://dl1jqgf5ab7l" path="res://effect_Item/chest/gold_chest.tscn" id="46_7s41y"]
 [ext_resource type="PackedScene" uid="uid://ckaw6wc7acih8" path="res://environment/death_zone/death_zone.tscn" id="50_nv8qq"]
+[ext_resource type="PackedScene" uid="uid://ctmgnaqjtpp40" path="res://enemy/king_crab/king_crab.tscn" id="52_lhgvo"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_yiwfi"]
 texture = ExtResource("10_b7xqp")
@@ -5482,6 +5483,12 @@ position = Vector2(2685, 380)
 
 [node name="Bullets" type="Node" parent="."]
 
+[node name="Claws" type="Node" parent="."]
+
+[node name="Coconuts" type="Node" parent="."]
+
+[node name="Warnings" type="Node" parent="."]
+
 [node name="Checkpoint" parent="." instance=ExtResource("41_u4gqf")]
 position = Vector2(2536, 242)
 
@@ -5502,22 +5509,15 @@ position = Vector2(4093, -53)
 [node name="DeathZone" parent="." instance=ExtResource("50_nv8qq")]
 position = Vector2(1312, 573)
 
-[connection signal="area_entered" from="Layer1/Coin" to="Layer1/Coin" method="_on_area_entered"]
-[connection signal="area_entered" from="Layer1/@Area2D@30885" to="Layer1/@Area2D@30885" method="_on_area_entered"]
-[connection signal="area_entered" from="Layer1/@Area2D@30886" to="Layer1/@Area2D@30886" method="_on_area_entered"]
-[connection signal="area_entered" from="Layer1/@Area2D@30887" to="Layer1/@Area2D@30887" method="_on_area_entered"]
-[connection signal="area_entered" from="Layer1/@Area2D@30888" to="Layer1/@Area2D@30888" method="_on_area_entered"]
-[connection signal="area_entered" from="Layer1/@Area2D@30889" to="Layer1/@Area2D@30889" method="_on_area_entered"]
-[connection signal="area_entered" from="Layer1/@Area2D@30890" to="Layer1/@Area2D@30890" method="_on_area_entered"]
-[connection signal="area_entered" from="Layer1/@Area2D@30891" to="Layer1/@Area2D@30891" method="_on_area_entered"]
-[connection signal="area_entered" from="Layer1/@Area2D@30892" to="Layer1/@Area2D@30892" method="_on_area_entered"]
-[connection signal="area_entered" from="Layer1/@Area2D@30893" to="Layer1/@Area2D@30893" method="_on_area_entered"]
-[connection signal="area_entered" from="Layer1/@Area2D@30894" to="Layer1/@Area2D@30894" method="_on_area_entered"]
-[connection signal="area_entered" from="Layer1/@Area2D@30895" to="Layer1/@Area2D@30895" method="_on_area_entered"]
-[connection signal="area_entered" from="Layer1/@Area2D@30896" to="Layer1/@Area2D@30896" method="_on_area_entered"]
-[connection signal="area_entered" from="Layer1/@Area2D@30897" to="Layer1/@Area2D@30897" method="_on_area_entered"]
-[connection signal="area_entered" from="Layer1/@Area2D@30898" to="Layer1/@Area2D@30898" method="_on_area_entered"]
-[connection signal="area_entered" from="Layer1/Key" to="Layer1/Key" method="_on_area_entered"]
+[node name="KingCrab" parent="." instance=ExtResource("52_lhgvo")]
+position = Vector2(138, 252)
+
+[node name="Node2D" type="Node2D" parent="." groups=["coconut_tree"]]
+position = Vector2(336, 96)
+
+[node name="Node2D2" type="Node2D" parent="." groups=["coconut_tree"]]
+position = Vector2(206, 91)
+
 [connection signal="body_entered" from="Objects/Lever" to="Objects/Gate" method="open_gate"]
 [connection signal="body_exited" from="Objects/Lever" to="Objects/Gate" method="close_gate"]
 [connection signal="lever_activated" from="Objects/Lever" to="Objects/Gate" method="open_gate"]

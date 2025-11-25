@@ -1,33 +1,49 @@
 extends EnemyState
 
-# Walk to nearest coconut tree
+## Walk to nearest coconut tree, then climb up
+
+var target_tree: Node2D = null
+var stuck_timer: float = 0.0
+var last_x: float = 0.0
+
+@export var stuck_timeout: float = 1.0  ## Give up if no progress after this time
 
 func _enter() -> void:
 	obj.change_animation("run")
-	if not obj.target_tree:
+	target_tree = obj.find_nearest_tree()
+	stuck_timer = 0.0
+	last_x = obj.global_position.x
+	
+	if not target_tree:
 		change_state(fsm.states.idle)
-		return
 
 func _update(delta: float) -> void:
-	if not obj.target_tree:
+	if not target_tree or not is_instance_valid(target_tree):
 		change_state(fsm.states.idle)
 		return
 	
-	# Check if reached tree
-	if obj.is_at_tree():
-		change_state(fsm.states.climb_tree)
+	# Check if reached tree - only check HORIZONTAL distance (X axis)
+	var horizontal_dist = abs(obj.global_position.x - target_tree.global_position.x)
+	if horizontal_dist < 20.0:
+		obj.set_meta("target_tree", target_tree)
+		change_state(fsm.states.climbtree)
 		return
 	
 	# Move toward tree
-	var direction_to_tree = sign(obj.target_tree.global_position.x - obj.global_position.x)
-	if direction_to_tree != obj.direction:
+	var dir_to_tree = sign(target_tree.global_position.x - obj.global_position.x)
+	if dir_to_tree != obj.direction:
 		obj.turn_around()
 	
-	obj.velocity.x = obj.direction * obj.walk_speed
+	obj.velocity.x = obj.direction * obj.movement_speed
 	
-	# Handle obstacles
-	if obj.is_touch_wall() or (obj.is_on_floor() and obj.is_can_fall()):
-		# Try to find another tree
-		obj.target_tree = obj.find_nearest_tree()
-		if not obj.target_tree:
+	# Stuck detection - if we haven't moved much, increment timer
+	var moved = abs(obj.global_position.x - last_x)
+	if moved < 2.0:
+		stuck_timer += delta
+		if stuck_timer >= stuck_timeout:
+			# Give up and do something else
 			change_state(fsm.states.idle)
+			return
+	else:
+		stuck_timer = 0.0
+		last_x = obj.global_position.x

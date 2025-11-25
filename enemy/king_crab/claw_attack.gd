@@ -30,9 +30,6 @@ func _spawn_claw() -> void:
 func _finish_attack() -> void:
 	if fsm.current_state != self:
 		return
-	
-	obj.can_claw = false
-	get_tree().create_timer(4.0).timeout.connect(func(): obj.can_claw = true)
 	change_state(fsm.states.idle)
 
 func _update(delta: float) -> void:

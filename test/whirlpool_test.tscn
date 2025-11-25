@@ -1,10 +1,11 @@
-[gd_scene load_steps=7 format=4 uid="uid://dxm3wsunejiy4"]
+[gd_scene load_steps=8 format=4 uid="uid://dxm3wsunejiy4"]
 
 [ext_resource type="TileSet" uid="uid://bmuxyu21ya31y" path="res://assets/tileset.tres" id="1_18vte"]
+[ext_resource type="Script" uid="uid://cqknlo5c21yh3" path="res://scripts/shakeable_camera.gd" id="2_4l3ft"]
 [ext_resource type="PackedScene" uid="uid://demnh2f4ooy6n" path="res://objects/platform/floating_boat_platform.tscn" id="2_boat"]
 [ext_resource type="Script" uid="uid://b3s1m3fi6lhf5" path="res://objects/water/water.gd" id="3_water"]
-[ext_resource type="PackedScene" uid="uid://bdlk3sxo5ekwn" path="res://enemy/boss/warlordturtle.tscn" id="4_dfigs"]
 [ext_resource type="PackedScene" uid="uid://bs816w0pr8all" path="res://player/foxy.tscn" id="4_player"]
+[ext_resource type="PackedScene" uid="uid://ctmgnaqjtpp40" path="res://enemy/king_crab/king_crab.tscn" id="6_4l3ft"]
 [ext_resource type="PackedScene" uid="uid://dqdstpxycbomj" path="res://effect_Item/BladeItem/blade.tscn" id="6_m1dob"]
 
 [node name="WhirlpoolTest" type="Node2D"]
@@ -15,6 +16,7 @@ tile_map_data = PackedByteArray("AADu/wQAAAAAAAEAAADv/wQAAAABAAEAAADw/wQAAAAGAAE
 tile_set = ExtResource("1_18vte")
 
 [node name="Camera2D" type="Camera2D" parent="."]
+script = ExtResource("2_4l3ft")
 
 [node name="Water" type="Node2D" parent="." groups=["water"]]
 z_index = 1
@@ -27,11 +29,6 @@ segment_count = 77
 position = Vector2(-394, 86)
 max_health = 14
 
-[node name="WarlordTurtle" parent="." instance=ExtResource("4_dfigs")]
-position = Vector2(243, 73)
-direction = -1
-max_health = 50
-
 [node name="FloatingBoatPlatform" parent="." instance=ExtResource("2_boat")]
 position = Vector2(-259, 114)
 
@@ -43,3 +40,15 @@ position = Vector2(359, 120)
 
 [node name="Blade" parent="." instance=ExtResource("6_m1dob")]
 position = Vector2(-395, 121)
+
+[node name="KingCrab" parent="." instance=ExtResource("6_4l3ft")]
+position = Vector2(155, 123)
+
+[node name="Claws" type="Node" parent="."]
+
+[node name="Coconuts" type="Node" parent="."]
+
+[node name="Warnings" type="Node" parent="."]
+
+[node name="Node2D" type="Node2D" parent="." groups=["coconut_tree"]]
+position = Vector2(26.6778, -143.106)

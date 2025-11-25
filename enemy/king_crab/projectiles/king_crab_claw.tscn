@@ -1,33 +1,33 @@
-[gd_scene load_steps=6 format=3 uid="uid://bmabvmpusba5l"]
+[gd_scene load_steps=6 format=3]
 
-[ext_resource type="Script" uid="uid://ducewogw2o0jc" path="res://enemy/king_crab/projectiles/king_crab_claw.gd" id="1_60wi4"]
-[ext_resource type="Script" uid="uid://xqvgljx4hk1s" path="res://scripts/hit_area_2d.gd" id="2_2brjt"]
-[ext_resource type="Texture2D" uid="uid://diiecuy47s81p" path="res://assets/king_crab/King_Crab_31.png" id="2_60wi4"]
+[ext_resource type="Script" path="res://enemy/king_crab/projectiles/king_crab_claw.gd" id="1_script"]
+[ext_resource type="Script" path="res://scripts/hit_area_2d.gd" id="2_hitarea"]
+[ext_resource type="Texture2D" path="res://assets/king_crab/King_Crab_31.png" id="3_sprite"]
 
-[sub_resource type="CircleShape2D" id="CircleShape2D_2brjt"]
-radius = 4.0
+[sub_resource type="CircleShape2D" id="CircleShape2D_body"]
+radius = 12.0
 
-[sub_resource type="CircleShape2D" id="CircleShape2D_iveby"]
-radius = 4.0
+[sub_resource type="CircleShape2D" id="CircleShape2D_hit"]
+radius = 12.0
 
 [node name="KingCrabClaw" type="Area2D"]
 collision_layer = 32
-script = ExtResource("1_60wi4")
+collision_mask = 0
+script = ExtResource("1_script")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
-texture = ExtResource("2_60wi4")
+texture = ExtResource("3_sprite")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-position = Vector2(1, 1)
-shape = SubResource("CircleShape2D_2brjt")
+shape = SubResource("CircleShape2D_body")
 
 [node name="HitArea2D" type="Area2D" parent="."]
+collision_layer = 0
 collision_mask = 4
-script = ExtResource("2_2brjt")
+script = ExtResource("2_hitarea")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="HitArea2D"]
-position = Vector2(1, 1)
-shape = SubResource("CircleShape2D_iveby")
+shape = SubResource("CircleShape2D_hit")
 
 [connection signal="body_entered" from="." to="." method="_on_body_entered"]
 [connection signal="hitted" from="HitArea2D" to="." method="_on_hit_area_2d_hitted"]
