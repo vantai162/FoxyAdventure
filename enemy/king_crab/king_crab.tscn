@@ -37,7 +37,7 @@
 [ext_resource type="Texture2D" uid="uid://dnssmdlf3g8un" path="res://assets/king_crab/King_Crab_8.png" id="23_waix0"]
 [ext_resource type="Script" uid="uid://c5odej0anbth6" path="res://enemy/king_crab/roll_bounce.gd" id="27_qldyf"]
 [ext_resource type="PackedScene" uid="uid://d2e3f4g5h6i7j" path="res://projectiles/slowing_coconut.tscn" id="27_ud2bj"]
-[ext_resource type="PackedScene" uid="uid://bmabvmpusba5l" path="res://enemy/king_crab/projectiles/king_crab_claw.tscn" id="28_114q8"]
+[ext_resource type="PackedScene" uid="uid://bmabvmpusba5l" path="res://enemy/seahorse/seahorse_bullet.tscn" id="28_114q8"]
 [ext_resource type="PackedScene" uid="uid://p1nb3n6xmbvs" path="res://objects/warining/warining_rocket.tscn" id="29_7b5u8"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_5qelw"]

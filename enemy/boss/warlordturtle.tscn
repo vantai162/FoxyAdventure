@@ -260,7 +260,7 @@ position = Vector2(217.333, 11.3333)
 position = Vector2(316, 14)
 
 [node name="WariningRocket4" parent="Direction/BoomAndRocket" instance=ExtResource("25_eluqr")]
-position = Vector2(428, 16)
+position = Vector2(420, 16)
 
 [node name="HurtArea2D" type="Area2D" parent="Direction"]
 collision_layer = 16

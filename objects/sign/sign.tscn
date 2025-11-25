@@ -18,6 +18,7 @@ collision_mask = 2
 script = ExtResource("1_rvb5v")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
+use_parent_material = true
 position = Vector2(4.76837e-07, -12)
 scale = Vector2(0.282227, 0.282227)
 texture = ExtResource("2_hlhu2")
