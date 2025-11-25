@@ -8,6 +8,7 @@ func _enter():
 	obj.change_animation("summon")
 	_perform_water_action()
 	wave_sound.play()
+	
 func _update(delta):
 	pass
 
@@ -38,5 +39,7 @@ func _perform_water_action() -> void:
 	obj.last_water_action_time = Time.get_ticks_msec() / 1000.0
 	
 	# Wait for animation + water transition to complete
-	await get_tree().create_timer(obj.water_raise_duration + 0.5).timeout
+	await get_tree().create_timer(obj.water_raise_duration).timeout
+	if fsm.states.has("summonwhirlpool"):
+		fsm.change_state(fsm.states.summonwhirlpool)
 	change_state(fsm.states.idle)

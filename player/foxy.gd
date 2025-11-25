@@ -245,6 +245,7 @@ func _process(delta: float) -> void:
 		await get_tree().create_timer(invincible_timer).timeout
 		blink_timer.stop()
 		blink_timer.queue_free()
+		sprite.visible = true
 
 func _collect_blade() -> void:
 	if not has_unlocked_blade:
@@ -296,7 +297,8 @@ func save_state() -> Dictionary:
 		"blade_count": blade_count,
 		"max_blade_capacity": max_blade_capacity,
 		"has_unlocked_blade": has_unlocked_blade,
-		"health": health
+		"health": health,
+		"Inventory":inventory._save_inventory()
 	}
 
 func load_state(data: Dictionary) -> void:
@@ -315,6 +317,8 @@ func load_state(data: Dictionary) -> void:
 	
 	if data.has("health"):
 		health = data["health"]
+	if data.has("Inventory"):
+		inventory._load_inventory(data["Inventory"])
 	# Đã loại bỏ logic: if data.has("has_blade") and data["has_blade"] == true:
 	
 

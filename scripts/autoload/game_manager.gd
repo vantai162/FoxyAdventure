@@ -114,6 +114,7 @@ func respawn_at_checkpoint() -> void:
 	var key_ui = current_stage.get_node("CanvasLayer/KeyUI")
 	hp_bar.setup()
 	coin_ui.setup()
+	key_ui.setup()
 	await fade_from_black()
 	is_respawning_from_checkpoint = false
 

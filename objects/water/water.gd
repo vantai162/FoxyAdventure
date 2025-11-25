@@ -303,13 +303,19 @@ func raise_water(target_height: float, duration: float = 2.0) -> void:
 	## Smoothly raise water surface to target height
 	## @param target_height: New surface_pos_y value (negative = higher, positive = lower)
 	## @param duration: Time in seconds for transition
-	
+	if segment_rest_height.size() != segment_count:
+		_initiate_water()
 	print("🌊 Water raise_water() called: target=%.2f, duration=%.1f" % [target_height, duration])
 	
 	# Store initial rest heights for smooth interpolation
 	_water_raise_start_heights.clear()
 	for i in range(segment_count):
-		_water_raise_start_heights.append(segment_rest_height[i])
+		var h
+		if i < segment_rest_height.size(): 
+			h = segment_rest_height[i] 
+		else: 
+			h = surface_pos_y
+		_water_raise_start_heights.append(h)
 	
 	_water_raise_target = target_height
 	_water_raise_duration = duration
@@ -326,7 +332,7 @@ func raise_water(target_height: float, duration: float = 2.0) -> void:
 	set_process(true)
 	recently_splashed = true
 	
-	print("   Initial rest heights range: %.2f to %.2f" % [_water_raise_start_heights.min(), _water_raise_start_heights.max()])
+	print("Initial rest heights range: %.2f to %.2f" % [_water_raise_start_heights.min(), _water_raise_start_heights.max()])
 
 func _update_water_raise(delta: float) -> void:
 	_water_raise_elapsed += delta
