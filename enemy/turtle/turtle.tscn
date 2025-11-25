@@ -1,4 +1,4 @@
-[gd_scene load_steps=21 format=3 uid="uid://c1bijw8i8erx5"]
+[gd_scene load_steps=22 format=3 uid="uid://c1bijw8i8erx5"]
 
 [ext_resource type="Script" uid="uid://bessfwihwj0hf" path="res://enemy/turtle/turtle.gd" id="1_raxgc"]
 [ext_resource type="Texture2D" uid="uid://8usoreyem8l6" path="res://assets/foxy/smoke/jump_smoke_1.png" id="2_livia"]
@@ -19,8 +19,7 @@
 [ext_resource type="Texture2D" uid="uid://cgt4s4vn5nfar" path="res://assets/turtle/turtle_blue_walk_02.png" id="8_e4l57"]
 [ext_resource type="Script" uid="uid://k4wow2443kjb" path="res://enemy/turtle/dead.gd" id="14_n3t07"]
 
-[sub_resource type="CircleShape2D" id="CircleShape2D_pkty3"]
-radius = 13.0384
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_livia"]
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_v3mmh"]
 animations = [{
@@ -76,6 +75,9 @@ animations = [{
 "speed": 5.0
 }]
 
+[sub_resource type="CircleShape2D" id="CircleShape2D_pkty3"]
+radius = 13.0384
+
 [node name="Turtle" type="CharacterBody2D" groups=["can_interact_with_water"]]
 collision_layer = 8
 collision_mask = 9
@@ -84,7 +86,7 @@ max_health = 2
 metadata/_custom_type_script = "uid://s4xx82espxdt"
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-shape = SubResource("CircleShape2D_pkty3")
+shape = SubResource("RectangleShape2D_livia")
 
 [node name="Direction" type="Node2D" parent="."]
 

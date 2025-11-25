@@ -5262,6 +5262,9 @@ texture = ExtResource("10_yiwfi")
 
 [node name="Environment" type="Node2D" parent="."]
 
+[node name="WindArea" parent="Environment" instance=ExtResource("7_k62hf")]
+position = Vector2(3449, 319)
+
 [node name="Tree" type="Sprite2D" parent="Environment"]
 self_modulate = Color(1, 1, 1, 0.717647)
 position = Vector2(897, 165)
@@ -5278,9 +5281,6 @@ position = Vector2(3748, 253)
 texture = ExtResource("6_y8tn8")
 
 [node name="staircase" type="Sprite2D" parent="Environment"]
-
-[node name="WindArea" parent="Environment" instance=ExtResource("7_k62hf")]
-position = Vector2(3449, 327)
 
 [node name="WindArea2" parent="Environment" instance=ExtResource("7_k62hf")]
 position = Vector2(3821, -281)
@@ -5328,7 +5328,7 @@ instruction_text = "Nhấn Space để nhảy!"
 
 [node name="Sign5" parent="." instance=ExtResource("5_symkc")]
 position = Vector2(2881, 330)
-instruction_text = "Bạn sẽ mất hết xu nếu chết!"
+instruction_text = "Bấm [D] 2 lần để bứt tốc"
 
 [node name="Sign3" parent="." instance=ExtResource("5_symkc")]
 position = Vector2(1092, 233)
@@ -5343,7 +5343,7 @@ position = Vector2(1676, 237)
 instruction_text = "Hãy cẩn thận với loài vật trên đảo..."
 
 [node name="Foxy" parent="." instance=ExtResource("2_xeh7v")]
-position = Vector2(1506, 178)
+position = Vector2(146, 228)
 
 [node name="Blade" parent="." instance=ExtResource("7_g6ve3")]
 position = Vector2(1651, 255)
@@ -5478,22 +5478,6 @@ memory_title = "⭐ Memory 1 – “Ngày rời cảng”"
 position = Vector2(6946, 226)
 target_stage = "uid://b5mowcfymabkv"
 
-[connection signal="area_entered" from="Layer1/Coin" to="Layer1/Coin" method="_on_area_entered"]
-[connection signal="area_entered" from="Layer1/@Area2D@104464" to="Layer1/@Area2D@104464" method="_on_area_entered"]
-[connection signal="area_entered" from="Layer1/@Area2D@104465" to="Layer1/@Area2D@104465" method="_on_area_entered"]
-[connection signal="area_entered" from="Layer1/@Area2D@104466" to="Layer1/@Area2D@104466" method="_on_area_entered"]
-[connection signal="area_entered" from="Layer1/@Area2D@104467" to="Layer1/@Area2D@104467" method="_on_area_entered"]
-[connection signal="area_entered" from="Layer1/@Area2D@104468" to="Layer1/@Area2D@104468" method="_on_area_entered"]
-[connection signal="area_entered" from="Layer1/@Area2D@104469" to="Layer1/@Area2D@104469" method="_on_area_entered"]
-[connection signal="area_entered" from="Layer1/@Area2D@104470" to="Layer1/@Area2D@104470" method="_on_area_entered"]
-[connection signal="area_entered" from="Layer1/@Area2D@104471" to="Layer1/@Area2D@104471" method="_on_area_entered"]
-[connection signal="area_entered" from="Layer1/@Area2D@104472" to="Layer1/@Area2D@104472" method="_on_area_entered"]
-[connection signal="area_entered" from="Layer1/@Area2D@104473" to="Layer1/@Area2D@104473" method="_on_area_entered"]
-[connection signal="area_entered" from="Layer1/@Area2D@104474" to="Layer1/@Area2D@104474" method="_on_area_entered"]
-[connection signal="area_entered" from="Layer1/@Area2D@104475" to="Layer1/@Area2D@104475" method="_on_area_entered"]
-[connection signal="area_entered" from="Layer1/@Area2D@104476" to="Layer1/@Area2D@104476" method="_on_area_entered"]
-[connection signal="area_entered" from="Layer1/@Area2D@104477" to="Layer1/@Area2D@104477" method="_on_area_entered"]
-[connection signal="area_entered" from="Layer1/Key" to="Layer1/Key" method="_on_area_entered"]
 [connection signal="body_entered" from="Objects/Lever" to="Objects/Gate" method="open_gate"]
 [connection signal="body_exited" from="Objects/Lever" to="Objects/Gate" method="close_gate"]
 [connection signal="lever_activated" from="Objects/Lever" to="Objects/Gate" method="open_gate"]
