@@ -4,7 +4,7 @@ extends EnemyState
 ## Raises water to flood level or lowers it back, then returns to Idle
 
 func _enter():
-	obj.change_animation("skill2")
+	obj.change_animation("summon")
 	_perform_water_action()
 
 func _update(delta):
