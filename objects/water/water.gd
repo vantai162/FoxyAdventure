@@ -227,8 +227,10 @@ func update_visuals() -> void:
 	for i in range(segment_count):
 		points.append(Vector2(i * segment_width, segment_data[i]["height"]))
 		
-	var left_static_point: Vector2 = Vector2(points[0].x,surface_pos_y)
-	var right_static_point: Vector2 = Vector2(points[points.size()-1].x,surface_pos_y)
+	#var left_static_point: Vector2 = Vector2(points[0].x,surface_pos_y)
+	#var right_static_point: Vector2 = Vector2(points[points.size()-1].x,surface_pos_y)
+	var left_static_point = points[0]  # real wave height at segment 0
+	var right_static_point = points[points.size() - 1]
 	
 	var final_points: Array[Vector2] = []
 	final_points.append(left_static_point)

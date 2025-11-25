@@ -1,4 +1,4 @@
-[gd_scene load_steps=37 format=3 uid="uid://bdlk3sxo5ekwn"]
+[gd_scene load_steps=41 format=3 uid="uid://bdlk3sxo5ekwn"]
 
 [ext_resource type="Script" uid="uid://c7a5fg47r6h5l" path="res://enemy/boss/warlordturtle.gd" id="1_ef40p"]
 [ext_resource type="Texture2D" uid="uid://b405sim5qtso5" path="res://assets/warlord_turle/war_lord_turtle20.png" id="2_prdj8"]
@@ -33,6 +33,10 @@
 [ext_resource type="Script" uid="uid://dybr8136u5gn6" path="res://enemy/boss/raise_water.gd" id="29_raise"]
 [ext_resource type="Script" uid="uid://btbhb4moahkoo" path="res://enemy/boss/summon_whirlpool.gd" id="30_whirlpool"]
 [ext_resource type="PackedScene" uid="uid://ct1tqxgwkuvbe" path="res://scripts/hurt_area_2d.tscn" id="33_llkam"]
+[ext_resource type="AudioStream" uid="uid://c8j66nyxonjlv" path="res://assets/sounds/missiles_launch.wav" id="34_nqhb3"]
+[ext_resource type="AudioStream" uid="uid://d4druhwdf3ge" path="res://assets/sounds/impactWood_heavy_001.ogg" id="35_w6b8g"]
+[ext_resource type="AudioStream" uid="uid://bxqme8ahi0tpd" path="res://assets/sounds/wave.mp3" id="36_w6b8g"]
+[ext_resource type="AudioStream" uid="uid://26kiclm3hflh" path="res://assets/sounds/King Dice Attack Laugh (Nr. 1 Cuphead Sound) - Sound Effect for editing.wav" id="37_0m0l7"]
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_ladxf"]
 animations = [{
@@ -218,7 +222,7 @@ flip_h = true
 position = Vector2(9, -4)
 target_position = Vector2(34, 0)
 
-[node name="DownnRayCast2D" type="RayCast2D" parent="Direction"]
+[node name="DownRayCast2D" type="RayCast2D" parent="Direction"]
 position = Vector2(14, -4)
 target_position = Vector2(-1, 40)
 
@@ -258,6 +262,14 @@ position = Vector2(316, 14)
 [node name="WariningRocket4" parent="Direction/BoomAndRocket" instance=ExtResource("25_eluqr")]
 position = Vector2(428, 16)
 
+[node name="HurtArea2D" parent="Direction" instance=ExtResource("33_llkam")]
+collision_layer = 16
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Direction/HurtArea2D"]
+position = Vector2(0, 0.5)
+shape = SubResource("RectangleShape2D_dkh1m")
+
 [node name="States" type="Node" parent="."]
 
 [node name="Idle" type="Node" parent="States"]
@@ -285,12 +297,20 @@ script = ExtResource("30_whirlpool")
 position = Vector2(0, 0.5)
 shape = SubResource("RectangleShape2D_dkh1m")
 
-[node name="HurtArea2d" parent="." instance=ExtResource("33_llkam")]
-collision_layer = 16
-collision_mask = 0
+[node name="MisslesLaunchSound" type="AudioStreamPlayer2D" parent="."]
+stream = ExtResource("34_nqhb3")
+volume_db = 24.0
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="HurtArea2d"]
-position = Vector2(0, 0.5)
-shape = SubResource("RectangleShape2D_dkh1m")
+[node name="BombsLaunchSound" type="AudioStreamPlayer2D" parent="."]
+stream = ExtResource("35_w6b8g")
+volume_db = 24.0
 
-[connection signal="hurt" from="HurtArea2d" to="." method="_on_hurt_area_2d_hurt"]
+[node name="WaveSound" type="AudioStreamPlayer2D" parent="."]
+stream = ExtResource("36_w6b8g")
+volume_db = 20.0
+
+[node name="LaughSound" type="AudioStreamPlayer2D" parent="."]
+stream = ExtResource("37_0m0l7")
+volume_db = 20.0
+
+[connection signal="hurt" from="Direction/HurtArea2D" to="." method="_on_hurt_area_2d_hurt"]

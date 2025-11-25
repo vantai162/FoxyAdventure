@@ -2,11 +2,12 @@ extends EnemyState
 
 ## Phase 2 water manipulation attack
 ## Raises water to flood level or lowers it back, then returns to Idle
+@onready var wave_sound = $"../../WaveSound"
 
 func _enter():
 	obj.change_animation("summon")
 	_perform_water_action()
-
+	wave_sound.play()
 func _update(delta):
 	pass
 
