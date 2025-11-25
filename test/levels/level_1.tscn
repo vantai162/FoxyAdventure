@@ -5466,22 +5466,6 @@ story_text = "Người viết: Jullen – đầu bếp:
 	Foxy thì háo hức lắm… như thể nó sinh ra để đi những chuyến như thế này.”"
 memory_title = "⭐ Memory 1 – “Ngày rời cảng”"
 
-[connection signal="area_entered" from="Layer1/Coin" to="Layer1/Coin" method="_on_area_entered"]
-[connection signal="area_entered" from="Layer1/@Area2D@112479" to="Layer1/@Area2D@112479" method="_on_area_entered"]
-[connection signal="area_entered" from="Layer1/@Area2D@112480" to="Layer1/@Area2D@112480" method="_on_area_entered"]
-[connection signal="area_entered" from="Layer1/@Area2D@112481" to="Layer1/@Area2D@112481" method="_on_area_entered"]
-[connection signal="area_entered" from="Layer1/@Area2D@112482" to="Layer1/@Area2D@112482" method="_on_area_entered"]
-[connection signal="area_entered" from="Layer1/@Area2D@112483" to="Layer1/@Area2D@112483" method="_on_area_entered"]
-[connection signal="area_entered" from="Layer1/@Area2D@112484" to="Layer1/@Area2D@112484" method="_on_area_entered"]
-[connection signal="area_entered" from="Layer1/@Area2D@112485" to="Layer1/@Area2D@112485" method="_on_area_entered"]
-[connection signal="area_entered" from="Layer1/@Area2D@112486" to="Layer1/@Area2D@112486" method="_on_area_entered"]
-[connection signal="area_entered" from="Layer1/@Area2D@112487" to="Layer1/@Area2D@112487" method="_on_area_entered"]
-[connection signal="area_entered" from="Layer1/@Area2D@112488" to="Layer1/@Area2D@112488" method="_on_area_entered"]
-[connection signal="area_entered" from="Layer1/@Area2D@112489" to="Layer1/@Area2D@112489" method="_on_area_entered"]
-[connection signal="area_entered" from="Layer1/@Area2D@112490" to="Layer1/@Area2D@112490" method="_on_area_entered"]
-[connection signal="area_entered" from="Layer1/@Area2D@112491" to="Layer1/@Area2D@112491" method="_on_area_entered"]
-[connection signal="area_entered" from="Layer1/@Area2D@112492" to="Layer1/@Area2D@112492" method="_on_area_entered"]
-[connection signal="area_entered" from="Layer1/Key" to="Layer1/Key" method="_on_area_entered"]
 [connection signal="body_entered" from="Objects/Lever" to="Objects/Gate" method="open_gate"]
 [connection signal="body_exited" from="Objects/Lever" to="Objects/Gate" method="close_gate"]
 [connection signal="lever_activated" from="Objects/Lever" to="Objects/Gate" method="open_gate"]
