@@ -1,7 +1,7 @@
-[gd_scene load_steps=7 format=4 uid="uid://b5mowcfymabkv"]
+[gd_scene load_steps=7 format=4 uid="uid://dxm3wsunejiy4"]
 
 [ext_resource type="TileSet" uid="uid://bmuxyu21ya31y" path="res://assets/tileset.tres" id="1_18vte"]
-[ext_resource type="PackedScene" uid="uid://demnh2f4ooy6n" path="res://objects/platform/floating_boat_platform.tscn" id="2_boat"]
+[ext_resource type="PackedScene" path="res://objects/platform/floating_boat_platform.tscn" id="2_boat"]
 [ext_resource type="Script" uid="uid://b3s1m3fi6lhf5" path="res://objects/water/water.gd" id="3_water"]
 [ext_resource type="PackedScene" uid="uid://bdlk3sxo5ekwn" path="res://enemy/boss/warlordturtle.tscn" id="4_dfigs"]
 [ext_resource type="PackedScene" uid="uid://bs816w0pr8all" path="res://player/foxy.tscn" id="4_player"]
