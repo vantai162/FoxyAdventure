@@ -1,4 +1,4 @@
-[gd_scene load_steps=33 format=4 uid="uid://bmt5hb2emmqux"]
+[gd_scene load_steps=34 format=4 uid="uid://bmt5hb2emmqux"]
 
 [ext_resource type="TileSet" uid="uid://bmuxyu21ya31y" path="res://assets/tileset.tres" id="1_rklvk"]
 [ext_resource type="PackedScene" uid="uid://bs816w0pr8all" path="res://player/foxy.tscn" id="2_8ahgw"]
@@ -28,6 +28,7 @@
 [ext_resource type="Texture2D" uid="uid://dt1od2hyke60g" path="res://assets/island/back_palm_trees/back_palm_tree_regular_02.png" id="26_a0ki3"]
 [ext_resource type="Texture2D" uid="uid://frimagh5yfit" path="res://assets/island/back_palm_trees/back_palm_tree_regular_03.png" id="27_0sy5a"]
 [ext_resource type="Texture2D" uid="uid://cjcxdxoq8hp4l" path="res://assets/island/back_palm_trees/back_palm_tree_regular_04.png" id="28_l1w1j"]
+[ext_resource type="PackedScene" uid="uid://doluitvimvxhk" path="res://objects/npc/cat.tscn" id="29_l8c20"]
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_pnisw"]
 animations = [{
@@ -190,3 +191,6 @@ sprite_frames = SubResource("SpriteFrames_c7klq")
 [node name="AnimatedSprite2D2" type="AnimatedSprite2D" parent="ParallaxBackground/ParallaxLayerTrees"]
 position = Vector2(258, 288)
 sprite_frames = SubResource("SpriteFrames_c7klq")
+
+[node name="Cat" parent="." instance=ExtResource("29_l8c20")]
+position = Vector2(541, 463)

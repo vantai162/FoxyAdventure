@@ -1,4 +1,4 @@
-[gd_resource type="TileSet" load_steps=58 format=3 uid="uid://bmuxyu21ya31y"]
+[gd_resource type="TileSet" load_steps=60 format=3 uid="uid://bmuxyu21ya31y"]
 
 [ext_resource type="Texture2D" uid="uid://v2dtejovry7r" path="res://assets/terrain/terrain_32x32.png" id="1_6gm7o"]
 [ext_resource type="Texture2D" uid="uid://blamh8wdme7oi" path="res://assets/TX Village Props/TX Village Props-2.png" id="2_fcvr3"]
@@ -32,6 +32,7 @@
 [ext_resource type="PackedScene" uid="uid://b3rfttffyg1qj" path="res://effect_Item/key/key.tscn" id="24_aamry"]
 [ext_resource type="PackedScene" uid="uid://b3cbk6lmh2cc3" path="res://effect_Item/heal_potion/health_potion.tscn" id="25_x6xks"]
 [ext_resource type="Texture2D" uid="uid://dxnlqmeq704s1" path="res://assets/Pirate Bomb/Sprites/8-Tile-Sets/Tile-Sets (64-64).png" id="26_x6xks"]
+[ext_resource type="Texture2D" uid="uid://cywew35q2x7ns" path="res://assets/Pirate Bomb/Sprites/7-Objects/12-Other Objects/Windows.png" id="27_kwu1t"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_nmr65"]
 texture = ExtResource("1_6gm7o")
@@ -920,6 +921,11 @@ texture_region_size = Vector2i(32, 32)
 6:9/0 = 0
 7:9/0 = 0
 
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_co6kk"]
+texture = ExtResource("27_kwu1t")
+texture_region_size = Vector2i(58, 61)
+0:0/0 = 0
+
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_uyjym"]
 texture = ExtResource("2_fcvr3")
 texture_region_size = Vector2i(32, 32)
@@ -1567,3 +1573,4 @@ sources/21 = SubResource("TileSetScenesCollectionSource_aamry")
 sources/22 = SubResource("TileSetScenesCollectionSource_kwu1t")
 sources/23 = SubResource("TileSetScenesCollectionSource_co6kk")
 sources/24 = SubResource("TileSetAtlasSource_kwu1t")
+sources/25 = SubResource("TileSetAtlasSource_co6kk")
