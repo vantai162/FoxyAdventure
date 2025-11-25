@@ -179,7 +179,8 @@ script = ExtResource("1_ef40p")
 boomb_scene = ExtResource("2_wuglq")
 rocket_scene = ExtResource("3_tvqld")
 knockback_force = 0.0
-max_health = 20
+max_health = 25
+max_invincible = 3.0
 oxygen_decrease_rate = 0.0
 metadata/_custom_type_script = "uid://s4xx82espxdt"
 
