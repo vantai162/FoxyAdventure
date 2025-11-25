@@ -1,6 +1,6 @@
-[gd_scene load_steps=41 format=3 uid="uid://ufmc2gkfnv58"]
+[gd_scene load_steps=44 format=3 uid="uid://ufmc2gkfnv58"]
 
-[ext_resource type="Script" uid="uid://bbdpp5spdag1s" path="res://enemy/king_crab/king_crab.gd" id="1_wf64l"]
+[ext_resource type="Script" uid="uid://bukicvldqmhxv" path="res://enemy/king_crab/king_crab.gd" id="1_wf64l"]
 [ext_resource type="Texture2D" uid="uid://8usoreyem8l6" path="res://assets/foxy/smoke/jump_smoke_1.png" id="2_a0e87"]
 [ext_resource type="Texture2D" uid="uid://boxmc12qq7a8a" path="res://assets/monsters/crab/crab_hurt_02.png" id="2_mdcuw"]
 [ext_resource type="Texture2D" uid="uid://b071bg88lou36" path="res://assets/king_crab/King_Crab_13.png" id="2_yfwo5"]
@@ -18,24 +18,27 @@
 [ext_resource type="Texture2D" uid="uid://wn070tchkeg3" path="res://assets/king_crab/King_Crab_1.png" id="8_dgrx1"]
 [ext_resource type="PackedScene" uid="uid://ct1tqxgwkuvbe" path="res://scripts/hurt_area_2d.tscn" id="8_mdcuw"]
 [ext_resource type="Texture2D" uid="uid://ccp2i2pnjq71x" path="res://assets/king_crab/King_Crab_2.png" id="9_igmg0"]
-[ext_resource type="Script" uid="uid://d3rue3v1os1bt" path="res://enemy/king_crab/hurt.gd" id="9_mdcuw"]
+[ext_resource type="Script" uid="uid://d3rue3v1os1bt" path="res://enemy/crab/hurt.gd" id="9_mdcuw"]
 [ext_resource type="Script" uid="uid://bvy1bgltu2jm5" path="res://enemy/king_crab/dead.gd" id="10_0eync"]
 [ext_resource type="Texture2D" uid="uid://cmxwu0dm0jrog" path="res://assets/king_crab/King_Crab_3.png" id="10_b3j8w"]
 [ext_resource type="Texture2D" uid="uid://bo3g8ow24yvjo" path="res://assets/king_crab/King_Crab_4.png" id="11_2sgb0"]
 [ext_resource type="Script" uid="uid://ifyit1vg4ktq" path="res://scripts/node2d_factory.gd" id="13_tlcw4"]
-[ext_resource type="Script" uid="uid://chij4tnxwmyjv" path="res://enemy/king_crab/idle.gd" id="17_gkt4h"]
+[ext_resource type="Script" uid="uid://bou682t87leud" path="res://enemy/king_crab/idle.gd" id="17_gkt4h"]
 [ext_resource type="Texture2D" uid="uid://b7nx125mfrhv5" path="res://assets/king_crab/King_Crab_12.png" id="18_0ky5g"]
-[ext_resource type="Script" uid="uid://m8ks6a0rpv66" path="res://enemy/king_crab/walk_to_tree.gd" id="18_vai5q"]
+[ext_resource type="Script" uid="uid://c86alqdo302rr" path="res://enemy/king_crab/walk_to_tree.gd" id="18_vai5q"]
 [ext_resource type="Texture2D" uid="uid://jxlrl4ohf8ro" path="res://assets/king_crab/King_Crab_11.png" id="19_cqoo5"]
-[ext_resource type="Script" uid="uid://bqxlqhcqixjwg" path="res://enemy/king_crab/climb_tree.gd" id="19_e1n1g"]
+[ext_resource type="Script" uid="uid://c8cvgekyujiiv" path="res://enemy/king_crab/climb_tree.gd" id="19_e1n1g"]
 [ext_resource type="Texture2D" uid="uid://cll6j7xe8spj1" path="res://assets/king_crab/King_Crab_5.png" id="20_1toqo"]
-[ext_resource type="Script" uid="uid://bnr5h30kbb5at" path="res://enemy/king_crab/throw_coconuts.gd" id="20_dgrx1"]
+[ext_resource type="Script" uid="uid://bc2u4efjetycj" path="res://enemy/king_crab/throw_coconuts.gd" id="20_dgrx1"]
 [ext_resource type="Texture2D" uid="uid://b7nv7vp51k800" path="res://assets/king_crab/King_Crab_6.png" id="21_dy7kr"]
-[ext_resource type="Script" uid="uid://exyloykb2y6g" path="res://enemy/king_crab/dive_attack.gd" id="21_igmg0"]
+[ext_resource type="Script" uid="uid://sd5lpl1k28kx" path="res://enemy/king_crab/dive_attack.gd" id="21_igmg0"]
 [ext_resource type="Texture2D" uid="uid://dd0b8bvgaunot" path="res://assets/king_crab/King_Crab_7.png" id="22_8edgl"]
-[ext_resource type="Script" uid="uid://pj4ihdp5ihax" path="res://enemy/king_crab/claw_attack.gd" id="22_b3j8w"]
+[ext_resource type="Script" uid="uid://b263hakgf00wy" path="res://enemy/king_crab/claw_attack.gd" id="22_b3j8w"]
 [ext_resource type="Texture2D" uid="uid://dnssmdlf3g8un" path="res://assets/king_crab/King_Crab_8.png" id="23_waix0"]
-[ext_resource type="Script" uid="uid://d2ni7ngxrsfoc" path="res://enemy/king_crab/roll_bounce.gd" id="27_qldyf"]
+[ext_resource type="Script" uid="uid://c5odej0anbth6" path="res://enemy/king_crab/roll_bounce.gd" id="27_qldyf"]
+[ext_resource type="PackedScene" uid="uid://d2e3f4g5h6i7j" path="res://projectiles/slowing_coconut.tscn" id="27_ud2bj"]
+[ext_resource type="PackedScene" uid="uid://bmabvmpusba5l" path="res://enemy/king_crab/projectiles/king_crab_claw.tscn" id="28_114q8"]
+[ext_resource type="PackedScene" uid="uid://p1nb3n6xmbvs" path="res://objects/warining/warining_rocket.tscn" id="29_7b5u8"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_5qelw"]
 size = Vector2(57, 57)
@@ -232,14 +235,17 @@ shape = SubResource("RectangleShape2D_mdcuw")
 
 [node name="CoconutFactory" type="Marker2D" parent="Direction"]
 script = ExtResource("13_tlcw4")
+product_packed_scene = ExtResource("27_ud2bj")
 metadata/_custom_type_script = "uid://ifyit1vg4ktq"
 
 [node name="ClawFactory" type="Marker2D" parent="Direction"]
 script = ExtResource("13_tlcw4")
+product_packed_scene = ExtResource("28_114q8")
 metadata/_custom_type_script = "uid://ifyit1vg4ktq"
 
 [node name="WarningFactory" type="Marker2D" parent="Direction"]
 script = ExtResource("13_tlcw4")
+product_packed_scene = ExtResource("29_7b5u8")
 metadata/_custom_type_script = "uid://ifyit1vg4ktq"
 
 [node name="States" type="Node" parent="."]
