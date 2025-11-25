@@ -46,6 +46,7 @@ func fire_boomb():
 func fire_rocket():
 	var rocket1 = rocket_scene.instantiate()
 	rocket1.global_position = muzzlerocket1.global_position
+	rocket1.scale = Vector2(1.5, 1.5)
 	get_tree().current_scene.add_child(rocket1)
 	node.show_animation()
 	print("node",node.global_position)

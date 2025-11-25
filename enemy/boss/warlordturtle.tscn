@@ -4,7 +4,7 @@
 [ext_resource type="Texture2D" uid="uid://b405sim5qtso5" path="res://assets/warlord_turle/war_lord_turtle20.png" id="2_prdj8"]
 [ext_resource type="PackedScene" uid="uid://dy012gt2k7xmt" path="res://enemy/boss/boomb.tscn" id="2_wuglq"]
 [ext_resource type="Texture2D" uid="uid://byu3ukso8nfb5" path="res://assets/warlord_turle/war_lord_turtle19.png" id="3_7i34h"]
-[ext_resource type="PackedScene" uid="uid://dduldha4tdymr" path="res://enemy/boss/rocket.tscn" id="3_llkam"]
+[ext_resource type="PackedScene" uid="uid://dduldha4tdymr" path="res://enemy/boss/rocket.tscn" id="3_tvqld"]
 [ext_resource type="Texture2D" uid="uid://cbi3asc12djd8" path="res://assets/warlord_turle/war_lord_turtle7.png" id="4_ef40p"]
 [ext_resource type="Texture2D" uid="uid://c0716dlo8gxar" path="res://assets/warlord_turle/war_lord_turtle8.png" id="5_dfhj1"]
 [ext_resource type="Texture2D" uid="uid://t7rsqq6ovg5b" path="res://assets/warlord_turle/war_lord_turtle9.png" id="6_wuglq"]
@@ -161,6 +161,32 @@ animations = [{
 "loop": false,
 "name": &"skill2",
 "speed": 10.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("6_wuglq")
+}, {
+"duration": 1.0,
+"texture": ExtResource("7_tvqld")
+}, {
+"duration": 1.0,
+"texture": ExtResource("14_w6b8g")
+}, {
+"duration": 6.9,
+"texture": ExtResource("15_0m0l7")
+}, {
+"duration": 1.0,
+"texture": ExtResource("14_w6b8g")
+}, {
+"duration": 1.0,
+"texture": ExtResource("7_tvqld")
+}, {
+"duration": 1.0,
+"texture": ExtResource("6_wuglq")
+}],
+"loop": false,
+"name": &"summon",
+"speed": 10.0
 }]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_8hnd2"]
@@ -174,7 +200,8 @@ scale = Vector2(1.5, 1.5)
 collision_layer = 8
 script = ExtResource("1_ef40p")
 boomb_scene = ExtResource("2_wuglq")
-rocket_scene = ExtResource("3_llkam")
+rocket_scene = ExtResource("3_tvqld")
+knockback_force = 0.0
 max_health = 20
 oxygen_decrease_rate = 0.0
 metadata/_custom_type_script = "uid://s4xx82espxdt"
@@ -182,8 +209,9 @@ metadata/_custom_type_script = "uid://s4xx82espxdt"
 [node name="Direction" type="Node2D" parent="."]
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="Direction"]
+scale = Vector2(1.0483, 1)
 sprite_frames = SubResource("SpriteFrames_ladxf")
-animation = &"new_animation"
+animation = &"summon"
 flip_h = true
 
 [node name="FrontRayCast2D" type="RayCast2D" parent="Direction"]
@@ -219,16 +247,16 @@ position = Vector2(38, -47.3333)
 position = Vector2(-42, -50.33)
 
 [node name="WariningRocket" parent="Direction/BoomAndRocket" instance=ExtResource("25_eluqr")]
-position = Vector2(146, 11.3333)
+position = Vector2(113.333, 10.6667)
 
 [node name="WariningRocket2" parent="Direction/BoomAndRocket" instance=ExtResource("25_eluqr")]
-position = Vector2(252.667, 10)
+position = Vector2(217.333, 11.3333)
 
 [node name="WariningRocket3" parent="Direction/BoomAndRocket" instance=ExtResource("25_eluqr")]
-position = Vector2(373.333, 8.66667)
+position = Vector2(316, 14)
 
 [node name="WariningRocket4" parent="Direction/BoomAndRocket" instance=ExtResource("25_eluqr")]
-position = Vector2(490.667, 6.66666)
+position = Vector2(428, 16)
 
 [node name="States" type="Node" parent="."]
 
