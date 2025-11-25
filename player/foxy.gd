@@ -195,12 +195,31 @@ func _on_enter_water(body):
 	if body == self:
 		is_in_water = true
 		gravity = 300
-		fsm.change_state(fsm.states.swim)
+		# Only enter swim state if head is actually underwater (handles whirlpool air pockets)
+		if is_head_underwater():
+			fsm.change_state(fsm.states.swim)
 
 func _on_exit_water(body):
 	if body == self:
 		is_in_water = false
 		gravity = 700
+
+func is_head_underwater(threshold: float = 0.0) -> bool:
+	## Check if player's head is submerged in current water body
+	## Uses centralized water height check (handles waves/whirlpools)
+	if current_water == null:
+		return false
+	
+	# Head Y position (subtracting offset because Y increases downward in Godot)
+	var head_y = global_position.y - head_offset_y
+	var water_surface_y = current_water.get_water_surface_global_y()
+	
+	# Use exact water height if available (handles whirlpools/waves)
+	if current_water.has_method("get_water_height_at_global_x"):
+		water_surface_y = current_water.get_water_height_at_global_x(global_position.x)
+	
+	# If head_y > water_surface_y, head is deeper (further down = more positive Y)
+	return head_y > (water_surface_y + threshold)
 
 func _process(delta: float) -> void:
 	_updateeffect(delta)
@@ -290,5 +309,6 @@ func checkfullhealth()->bool: # Giữ: func checkfullhealth
 	return health==max_health
 
 func _on_hurt_area_2d_hurt(direction: Vector2, damage: float) -> void:
-	fsm.current_state.take_damage(damage)
-	health_changed.emit()
+	if not invincible:
+		fsm.current_state.take_damage(damage)
+		health_changed.emit()

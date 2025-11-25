@@ -84,7 +84,7 @@ shape = SubResource("RectangleShape2D_5qelw")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="Direction"]
 sprite_frames = SubResource("SpriteFrames_x3h0i")
-animation = &"dead"
+animation = &"hurt"
 
 [node name="FrontRayCast2D" type="RayCast2D" parent="Direction"]
 position = Vector2(9, -4)
@@ -108,6 +108,7 @@ shape = SubResource("RectangleShape2D_c1mj8")
 [node name="HurtArea2D" parent="Direction" instance=ExtResource("8_mdcuw")]
 collision_layer = 16
 collision_mask = 0
+metadata/_custom_type_script = "uid://csu2b21cwchqw"
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Direction/HurtArea2D"]
 position = Vector2(-0.5, -0.5)

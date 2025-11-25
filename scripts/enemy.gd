@@ -6,7 +6,7 @@ extends BaseCharacter
 # Raycast check wall and fall
 var front_ray_cast: RayCast2D;
 var down_ray_cast: RayCast2D;
-
+@export var knockback_force: float = 150
 # detect player area
 var detect_player_area: Area2D;
 var found_player: Player = null
@@ -135,7 +135,8 @@ func _on_player_not_in_sight():
 	pass
 
 func _take_damage_from_dir(_damage_dir: Vector2, _damage: float):
-	fsm.current_state.take_damage(_damage_dir, _damage)
+	if invincible:
+		fsm.current_state.take_damage(_damage_dir, _damage)
 	
 func check_player_in_sight(player: Player) -> bool:
 	if detect_ray_cast == null:
