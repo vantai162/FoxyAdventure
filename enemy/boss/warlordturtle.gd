@@ -19,11 +19,19 @@ extends EnemyCharacter
 @onready var HurtArea = $Direction/HurtArea2D/CollisionShape2D
 @onready var hurt_timer = $Direction/HurtArea2D/Timer
 
+#Sound-related
+@onready var missles_launch_sound = $MisslesLaunchSound
+@onready var bombs_launch_sound = $BombsLaunchSound
+@onready var laugh_sound = $LaughSound
+var laugh_timer := 0.0
+var laugh_interval := 15.0
+
 ## Phase 2 system
 var current_phase: int = 1
 var water_raised: bool = false
 var last_water_action_time: float = 0.0
 var cached_water_node: water = null
+
 
 func _ready():
 	super._ready()
@@ -36,18 +44,21 @@ func fire_boomb():
 	boomb1.set_speed(350.0)
 	boomb1.direction =  -1
 	get_tree().current_scene.add_child(boomb1)
+	bombs_launch_sound.play()
 	await get_tree().create_timer(0.2).timeout
 	var boomb2 = boomb_scene.instantiate()
 	boomb2.global_position = muzzle2.global_position
 	boomb2.set_speed(250.0)
 	boomb2.direction =  1
 	get_tree().current_scene.add_child(boomb2)
+	bombs_launch_sound.play()
 
 func fire_rocket():
 	var rocket1 = rocket_scene.instantiate()
 	rocket1.global_position = muzzlerocket1.global_position
 	rocket1.scale = Vector2(1.5, 1.5)
 	get_tree().current_scene.add_child(rocket1)
+	missles_launch_sound.play()
 	node.show_animation()
 	print("node",node.global_position)
 	rocket1.shoot(rocket1.global_position,node.global_position,1.5)
@@ -70,6 +81,7 @@ func fire_rocket():
 	get_tree().current_scene.add_child(rocket4)
 	node3.show_animation()
 	rocket4.shoot(rocket4.global_position,node3.global_position,1.5)
+	missles_launch_sound.play()
 	
 func enable_hurt_for(seconds: float):
 	HurtArea.disabled = false
@@ -96,3 +108,12 @@ func can_use_water_action() -> bool:
 	var current_time = Time.get_ticks_msec() / 1000.0
 	var time_since_last = current_time - last_water_action_time
 	return time_since_last >= water_action_cooldown
+	
+func _process(delta):
+	_update_laugh(delta)
+
+func _update_laugh(delta: float) -> void:
+	laugh_timer += delta
+	if laugh_timer >= laugh_interval:
+		laugh_sound.play()
+		laugh_timer = 0.0

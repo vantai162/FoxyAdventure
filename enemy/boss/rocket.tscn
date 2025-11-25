@@ -158,15 +158,12 @@ collision_layer = 8
 script = ExtResource("1_2rbxa")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
-scale = Vector2(1.5, 1.5)
 texture = ExtResource("2_kaj20")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-scale = Vector2(1.5, 1.5)
 shape = SubResource("CapsuleShape2D_2rbxa")
 
 [node name="HitArea2D" type="Area2D" parent="."]
-scale = Vector2(1.5, 1.5)
 collision_layer = 0
 collision_mask = 4
 script = ExtResource("3_dpw5n")
@@ -188,7 +185,6 @@ frame_progress = 0.613479
 speed_scale = 2.0
 
 [node name="ExplosionArea2D" type="Area2D" parent="."]
-scale = Vector2(1.5, 1.5)
 collision_layer = 8
 collision_mask = 3
 

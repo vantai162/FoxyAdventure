@@ -9,6 +9,7 @@ extends RigidBody2D
 @export var water_drag: float = 3.0            ## Velocity dampening in water
 @export var float_offset: float = -10.0        ## Target height above water surface
 @export var max_buoyancy_velocity: float = 300.0  ## Cap on upward speed in water
+@onready var explode_sound = $ExplodeSound
 
 var direction := 1
 var exploded: = false
@@ -124,6 +125,7 @@ func explode():
 	explosion.play("default")
 	explosion_hitbox.disabled = false
 	timer.start()
+	explode_sound.play()
 	
 
 
