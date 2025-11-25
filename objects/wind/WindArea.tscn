@@ -1,6 +1,7 @@
-[gd_scene load_steps=3 format=3 uid="uid://coqrny0yf5swy"]
+[gd_scene load_steps=4 format=3 uid="uid://coqrny0yf5swy"]
 
 [ext_resource type="Script" uid="uid://bj7arxmrqub4q" path="res://objects/wind/wind_area.gd" id="1_3t54o"]
+[ext_resource type="AudioStream" uid="uid://ba2vr4x8m56fg" path="res://assets/sounds/675712__craigsmith__s21-11a-phoenix-wind.wav" id="2_tlnk4"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_uiemc"]
 size = Vector2(238, 99)
@@ -12,6 +13,12 @@ script = ExtResource("1_3t54o")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 shape = SubResource("RectangleShape2D_uiemc")
+
+[node name="AudioStreamPlayer2D" type="AudioStreamPlayer2D" parent="."]
+stream = ExtResource("2_tlnk4")
+volume_db = 12.855
+autoplay = true
+max_distance = 500.0
 
 [connection signal="body_entered" from="." to="." method="_on_body_entered"]
 [connection signal="body_exited" from="." to="." method="_on_body_exited"]

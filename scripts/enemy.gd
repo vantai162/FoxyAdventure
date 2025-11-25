@@ -19,6 +19,7 @@ func _ready() -> void:
 	_init_detect_player_area()
 	_init_hurt_area()
 	super._ready()
+	movement_speed = 100
 	pass
 
 

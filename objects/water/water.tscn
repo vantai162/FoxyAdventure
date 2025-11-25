@@ -4,4 +4,3 @@
 
 [node name="water" type="Node2D" groups=["water"]]
 script = ExtResource("1_oxqd1")
-enable_debug_diagnostics = null

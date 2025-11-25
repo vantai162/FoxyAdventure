@@ -5,7 +5,7 @@ extends EnemyCharacter
 func _ready() -> void:
 	fsm = FSM.new(self, $States, $States/Sleep)
 	super._ready()
-
+	invincible = true
 
 
 func _on_detect_player_area_body_entered(body: Node2D) -> void:
