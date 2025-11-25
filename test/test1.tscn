@@ -1,6 +1,7 @@
-[gd_scene load_steps=4 format=3 uid="uid://dy6cmmwsmdx2r"]
+[gd_scene load_steps=5 format=3 uid="uid://dy6cmmwsmdx2r"]
 
 [ext_resource type="PackedScene" uid="uid://bs816w0pr8all" path="res://player/foxy.tscn" id="1_c086n"]
+[ext_resource type="PackedScene" uid="uid://m0ec1cyfshdq" path="res://objects/scroll/scroll.tscn" id="3_my5ub"]
 [ext_resource type="PackedScene" uid="uid://duryp3ufmd0be" path="res://enemy/tribe/friendly_tribe.tscn" id="3_vwmmf"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_my5ub"]
@@ -21,3 +22,7 @@ coyote_time = 0.15
 
 [node name="FriendlyTribe" parent="." instance=ExtResource("3_vwmmf")]
 position = Vector2(454, 243)
+
+[node name="MemoryScroll" parent="." instance=ExtResource("3_my5ub")]
+position = Vector2(241, 266)
+story_text = "\"Ngày... Tháng... Bão lớn quá. Thuyền trưởng nói lũ dân làng ở hòn đảo này nắm giữ 'Hơi thở của biển'. Chúng ta chỉ đến để... xin lại nó thôi. Nếu tàu chìm, Foxy, nhớ lấy nhiệm vụ: Tập hợp lại và đừng tin bất cứ ai ngoài anh em mình.\""

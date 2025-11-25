@@ -7,6 +7,7 @@ var current_checkpoint_id: String = ""
 var checkpoint_data: Dictionary = {}
 @onready var fade_rect = $FadeLayer/ColorRect
 @export var player_scene: PackedScene
+@onready var story_popup: CanvasLayer = $CanvasLayer/StoryPopup
 var key_manager:KeyManager=KeyManager.new()
 var current_stage = ""
 var player: Player = null
@@ -212,3 +213,11 @@ func unpause():
 func _input(event: InputEvent) -> void:
 	if(key_manager.is_listening):
 		key_manager.handle_input(event)
+		
+func show_story_popup(title: String, text: String) -> void:
+	if story_popup == null:
+		printerr("LỖI: Chưa gắn StoryPopup vào trong Scene của GameManager!")
+		return
+	
+	# Gọi hàm open() mà bạn đã viết trong script StoryPopup.gd
+	story_popup.open(title, text)

@@ -1,0 +1,23 @@
+[gd_scene load_steps=4 format=3 uid="uid://m0ec1cyfshdq"]
+
+[ext_resource type="Script" uid="uid://devnlrn3isk26" path="res://objects/scroll/scroll.gd" id="1_lmx1l"]
+[ext_resource type="Texture2D" uid="uid://bge7g1sx5lskv" path="res://assets/objects/Medievil Banner SPRITESHEET.png" id="1_nhisd"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_nhisd"]
+size = Vector2(33, 27)
+
+[node name="MemoryScroll" type="Area2D"]
+collision_layer = 0
+collision_mask = 2
+script = ExtResource("1_lmx1l")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+scale = Vector2(0.5, 0.5)
+texture = ExtResource("1_nhisd")
+hframes = 7
+frame = 1
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(-0.5, 0.5)
+scale = Vector2(0.5, 0.5)
+shape = SubResource("RectangleShape2D_nhisd")
