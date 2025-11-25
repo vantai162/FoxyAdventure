@@ -6,7 +6,7 @@ extends BaseCharacter
 # Raycast check wall and fall
 var front_ray_cast: RayCast2D;
 var down_ray_cast: RayCast2D;
-
+@export var knockback_force: float = 150
 # detect player area
 var detect_player_area: Area2D;
 var found_player: Player = null

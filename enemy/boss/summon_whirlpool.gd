@@ -13,7 +13,7 @@ extends EnemyState
 var whirlpool_scene: PackedScene = preload("res://objects/whirlpool/whirlpool.tscn")
 
 func _enter():
-	obj.change_animation("skill2")
+	obj.change_animation("summon")
 	_summon_whirlpools()
 
 func _update(delta):

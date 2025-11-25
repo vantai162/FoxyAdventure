@@ -18,8 +18,13 @@ const OSCILLATION_STRENGTH: float = 1500.0        ## Horizontal bobbing force
 const OSCILLATION_FREQUENCY: float = 3.0           ## Oscillation speed (Hz)
 const DOWNWARD_SUCTION: float = 2500.0             ## Vertical pull into V
 const CENTER_LINE_WIDTH: float = 40.0              ## Width of maximum suction zone
-const DRAG_COEFFICIENT: float = 0.75               ## Movement dampening coefficient
+const DRAG_COEFFICIENT: float = 0.4                ## Movement dampening coefficient (lower = more drag)
 const DAMAGE_COOLDOWN: float = 0.5                 ## Damage tick interval
+
+const MAX_HORIZONTAL_VELOCITY: float = 400.0       ## Hard cap on horizontal pull speed
+const MAX_VERTICAL_VELOCITY: float = 500.0         ## Hard cap on downward suction speed
+
+const WATER_CHECK_INTERVAL: float = 0.5            ## How often to verify we're still in water (seconds)
 
 const DEPRESSION_DEPTH: float = 90.0               ## Water depression depth in pixels
 const SEGMENT_BUFFER_MARGIN: int = 2               ## Extra segments to affect beyond calculated radius
@@ -31,6 +36,7 @@ var whirlpool_depth: float = 200.0
 var damage_cooldown_timer: float = 0.0
 var lifetime_timer: float = 0.0
 var oscillation_phase: float = 0.0
+var water_check_timer: float = 0.0
 
 var boats_in_range: Array = []
 var player_in_range: Node2D = null
@@ -70,6 +76,15 @@ func _physics_process(delta: float) -> void:
 		lifetime_timer -= delta
 		if lifetime_timer <= 0:
 			_on_lifetime_expired()
+			return
+	
+	# Periodic check: Are we still in water?
+	water_check_timer -= delta
+	if water_check_timer <= 0:
+		water_check_timer = WATER_CHECK_INTERVAL
+		if not _is_in_water():
+			# Water level dropped, despawn gracefully
+			_on_water_disappeared()
 			return
 	
 	if water_node and not depression_applied:
@@ -162,17 +177,28 @@ func _apply_surface_current(player, horizontal_distance: float, delta: float) ->
 	var direction_to_center = sign(center_x - player.global_position.x)
 	var linear_falloff = clamp(1.0 - (horizontal_distance / (whirlpool_width / 2.0)), 0.0, 1.0)
 	
+	# Apply drag first to prevent accumulation
+	player.velocity.x *= DRAG_COEFFICIENT
+	
 	var pull_toward_line = direction_to_center * strength * linear_falloff
 	var oscillation = sin(oscillation_phase) * OSCILLATION_STRENGTH * linear_falloff
 	
 	player.velocity.x += (pull_toward_line + oscillation) * delta
+	
+	# Hard cap to prevent yeeting
+	player.velocity.x = clamp(player.velocity.x, -MAX_HORIZONTAL_VELOCITY, MAX_HORIZONTAL_VELOCITY)
 
 func _apply_underwater_vortex(player, horizontal_distance: float, delta: float) -> void:
 	var direction_to_center = sign(center_x - player.global_position.x)
 	var linear_falloff = clamp(1.0 - (horizontal_distance / (whirlpool_width / 2.0)), 0.0, 1.0)
 	
-	var pull_toward_line = direction_to_center * strength * linear_falloff * 1.5
-	var oscillation = sin(oscillation_phase) * OSCILLATION_STRENGTH * linear_falloff * 1.5
+	# Apply drag FIRST to prevent exponential growth
+	player.velocity.x *= DRAG_COEFFICIENT
+	player.velocity.y *= DRAG_COEFFICIENT
+	
+	# Reduced underwater multiplier (1.5 -> 1.2) to prevent violence
+	var pull_toward_line = direction_to_center * strength * linear_falloff * 1.2
+	var oscillation = sin(oscillation_phase) * OSCILLATION_STRENGTH * linear_falloff * 1.2
 	
 	player.velocity.x += (pull_toward_line + oscillation) * delta
 	
@@ -184,7 +210,9 @@ func _apply_underwater_vortex(player, horizontal_distance: float, delta: float) 
 		if suction_strength > 0.3:
 			player.velocity.y = max(player.velocity.y, 250.0)
 	
-	player.velocity *= DRAG_COEFFICIENT
+	# Hard caps to prevent player yeeting
+	player.velocity.x = clamp(player.velocity.x, -MAX_HORIZONTAL_VELOCITY, MAX_HORIZONTAL_VELOCITY)
+	player.velocity.y = clamp(player.velocity.y, -MAX_VERTICAL_VELOCITY, MAX_VERTICAL_VELOCITY)
 
 func _apply_damage_to_player(player) -> void:
 	if damage_cooldown_timer > 0:
@@ -281,3 +309,30 @@ func _find_water_node() -> void:
 			if local_pos.y >= node.surface_pos_y and local_pos.y <= node.water_size.y:
 				water_node = node
 				return
+
+func _is_in_water() -> bool:
+	## Check if whirlpool center is currently submerged in water
+	## Returns false if water level has dropped below us
+	if not water_node:
+		return false
+	
+	# Get current water surface at our X position
+	var water_surface_y = water_node.get_water_surface_global_y()
+	
+	# We need to be at least partially underwater
+	# Check if our center is below the water surface
+	if center_y < water_surface_y:
+		return false  # We're above water
+	
+	# Also verify we're still within water's horizontal bounds
+	var local_pos = water_node.to_local(Vector2(center_x, center_y))
+	if local_pos.x < 0 or local_pos.x > water_node.water_size.x:
+		return false  # Outside water bounds
+	
+	return true
+
+func _on_water_disappeared() -> void:
+	## Called when water level drops and whirlpool is no longer submerged
+	## Gracefully despawn to prevent air whirlpools
+	_restore_water_rest_heights()
+	queue_free()
