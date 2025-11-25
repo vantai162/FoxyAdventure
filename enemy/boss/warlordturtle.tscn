@@ -1,4 +1,4 @@
-[gd_scene load_steps=38 format=3 uid="uid://bdlk3sxo5ekwn"]
+[gd_scene load_steps=37 format=3 uid="uid://bdlk3sxo5ekwn"]
 
 [ext_resource type="Script" uid="uid://c7a5fg47r6h5l" path="res://enemy/boss/warlordturtle.gd" id="1_ef40p"]
 [ext_resource type="Texture2D" uid="uid://b405sim5qtso5" path="res://assets/warlord_turle/war_lord_turtle20.png" id="2_prdj8"]
@@ -26,13 +26,13 @@
 [ext_resource type="Script" uid="uid://xqvgljx4hk1s" path="res://scripts/hit_area_2d.gd" id="22_jostd"]
 [ext_resource type="Script" uid="uid://ckk756x8csweu" path="res://enemy/boss/idle.gd" id="24_dfhj1"]
 [ext_resource type="PackedScene" uid="uid://p1nb3n6xmbvs" path="res://objects/warining/warining_rocket.tscn" id="25_eluqr"]
-[ext_resource type="Script" uid="uid://csu2b21cwchqw" path="res://scripts/hurt_area_2d.gd" id="25_o1uwu"]
 [ext_resource type="Script" uid="uid://se0dafo42j0n" path="res://enemy/boss/skill_1.gd" id="25_wuglq"]
 [ext_resource type="Script" uid="uid://ctyg2m8uocalk" path="res://enemy/boss/skill_2.gd" id="26_tvqld"]
 [ext_resource type="Script" uid="uid://me3i360ygy6a" path="res://enemy/boss/hurt.gd" id="27_dfhj1"]
 [ext_resource type="Script" uid="uid://dnkf3foccvr0j" path="res://enemy/boss/dead.gd" id="28_wuglq"]
 [ext_resource type="Script" uid="uid://dybr8136u5gn6" path="res://enemy/boss/raise_water.gd" id="29_raise"]
 [ext_resource type="Script" uid="uid://btbhb4moahkoo" path="res://enemy/boss/summon_whirlpool.gd" id="30_whirlpool"]
+[ext_resource type="PackedScene" uid="uid://ct1tqxgwkuvbe" path="res://scripts/hurt_area_2d.tscn" id="33_llkam"]
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_ladxf"]
 animations = [{
@@ -192,9 +192,6 @@ animations = [{
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_8hnd2"]
 size = Vector2(75, 67)
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_eluqr"]
-size = Vector2(76.6667, 68)
-
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_dkh1m"]
 size = Vector2(74, 67)
 
@@ -261,16 +258,6 @@ position = Vector2(316, 14)
 [node name="WariningRocket4" parent="Direction/BoomAndRocket" instance=ExtResource("25_eluqr")]
 position = Vector2(428, 16)
 
-[node name="HurtArea2D" type="Area2D" parent="Direction"]
-collision_layer = 16
-collision_mask = 0
-script = ExtResource("25_o1uwu")
-metadata/_custom_type_script = "uid://csu2b21cwchqw"
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Direction/HurtArea2D"]
-position = Vector2(-0.333336, 0)
-shape = SubResource("RectangleShape2D_eluqr")
-
 [node name="States" type="Node" parent="."]
 
 [node name="Idle" type="Node" parent="States"]
@@ -297,3 +284,13 @@ script = ExtResource("30_whirlpool")
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 position = Vector2(0, 0.5)
 shape = SubResource("RectangleShape2D_dkh1m")
+
+[node name="HurtArea2d" parent="." instance=ExtResource("33_llkam")]
+collision_layer = 16
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="HurtArea2d"]
+position = Vector2(0, 0.5)
+shape = SubResource("RectangleShape2D_dkh1m")
+
+[connection signal="hurt" from="HurtArea2d" to="." method="_on_hurt_area_2d_hurt"]
