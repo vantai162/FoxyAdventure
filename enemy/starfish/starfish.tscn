@@ -94,8 +94,8 @@ animations = [{
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_sp3cf"]
 size = Vector2(28, 31)
 
-[sub_resource type="CircleShape2D" id="CircleShape2D_nloyx"]
-radius = 17.1172
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_w8tu1"]
+size = Vector2(21, 26)
 
 [node name="Starfish" type="CharacterBody2D"]
 collision_layer = 8
@@ -107,16 +107,16 @@ metadata/_custom_type_script = "uid://s4xx82espxdt"
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="Direction"]
 sprite_frames = SubResource("SpriteFrames_hanlh")
-animation = &"dead"
+animation = &"run"
 
 [node name="FrontRayCast2D" type="RayCast2D" parent="Direction"]
 position = Vector2(9, -4)
-target_position = Vector2(18, 0)
+target_position = Vector2(12, 0)
 collision_mask = 9
 
 [node name="DownRayCast2D" type="RayCast2D" parent="Direction"]
 position = Vector2(14, -4)
-target_position = Vector2(0, 8)
+target_position = Vector2(0, 29)
 
 [node name="HitArea2D" type="Area2D" parent="Direction"]
 collision_layer = 0
@@ -141,8 +141,9 @@ position = Vector2(-2, -1.5)
 shape = SubResource("RectangleShape2D_sp3cf")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-position = Vector2(-2, -1)
-shape = SubResource("CircleShape2D_nloyx")
+visible = false
+position = Vector2(-1.5, 2)
+shape = SubResource("RectangleShape2D_w8tu1")
 
 [node name="States" type="Node" parent="."]
 
@@ -157,8 +158,5 @@ script = ExtResource("17_10osh")
 
 [node name="Dead" type="Node" parent="States"]
 script = ExtResource("18_w8tu1")
-
-[node name="FloorRayCast2D" type="RayCast2D" parent="."]
-target_position = Vector2(0, 16)
 
 [connection signal="hurt" from="Direction/HurtArea2D" to="." method="_on_hurt_area_2d_hurt"]

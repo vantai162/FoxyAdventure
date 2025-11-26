@@ -1,5 +1,14 @@
 extends Node2D
 
+@onready var warlord = preload("res://enemy/boss/warlordturtle.tscn")
+@onready var turtle_spawn = preload("res://spawner/turtle_spawner.tscn")
+@onready var healpotion_spawn = preload("res://spawner/healthpotion_spawner.tscn")
+var warlord_spawned = false
+var turtle_spawner_spawned = false
+var healpotion_spawner_spawned = false
+
+
+
 func _enter_tree() -> void:
 	GameManager.current_stage = self
 
@@ -27,3 +36,23 @@ func _ready() -> void:
 
 func _on_body_entered(body: Node2D) -> void:
 	pass # Replace with function body.
+
+
+
+
+func _on_meet_boss_area_2d_body_entered(body: Node2D) -> void:
+	if body.is_in_group("player") and warlord_spawned == false:
+		var boss = warlord.instantiate()
+		boss.position = Vector2(468, 400)
+		add_child(boss)
+		warlord_spawned = true
+		
+		var spawner = turtle_spawn.instantiate()
+		spawner.position = Vector2(839, 36)
+		add_child(spawner)
+		turtle_spawner_spawned = true
+		
+		var heal_spawner = healpotion_spawn.instantiate()
+		heal_spawner.position = Vector2(1077,452)
+		add_child(heal_spawner)
+		healpotion_spawner_spawned = true

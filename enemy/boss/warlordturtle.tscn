@@ -25,7 +25,7 @@
 [ext_resource type="Texture2D" uid="uid://bm2ctxhxlaqpo" path="res://assets/warlord_turle/war_lord_turtle18.png" id="21_u7j1o"]
 [ext_resource type="Script" uid="uid://xqvgljx4hk1s" path="res://scripts/hit_area_2d.gd" id="22_jostd"]
 [ext_resource type="Script" uid="uid://ckk756x8csweu" path="res://enemy/boss/idle.gd" id="24_dfhj1"]
-[ext_resource type="PackedScene" uid="uid://p1nb3n6xmbvs" path="res://objects/warining/warining_rocket.tscn" id="25_eluqr"]
+[ext_resource type="PackedScene" uid="uid://p1nb3n6xmbvs" path="res://objects/warning/warning_rocket.tscn" id="25_eluqr"]
 [ext_resource type="Script" uid="uid://se0dafo42j0n" path="res://enemy/boss/skill_1.gd" id="25_wuglq"]
 [ext_resource type="Script" uid="uid://ctyg2m8uocalk" path="res://enemy/boss/skill_2.gd" id="26_tvqld"]
 [ext_resource type="Script" uid="uid://me3i360ygy6a" path="res://enemy/boss/hurt.gd" id="27_dfhj1"]

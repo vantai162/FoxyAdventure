@@ -8,7 +8,7 @@
 [ext_resource type="PackedScene" uid="uid://duryp3ufmd0be" path="res://enemy/tribe/friendly_tribe.tscn" id="4_sdmob"]
 [ext_resource type="PackedScene" uid="uid://bxfs4fsx7ot6m" path="res://enemy/starfish/starfish.tscn" id="5_1603u"]
 [ext_resource type="PackedScene" uid="uid://bmgv5cgan4yt" path="res://enemy/mushroom/mushroom.tscn" id="8_1p8jb"]
-[ext_resource type="PackedScene" uid="uid://ufmc2gkfnv58" path="res://enemy/king_crab/king_crab.tscn" id="9_4x5ew"]
+[ext_resource type="PackedScene" uid="uid://ufmc2gkfnv58" path="res://enemy/crab/crab.tscn" id="9_4x5ew"]
 [ext_resource type="PackedScene" uid="uid://b1a2s3d4f5g6h" path="res://enemy/aggressive_tribe/aggressive_tribe.tscn" id="10_lq01q"]
 [ext_resource type="PackedScene" uid="uid://dqdstpxycbomj" path="res://effect_Item/BladeItem/blade.tscn" id="11_1603u"]
 [ext_resource type="PackedScene" uid="uid://bdkss15p4gbma" path="res://enemy/seahorse/seahorse.tscn" id="11_sdmob"]
