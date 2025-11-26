@@ -207,10 +207,13 @@ func request_player_spawn() -> void:
 func pause_game():
 		Engine.time_scale=0
 		paused=true
+		key_manager.disableinput([])
 		
 func unpause():
 		Engine.time_scale=1
 		paused=false
+		key_manager.enableinput()
+		
 #handling key
 func _input(event: InputEvent) -> void:
 	if(key_manager.is_listening):

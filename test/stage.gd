@@ -23,7 +23,12 @@ func _ready() -> void:
 	await GameManager.fade_from_black()
 
 
-
+func _process(delta: float) -> void:
+	if(Input.is_action_just_pressed("pause")):
+		if(GameManager.paused):
+			GameManager.unpause()
+		else:
+			GameManager.pause_game()
 
 func _on_body_entered(body: Node2D) -> void:
 	pass # Replace with function body.
