@@ -5524,6 +5524,21 @@ memory_title = "⭐ Memory 1 – “Ngày rời cảng”"
 position = Vector2(6946, 226)
 target_stage = "uid://bxknbajfocd87"
 
+[connection signal="area_entered" from="Layer1/Coin" to="Layer1/Coin" method="_on_area_entered"]
+[connection signal="area_entered" from="Layer1/@Area2D@34574" to="Layer1/@Area2D@34574" method="_on_area_entered"]
+[connection signal="area_entered" from="Layer1/@Area2D@34575" to="Layer1/@Area2D@34575" method="_on_area_entered"]
+[connection signal="area_entered" from="Layer1/@Area2D@34576" to="Layer1/@Area2D@34576" method="_on_area_entered"]
+[connection signal="area_entered" from="Layer1/@Area2D@34577" to="Layer1/@Area2D@34577" method="_on_area_entered"]
+[connection signal="area_entered" from="Layer1/@Area2D@34578" to="Layer1/@Area2D@34578" method="_on_area_entered"]
+[connection signal="area_entered" from="Layer1/@Area2D@34579" to="Layer1/@Area2D@34579" method="_on_area_entered"]
+[connection signal="area_entered" from="Layer1/@Area2D@34580" to="Layer1/@Area2D@34580" method="_on_area_entered"]
+[connection signal="area_entered" from="Layer1/@Area2D@34581" to="Layer1/@Area2D@34581" method="_on_area_entered"]
+[connection signal="area_entered" from="Layer1/@Area2D@34582" to="Layer1/@Area2D@34582" method="_on_area_entered"]
+[connection signal="area_entered" from="Layer1/@Area2D@34583" to="Layer1/@Area2D@34583" method="_on_area_entered"]
+[connection signal="area_entered" from="Layer1/@Area2D@34584" to="Layer1/@Area2D@34584" method="_on_area_entered"]
+[connection signal="area_entered" from="Layer1/@Area2D@34585" to="Layer1/@Area2D@34585" method="_on_area_entered"]
+[connection signal="area_entered" from="Layer1/@Area2D@34586" to="Layer1/@Area2D@34586" method="_on_area_entered"]
+[connection signal="area_entered" from="Layer1/Key" to="Layer1/Key" method="_on_area_entered"]
 [connection signal="body_entered" from="Objects/Lever" to="Objects/Gate" method="open_gate"]
 [connection signal="body_exited" from="Objects/Lever" to="Objects/Gate" method="close_gate"]
 [connection signal="lever_activated" from="Objects/Lever" to="Objects/Gate" method="open_gate"]
