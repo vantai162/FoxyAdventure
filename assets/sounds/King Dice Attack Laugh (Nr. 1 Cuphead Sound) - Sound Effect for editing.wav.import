@@ -1,0 +1,24 @@
+[remap]
+
+importer="wav"
+type="AudioStreamWAV"
+uid="uid://26kiclm3hflh"
+path="res://.godot/imported/King Dice Attack Laugh (Nr. 1 Cuphead Sound) - Sound Effect for editing.wav-0509c27c8cc843f0a7e257a8cdbeb27e.sample"
+
+[deps]
+
+source_file="res://assets/sounds/King Dice Attack Laugh (Nr. 1 Cuphead Sound) - Sound Effect for editing.wav"
+dest_files=["res://.godot/imported/King Dice Attack Laugh (Nr. 1 Cuphead Sound) - Sound Effect for editing.wav-0509c27c8cc843f0a7e257a8cdbeb27e.sample"]
+
+[params]
+
+force/8_bit=false
+force/mono=false
+force/max_rate=false
+force/max_rate_hz=44100
+edit/trim=false
+edit/normalize=false
+edit/loop_mode=0
+edit/loop_begin=0
+edit/loop_end=-1
+compress/mode=2

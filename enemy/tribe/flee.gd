@@ -5,7 +5,6 @@ func _enter() -> void:
 
 func _update(delta):
 	if obj.found_player == null:
-		print("het")
 		change_state(fsm.states.run)
 		return
 
@@ -20,5 +19,4 @@ func _update(delta):
 
 	# Nếu đã đủ xa thì quay lại tuần tra
 	if obj.global_position.distance_to(player_pos) > 1000:
-		print("day")
 		change_state(fsm.states.run)

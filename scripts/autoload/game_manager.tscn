@@ -1,7 +1,8 @@
-[gd_scene load_steps=3 format=3 uid="uid://b67dcgxdi1nb"]
+[gd_scene load_steps=4 format=3 uid="uid://b67dcgxdi1nb"]
 
 [ext_resource type="Script" uid="uid://caaeracc7asv6" path="res://scripts/autoload/game_manager.gd" id="1_2ydb0"]
 [ext_resource type="PackedScene" uid="uid://bs816w0pr8all" path="res://player/foxy.tscn" id="2_2d4g8"]
+[ext_resource type="PackedScene" uid="uid://mk51xmbntdl4" path="res://objects/scroll/story_popup.tscn" id="3_07ygx"]
 
 [node name="GameManager" type="Node"]
 script = ExtResource("1_2ydb0")
@@ -19,3 +20,7 @@ grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
 color = Color(0, 0, 0, 1)
+
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+
+[node name="StoryPopup" parent="CanvasLayer" instance=ExtResource("3_07ygx")]

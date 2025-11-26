@@ -24,6 +24,6 @@ texture = ExtResource("2_1dh8x")
 
 [node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]
 stream = ExtResource("3_tijnk")
-autoplay = true
+volume_db = 10.0
 
 [connection signal="area_entered" from="." to="." method="_on_area_entered"]

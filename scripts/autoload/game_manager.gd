@@ -7,6 +7,7 @@ var current_checkpoint_id: String = ""
 var checkpoint_data: Dictionary = {}
 @onready var fade_rect = $FadeLayer/ColorRect
 @export var player_scene: PackedScene
+@onready var story_popup: CanvasLayer = $CanvasLayer/StoryPopup
 var key_manager:KeyManager=KeyManager.new()
 var current_stage = ""
 var player: Player = null
@@ -41,7 +42,7 @@ func change_stage(stage_path: String, _target_portal_name: String = "") -> void:
 	await get_tree().process_frame
 	
 	arriving_door_name = target_portal_name
-	
+	await fade_from_black()
 
 
 func call_from_dialogic(msg:String = ""):
@@ -108,6 +109,12 @@ func respawn_at_checkpoint() -> void:
 	
 	spawn_player(player_state)
 	
+	var hp_bar = current_stage.get_node("CanvasLayer/TextureProgressBar")
+	var coin_ui = current_stage.get_node("CanvasLayer/CoinUI")
+	var key_ui = current_stage.get_node("CanvasLayer/KeyUI")
+	hp_bar.setup()
+	coin_ui.setup()
+	key_ui.setup()
 	await fade_from_black()
 	is_respawning_from_checkpoint = false
 
@@ -208,3 +215,11 @@ func unpause():
 func _input(event: InputEvent) -> void:
 	if(key_manager.is_listening):
 		key_manager.handle_input(event)
+		
+func show_story_popup(title: String, text: String) -> void:
+	if story_popup == null:
+		printerr("LỖI: Chưa gắn StoryPopup vào trong Scene của GameManager!")
+		return
+	
+	# Gọi hàm open() mà bạn đã viết trong script StoryPopup.gd
+	story_popup.open(title, text)

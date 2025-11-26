@@ -16,7 +16,6 @@ func hit(hurt_area):
 		var hit_dir:Vector2 = hurt_area.global_position - global_position
 		hurt_area.take_damage(hit_dir.normalized(), damage)
 		
-
 # called when area entered
 func _on_area_entered(area):
 	hit(area)

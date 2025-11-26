@@ -8,6 +8,7 @@ extends BaseCharacter
 @export var coyote_time: float
 var inventory= Inventory.new()
 
+
 @export_group("Movement Physics")
 @export var ground_friction: float = 0.25
 @export var min_stop_speed: float = 10.0
@@ -225,6 +226,26 @@ func _process(delta: float) -> void:
 	_updateeffect(delta)
 	_update_timeline(delta)
 	_updatecooldown(delta)
+	if invincible:
+		var blink_timer
+		var sprite
+		if has_unlocked_blade:
+			sprite = $Direction/BladeAnimatedSprite2D
+			
+		elif not has_unlocked_blade:
+			sprite = $Direction/AnimatedSprite2D
+		blink_timer = Timer.new()
+		blink_timer.wait_time = 0.1
+		blink_timer.one_shot = false
+		add_child(blink_timer)
+		blink_timer.timeout.connect(func():
+			sprite.visible = not sprite.visible
+		)
+		blink_timer.start()
+		await get_tree().create_timer(invincible_timer).timeout
+		blink_timer.stop()
+		blink_timer.queue_free()
+		sprite.visible = true
 
 func _collect_blade() -> void:
 	if not has_unlocked_blade:
@@ -276,7 +297,8 @@ func save_state() -> Dictionary:
 		"blade_count": blade_count,
 		"max_blade_capacity": max_blade_capacity,
 		"has_unlocked_blade": has_unlocked_blade,
-		"health": health
+		"health": health,
+		"Inventory":inventory._save_inventory()
 	}
 
 func load_state(data: Dictionary) -> void:
@@ -295,6 +317,8 @@ func load_state(data: Dictionary) -> void:
 	
 	if data.has("health"):
 		health = data["health"]
+	if data.has("Inventory"):
+		inventory._load_inventory(data["Inventory"])
 	# Đã loại bỏ logic: if data.has("has_blade") and data["has_blade"] == true:
 	
 
@@ -312,3 +336,4 @@ func _on_hurt_area_2d_hurt(direction: Vector2, damage: float) -> void:
 	if not invincible:
 		fsm.current_state.take_damage(damage)
 		health_changed.emit()
+	

@@ -22,6 +22,18 @@ func add_new_amount_item(item_name:String):
 		print("already has the item in item pool")
 	else:
 		AmountItem[item_name]=0
+		
+func _save_inventory()->Dictionary:
+	return {
+		"AmountItem":AmountItem,
+		"KeySkillUnlocked":KeySkillUnlocked
+	}
+
+func _load_inventory(data:Dictionary):
+	if(data.has("AmountItem")):
+		AmountItem=data["AmountItem"]
+	if(data.has("KeySkillUnlocked")):
+		KeySkillUnlocked=data["KeySkillUnlocked"]
 
 func unlock_a_key_skill(skill_name:String):
 	if(KeySkillUnlocked.has(skill_name)):

@@ -1,0 +1,116 @@
+[gd_scene load_steps=11 format=3 uid="uid://mk51xmbntdl4"]
+
+[ext_resource type="Script" uid="uid://qenfif25no2j" path="res://objects/scroll/story_pop_up.gd" id="1_8loan"]
+[ext_resource type="Texture2D" uid="uid://bge7g1sx5lskv" path="res://assets/objects/Medievil Banner SPRITESHEET.png" id="2_wfhgc"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_74yux"]
+atlas = ExtResource("2_wfhgc")
+region = Rect2(0, 0, 100, 50)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_4m7jq"]
+atlas = ExtResource("2_wfhgc")
+region = Rect2(100, 0, 100, 50)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_l5nsm"]
+atlas = ExtResource("2_wfhgc")
+region = Rect2(200, 0, 100, 50)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_pa7ce"]
+atlas = ExtResource("2_wfhgc")
+region = Rect2(300, 0, 100, 50)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_bgt0p"]
+atlas = ExtResource("2_wfhgc")
+region = Rect2(400, 0, 100, 50)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_7j5w2"]
+atlas = ExtResource("2_wfhgc")
+region = Rect2(500, 0, 100, 50)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_bm1fm"]
+atlas = ExtResource("2_wfhgc")
+region = Rect2(600, 0, 100, 50)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_k7t2a"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_74yux")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_4m7jq")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_l5nsm")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_pa7ce")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_bgt0p")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_7j5w2")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_bm1fm")
+}],
+"loop": false,
+"name": &"open",
+"speed": 5.0
+}]
+
+[node name="StoryPopup" type="CanvasLayer"]
+process_mode = 3
+script = ExtResource("1_8loan")
+
+[node name="ColorRect" type="ColorRect" parent="."]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="CenterContainer" type="CenterContainer" parent="."]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 4
+
+[node name="ScrollAnimatedSprite" type="AnimatedSprite2D" parent="CenterContainer"]
+position = Vector2(576, 324)
+scale = Vector2(11, 11)
+sprite_frames = SubResource("SpriteFrames_k7t2a")
+animation = &"open"
+frame = 6
+frame_progress = 1.0
+
+[node name="Control" type="Control" parent="CenterContainer"]
+process_mode = 3
+layout_mode = 2
+
+[node name="LabelTitle" type="Label" parent="CenterContainer/Control"]
+layout_mode = 2
+offset_left = -418.0
+offset_top = -219.0
+offset_right = -2.0
+offset_bottom = -157.0
+text = "Ký ức 1"
+
+[node name="ContentContainer" type="VBoxContainer" parent="CenterContainer/Control"]
+layout_mode = 0
+offset_left = -303.0
+offset_top = -104.0
+offset_right = 321.0
+offset_bottom = 38.0
+alignment = 1
+
+[node name="RichTextLabel" type="RichTextLabel" parent="CenterContainer/Control/ContentContainer"]
+layout_mode = 2
+theme_override_colors/default_color = Color(0, 0, 0, 1)
+text = "kkkikiijajid"
+fit_content = true
