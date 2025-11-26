@@ -1,0 +1,34 @@
+# --- KỊCH BẢN: CƠN BÃO TỚI CÔNG CHUYỆN ---
+
+Captain: [portrait=idle](Vỗ tay lớn) Ê hê! 500 anh em chú ý!
+Captain: [portrait=panick] Hình như ông trời đang muốn "combat" với chúng ta hay sao ấy. Cái cơn bão đằng kia nhìn "tín" lắm nha, không đùa được đâu.
+
+# --- TƯƠNG TÁC VỚI NGƯỜI CHƠI (FOXY) ---
+Foxy: [b]Thuyền trưởng, nhìn mây đen ghê quá...[/b]
+- Chúng ta "quay xe" được không?
+	Captain: Quay xe là "xu" luôn đó nhóc! Giờ chỉ có nước "khô máu" với nó thôi.
+- Tui sợ nha... ét ô ét (SOS)!
+	Captain: Bình tĩnh! Có ta ở đây gánh team rồi, sợ gì!
+- Chiến luôn bác ơi! Sợ gì mưa rơi!
+	Captain: [portrait=idle] Chuẩn! Phải có tinh thần "chiến đét" như vậy chứ!
+
+# --- RA LỆNH CHO THUYỀN VIÊN ---
+Captain: Rồi rồi, vào việc nào!
+Captain: Thuyền viên 1, ra "check var" lại mấy cái dây buồm ngay và luôn! Cột cho chặt vào!
+Captain: Thuyền viên 2, xuống hầm hàng ngó nghiêng xem có gì "bất ổn" không. Đừng để đồ đạc "bay màu" là tui trừ lương đấy!
+
+sailor_1: Chốt đơn sếp ơi!
+sailor_2: Okela! Em làm ngay!
+
+# --- TƯƠNG TÁC VỚI MÈO (MIU) ---
+Captain: Còn "Hoàng thượng" Miu nữa...
+Captain: [portrait=panick] Miu à, mời ngài vào cabin "trú bão" gấp. Ngoài này ướt lông là "kém sang" lắm.
+cat: Meo... (Mèo lườm một cái rồi chạy vào trong)
+
+# --- CAO TRÀO ---
+Captain: [pause=1] (Nắm chặt bánh lái, cười nhếch mép)
+Captain: Được rồi, biển cả! Hôm nay ta sẽ cho ngươi thấy ai mới là trùm khu này!
+Captain: [portrait=idle] Tới công chuyện luôn! Anh em, bám chắc vào!!
+
+# [Gợi ý hiệu ứng: Kích hoạt sấm chớp đùng đùng + rung màn hình]
+[end_timeline]

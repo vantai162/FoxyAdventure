@@ -1,0 +1,37 @@
+# --- CẢNH: TRÊN BOONG TÀU, TRƯỚC KHI BÃO TỚI ---
+
+# Albert đang lúi húi buộc lại dây thừng, lẩm bẩm một mình
+join albert (working) center [animation="Fade In Up"]
+
+Albert: (Xoa xoa cái đầu gối) Chậc... Cái khớp gối của lão lại nhức nhối rồi.
+Albert: [portrait=idle] Gió đổi chiều... Mùi biển hôm nay tanh nồng quá. Không sai được, "Thủy Thần" đang giận dữ.
+
+# Foxy bước tới (Nếu bạn muốn Foxy xuất hiện trong khung thoại)
+
+Foxy: [b]Bác Albert, bác đang nói gì thế?[/b]
+- Bác thấy không khỏe à?
+	Albert: [portrait=idle] À, nhóc con. Già này không sao. Chỉ là cái chân này nó báo hiệu điềm chẳng lành thôi.
+- "Thủy Thần" giận dữ là sao bác?
+	Albert: [portrait=idle] Là cơn thịnh nộ của biển cả đấy nhóc. Lão đi biển 40 năm nay, chưa bao giờ thấy mây đen vần vũ kiểu này.
+
+Albert: Nhìn kia kìa... (Chỉ tay ra xa). Chim hải âu bay thấp, cá heo thì lặn mất tăm. 
+Albert: Một cơn "Đại Cuồng Phong" sắp tới. Nó sẽ nuốt chửng mọi thứ.
+
+Foxy: [b]Nghe đáng sợ quá... Chúng ta phải làm sao đây?[/b]
+- Cháu sợ quá bác ơi...
+	Albert: (Vỗ vai Foxy) Đừng run rẩy thế. Sợ hãi chỉ làm mồi ngon cho biển cả thôi. Giữ cái đầu lạnh vào.
+- Cháu sẽ bảo vệ mọi người!
+	Albert: [portrait=idle] Khà khà! Khá lắm nhóc con. Có khí phách! Nhưng trước hết hãy giữ mạng mình đã.
+
+Albert: [portrait=idle] Nghe lời lão này nhóc. Kiểm tra lại túi đồ, chắc chắn rằng vũ khí của cháu vẫn ở bên người.
+Albert: Và nếu tàu có nghiêng... thì nhớ bám chặt vào cái gì đó cố định. Đừng có làm anh hùng rơm.
+
+# Tiếng sấm rền vang (Nếu bạn có âm thanh sấm thì chèn vào đây)
+[sound path="res://sounds/thunder_rumble.wav" volume="0.0"]
+
+Albert: (Giật mình nhìn lên trời) Chà... Nó đến nhanh hơn lão tưởng.
+Albert: Lão phải đi gia cố lại khoang hàng đây. Nhóc cũng mau tìm chỗ nấp hoặc ra chỗ Thuyền trưởng đi!
+
+# Albert vội vã rời đi
+leave albert [animation="Fade Out Down"]
+[end_timeline]

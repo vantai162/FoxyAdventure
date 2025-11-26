@@ -23,8 +23,19 @@ Dialogic="*res://addons/dialogic/Core/DialogicGameHandler.gd"
 
 [dialogic]
 
-directories/dch_directory={}
-directories/dtl_directory={}
+directories/dch_directory={
+"Albert": "res://dialog/character/Albert.dch",
+"Captain": "res://dialog/character/Captain.dch",
+"Foxy": "res://dialog/character/Foxy.dch",
+"cat": "res://dialog/character/cat.dch"
+}
+directories/dtl_directory={
+"albert_timeline": "res://dialog/timelines/albert_timeline.dtl",
+"captain_timeline": "res://dialog/timelines/captain_timeline.dtl",
+"cat_timeline": "res://dialog/timelines/cat_timeline.dtl",
+"jack_timeline": "res://dialog/timelines/jack_timeline.dtl",
+"timeline": "res://dialog/timelines/timeline.dtl"
+}
 layout/style_directory={
 "dialogic_style 2": "res://dialog/custom/dialogic_style.tres"
 }

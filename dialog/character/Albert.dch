@@ -1,0 +1,43 @@
+{
+"@path": "res://addons/dialogic/Resources/character.gd",
+"@subpath": NodePath(""),
+&"_translation_id": "",
+&"color": Color(1, 1, 1, 1),
+&"custom_info": {
+"prefix": "",
+"sound_mood_default": "",
+"sound_moods": {
+"Mood 1": {
+"mode": 0,
+"name": "Mood 1",
+"pitch_base": 1.0,
+"pitch_variance": 0.0,
+"skip_characters": 0.0,
+"sound_path": "res://assets/sounds/just-sans-talking.mp3",
+"volume_base": 0.0,
+"volume_variance": 0.0
+}
+},
+"style": "dialogic_style 2",
+"suffix": ""
+},
+&"default_portrait": "idle",
+&"description": "",
+&"display_name": "Albert",
+&"mirror": false,
+&"nicknames": [""],
+&"offset": Vector2(0, 0),
+&"portraits": {
+"idle": {
+"export_overrides": {
+"image": "\"res://assets/Pirate Bomb/Sprites/2-Enemy-Bald Pirate/1-Idle/20.png\""
+},
+"mirror": false,
+"offset": Vector2(0, 0),
+"scale": 1,
+"scene": "res://addons/dialogic/Modules/Character/default_portrait.tscn",
+"sound_mood": "Mood 1"
+}
+},
+&"scale": 1.0
+}
