@@ -20,6 +20,7 @@
 [ext_resource type="Script" uid="uid://k4wow2443kjb" path="res://enemy/turtle/dead.gd" id="14_n3t07"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_livia"]
+size = Vector2(20, 26)
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_v3mmh"]
 animations = [{
@@ -86,6 +87,7 @@ max_health = 2
 metadata/_custom_type_script = "uid://s4xx82espxdt"
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(0, 3)
 shape = SubResource("RectangleShape2D_livia")
 
 [node name="Direction" type="Node2D" parent="."]
@@ -100,7 +102,7 @@ target_position = Vector2(0, 29)
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="Direction"]
 sprite_frames = SubResource("SpriteFrames_v3mmh")
-animation = &"dead"
+animation = &"run"
 
 [node name="HitArea2D" parent="Direction" instance=ExtResource("3_raxgc")]
 collision_layer = 0

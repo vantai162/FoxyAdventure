@@ -166,8 +166,7 @@ func _is_on_one_way_platform():
 	
 
 func spring():
-	velocity.y = -400
-	
+	velocity.y = -650
 		
 func drop_down_platform():
 	var PLATFORM_LAYER = 1

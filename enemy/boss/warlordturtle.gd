@@ -4,8 +4,8 @@ extends EnemyCharacter
 @export var rocket_scene: PackedScene
 
 @export_group("Phase 2 - Water Mechanics")
-@export var water_raise_target_y: float = -80.0  ## Global Y position for raised water (negative = higher)
-@export var water_raise_duration: float = 6.0    ## Duration for water to raise/lower (seconds)
+@export var water_raise_target_y: float = 140  ## Global Y position for raised water (negative = higher)
+@export var water_raise_duration: float = 4.0    ## Duration for water to raise/lower (seconds)
 @export var water_action_cooldown: float = 8.0   ## Cooldown between water raises/lowers (seconds)
 
 @onready var muzzle = $Direction/BoomAndRocket/MuzzleBoom1
@@ -60,6 +60,7 @@ func fire_rocket():
 	get_tree().current_scene.add_child(rocket1)
 	warning_marker.show_animation()
 	rocket1.shoot(rocket1.global_position, warning_marker.global_position, 1.5)
+	missles_launch_sound.play()
 	await get_tree().create_timer(0.2).timeout
 	var rocket2 = rocket_scene.instantiate()
 	rocket2.global_position = muzzlerocket2.global_position
@@ -72,6 +73,7 @@ func fire_rocket():
 	get_tree().current_scene.add_child(rocket3)
 	warning_marker3.show_animation()
 	rocket3.shoot(rocket3.global_position, warning_marker3.global_position, 1.5)
+	missles_launch_sound.play()
 	await get_tree().create_timer(0.2).timeout
 	var rocket4 = rocket_scene.instantiate()
 	rocket4.global_position = muzzlerocket2.global_position
