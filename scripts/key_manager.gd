@@ -63,7 +63,7 @@ func listening_and_set(scene_tree:SceneTree,action:String)->int:#only call this 
 	
 func disableinput(exception:Array):
 	for key in KeyDict.keys():
-		if(key!="pause"||!(key in exception)):
+		if(key!="pause"&&!(key in exception)):
 			InputMap.action_erase_events(key)
 
 func reloadinputmapbykeydict():

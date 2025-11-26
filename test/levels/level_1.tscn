@@ -5478,6 +5478,22 @@ memory_title = "⭐ Memory 1 – “Ngày rời cảng”"
 position = Vector2(6946, 226)
 target_stage = "uid://b5mowcfymabkv"
 
+[connection signal="area_entered" from="Layer1/Coin" to="Layer1/Coin" method="_on_area_entered"]
+[connection signal="area_entered" from="Layer1/@Area2D@29053" to="Layer1/@Area2D@29053" method="_on_area_entered"]
+[connection signal="area_entered" from="Layer1/@Area2D@29054" to="Layer1/@Area2D@29054" method="_on_area_entered"]
+[connection signal="area_entered" from="Layer1/@Area2D@29055" to="Layer1/@Area2D@29055" method="_on_area_entered"]
+[connection signal="area_entered" from="Layer1/@Area2D@29056" to="Layer1/@Area2D@29056" method="_on_area_entered"]
+[connection signal="area_entered" from="Layer1/@Area2D@29057" to="Layer1/@Area2D@29057" method="_on_area_entered"]
+[connection signal="area_entered" from="Layer1/@Area2D@29058" to="Layer1/@Area2D@29058" method="_on_area_entered"]
+[connection signal="area_entered" from="Layer1/@Area2D@29059" to="Layer1/@Area2D@29059" method="_on_area_entered"]
+[connection signal="area_entered" from="Layer1/@Area2D@29060" to="Layer1/@Area2D@29060" method="_on_area_entered"]
+[connection signal="area_entered" from="Layer1/@Area2D@29061" to="Layer1/@Area2D@29061" method="_on_area_entered"]
+[connection signal="area_entered" from="Layer1/@Area2D@29062" to="Layer1/@Area2D@29062" method="_on_area_entered"]
+[connection signal="area_entered" from="Layer1/@Area2D@29063" to="Layer1/@Area2D@29063" method="_on_area_entered"]
+[connection signal="area_entered" from="Layer1/@Area2D@29064" to="Layer1/@Area2D@29064" method="_on_area_entered"]
+[connection signal="area_entered" from="Layer1/@Area2D@29065" to="Layer1/@Area2D@29065" method="_on_area_entered"]
+[connection signal="area_entered" from="Layer1/@Area2D@29066" to="Layer1/@Area2D@29066" method="_on_area_entered"]
+[connection signal="area_entered" from="Layer1/Key" to="Layer1/Key" method="_on_area_entered"]
 [connection signal="body_entered" from="Objects/Lever" to="Objects/Gate" method="open_gate"]
 [connection signal="body_exited" from="Objects/Lever" to="Objects/Gate" method="close_gate"]
 [connection signal="lever_activated" from="Objects/Lever" to="Objects/Gate" method="open_gate"]
