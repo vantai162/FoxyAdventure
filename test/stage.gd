@@ -23,5 +23,7 @@ func _ready() -> void:
 	await GameManager.fade_from_black()
 
 
+
+
 func _on_body_entered(body: Node2D) -> void:
 	pass # Replace with function body.

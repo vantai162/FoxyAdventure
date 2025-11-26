@@ -13,22 +13,23 @@ extends EnemyState
 var whirlpool_scene: PackedScene = preload("res://objects/whirlpool/whirlpool.tscn")
 
 func _enter():
-	obj.change_animation("skill2")
+	obj.change_animation("summon")
 	_summon_whirlpools()
-
+	print("spawn whirl")
+	
 func _update(delta):
 	pass
 
 func _summon_whirlpools() -> void:
 	# Verify water is raised before spawning
 	if not obj.water_raised:
-		push_warning("WarlordTurtle: Cannot summon whirlpools - water not raised")
+		print("WarlordTurtle: Cannot summon whirlpools - water not raised")
 		change_state(fsm.states.idle)
 		return
 	
 	var water_node = obj.get_water_node()
 	if not water_node:
-		push_warning("WarlordTurtle: Cannot find water node for whirlpool spawning")
+		print("WarlordTurtle: Cannot find water node for whirlpool spawning")
 		change_state(fsm.states.idle)
 		return
 	

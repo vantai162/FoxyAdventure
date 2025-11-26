@@ -1,4 +1,4 @@
-[gd_scene load_steps=38 format=3 uid="uid://bdlk3sxo5ekwn"]
+[gd_scene load_steps=41 format=3 uid="uid://bdlk3sxo5ekwn"]
 
 [ext_resource type="Script" uid="uid://c7a5fg47r6h5l" path="res://enemy/boss/warlordturtle.gd" id="1_ef40p"]
 [ext_resource type="Texture2D" uid="uid://b405sim5qtso5" path="res://assets/warlord_turle/war_lord_turtle20.png" id="2_prdj8"]
@@ -26,13 +26,17 @@
 [ext_resource type="Script" uid="uid://xqvgljx4hk1s" path="res://scripts/hit_area_2d.gd" id="22_jostd"]
 [ext_resource type="Script" uid="uid://ckk756x8csweu" path="res://enemy/boss/idle.gd" id="24_dfhj1"]
 [ext_resource type="PackedScene" uid="uid://p1nb3n6xmbvs" path="res://objects/warining/warining_rocket.tscn" id="25_eluqr"]
-[ext_resource type="Script" uid="uid://csu2b21cwchqw" path="res://scripts/hurt_area_2d.gd" id="25_o1uwu"]
 [ext_resource type="Script" uid="uid://se0dafo42j0n" path="res://enemy/boss/skill_1.gd" id="25_wuglq"]
 [ext_resource type="Script" uid="uid://ctyg2m8uocalk" path="res://enemy/boss/skill_2.gd" id="26_tvqld"]
 [ext_resource type="Script" uid="uid://me3i360ygy6a" path="res://enemy/boss/hurt.gd" id="27_dfhj1"]
 [ext_resource type="Script" uid="uid://dnkf3foccvr0j" path="res://enemy/boss/dead.gd" id="28_wuglq"]
 [ext_resource type="Script" uid="uid://dybr8136u5gn6" path="res://enemy/boss/raise_water.gd" id="29_raise"]
 [ext_resource type="Script" uid="uid://btbhb4moahkoo" path="res://enemy/boss/summon_whirlpool.gd" id="30_whirlpool"]
+[ext_resource type="PackedScene" uid="uid://ct1tqxgwkuvbe" path="res://scripts/hurt_area_2d.tscn" id="33_llkam"]
+[ext_resource type="AudioStream" uid="uid://c8j66nyxonjlv" path="res://assets/sounds/missiles_launch.wav" id="34_nqhb3"]
+[ext_resource type="AudioStream" uid="uid://d4druhwdf3ge" path="res://assets/sounds/impactWood_heavy_001.ogg" id="35_w6b8g"]
+[ext_resource type="AudioStream" uid="uid://bxqme8ahi0tpd" path="res://assets/sounds/wave.mp3" id="36_w6b8g"]
+[ext_resource type="AudioStream" uid="uid://26kiclm3hflh" path="res://assets/sounds/King Dice Attack Laugh (Nr. 1 Cuphead Sound) - Sound Effect for editing.wav" id="37_0m0l7"]
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_ladxf"]
 animations = [{
@@ -161,13 +165,36 @@ animations = [{
 "loop": false,
 "name": &"skill2",
 "speed": 10.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("6_wuglq")
+}, {
+"duration": 1.0,
+"texture": ExtResource("7_tvqld")
+}, {
+"duration": 1.0,
+"texture": ExtResource("14_w6b8g")
+}, {
+"duration": 6.9,
+"texture": ExtResource("15_0m0l7")
+}, {
+"duration": 1.0,
+"texture": ExtResource("14_w6b8g")
+}, {
+"duration": 1.0,
+"texture": ExtResource("7_tvqld")
+}, {
+"duration": 1.0,
+"texture": ExtResource("6_wuglq")
+}],
+"loop": false,
+"name": &"summon",
+"speed": 10.0
 }]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_8hnd2"]
 size = Vector2(75, 67)
-
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_eluqr"]
-size = Vector2(115.333, 95.3333)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_dkh1m"]
 size = Vector2(74, 67)
@@ -178,22 +205,25 @@ collision_layer = 8
 script = ExtResource("1_ef40p")
 boomb_scene = ExtResource("2_wuglq")
 rocket_scene = ExtResource("3_tvqld")
-max_health = 20
+knockback_force = 0.0
+max_health = 25
+max_invincible = 3.0
 oxygen_decrease_rate = 0.0
 metadata/_custom_type_script = "uid://s4xx82espxdt"
 
 [node name="Direction" type="Node2D" parent="."]
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="Direction"]
+scale = Vector2(1.0483, 1)
 sprite_frames = SubResource("SpriteFrames_ladxf")
-animation = &"new_animation"
+animation = &"summon"
 flip_h = true
 
 [node name="FrontRayCast2D" type="RayCast2D" parent="Direction"]
 position = Vector2(9, -4)
 target_position = Vector2(34, 0)
 
-[node name="DownnRayCast2D" type="RayCast2D" parent="Direction"]
+[node name="DownRayCast2D" type="RayCast2D" parent="Direction"]
 position = Vector2(14, -4)
 target_position = Vector2(-1, 40)
 
@@ -221,27 +251,25 @@ position = Vector2(38, -47.3333)
 [node name="MuzzleRocket2" type="Marker2D" parent="Direction/BoomAndRocket"]
 position = Vector2(-42, -50.33)
 
-[node name="WariningRocket" parent="Direction/BoomAndRocket" instance=ExtResource("25_eluqr")]
-position = Vector2(146, 11.3333)
+[node name="WarningRocket" parent="Direction/BoomAndRocket" instance=ExtResource("25_eluqr")]
+position = Vector2(113.333, 10.6667)
 
-[node name="WariningRocket2" parent="Direction/BoomAndRocket" instance=ExtResource("25_eluqr")]
-position = Vector2(252.667, 10)
+[node name="WarningRocket2" parent="Direction/BoomAndRocket" instance=ExtResource("25_eluqr")]
+position = Vector2(217.333, 11.3333)
 
-[node name="WariningRocket3" parent="Direction/BoomAndRocket" instance=ExtResource("25_eluqr")]
-position = Vector2(373.333, 8.66667)
+[node name="WarningRocket3" parent="Direction/BoomAndRocket" instance=ExtResource("25_eluqr")]
+position = Vector2(316, 14)
 
-[node name="WariningRocket4" parent="Direction/BoomAndRocket" instance=ExtResource("25_eluqr")]
-position = Vector2(490.667, 6.66666)
+[node name="WarningRocket4" parent="Direction/BoomAndRocket" instance=ExtResource("25_eluqr")]
+position = Vector2(420, 16)
 
-[node name="HurtArea2D" type="Area2D" parent="Direction"]
+[node name="HurtArea2D" parent="Direction" instance=ExtResource("33_llkam")]
 collision_layer = 16
 collision_mask = 0
-script = ExtResource("25_o1uwu")
-metadata/_custom_type_script = "uid://csu2b21cwchqw"
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Direction/HurtArea2D"]
-position = Vector2(0.333334, 1)
-shape = SubResource("RectangleShape2D_eluqr")
+position = Vector2(0, 0.5)
+shape = SubResource("RectangleShape2D_dkh1m")
 
 [node name="States" type="Node" parent="."]
 
@@ -269,3 +297,21 @@ script = ExtResource("30_whirlpool")
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 position = Vector2(0, 0.5)
 shape = SubResource("RectangleShape2D_dkh1m")
+
+[node name="MisslesLaunchSound" type="AudioStreamPlayer2D" parent="."]
+stream = ExtResource("34_nqhb3")
+volume_db = 24.0
+
+[node name="BombsLaunchSound" type="AudioStreamPlayer2D" parent="."]
+stream = ExtResource("35_w6b8g")
+volume_db = 24.0
+
+[node name="WaveSound" type="AudioStreamPlayer2D" parent="."]
+stream = ExtResource("36_w6b8g")
+volume_db = 20.0
+
+[node name="LaughSound" type="AudioStreamPlayer2D" parent="."]
+stream = ExtResource("37_0m0l7")
+volume_db = 20.0
+
+[connection signal="hurt" from="Direction/HurtArea2D" to="." method="_on_hurt_area_2d_hurt"]

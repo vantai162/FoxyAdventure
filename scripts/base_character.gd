@@ -100,7 +100,6 @@ func stop_move() -> void:
 	velocity.y = 0
 
 func take_damage(damage: int) -> void:
-	print(damage)
 	health -= damage
 # Change the animation of the character on the next frame
 func change_animation(new_animation: String) -> void:
@@ -172,7 +171,6 @@ func spring():
 		
 func drop_down_platform():
 	var PLATFORM_LAYER = 1
-	print("alo")
 	set_collision_mask_value(PLATFORM_LAYER, false)
 	await get_tree().create_timer(0.25).timeout
 	set_collision_mask_value(PLATFORM_LAYER, true)
@@ -206,8 +204,6 @@ func die() -> void:
 	if fsm.current_state == fsm.states.get("dead"):
 		return
 		
-	print(name + " has died!")
-
 	# 2. Cập nhật chỉ số
 	health = 0
 	emit_signal("health_changed") # Để thanh máu tụt về 0

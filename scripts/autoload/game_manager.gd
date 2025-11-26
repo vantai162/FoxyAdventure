@@ -42,7 +42,7 @@ func change_stage(stage_path: String, _target_portal_name: String = "") -> void:
 	await get_tree().process_frame
 	
 	arriving_door_name = target_portal_name
-	
+	await fade_from_black()
 
 
 func call_from_dialogic(msg:String = ""):
@@ -109,6 +109,12 @@ func respawn_at_checkpoint() -> void:
 	
 	spawn_player(player_state)
 	
+	var hp_bar = current_stage.get_node("CanvasLayer/TextureProgressBar")
+	var coin_ui = current_stage.get_node("CanvasLayer/CoinUI")
+	var key_ui = current_stage.get_node("CanvasLayer/KeyUI")
+	hp_bar.setup()
+	coin_ui.setup()
+	key_ui.setup()
 	await fade_from_black()
 	is_respawning_from_checkpoint = false
 

@@ -36,5 +36,6 @@ animations = [{
 script = ExtResource("1_i1jtv")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+use_parent_material = true
 sprite_frames = SubResource("SpriteFrames_pjamn")
 frame_progress = 0.154186

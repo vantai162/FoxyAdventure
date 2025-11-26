@@ -46,7 +46,6 @@ func _on_timer_timeout() -> void:
 	queue_free()
 
 func _on_explosion_area_2d_body_entered(body: Node2D) -> void:
-	print("hmm")
 	explode()
 	explosion_hitbox.set_deferred("disabled", false)
 	explosion_area.monitoring = true

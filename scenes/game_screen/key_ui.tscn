@@ -1,0 +1,34 @@
+[gd_scene load_steps=5 format=3 uid="uid://cstfpndmrkms3"]
+
+[ext_resource type="Texture2D" uid="uid://bi8gkhc5c20e0" path="res://assets/key/key_1.png" id="1_nrfgu"]
+[ext_resource type="Script" path="res://scenes/game_screen/key_ui.gd" id="1_ol78c"]
+[ext_resource type="FontFile" uid="uid://dmn322frb0n8t" path="res://assets/fonts/pixel_operator/PixelOperator.ttf" id="3_h4i7h"]
+[ext_resource type="AudioStream" uid="uid://g5vvqhw7d3xp" path="res://assets/sounds/coin.wav" id="4_4wtme"]
+
+[node name="KeyUI" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_ol78c")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+position = Vector2(1.5, 11.5)
+scale = Vector2(1.1875, 1.1875)
+texture = ExtResource("1_nrfgu")
+
+[node name="Label" type="Label" parent="."]
+layout_mode = 0
+offset_left = 17.0
+offset_top = -3.0
+offset_right = 42.0
+offset_bottom = 29.0
+scale = Vector2(0.859829, 0.80711)
+theme_override_fonts/font = ExtResource("3_h4i7h")
+theme_override_font_sizes/font_size = 32
+text = "0"
+
+[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("4_4wtme")
