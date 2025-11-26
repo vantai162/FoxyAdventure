@@ -17,7 +17,7 @@
 [ext_resource type="Texture2D" uid="uid://bptbd831rvqdf" path="res://assets/GandalfHardcore FREE Platformer Assets/GandalfHardcore FREE Platformer Assets/GandalfHardcore Background layers/Normal BG/GandalfHardcore Background layers_layer 1.png" id="7_e1q3p"]
 [ext_resource type="PackedScene" uid="uid://6anvnhaq553w" path="res://environment/water/water.tscn" id="7_ek11w"]
 [ext_resource type="PackedScene" uid="uid://dqdstpxycbomj" path="res://effect_Item/BladeItem/blade.tscn" id="7_g6ve3"]
-[ext_resource type="PackedScene" uid="uid://coqrny0yf5swy" path="res://objects/wind/WindArea.tscn" id="7_k62hf"]
+[ext_resource type="PackedScene" uid="uid://coqrny0yf5swy" path="res://wind/WindArea.tscn" id="7_k62hf"]
 [ext_resource type="PackedScene" uid="uid://dnqfetueosx76" path="res://objects/poll/poll.tscn" id="8_dxkj1"]
 [ext_resource type="PackedScene" uid="uid://bxfs4fsx7ot6m" path="res://enemy/starfish/starfish.tscn" id="9_7t748"]
 [ext_resource type="PackedScene" uid="uid://bdkss15p4gbma" path="res://enemy/seahorse/seahorse.tscn" id="9_av6r5"]

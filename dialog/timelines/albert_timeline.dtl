@@ -1,0 +1,9 @@
+sailor_1: [portrait=concerned] Thuyền trưởng Foxy, nhìn hướng gió kìa. Nó đổi chiều đột ngột quá.
+sailor_1: Mây đen đang tụ lại nhanh một cách bất thường ở phía đông.
+
+# Lựa chọn phản hồi cho Foxy
+- Cậu nghĩ là bão sao?
+    sailor_1: Không chỉ là bão đâu sếp. [pause=0.5] Tôi chưa từng thấy bầu trời nào u ám như thế này. Cảm giác... rất tệ.
+- Chắc chỉ là mưa giông nhiệt đới thôi.
+    sailor_1: Tôi hy vọng là sếp đúng. Nhưng kinh nghiệm của tôi bảo rằng chúng ta nên chuẩn bị cho điều tồi tệ nhất.
+[end_timeline]
