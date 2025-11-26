@@ -40,7 +40,7 @@
 [ext_resource type="Script" uid="uid://b263hakgf00wy" path="res://enemy/king_crab/claw_attack.gd" id="32_claw"]
 [ext_resource type="Script" uid="uid://c5odej0anbth6" path="res://enemy/king_crab/roll_bounce.gd" id="33_roll"]
 [ext_resource type="PackedScene" uid="uid://dx1jtghwrx6ps" path="res://enemy/king_crab/projectiles/king_crab_coconut.tscn" id="34_coconut"]
-[ext_resource type="PackedScene" path="res://enemy/king_crab/projectiles/king_crab_claw.tscn" id="35_clawproj"]
+[ext_resource type="PackedScene" uid="uid://dncnb1yncdpam" path="res://enemy/king_crab/projectiles/king_crab_claw.tscn" id="35_clawproj"]
 [ext_resource type="PackedScene" uid="uid://p1nb3n6xmbvs" path="res://objects/warning/warning_rocket.tscn" id="36_warning"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_body"]
@@ -289,8 +289,7 @@ shape = SubResource("RectangleShape2D_body")
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="Direction"]
 position = Vector2(0, -28)
 sprite_frames = SubResource("SpriteFrames_main")
-animation = &"roll"
-frame_progress = 0.314526
+animation = &"claw_attack"
 flip_h = true
 
 [node name="FrontRayCast2D" type="RayCast2D" parent="Direction"]

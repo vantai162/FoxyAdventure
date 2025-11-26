@@ -1,8 +1,8 @@
-[gd_scene load_steps=6 format=3]
+[gd_scene load_steps=6 format=3 uid="uid://dncnb1yncdpam"]
 
-[ext_resource type="Script" path="res://enemy/king_crab/projectiles/king_crab_claw.gd" id="1_script"]
-[ext_resource type="Script" path="res://scripts/hit_area_2d.gd" id="2_hitarea"]
-[ext_resource type="Texture2D" path="res://assets/king_crab/King_Crab_31.png" id="3_sprite"]
+[ext_resource type="Script" uid="uid://xrjtc5vbulke" path="res://enemy/king_crab/projectiles/king_crab_claw.gd" id="1_script"]
+[ext_resource type="Script" uid="uid://xqvgljx4hk1s" path="res://scripts/hit_area_2d.gd" id="2_hitarea"]
+[ext_resource type="Texture2D" uid="uid://diiecuy47s81p" path="res://assets/king_crab/King_Crab_31.png" id="3_sprite"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_body"]
 radius = 12.0
@@ -17,6 +17,7 @@ script = ExtResource("1_script")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 texture = ExtResource("3_sprite")
+flip_h = true
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 shape = SubResource("CircleShape2D_body")

@@ -1,4 +1,4 @@
-[gd_scene load_steps=21 format=4 uid="uid://b5mowcfymabkv"]
+[gd_scene load_steps=20 format=4 uid="uid://b5mowcfymabkv"]
 
 [ext_resource type="TileSet" uid="uid://bmuxyu21ya31y" path="res://assets/tileset.tres" id="1_18vte"]
 [ext_resource type="PackedScene" uid="uid://dm741hii7d5nv" path="res://scenes/game_screen/health_bar.tscn" id="1_foqxb"]
@@ -19,7 +19,6 @@
 [ext_resource type="PackedScene" uid="uid://bg3bfewcihuv0" path="res://objects/sign/sign.tscn" id="17_p1j52"]
 [ext_resource type="PackedScene" uid="uid://dl6sw76ff5y3a" path="res://spawner/turtle_spawner.tscn" id="18_rups3"]
 [ext_resource type="PackedScene" uid="uid://um44lmp2s6eq" path="res://spawner/healthpotion_spawner.tscn" id="19_lk4yk"]
-[ext_resource type="AudioStream" uid="uid://brn6bu26b2blg" path="res://assets/sounds/warlord_theme.wav" id="20_tku26"]
 
 [node name="WhirlpoolTest" type="Node2D"]
 
@@ -134,6 +133,5 @@ position = Vector2(-156, 115)
 [node name="HealthpotionSpawner" parent="." instance=ExtResource("19_lk4yk")]
 
 [node name="BossTheme" type="AudioStreamPlayer2D" parent="."]
-stream = ExtResource("20_tku26")
 volume_db = 10.0
 autoplay = true
