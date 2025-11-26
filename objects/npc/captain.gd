@@ -97,6 +97,9 @@ func interact():
 	velocity = Vector2.ZERO
 	sprite.play("idle")
 	timer.stop()
+	var player = get_tree().get_first_node_in_group("player")
+	player.set_physics_process(false)
+	if player.has_method("stop_move"): player.stop_move()
 	
 	# Bắt đầu Dialogic
 	Dialogic.start(timeline_name)
@@ -192,7 +195,7 @@ func start_dramatic_ending():
 	await get_tree().create_timer(1.5).timeout
 
 	# === ACT 3: THE IMPACT - SÓNG THẦN ĐÁNH (2.5s) ===
-	print("Act 3: ☠️ SÓNG THẦN ĐÁP ỨNG! ☠️")
+	print("Act 3: SÓNG THẦN")
 	
 	# TRIPLE FLASH (White -> Blue -> Black)
 	$"../Thunder".play()

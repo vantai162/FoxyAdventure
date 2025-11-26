@@ -7,7 +7,7 @@
 [ext_resource type="Texture2D" uid="uid://cvhupyh3q5nu4" path="res://assets/warlord_turle/war_lord_turtle15.png" id="9_u5x0e"]
 [ext_resource type="Texture2D" uid="uid://kndev2dt6wbu" path="res://assets/warlord_turle/turtle_bullets/bullet_rocket.png" id="10_2fpa6"]
 [ext_resource type="PackedScene" uid="uid://dqdstpxycbomj" path="res://effect_Item/BladeItem/blade.tscn" id="10_u5x0e"]
-[ext_resource type="PackedScene" uid="uid://coqrny0yf5swy" path="res://wind/WindArea.tscn" id="14_rj3ps"]
+[ext_resource type="PackedScene" uid="uid://coqrny0yf5swy" path="res://objects/wind/WindArea.tscn" id="14_rj3ps"]
 [ext_resource type="PackedScene" uid="uid://bdlk3sxo5ekwn" path="res://enemy/boss/warlordturtle.tscn" id="17_ld8w7"]
 
 [node name="TinTest" type="Node2D"]

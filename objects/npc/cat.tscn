@@ -1,4 +1,4 @@
-[gd_scene load_steps=18 format=3 uid="uid://doluitvimvxhk"]
+[gd_scene load_steps=17 format=3 uid="uid://doluitvimvxhk"]
 
 [ext_resource type="Texture2D" uid="uid://cb3h1l5svkblh" path="res://assets/cat/PirateCat1.png" id="1_6nn0a"]
 [ext_resource type="Script" uid="uid://c5phrjm5ime3f" path="res://objects/npc/cat.gd" id="1_oaidb"]
@@ -87,8 +87,6 @@ animations = [{
 "speed": 10.0
 }]
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_mxfkg"]
-
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_4svcy"]
 
 [sub_resource type="FontVariation" id="FontVariation_oaidb"]
@@ -100,10 +98,6 @@ script = ExtResource("1_oaidb")
 sprite_frames = SubResource("SpriteFrames_rvfaf")
 animation = &"idle"
 frame_progress = 0.872557
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-visible = false
-shape = SubResource("RectangleShape2D_mxfkg")
 
 [node name="Area2D" type="Area2D" parent="."]
 collision_mask = 2
@@ -117,7 +111,7 @@ offset_top = -46.0
 offset_right = 82.0
 offset_bottom = -23.0
 theme_override_fonts/font = SubResource("FontVariation_oaidb")
-text = "Nhấn F để trò chuyện"
+text = "Nhấn Q để trò chuyện"
 
 [connection signal="body_entered" from="Area2D" to="." method="_on_interaction_zone_body_entered"]
 [connection signal="body_exited" from="Area2D" to="." method="_on_interaction_zone_body_entered"]

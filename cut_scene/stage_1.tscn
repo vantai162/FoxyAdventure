@@ -1,4 +1,4 @@
-[gd_scene load_steps=40 format=4 uid="uid://bmt5hb2emmqux"]
+[gd_scene load_steps=41 format=4 uid="uid://bmt5hb2emmqux"]
 
 [ext_resource type="TileSet" uid="uid://bmuxyu21ya31y" path="res://assets/tileset.tres" id="1_rklvk"]
 [ext_resource type="PackedScene" uid="uid://bs816w0pr8all" path="res://player/foxy.tscn" id="2_8ahgw"]
@@ -32,6 +32,7 @@
 [ext_resource type="PackedScene" uid="uid://co47g0kuxqton" path="res://objects/npc/captain.tscn" id="30_s3msr"]
 [ext_resource type="PackedScene" uid="uid://4jgvbfwgwyh" path="res://objects/checkpoint/helm.tscn" id="31_gnpx6"]
 [ext_resource type="Shader" uid="uid://bvlkr41wo7oxd" path="res://assets/background/rain_and_snow_shader.gdshader" id="32_gnpx6"]
+[ext_resource type="PackedScene" uid="uid://c01ifllbfr5ep" path="res://objects/npc/albert.tscn" id="32_j04q1"]
 [ext_resource type="AudioStream" uid="uid://mkbewbk3a76t" path="res://assets/sounds/sea-waves-169411.mp3" id="33_1s0gy"]
 [ext_resource type="AudioStream" uid="uid://cucip31olhef1" path="res://assets/sounds/thunder.mp3" id="34_w5ve4"]
 
@@ -231,6 +232,9 @@ position = Vector2(541, 463)
 
 [node name="Captain" parent="." instance=ExtResource("30_s3msr")]
 position = Vector2(881, 316)
+
+[node name="Albert" parent="." instance=ExtResource("32_j04q1")]
+position = Vector2(442, 287)
 
 [node name="Helm" parent="." instance=ExtResource("31_gnpx6")]
 position = Vector2(1127, 334)
