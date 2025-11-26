@@ -206,7 +206,8 @@ script = ExtResource("1_ef40p")
 boomb_scene = ExtResource("2_wuglq")
 rocket_scene = ExtResource("3_tvqld")
 knockback_force = 0.0
-max_health = 20
+max_health = 25
+max_invincible = 3.0
 oxygen_decrease_rate = 0.0
 metadata/_custom_type_script = "uid://s4xx82espxdt"
 
@@ -250,17 +251,17 @@ position = Vector2(38, -47.3333)
 [node name="MuzzleRocket2" type="Marker2D" parent="Direction/BoomAndRocket"]
 position = Vector2(-42, -50.33)
 
-[node name="WariningRocket" parent="Direction/BoomAndRocket" instance=ExtResource("25_eluqr")]
+[node name="WarningRocket" parent="Direction/BoomAndRocket" instance=ExtResource("25_eluqr")]
 position = Vector2(113.333, 10.6667)
 
-[node name="WariningRocket2" parent="Direction/BoomAndRocket" instance=ExtResource("25_eluqr")]
+[node name="WarningRocket2" parent="Direction/BoomAndRocket" instance=ExtResource("25_eluqr")]
 position = Vector2(217.333, 11.3333)
 
-[node name="WariningRocket3" parent="Direction/BoomAndRocket" instance=ExtResource("25_eluqr")]
+[node name="WarningRocket3" parent="Direction/BoomAndRocket" instance=ExtResource("25_eluqr")]
 position = Vector2(316, 14)
 
-[node name="WariningRocket4" parent="Direction/BoomAndRocket" instance=ExtResource("25_eluqr")]
-position = Vector2(428, 16)
+[node name="WarningRocket4" parent="Direction/BoomAndRocket" instance=ExtResource("25_eluqr")]
+position = Vector2(420, 16)
 
 [node name="HurtArea2D" parent="Direction" instance=ExtResource("33_llkam")]
 collision_layer = 16

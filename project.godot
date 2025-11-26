@@ -33,6 +33,7 @@ enemy=""
 one_way_platform=""
 can_interact_with_water=""
 water=""
+coconut_tree=""
 
 [input]
 
@@ -101,6 +102,7 @@ pause={
 2d_physics/layer_5="enemy_hurt"
 2d_physics/layer_6="EnemyAttack"
 2d_physics/layer_7="PlayerAttack"
+2d_physics/layer_8="Projectiles"
 2d_physics/layer_9="PlayerEffectReceiver"
 2d_physics/layer_10="EffectItem"
 

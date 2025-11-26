@@ -139,6 +139,8 @@ func set_lift_force(_lift_force:float):
 
 func _on_timer_timeout() -> void:
 	queue_free()
+	explosion_area.set_collision_mask_value(5, false)
+	flying_hitbox.set_collision_mask_value(4,false)
 
 
 func _on_direction_area_body_entered(body: Node2D) -> void:
@@ -151,3 +153,11 @@ func _on_explosion_timer_timeout() -> void:
 	explode()
 	explosion_hitbox.set_deferred("disabled", false)
 	explosion_area.monitoring = true
+
+
+func _on_direction_area_area_entered(area: Area2D) -> void:
+	explosion_timer.start()
+	direction*=-1
+	flying_hitbox.set_collision_mask_value(4,true)
+	explosion_area.set_collision_mask_value(5, true)
+	

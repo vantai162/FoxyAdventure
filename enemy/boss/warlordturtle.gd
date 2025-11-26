@@ -12,10 +12,10 @@ extends EnemyCharacter
 @onready var muzzle2 = $Direction/BoomAndRocket/MuzzleBoom2
 @onready var muzzlerocket1 =  $Direction/BoomAndRocket/MuzzleRocket1
 @onready var muzzlerocket2 =  $Direction/BoomAndRocket/MuzzleRocket2
-@onready var node = $Direction/BoomAndRocket/WariningRocket
-@onready var node1 = $Direction/BoomAndRocket/WariningRocket2
-@onready var node2 = $Direction/BoomAndRocket/WariningRocket3
-@onready var node3 = $Direction/BoomAndRocket/WariningRocket4
+@onready var warning_marker = $Direction/BoomAndRocket/WarningRocket
+@onready var warning_marker2 = $Direction/BoomAndRocket/WarningRocket2
+@onready var warning_marker3 = $Direction/BoomAndRocket/WarningRocket3
+@onready var warning_marker4 = $Direction/BoomAndRocket/WarningRocket4
 @onready var HurtArea = $Direction/HurtArea2D/CollisionShape2D
 @onready var hurt_timer = $Direction/HurtArea2D/Timer
 
@@ -58,28 +58,26 @@ func fire_rocket():
 	rocket1.global_position = muzzlerocket1.global_position
 	rocket1.scale = Vector2(1.5, 1.5)
 	get_tree().current_scene.add_child(rocket1)
-	missles_launch_sound.play()
-	node.show_animation()
-	rocket1.shoot(rocket1.global_position,node.global_position,1.5)
+	warning_marker.show_animation()
+	rocket1.shoot(rocket1.global_position, warning_marker.global_position, 1.5)
 	await get_tree().create_timer(0.2).timeout
 	var rocket2 = rocket_scene.instantiate()
 	rocket2.global_position = muzzlerocket2.global_position
 	get_tree().current_scene.add_child(rocket2)
-	node1.show_animation()
-	rocket2.shoot(rocket2.global_position,node1.global_position,1.5)
+	warning_marker2.show_animation()
+	rocket2.shoot(rocket2.global_position, warning_marker2.global_position, 1.5)
 	await get_tree().create_timer(0.5).timeout
 	var rocket3 = rocket_scene.instantiate()
 	rocket3.global_position = muzzlerocket1.global_position
 	get_tree().current_scene.add_child(rocket3)
-	node2.show_animation()
-	rocket3.shoot(rocket3.global_position,node2.global_position,1.5)
+	warning_marker3.show_animation()
+	rocket3.shoot(rocket3.global_position, warning_marker3.global_position, 1.5)
 	await get_tree().create_timer(0.2).timeout
 	var rocket4 = rocket_scene.instantiate()
 	rocket4.global_position = muzzlerocket2.global_position
 	get_tree().current_scene.add_child(rocket4)
-	node3.show_animation()
-	rocket4.shoot(rocket4.global_position,node3.global_position,1.5)
-	missles_launch_sound.play()
+	warning_marker4.show_animation()
+	rocket4.shoot(rocket4.global_position, warning_marker4.global_position, 1.5)
 	
 func enable_hurt_for(seconds: float):
 	HurtArea.disabled = false
