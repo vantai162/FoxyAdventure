@@ -2,6 +2,7 @@ extends EnemyCharacter
 
 @export var boomb_scene: PackedScene
 @export var rocket_scene: PackedScene
+@export var whirlpool_scene: PackedScene  ## Used by summon_whirlpool state
 
 @export_group("Phase 2 - Water Mechanics")
 @export var water_raise_target_y: float = -80.0  ## Global Y position for raised water (negative = higher)

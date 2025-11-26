@@ -2,11 +2,13 @@ extends EnemyState
 
 ## Walk to nearest coconut tree, then climb up
 
+# King Crab attacks cannot be interrupted - take damage but keep attacking
+func take_damage(_damage_dir, damage: int) -> void:
+	obj.take_damage(damage)
+
 var target_tree: Node2D = null
 var stuck_timer: float = 0.0
 var last_x: float = 0.0
-
-@export var stuck_timeout: float = 1.0  ## Give up if no progress after this time
 
 func _enter() -> void:
 	obj.change_animation("run")
@@ -40,7 +42,7 @@ func _update(delta: float) -> void:
 	var moved = abs(obj.global_position.x - last_x)
 	if moved < 2.0:
 		stuck_timer += delta
-		if stuck_timer >= stuck_timeout:
+		if stuck_timer >= obj.walk_stuck_timeout:
 			# Give up and do something else
 			change_state(fsm.states.idle)
 			return

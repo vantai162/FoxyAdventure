@@ -96,7 +96,7 @@ size = Vector2(27, 24)
 
 [node name="Mushroom" type="CharacterBody2D"]
 collision_layer = 8
-collision_mask = 9
+collision_mask = 1
 script = ExtResource("1_jlpow")
 metadata/_custom_type_script = "uid://s4xx82espxdt"
 

@@ -6,7 +6,6 @@
 [ext_resource type="PackedScene" uid="uid://k1cvcu80rfmm" path="res://scenes/game_screen/coin_ui.tscn" id="2_l5ucy"]
 [ext_resource type="PackedScene" uid="uid://cstfpndmrkms3" path="res://scenes/game_screen/key_ui.tscn" id="3_d1ish"]
 [ext_resource type="Script" uid="uid://b3s1m3fi6lhf5" path="res://objects/water/water.gd" id="3_water"]
-[ext_resource type="PackedScene" uid="uid://bdlk3sxo5ekwn" path="res://enemy/boss/warlordturtle.tscn" id="4_dfigs"]
 [ext_resource type="PackedScene" uid="uid://bs816w0pr8all" path="res://player/foxy.tscn" id="4_player"]
 [ext_resource type="PackedScene" uid="uid://dqdstpxycbomj" path="res://effect_Item/BladeItem/blade.tscn" id="6_m1dob"]
 [ext_resource type="PackedScene" uid="uid://dubb5b1vjmsxd" path="res://objects/door/door.tscn" id="7_4l3ft"]
@@ -19,6 +18,7 @@
 [ext_resource type="PackedScene" uid="uid://bg3bfewcihuv0" path="res://objects/sign/sign.tscn" id="17_p1j52"]
 [ext_resource type="PackedScene" uid="uid://dl6sw76ff5y3a" path="res://spawner/turtle_spawner.tscn" id="18_rups3"]
 [ext_resource type="PackedScene" uid="uid://um44lmp2s6eq" path="res://spawner/healthpotion_spawner.tscn" id="19_lk4yk"]
+[ext_resource type="PackedScene" uid="uid://ctmgnaqjtpp40" path="res://enemy/king_crab/king_crab.tscn" id="19_tku26"]
 
 [node name="WhirlpoolTest" type="Node2D"]
 
@@ -44,7 +44,7 @@ tile_map_data = PackedByteArray("AADu/wQAAAAAAAEAAADv/wQAAAABAAEAAADw/wQAAAAGAAE
 tile_set = ExtResource("1_18vte")
 
 [node name="Water" type="Node2D" parent="." groups=["water"]]
-z_index = 10
+z_index = 1
 position = Vector2(-600, 213)
 script = ExtResource("3_water")
 water_size = Vector2(1200, 400)
@@ -53,10 +53,7 @@ segment_count = 77
 [node name="Foxy" parent="." instance=ExtResource("4_player")]
 position = Vector2(27, -431)
 attack_damage = 3
-
-[node name="WarlordTurtle" parent="." instance=ExtResource("4_dfigs")]
-position = Vector2(243, 73)
-direction = -1
+max_health = 20
 
 [node name="FloatingBoatPlatform" parent="." instance=ExtResource("2_boat")]
 position = Vector2(-259, 114)
@@ -135,3 +132,11 @@ position = Vector2(-156, 115)
 [node name="BossTheme" type="AudioStreamPlayer2D" parent="."]
 volume_db = 10.0
 autoplay = true
+
+[node name="KingCrab" parent="." instance=ExtResource("19_tku26")]
+position = Vector2(230, 123)
+collision_mask = 9
+max_health = 8
+
+[node name="Node2D" type="Node2D" parent="." groups=["coconut_tree"]]
+position = Vector2(-59, -104)

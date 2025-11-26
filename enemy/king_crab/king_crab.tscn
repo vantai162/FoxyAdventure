@@ -1,14 +1,23 @@
-[gd_scene load_steps=47 format=3 uid="uid://ctmgnaqjtpp40"]
+[gd_scene load_steps=56 format=3 uid="uid://ctmgnaqjtpp40"]
 
 [ext_resource type="Script" uid="uid://bukicvldqmhxv" path="res://enemy/king_crab/king_crab.gd" id="1_script"]
+[ext_resource type="PackedScene" path="res://enemy/king_crab/projectiles/shockwave.tscn" id="2_cqoo5"]
 [ext_resource type="Texture2D" uid="uid://wn070tchkeg3" path="res://assets/king_crab/King_Crab_1.png" id="2_kc1"]
+[ext_resource type="Texture2D" uid="uid://dhbdtq53r0ydu" path="res://assets/king_crab/King_Crab_19.png" id="3_8skpv"]
 [ext_resource type="Texture2D" uid="uid://ccp2i2pnjq71x" path="res://assets/king_crab/King_Crab_2.png" id="3_kc2"]
 [ext_resource type="Texture2D" uid="uid://cmxwu0dm0jrog" path="res://assets/king_crab/King_Crab_3.png" id="4_kc3"]
+[ext_resource type="Texture2D" uid="uid://csy6aa012xx1w" path="res://assets/king_crab/King_Crab_20.png" id="4_qyq3g"]
 [ext_resource type="Texture2D" uid="uid://bo3g8ow24yvjo" path="res://assets/king_crab/King_Crab_4.png" id="5_kc4"]
+[ext_resource type="Texture2D" uid="uid://7dta0ln4ja4o" path="res://assets/king_crab/King_Crab_21.png" id="5_s2fvd"]
+[ext_resource type="Texture2D" uid="uid://bea48xdg7yhid" path="res://assets/king_crab/King_Crab_22.png" id="6_ijdas"]
 [ext_resource type="Texture2D" uid="uid://cll6j7xe8spj1" path="res://assets/king_crab/King_Crab_5.png" id="6_kc5"]
 [ext_resource type="Texture2D" uid="uid://b7nv7vp51k800" path="res://assets/king_crab/King_Crab_6.png" id="7_kc6"]
+[ext_resource type="Texture2D" uid="uid://cbys8mmj5xlsy" path="res://assets/king_crab/King_Crab_23.png" id="7_pd0pn"]
+[ext_resource type="Texture2D" uid="uid://bs46abwtmc1ju" path="res://assets/king_crab/King_Crab_24.png" id="8_12aoo"]
 [ext_resource type="Texture2D" uid="uid://dd0b8bvgaunot" path="res://assets/king_crab/King_Crab_7.png" id="8_kc7"]
+[ext_resource type="Texture2D" uid="uid://x2j7miy5ffa6" path="res://assets/king_crab/King_Crab_25.png" id="9_7448b"]
 [ext_resource type="Texture2D" uid="uid://dnssmdlf3g8un" path="res://assets/king_crab/King_Crab_8.png" id="9_kc8"]
+[ext_resource type="Texture2D" uid="uid://blme8qhglds6x" path="res://assets/king_crab/King_Crab_26.png" id="10_2baos"]
 [ext_resource type="Texture2D" uid="uid://jxlrl4ohf8ro" path="res://assets/king_crab/King_Crab_11.png" id="10_kc11"]
 [ext_resource type="Texture2D" uid="uid://b7nx125mfrhv5" path="res://assets/king_crab/King_Crab_12.png" id="11_kc12"]
 [ext_resource type="Texture2D" uid="uid://tqwub5efkgmg" path="res://assets/king_crab/King_Crab_28.png" id="12_7b5u8"]
@@ -50,6 +59,51 @@ size = Vector2(57, 57)
 animations = [{
 "frames": [{
 "duration": 1.0,
+"texture": ExtResource("3_8skpv")
+}, {
+"duration": 1.0,
+"texture": ExtResource("4_qyq3g")
+}, {
+"duration": 1.0,
+"texture": ExtResource("5_s2fvd")
+}, {
+"duration": 1.0,
+"texture": ExtResource("6_ijdas")
+}],
+"loop": false,
+"name": &"claw_catch",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("7_pd0pn")
+}, {
+"duration": 1.0,
+"texture": ExtResource("8_12aoo")
+}, {
+"duration": 1.0,
+"texture": ExtResource("9_7448b")
+}, {
+"duration": 1.0,
+"texture": ExtResource("10_2baos")
+}],
+"loop": false,
+"name": &"claw_recoil",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("17_cqoo5")
+}, {
+"duration": 1.0,
+"texture": ExtResource("12_7b5u8")
+}],
+"loop": true,
+"name": &"claw_recover",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
 "texture": ExtResource("12_kc13")
 }, {
 "duration": 1.0,
@@ -60,15 +114,28 @@ animations = [{
 }, {
 "duration": 1.0,
 "texture": ExtResource("15_kc16")
+}],
+"loop": false,
+"name": &"claw_throw",
+"speed": 5.0
 }, {
+"frames": [{
 "duration": 1.0,
 "texture": ExtResource("16_kc17")
 }, {
 "duration": 1.0,
 "texture": ExtResource("17_kc18")
 }],
+"loop": true,
+"name": &"claw_waiting",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("17_cqoo5")
+}],
 "loop": false,
-"name": &"claw_attack",
+"name": &"claw_windup",
 "speed": 5.0
 }, {
 "frames": [{
@@ -269,7 +336,7 @@ animations = [{
 }]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_hit"]
-size = Vector2(50, 50)
+size = Vector2(63, 63)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_detect"]
 size = Vector2(555, 555)
@@ -277,8 +344,8 @@ size = Vector2(555, 555)
 [node name="KingCrab" type="CharacterBody2D"]
 scale = Vector2(2, 2)
 collision_layer = 8
-collision_mask = 9
 script = ExtResource("1_script")
+shockwave_scene = ExtResource("2_cqoo5")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 position = Vector2(0, -28)
@@ -289,13 +356,12 @@ shape = SubResource("RectangleShape2D_body")
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="Direction"]
 position = Vector2(0, -28)
 sprite_frames = SubResource("SpriteFrames_main")
-animation = &"claw_attack"
+animation = &"claw_recover"
 flip_h = true
 
 [node name="FrontRayCast2D" type="RayCast2D" parent="Direction"]
 position = Vector2(30, -20)
 target_position = Vector2(30, 0)
-collision_mask = 9
 
 [node name="DownRayCast2D" type="RayCast2D" parent="Direction"]
 position = Vector2(35, 0)

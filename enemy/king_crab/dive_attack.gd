@@ -1,6 +1,10 @@
 extends EnemyState
 
 ## Dive ground-pound attack with warning indicator and wind-up
+
+# King Crab attacks cannot be interrupted - take damage but keep attacking
+func take_damage(_damage_dir, damage: int) -> void:
+	obj.take_damage(damage)
 ## 
 ## ANIMATION ASSUMPTIONS (create these in SpriteFrames):
 ##   - "dive_windup"  : Crouch/prepare before launching (loop: false)
@@ -12,20 +16,10 @@ extends EnemyState
 enum AttackPhase { WINDUP, RISING, APEX, FALLING, LANDING }
 var attack_phase: AttackPhase = AttackPhase.WINDUP
 
-@export var windup_time: float = 0.5  ## How long to crouch before jump
-@export var rise_height: float = 450.0  ## Go WAY up, off-screen to hide the teleport
-@export var rise_speed: float = 900.0  ## Explosive burst upward
-@export var apex_pause: float = 0.25  ## Hang time at peak
-@export var fall_speed: float = 800.0  ## Faster fall = more impact
-@export var land_time: float = 0.3  ## How long to show landing animation
-@export var launch_shake: float = 10.0  ## Camera shake on launch
-@export var land_shake: float = 15.0  ## Camera shake on landing
-
 var phase_timer: float = 0.0
-var start_y: float = 0.0
+var start_y: float = 0.0  ## Ground level where crab started
 var target_x: float = 0.0
-
-const SHOCKWAVE_SCENE = preload("res://enemy/king_crab/projectiles/shockwave.tscn")
+var target_ground_y: float = 0.0  ## Ground level where player is (where we SHOULD land)
 
 
 func _enter() -> void:
@@ -33,11 +27,13 @@ func _enter() -> void:
 	phase_timer = 0.0
 	start_y = obj.global_position.y
 	
-	# Target player position
+	# Target player position and their ground level
 	if obj.found_player:
 		target_x = obj.found_player.global_position.x
+		target_ground_y = obj.found_player.global_position.y
 	else:
 		target_x = obj.global_position.x
+		target_ground_y = start_y
 	
 	# Face the target
 	var dir_to_target = sign(target_x - obj.global_position.x)
@@ -68,13 +64,21 @@ func _update(delta: float) -> void:
 		AttackPhase.WINDUP:
 			obj.velocity = Vector2.ZERO
 			phase_timer += delta
-			if phase_timer >= windup_time:
+			if phase_timer >= obj.dive_windup_time:
 				_launch()
 		
 		AttackPhase.RISING:
-			obj.velocity.y = -rise_speed
+			obj.velocity.y = -obj.dive_rise_speed
 			obj.velocity.x = 0
-			if obj.global_position.y <= start_y - rise_height:
+			
+			var risen_distance = start_y - obj.global_position.y
+			
+			# Hit ceiling? Only count it if we've risen at least 100 pixels
+			# This prevents false triggers from enemies landing on us
+			if obj.is_on_ceiling() and risen_distance > 100:
+				_start_falling()
+			elif risen_distance >= obj.dive_rise_height:
+				# Reached target height
 				attack_phase = AttackPhase.APEX
 				obj.global_position.x = target_x
 				obj.velocity = Vector2.ZERO
@@ -84,21 +88,48 @@ func _update(delta: float) -> void:
 		AttackPhase.APEX:
 			obj.velocity = Vector2.ZERO
 			phase_timer += delta
-			if phase_timer >= apex_pause:
-				attack_phase = AttackPhase.FALLING
-				obj.change_animation("dive_fall")
+			if phase_timer >= obj.dive_apex_pause:
+				_start_falling()
 		
 		AttackPhase.FALLING:
-			obj.velocity.y = fall_speed
+			obj.velocity.y = obj.dive_fall_speed
 			obj.velocity.x = 0
+			
 			if obj.is_on_floor():
-				_on_landing()
+				# Check if we landed on a ledge (above where player was)
+				# Give some tolerance (~50 pixels) for slight height differences
+				if obj.global_position.y < target_ground_y - 50:
+					# We're on a ledge above the player - slide off toward target
+					_slide_off_ledge()
+				else:
+					# Good landing on proper ground
+					_on_landing()
 		
 		AttackPhase.LANDING:
 			obj.velocity = Vector2.ZERO
 			phase_timer += delta
-			if phase_timer >= land_time:
+			if phase_timer >= obj.dive_land_time:
 				change_state(fsm.states.idle)
+
+
+func _start_falling() -> void:
+	attack_phase = AttackPhase.FALLING
+	obj.change_animation("dive_fall")
+	# Make sure we're at target X when falling
+	obj.global_position.x = target_x
+
+
+func _slide_off_ledge() -> void:
+	## We landed on a ledge above the player - walk off it toward the target
+	## This prevents the crab from awkwardly landing on platforms above the player
+	var dir_to_target = sign(target_x - obj.global_position.x)
+	if dir_to_target == 0:
+		dir_to_target = obj.direction
+	
+	# Push crab slightly off the ledge and let gravity take over
+	obj.global_position.x += dir_to_target * 30
+	# Stay in falling state - we'll land properly on next floor check
+	change_state(fsm.states.idle)
 
 
 func _on_landing() -> void:
@@ -107,7 +138,7 @@ func _on_landing() -> void:
 	obj.velocity = Vector2.ZERO
 	obj.change_animation("dive_land")
 	_create_shockwave()
-	_shake_camera(land_shake)
+	_shake_camera(obj.dive_land_shake)
 
 
 func _launch() -> void:
@@ -115,11 +146,13 @@ func _launch() -> void:
 	attack_phase = AttackPhase.RISING
 	phase_timer = 0.0
 	obj.change_animation("dive_rise")
-	_shake_camera(launch_shake)
+	_shake_camera(obj.dive_launch_shake)
 
 
 func _create_shockwave() -> void:
-	var shockwave = SHOCKWAVE_SCENE.instantiate()
+	if not obj.shockwave_scene:
+		return
+	var shockwave = obj.shockwave_scene.instantiate()
 	obj.get_tree().current_scene.add_child(shockwave)
 	shockwave.global_position = obj.global_position + Vector2(0, 10)
 	# Phase 2: bigger shockwave

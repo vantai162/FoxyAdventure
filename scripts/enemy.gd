@@ -136,7 +136,7 @@ func _on_player_not_in_sight():
 	pass
 
 func _take_damage_from_dir(_damage_dir: Vector2, _damage: float):
-	if invincible:
+	if not invincible:
 		fsm.current_state.take_damage(_damage_dir, _damage)
 	
 func check_player_in_sight(player: Player) -> bool:

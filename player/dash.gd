@@ -38,7 +38,6 @@ func create_ghost_trail():
 	# Match the original's properties
 	ghost.global_position = original.global_position
 	ghost.scale = original.get_parent().scale
-	print(ghost.global_scale)
 	ghost.modulate = Color(1, 1, 1, 0.4)
 	
 	# Add to the scene root so it doesn't move with the player

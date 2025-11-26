@@ -80,7 +80,6 @@ radius = 13.0384
 
 [node name="Turtle" type="CharacterBody2D" groups=["can_interact_with_water"]]
 collision_layer = 8
-collision_mask = 9
 script = ExtResource("1_raxgc")
 max_health = 2
 metadata/_custom_type_script = "uid://s4xx82espxdt"
