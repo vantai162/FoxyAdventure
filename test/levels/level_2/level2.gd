@@ -26,10 +26,6 @@ func _ready() -> void:
 	
 	if GameManager.player == null:
 		GameManager.request_player_spawn()
-		
-	# --- BẮT ĐẦU CINEMATIC ---
-	if GameManager.player:
-		play_intro_cinematic()
 	
 	
 	if not GameManager.target_portal_name.is_empty():
@@ -54,25 +50,6 @@ func _process(delta: float) -> void:
 			boss_phase2_healthbar.setup()
 			boss_phase2_healthbar.visible = true
 			boss_phase1_healthbar.visible = false
-			
-
-func play_intro_cinematic():
-	# 1. Tạo instance của Cinematic
-	var cinematic = wake_up_cinematic_scn.instantiate()
-	
-	# 2. Thêm vào cây scene
-	add_child(cinematic)
-	
-	# 3. Chờ tín hiệu "finished" từ nó
-	await cinematic.finished
-	
-	# 4. SAU KHI CINEMATIC XONG THÌ LÀM GÌ?
-	print("Intro xong, bắt đầu game!")
-	Dialogic.start("wakeup_timeline") # Hiện hội thoại tự hỏi
-	if bgm: 
-		bgm.volume_db = -20 # Mẹo: Set nhỏ trước
-		bgm.play()
-		create_tween().tween_property(bgm, "volume_db", 0.0, 2.0)
 
 func _on_meet_boss_area_2d_body_entered(body: Node2D) -> void:
 	if body.is_in_group("player") and warlord_spawned == false:
