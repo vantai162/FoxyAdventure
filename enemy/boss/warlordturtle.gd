@@ -31,7 +31,7 @@ var current_phase: int = 1
 var water_raised: bool = false
 var last_water_action_time: float = 0.0
 var cached_water_node: water = null
-
+signal health_changed
 
 func _ready():
 	super._ready()

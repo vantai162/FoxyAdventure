@@ -1,0 +1,14 @@
+[gd_scene load_steps=4 format=3 uid="uid://dvpguoojkycep"]
+
+[ext_resource type="Texture2D" uid="uid://1gjs8f6qbfyr" path="res://assets/ui/oxy_ui.png" id="1_ur4eo"]
+[ext_resource type="Texture2D" uid="uid://bx3cyn1yeaeqd" path="res://assets/ui/oxy_ui_under.png" id="2_ps7vg"]
+[ext_resource type="Script" uid="uid://dyw3nb76gvm6l" path="res://scenes/game_screen/oxy_bar.gd" id="3_ur4eo"]
+
+[node name="OxyBar" type="TextureProgressBar"]
+offset_right = 144.0
+offset_bottom = 66.0
+value = 100.0
+nine_patch_stretch = true
+texture_under = ExtResource("1_ur4eo")
+texture_progress = ExtResource("2_ps7vg")
+script = ExtResource("3_ur4eo")

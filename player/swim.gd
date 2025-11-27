@@ -14,6 +14,7 @@ func _update(delta: float):
 		if obj.current_oxygen <= 0:
 			obj.current_oxygen = 0
 			fsm.current_state.take_damage(1)
+			obj.health_changed.emit()
 	elif obj.current_water != null:
 		# Head is above water surface - restore oxygen
 		obj.current_oxygen = min(obj.max_oxygen, obj.current_oxygen + obj.oxygen_increase_rate * delta)
