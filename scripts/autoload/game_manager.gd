@@ -112,6 +112,9 @@ func respawn_at_checkpoint() -> void:
 	var hp_bar = current_stage.get_node("CanvasLayer/TextureProgressBar")
 	var coin_ui = current_stage.get_node("CanvasLayer/CoinUI")
 	var key_ui = current_stage.get_node("CanvasLayer/KeyUI")
+	if current_stage.get_node("CanvasLayer/OxyBar"):
+		var oxy_bar = current_stage.get_node("CanvasLayer/OxyBar")
+		oxy_bar.setup()
 	hp_bar.setup()
 	coin_ui.setup()
 	key_ui.setup()

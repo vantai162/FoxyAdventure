@@ -58,6 +58,7 @@ var wall_jump_restriction_timer: float = -1.0  ## -1 = not active, >=0 = active 
 var current_water: Node2D = null  ## Reference to current water body player is in
 signal health_changed
 signal coin_changed
+signal oxy_changed
 @export_group("Blade")
 @export var blade_projectile_scene: PackedScene
 @export var air_slash_scene: PackedScene
@@ -226,6 +227,7 @@ func _process(delta: float) -> void:
 	_updateeffect(delta)
 	_update_timeline(delta)
 	_updatecooldown(delta)
+	oxy_changed.emit()
 	if invincible:
 		var blink_timer
 		var sprite

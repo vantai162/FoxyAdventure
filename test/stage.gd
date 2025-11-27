@@ -6,8 +6,9 @@ extends Node2D
 var warlord_spawned = false
 var turtle_spawner_spawned = false
 var healpotion_spawner_spawned = false
-
-
+var boss_phase1_healthbar: TextureProgressBar
+var boss_phase2_healthbar: TextureProgressBar
+var boss
 
 func _enter_tree() -> void:
 	GameManager.current_stage = self
@@ -38,11 +39,18 @@ func _on_body_entered(body: Node2D) -> void:
 	pass # Replace with function body.
 
 
-
+func _process(delta: float) -> void:
+	if boss:
+		if boss.current_phase == 2:
+			boss_phase2_healthbar = $CanvasLayer/WarlordPhase2HealthBar
+			boss_phase2_healthbar.setup()
+			boss_phase2_healthbar.visible = true
+			boss_phase1_healthbar.visible = false
+			
 
 func _on_meet_boss_area_2d_body_entered(body: Node2D) -> void:
 	if body.is_in_group("player") and warlord_spawned == false:
-		var boss = warlord.instantiate()
+		boss = warlord.instantiate()
 		boss.position = Vector2(468, 400)
 		add_child(boss)
 		warlord_spawned = true
@@ -56,3 +64,8 @@ func _on_meet_boss_area_2d_body_entered(body: Node2D) -> void:
 		heal_spawner.position = Vector2(1077,452)
 		add_child(heal_spawner)
 		healpotion_spawner_spawned = true
+		
+		boss_phase1_healthbar = $CanvasLayer/WarlordHealthBar
+		boss_phase1_healthbar.visible = true
+		boss_phase1_healthbar.setup()
+		
