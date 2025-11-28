@@ -5494,6 +5494,7 @@ material = ExtResource("11_h4ytb")
 script = ExtResource("1_7qv11")
 
 [node name="CanvasLayer" type="CanvasLayer" parent="."]
+layer = 100
 
 [node name="TextureProgressBar" parent="CanvasLayer" instance=ExtResource("2_l7nct")]
 offset_left = 5.0
@@ -5780,6 +5781,7 @@ position = Vector2(4568, 337)
 stream = ExtResource("44_8nic6")
 volume_db = 10.0
 max_polyphony = 50
+bus = &"Music"
 
 [node name="HealthPotion" parent="." instance=ExtResource("45_7s41y")]
 position = Vector2(5868, 177)
@@ -5804,6 +5806,21 @@ memory_title = "⭐ Memory 1 – “Ngày rời cảng”"
 position = Vector2(6946, 226)
 target_stage = "uid://bxknbajfocd87"
 
+[connection signal="area_entered" from="Layer1/Coin" to="Layer1/Coin" method="_on_area_entered"]
+[connection signal="area_entered" from="Layer1/@Area2D@171613" to="Layer1/@Area2D@171613" method="_on_area_entered"]
+[connection signal="area_entered" from="Layer1/@Area2D@171614" to="Layer1/@Area2D@171614" method="_on_area_entered"]
+[connection signal="area_entered" from="Layer1/@Area2D@171615" to="Layer1/@Area2D@171615" method="_on_area_entered"]
+[connection signal="area_entered" from="Layer1/@Area2D@171616" to="Layer1/@Area2D@171616" method="_on_area_entered"]
+[connection signal="area_entered" from="Layer1/@Area2D@171617" to="Layer1/@Area2D@171617" method="_on_area_entered"]
+[connection signal="area_entered" from="Layer1/@Area2D@171618" to="Layer1/@Area2D@171618" method="_on_area_entered"]
+[connection signal="area_entered" from="Layer1/@Area2D@171619" to="Layer1/@Area2D@171619" method="_on_area_entered"]
+[connection signal="area_entered" from="Layer1/@Area2D@171620" to="Layer1/@Area2D@171620" method="_on_area_entered"]
+[connection signal="area_entered" from="Layer1/@Area2D@171621" to="Layer1/@Area2D@171621" method="_on_area_entered"]
+[connection signal="area_entered" from="Layer1/@Area2D@171622" to="Layer1/@Area2D@171622" method="_on_area_entered"]
+[connection signal="area_entered" from="Layer1/@Area2D@171623" to="Layer1/@Area2D@171623" method="_on_area_entered"]
+[connection signal="area_entered" from="Layer1/@Area2D@171624" to="Layer1/@Area2D@171624" method="_on_area_entered"]
+[connection signal="area_entered" from="Layer1/@Area2D@171625" to="Layer1/@Area2D@171625" method="_on_area_entered"]
+[connection signal="area_entered" from="Layer1/Key" to="Layer1/Key" method="_on_area_entered"]
 [connection signal="body_entered" from="Objects/Lever" to="Objects/Gate" method="open_gate"]
 [connection signal="body_exited" from="Objects/Lever" to="Objects/Gate" method="close_gate"]
 [connection signal="lever_activated" from="Objects/Lever" to="Objects/Gate" method="open_gate"]
