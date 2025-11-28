@@ -1,6 +1,6 @@
 [gd_scene load_steps=38 format=4 uid="uid://bxknbajfocd87"]
 
-[ext_resource type="Script" uid="uid://do6vxnl3syt06" path="res://test/levels/level_2/level2.gd" id="1_5l4f7"]
+[ext_resource type="Script" uid="uid://b6xvcjrh55sd6" path="res://test/levels/level_2/level_2.gd" id="1_5l4f7"]
 [ext_resource type="PackedScene" uid="uid://dm741hii7d5nv" path="res://scenes/game_screen/health_bar.tscn" id="1_x7kuf"]
 [ext_resource type="PackedScene" uid="uid://k1cvcu80rfmm" path="res://scenes/game_screen/coin_ui.tscn" id="2_7ulr3"]
 [ext_resource type="PackedScene" uid="uid://cstfpndmrkms3" path="res://scenes/game_screen/key_ui.tscn" id="3_2a1r0"]
@@ -46,6 +46,7 @@ size = Vector2(55, 51)
 script = ExtResource("1_5l4f7")
 
 [node name="CanvasLayer" type="CanvasLayer" parent="."]
+layer = 100
 
 [node name="TextureProgressBar" parent="CanvasLayer" instance=ExtResource("1_x7kuf")]
 offset_left = 5.0
@@ -206,6 +207,7 @@ position = Vector2(-194, -208)
 stream = ExtResource("21_x03np")
 volume_db = 10.0
 autoplay = true
+bus = &"Music"
 
 [node name="Sign" parent="." instance=ExtResource("22_huoje")]
 position = Vector2(687, -215)

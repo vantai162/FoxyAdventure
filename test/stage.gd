@@ -1,16 +1,9 @@
 extends Node2D
 
-@onready var warlord = preload("res://enemy/boss/warlordturtle.tscn")
-@onready var turtle_spawn = preload("res://spawner/turtle_spawner.tscn")
-@onready var healpotion_spawn = preload("res://spawner/healthpotion_spawner.tscn")
+
 @onready var wake_up_cinematic_scn = preload("res://cut_scene/wake_up_cutscene.tscn")
 @onready var bgm = $AudioStreamPlayer
-var warlord_spawned = false
-var turtle_spawner_spawned = false
-var healpotion_spawner_spawned = false
-var boss_phase1_healthbar: TextureProgressBar
-var boss_phase2_healthbar: TextureProgressBar
-var boss
+@onready var settings_ui = preload("res://scenes/game_screen/settings_popup.tscn")
 
 
 func _enter_tree() -> void:
@@ -48,12 +41,11 @@ func _on_body_entered(body: Node2D) -> void:
 
 
 func _process(delta: float) -> void:
-	if boss:
-		if boss.current_phase == 2:
-			boss_phase2_healthbar = $CanvasLayer/WarlordPhase2HealthBar
-			boss_phase2_healthbar.setup()
-			boss_phase2_healthbar.visible = true
-			boss_phase1_healthbar.visible = false
+	if Input.is_action_just_pressed("pause"):
+		if GameManager.paused:
+			return
+		var settings = settings_ui.instantiate()
+		$CanvasLayer.add_child(settings)
 			
 
 func play_intro_cinematic():
@@ -74,24 +66,5 @@ func play_intro_cinematic():
 		bgm.play()
 		create_tween().tween_property(bgm, "volume_db", 0.0, 2.0)
 
-func _on_meet_boss_area_2d_body_entered(body: Node2D) -> void:
-	if body.is_in_group("player") and warlord_spawned == false:
-		boss = warlord.instantiate()
-		boss.position = Vector2(468, 400)
-		add_child(boss)
-		warlord_spawned = true
-		
-		var spawner = turtle_spawn.instantiate()
-		spawner.position = Vector2(839, 36)
-		add_child(spawner)
-		turtle_spawner_spawned = true
-		
-		var heal_spawner = healpotion_spawn.instantiate()
-		heal_spawner.position = Vector2(1077,452)
-		add_child(heal_spawner)
-		healpotion_spawner_spawned = true
-		
-		boss_phase1_healthbar = $CanvasLayer/WarlordHealthBar
-		boss_phase1_healthbar.visible = true
-		boss_phase1_healthbar.setup()
+
 		

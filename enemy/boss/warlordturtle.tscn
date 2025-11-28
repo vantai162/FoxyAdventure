@@ -301,17 +301,21 @@ shape = SubResource("RectangleShape2D_dkh1m")
 [node name="MisslesLaunchSound" type="AudioStreamPlayer2D" parent="."]
 stream = ExtResource("34_nqhb3")
 volume_db = 24.0
+bus = &"SFX"
 
 [node name="BombsLaunchSound" type="AudioStreamPlayer2D" parent="."]
 stream = ExtResource("35_w6b8g")
 volume_db = 24.0
+bus = &"SFX"
 
 [node name="WaveSound" type="AudioStreamPlayer2D" parent="."]
 stream = ExtResource("36_w6b8g")
 volume_db = 20.0
+bus = &"SFX"
 
 [node name="LaughSound" type="AudioStreamPlayer2D" parent="."]
 stream = ExtResource("37_0m0l7")
 volume_db = 20.0
+bus = &"SFX"
 
 [connection signal="hurt" from="Direction/HurtArea2D" to="." method="_on_hurt_area_2d_hurt"]

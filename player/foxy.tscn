@@ -354,5 +354,6 @@ target_position = Vector2(-1, 19)
 stream = ExtResource("51_a4g31")
 volume_db = 7.0
 max_polyphony = 12
+bus = &"SFX"
 
 [connection signal="hurt" from="Direction/HurtArea2d" to="." method="_on_hurt_area_2d_hurt"]

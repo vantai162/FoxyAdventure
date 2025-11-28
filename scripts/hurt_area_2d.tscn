@@ -10,3 +10,4 @@ metadata/_custom_type_script = "uid://csu2b21cwchqw"
 [node name="AudioStreamPlayer2D" type="AudioStreamPlayer2D" parent="."]
 stream = ExtResource("2_yrjhe")
 volume_db = 24.0
+bus = &"SFX"

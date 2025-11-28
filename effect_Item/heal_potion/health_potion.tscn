@@ -25,5 +25,6 @@ texture = ExtResource("2_1dh8x")
 [node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]
 stream = ExtResource("3_tijnk")
 volume_db = 10.0
+bus = &"SFX"
 
 [connection signal="area_entered" from="." to="." method="_on_area_entered"]
