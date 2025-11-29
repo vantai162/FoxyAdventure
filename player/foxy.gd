@@ -59,6 +59,8 @@ var current_water: Node2D = null  ## Reference to current water body player is i
 signal health_changed
 signal coin_changed
 signal oxy_changed
+signal died
+
 @export_group("Blade")
 @export var blade_projectile_scene: PackedScene
 @export var air_slash_scene: PackedScene
@@ -338,4 +340,6 @@ func _on_hurt_area_2d_hurt(direction: Vector2, damage: float) -> void:
 	if not invincible:
 		fsm.current_state.take_damage(damage)
 		health_changed.emit()
+	
+
 	

@@ -36,11 +36,7 @@ func _on_main_menu_button_pressed() -> void:
 
 
 func _on_restart_button_pressed() -> void:
+	var player = GameManager.player
 	hide_popup()
-	if GameManager.has_checkpoint():
-		await GameManager.respawn_at_checkpoint()
-		get_tree().reload_current_scene()
-	else:
-		# Nếu chưa có checkpoint → reload stage bình thường
-		
-		get_tree().reload_current_scene()
+	player.die()
+	
