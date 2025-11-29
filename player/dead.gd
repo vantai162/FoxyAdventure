@@ -4,7 +4,6 @@ func _enter() -> void:
 	super._enter()
 	obj.velocity = Vector2.ZERO
 	obj.change_animation("dead")
-	
 	await obj.animated_sprite.animation_finished
 	await get_tree().create_timer(obj.dead_delay_before_respawn).timeout
 	
@@ -12,6 +11,7 @@ func _enter() -> void:
 		await GameManager.respawn_at_checkpoint()
 	else:
 		await respawn_at_default_position()
+	
 
 
 # Hàm này được giữ lại từ File 1
