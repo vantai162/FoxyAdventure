@@ -5,4 +5,4 @@ extends Node2D
 func _on_timer_timeout() -> void:
 	var obj = obj.instantiate()
 	obj.position = position
-	get_parent().get_node("Potion").add_child(obj)
+	get_parent().get_parent().get_node("Potion").add_child(obj)

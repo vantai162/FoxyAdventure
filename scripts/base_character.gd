@@ -210,9 +210,7 @@ func die() -> void:
 	# 3. Kích hoạt State Chết (Logic chính nằm ở đây)
 	# Kiểm tra xem trong danh sách states có "dead" không
 	if fsm.states.has("dead"):
-		
 		fsm.change_state(fsm.states.dead)
-		
 	else:
 		# Fallback: Nếu nhân vật này không có DeadState (ví dụ quái vật thường)
 		# Thì xóa sổ nó luôn

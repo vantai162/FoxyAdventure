@@ -27,6 +27,7 @@ directories/dch_directory={
 "Albert": "res://dialog/character/Albert.dch",
 "Captain": "res://dialog/character/Captain.dch",
 "Foxy": "res://dialog/character/Foxy.dch",
+"Warlord": "res://dialog/character/Warlord.dch",
 "cat": "res://dialog/character/cat.dch"
 }
 directories/dtl_directory={
@@ -34,7 +35,10 @@ directories/dtl_directory={
 "captain_timeline": "res://dialog/timelines/captain_timeline.dtl",
 "cat_timeline": "res://dialog/timelines/cat_timeline.dtl",
 "jack_timeline": "res://dialog/timelines/jack_timeline.dtl",
-"timeline": "res://dialog/timelines/timeline.dtl"
+"timeline": "res://dialog/timelines/timeline.dtl",
+"wake_up_timeline": "res://dialog/timelines/wake_up_timeline.dtl",
+"warlord_1": "res://dialog/timelines/warlord_1.dtl",
+"warlord_2": "res://dialog/timelines/warlord_2.dtl"
 }
 layout/style_directory={
 "dialogic_style 2": "res://dialog/custom/dialogic_style.tres"
@@ -74,6 +78,7 @@ audio/channel_defaults={
 "volume": 0.0
 }
 }
+glossary/default_case_sensitive=true
 
 [display]
 
