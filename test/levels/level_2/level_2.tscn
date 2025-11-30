@@ -51,16 +51,19 @@ layer = 100
 [node name="TextureProgressBar" parent="CanvasLayer" instance=ExtResource("1_x7kuf")]
 offset_left = 5.0
 offset_right = 176.0
+mouse_filter = 2
 
 [node name="CoinUI" parent="CanvasLayer" instance=ExtResource("2_7ulr3")]
 anchors_preset = -1
 anchor_left = 0.015
 anchor_top = 0.097
+mouse_filter = 2
 
 [node name="KeyUI" parent="CanvasLayer" instance=ExtResource("3_2a1r0")]
 anchors_preset = -1
 anchor_left = 0.015
 anchor_top = 0.155
+mouse_filter = 2
 
 [node name="WarlordHealthBar" parent="CanvasLayer" instance=ExtResource("5_chxal")]
 visible = false
@@ -68,6 +71,7 @@ offset_left = -290.0
 offset_top = -95.0
 offset_right = 734.0
 offset_bottom = 929.0
+mouse_filter = 2
 
 [node name="WarlordPhase2HealthBar" parent="CanvasLayer" instance=ExtResource("6_ajdfl")]
 visible = false
@@ -75,10 +79,12 @@ offset_left = -290.0
 offset_top = -95.0
 offset_right = 734.0
 offset_bottom = 929.0
+mouse_filter = 2
 
 [node name="OxyBar" parent="CanvasLayer" instance=ExtResource("7_5l4f7")]
 offset_left = 200.0
 offset_right = 344.0
+mouse_filter = 2
 
 [node name="CanvasLayer2" type="CanvasLayer" parent="."]
 
@@ -205,8 +211,7 @@ position = Vector2(-194, -208)
 
 [node name="WarlordTheme" type="AudioStreamPlayer" parent="."]
 stream = ExtResource("21_x03np")
-volume_db = 10.0
-autoplay = true
+volume_db = 12.0
 bus = &"Music"
 
 [node name="Sign" parent="." instance=ExtResource("22_huoje")]
@@ -264,7 +269,8 @@ position = Vector2(1646, 229)
 [node name="Blade2" parent="." instance=ExtResource("15_7ulr3")]
 position = Vector2(1614, 243)
 
-[connection signal="area_entered" from="DirtLayer/HealthPotion" to="DirtLayer/HealthPotion" method="_on_area_entered"]
+[node name="Spawner" type="Node2D" parent="."]
+
 [connection signal="lever_activated" from="Lever" to="Gate" method="open_gate"]
 [connection signal="lever_deactivated" from="Lever" to="Gate" method="close_gate"]
 [connection signal="body_entered" from="MeetBossArea2D" to="." method="_on_meet_boss_area_2d_body_entered"]

@@ -1,4 +1,4 @@
-[gd_scene load_steps=41 format=3 uid="uid://bdlk3sxo5ekwn"]
+[gd_scene load_steps=46 format=3 uid="uid://bdlk3sxo5ekwn"]
 
 [ext_resource type="Script" uid="uid://c7a5fg47r6h5l" path="res://enemy/boss/warlordturtle.gd" id="1_ef40p"]
 [ext_resource type="Texture2D" uid="uid://b405sim5qtso5" path="res://assets/warlord_turle/war_lord_turtle20.png" id="2_prdj8"]
@@ -7,8 +7,12 @@
 [ext_resource type="PackedScene" uid="uid://dduldha4tdymr" path="res://enemy/boss/rocket.tscn" id="3_tvqld"]
 [ext_resource type="Texture2D" uid="uid://cbi3asc12djd8" path="res://assets/warlord_turle/war_lord_turtle7.png" id="4_ef40p"]
 [ext_resource type="Texture2D" uid="uid://c0716dlo8gxar" path="res://assets/warlord_turle/war_lord_turtle8.png" id="5_dfhj1"]
+[ext_resource type="Texture2D" uid="uid://8usoreyem8l6" path="res://assets/foxy/smoke/jump_smoke_1.png" id="5_ilt0q"]
+[ext_resource type="Texture2D" uid="uid://jtpy308mqnwi" path="res://assets/foxy/smoke/jump_smoke_2.png" id="6_u7j1o"]
 [ext_resource type="Texture2D" uid="uid://t7rsqq6ovg5b" path="res://assets/warlord_turle/war_lord_turtle9.png" id="6_wuglq"]
+[ext_resource type="Texture2D" uid="uid://cbk136ktae42o" path="res://assets/foxy/smoke/jump_smoke_3.png" id="7_jostd"]
 [ext_resource type="Texture2D" uid="uid://4krxearoaa2b" path="res://assets/warlord_turle/war_lord_turtle10.png" id="7_tvqld"]
+[ext_resource type="Texture2D" uid="uid://c8cs1hwh7venp" path="res://assets/foxy/smoke/jump_smoke_4.png" id="8_eovdj"]
 [ext_resource type="Texture2D" uid="uid://cf5pogdpweixe" path="res://assets/warlord_turle/war_lord_turtle1.png" id="8_o1uwu"]
 [ext_resource type="Texture2D" uid="uid://c8ado4b5gmps3" path="res://assets/warlord_turle/war_lord_turtle2.png" id="9_eluqr"]
 [ext_resource type="Texture2D" uid="uid://cbnht8rgqm48t" path="res://assets/warlord_turle/war_lord_turtle3.png" id="10_w6210"]
@@ -33,6 +37,7 @@
 [ext_resource type="Script" uid="uid://dybr8136u5gn6" path="res://enemy/boss/raise_water.gd" id="29_raise"]
 [ext_resource type="Script" uid="uid://btbhb4moahkoo" path="res://enemy/boss/summon_whirlpool.gd" id="30_whirlpool"]
 [ext_resource type="PackedScene" uid="uid://ct1tqxgwkuvbe" path="res://scripts/hurt_area_2d.tscn" id="33_llkam"]
+[ext_resource type="Script" uid="uid://dhymd74ihp7jc" path="res://enemy/boss/vulnerable.gd" id="34_32p7k"]
 [ext_resource type="AudioStream" uid="uid://c8j66nyxonjlv" path="res://assets/sounds/missiles_launch.wav" id="34_nqhb3"]
 [ext_resource type="AudioStream" uid="uid://d4druhwdf3ge" path="res://assets/sounds/impactWood_heavy_001.ogg" id="35_w6b8g"]
 [ext_resource type="AudioStream" uid="uid://bxqme8ahi0tpd" path="res://assets/sounds/wave.mp3" id="36_w6b8g"]
@@ -43,10 +48,22 @@ animations = [{
 "frames": [{
 "duration": 1.0,
 "texture": ExtResource("2_prdj8")
+}, {
+"duration": 1.0,
+"texture": ExtResource("5_ilt0q")
+}, {
+"duration": 1.0,
+"texture": ExtResource("6_u7j1o")
+}, {
+"duration": 1.0,
+"texture": ExtResource("7_jostd")
+}, {
+"duration": 1.0,
+"texture": ExtResource("8_eovdj")
 }],
-"loop": true,
+"loop": false,
 "name": &"dead",
-"speed": 5.0
+"speed": 2.0
 }, {
 "frames": [{
 "duration": 1.0,
@@ -191,6 +208,17 @@ animations = [{
 "loop": false,
 "name": &"summon",
 "speed": 10.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("2_prdj8")
+}, {
+"duration": 1.0,
+"texture": ExtResource("3_7i34h")
+}],
+"loop": true,
+"name": &"vulnerable",
+"speed": 2.0
 }]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_8hnd2"]
@@ -216,7 +244,9 @@ metadata/_custom_type_script = "uid://s4xx82espxdt"
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="Direction"]
 scale = Vector2(1.0483, 1)
 sprite_frames = SubResource("SpriteFrames_ladxf")
-animation = &"summon"
+animation = &"dead"
+frame = 4
+frame_progress = 1.0
 flip_h = true
 
 [node name="FrontRayCast2D" type="RayCast2D" parent="Direction"]
@@ -293,6 +323,9 @@ script = ExtResource("29_raise")
 
 [node name="SummonWhirlpool" type="Node" parent="States"]
 script = ExtResource("30_whirlpool")
+
+[node name="Vulnerable" type="Node" parent="States"]
+script = ExtResource("34_32p7k")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 position = Vector2(0, 0.5)

@@ -1,7 +1,7 @@
 # --- CẢNH: TRÊN BOONG TÀU, TRƯỚC KHI BÃO TỚI ---
 
 # Albert đang lúi húi buộc lại dây thừng, lẩm bẩm một mình
-join albert (working) center [animation="Fade In Up"]
+join  center [animation="Fade In Up"]
 
 Albert: (Xoa xoa cái đầu gối) Chậc... Cái khớp gối của lão lại nhức nhối rồi.
 Albert: [portrait=idle] Gió đổi chiều... Mùi biển hôm nay tanh nồng quá. Không sai được, "Thủy Thần" đang giận dữ.
@@ -14,7 +14,7 @@ Foxy: [b]Bác Albert, bác đang nói gì thế?[/b]
 - "Thủy Thần" giận dữ là sao bác?
 	Albert: [portrait=idle] Là cơn thịnh nộ của biển cả đấy nhóc. Lão đi biển 40 năm nay, chưa bao giờ thấy mây đen vần vũ kiểu này.
 
-Albert: Nhìn kia kìa... (Chỉ tay ra xa). Chim hải âu bay thấp, cá heo thì lặn mất tăm. 
+Albert: Nhìn kia kìa... (Chỉ tay ra xa). Chim hải âu bay thấp, cá heo thì lặn mất tăm.
 Albert: Một cơn "Đại Cuồng Phong" sắp tới. Nó sẽ nuốt chửng mọi thứ.
 
 Foxy: [b]Nghe đáng sợ quá... Chúng ta phải làm sao đây?[/b]
@@ -27,11 +27,11 @@ Albert: [portrait=idle] Nghe lời lão này nhóc. Kiểm tra lại túi đồ,
 Albert: Và nếu tàu có nghiêng... thì nhớ bám chặt vào cái gì đó cố định. Đừng có làm anh hùng rơm.
 
 # Tiếng sấm rền vang (Nếu bạn có âm thanh sấm thì chèn vào đây)
-[sound path="res://sounds/thunder_rumble.wav" volume="0.0"]
+audio "res://sounds/thunder_rumble.wav" [volume="0.0"]
 
 Albert: (Giật mình nhìn lên trời) Chà... Nó đến nhanh hơn lão tưởng.
 Albert: Lão phải đi gia cố lại khoang hàng đây. Nhóc cũng mau tìm chỗ nấp hoặc ra chỗ Thuyền trưởng đi!
 
 # Albert vội vã rời đi
-leave albert [animation="Fade Out Down"]
+leave 
 [end_timeline]
