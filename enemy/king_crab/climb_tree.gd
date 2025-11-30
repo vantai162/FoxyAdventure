@@ -1,12 +1,14 @@
 extends EnemyState
 
 ## Climb coconut tree - tween position up to tree marker position
+
+# King Crab attacks cannot be interrupted - take damage but keep attacking
+func take_damage(_damage_dir, damage: int) -> void:
+	obj.take_damage(damage)
 ## Rotates crab sideways during climb for visual effect
 ## 
 ## ANIMATION ASSUMPTIONS:
 ##   - "climb" : Climbing motion, legs moving (loop: true)
-
-@export var climb_duration: float = 1.8  ## Time to reach tree top (slower = more dramatic)
 
 var climb_time: float = 0.0
 var start_y: float = 0.0
@@ -45,7 +47,7 @@ func _update(delta: float) -> void:
 	climb_time += delta
 	
 	# Smooth climb using ease out
-	var progress = min(climb_time / climb_duration, 1.0)
+	var progress = min(climb_time / obj.climb_duration, 1.0)
 	var eased = 1.0 - pow(1.0 - progress, 2)  # Ease out quad
 	obj.global_position.y = lerp(start_y, target_y, eased)
 	

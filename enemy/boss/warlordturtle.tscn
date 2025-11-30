@@ -1,10 +1,11 @@
-[gd_scene load_steps=41 format=3 uid="uid://bdlk3sxo5ekwn"]
+[gd_scene load_steps=38 format=3 uid="uid://bdlk3sxo5ekwn"]
 
 [ext_resource type="Script" uid="uid://c7a5fg47r6h5l" path="res://enemy/boss/warlordturtle.gd" id="1_ef40p"]
 [ext_resource type="Texture2D" uid="uid://b405sim5qtso5" path="res://assets/warlord_turle/war_lord_turtle20.png" id="2_prdj8"]
 [ext_resource type="PackedScene" uid="uid://dy012gt2k7xmt" path="res://enemy/boss/boomb.tscn" id="2_wuglq"]
 [ext_resource type="Texture2D" uid="uid://byu3ukso8nfb5" path="res://assets/warlord_turle/war_lord_turtle19.png" id="3_7i34h"]
 [ext_resource type="PackedScene" uid="uid://dduldha4tdymr" path="res://enemy/boss/rocket.tscn" id="3_tvqld"]
+[ext_resource type="PackedScene" uid="uid://c5m8vno0qh3xy" path="res://objects/whirlpool/whirlpool.tscn" id="4_4m7bq"]
 [ext_resource type="Texture2D" uid="uid://cbi3asc12djd8" path="res://assets/warlord_turle/war_lord_turtle7.png" id="4_ef40p"]
 [ext_resource type="Texture2D" uid="uid://c0716dlo8gxar" path="res://assets/warlord_turle/war_lord_turtle8.png" id="5_dfhj1"]
 [ext_resource type="Texture2D" uid="uid://t7rsqq6ovg5b" path="res://assets/warlord_turle/war_lord_turtle9.png" id="6_wuglq"]
@@ -33,10 +34,6 @@
 [ext_resource type="Script" uid="uid://dybr8136u5gn6" path="res://enemy/boss/raise_water.gd" id="29_raise"]
 [ext_resource type="Script" uid="uid://btbhb4moahkoo" path="res://enemy/boss/summon_whirlpool.gd" id="30_whirlpool"]
 [ext_resource type="PackedScene" uid="uid://ct1tqxgwkuvbe" path="res://scripts/hurt_area_2d.tscn" id="33_llkam"]
-[ext_resource type="AudioStream" uid="uid://c8j66nyxonjlv" path="res://assets/sounds/missiles_launch.wav" id="34_nqhb3"]
-[ext_resource type="AudioStream" uid="uid://d4druhwdf3ge" path="res://assets/sounds/impactWood_heavy_001.ogg" id="35_w6b8g"]
-[ext_resource type="AudioStream" uid="uid://bxqme8ahi0tpd" path="res://assets/sounds/wave.mp3" id="36_w6b8g"]
-[ext_resource type="AudioStream" uid="uid://26kiclm3hflh" path="res://assets/sounds/King Dice Attack Laugh (Nr. 1 Cuphead Sound) - Sound Effect for editing.wav" id="37_0m0l7"]
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_ladxf"]
 animations = [{
@@ -205,6 +202,7 @@ collision_layer = 8
 script = ExtResource("1_ef40p")
 boomb_scene = ExtResource("2_wuglq")
 rocket_scene = ExtResource("3_tvqld")
+whirlpool_scene = ExtResource("4_4m7bq")
 knockback_force = 0.0
 max_health = 26
 max_invincible = 3.0
@@ -299,22 +297,18 @@ position = Vector2(0, 0.5)
 shape = SubResource("RectangleShape2D_dkh1m")
 
 [node name="MisslesLaunchSound" type="AudioStreamPlayer2D" parent="."]
-stream = ExtResource("34_nqhb3")
 volume_db = 24.0
 bus = &"SFX"
 
 [node name="BombsLaunchSound" type="AudioStreamPlayer2D" parent="."]
-stream = ExtResource("35_w6b8g")
 volume_db = 24.0
 bus = &"SFX"
 
 [node name="WaveSound" type="AudioStreamPlayer2D" parent="."]
-stream = ExtResource("36_w6b8g")
 volume_db = 20.0
 bus = &"SFX"
 
 [node name="LaughSound" type="AudioStreamPlayer2D" parent="."]
-stream = ExtResource("37_0m0l7")
 volume_db = 20.0
 bus = &"SFX"
 
