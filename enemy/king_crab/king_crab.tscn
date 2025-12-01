@@ -1,7 +1,7 @@
-[gd_scene load_steps=56 format=3 uid="uid://ctmgnaqjtpp40"]
+[gd_scene load_steps=58 format=3 uid="uid://ctmgnaqjtpp40"]
 
 [ext_resource type="Script" uid="uid://bukicvldqmhxv" path="res://enemy/king_crab/king_crab.gd" id="1_script"]
-[ext_resource type="PackedScene" path="res://enemy/king_crab/projectiles/shockwave.tscn" id="2_cqoo5"]
+[ext_resource type="PackedScene" uid="uid://p5etops51kvs" path="res://enemy/king_crab/projectiles/shockwave.tscn" id="2_cqoo5"]
 [ext_resource type="Texture2D" uid="uid://wn070tchkeg3" path="res://assets/king_crab/King_Crab_1.png" id="2_kc1"]
 [ext_resource type="Texture2D" uid="uid://dhbdtq53r0ydu" path="res://assets/king_crab/King_Crab_19.png" id="3_8skpv"]
 [ext_resource type="Texture2D" uid="uid://ccp2i2pnjq71x" path="res://assets/king_crab/King_Crab_2.png" id="3_kc2"]
@@ -51,12 +51,28 @@
 [ext_resource type="PackedScene" uid="uid://dx1jtghwrx6ps" path="res://enemy/king_crab/projectiles/king_crab_coconut.tscn" id="34_coconut"]
 [ext_resource type="PackedScene" uid="uid://dncnb1yncdpam" path="res://enemy/king_crab/projectiles/king_crab_claw.tscn" id="35_clawproj"]
 [ext_resource type="PackedScene" uid="uid://p1nb3n6xmbvs" path="res://objects/warning/warning_rocket.tscn" id="36_warning"]
+[ext_resource type="PackedScene" uid="uid://bequ1v0oi2sg0" path="res://enemy/king_crab/projectiles/water_bubble.tscn" id="43_s2fvd"]
+[ext_resource type="Script" uid="uid://8pclbcyle1bg" path="res://enemy/king_crab/shoot_water_bubble.gd" id="52_qyq3g"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_body"]
 size = Vector2(57, 57)
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_main"]
 animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("12_kc13")
+}, {
+"duration": 1.0,
+"texture": ExtResource("13_kc14")
+}, {
+"duration": 1.0,
+"texture": ExtResource("14_kc15")
+}],
+"loop": false,
+"name": &"bubble_attack",
+"speed": 10.0
+}, {
 "frames": [{
 "duration": 1.0,
 "texture": ExtResource("3_8skpv")
@@ -356,7 +372,7 @@ shape = SubResource("RectangleShape2D_body")
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="Direction"]
 position = Vector2(0, -28)
 sprite_frames = SubResource("SpriteFrames_main")
-animation = &"claw_recover"
+animation = &"bubble_attack"
 flip_h = true
 
 [node name="FrontRayCast2D" type="RayCast2D" parent="Direction"]
@@ -409,6 +425,17 @@ script = ExtResource("26_factory")
 product_packed_scene = ExtResource("36_warning")
 target_container_name = &"Warnings"
 
+[node name="WaterBubbleFactory" type="Marker2D" parent="Direction"]
+script = ExtResource("26_factory")
+product_packed_scene = ExtResource("43_s2fvd")
+metadata/_custom_type_script = "uid://ifyit1vg4ktq"
+
+[node name="Marker2D_LowerClaw" type="Marker2D" parent="Direction/WaterBubbleFactory"]
+position = Vector2(17, -12)
+
+[node name="Marker2D_UpperClaw" type="Marker2D" parent="Direction/WaterBubbleFactory"]
+position = Vector2(62.5, -21)
+
 [node name="States" type="Node" parent="."]
 
 [node name="Hurt" type="Node" parent="States"]
@@ -437,6 +464,9 @@ script = ExtResource("32_claw")
 
 [node name="RollBounce" type="Node" parent="States"]
 script = ExtResource("33_roll")
+
+[node name="BubbleAttack" type="Node" parent="States"]
+script = ExtResource("52_qyq3g")
 
 [connection signal="hurt" from="Direction/HurtArea2D" to="." method="_on_hurt_area_2d_hurt"]
 [connection signal="body_entered" from="Direction/DetectPlayerArea2D" to="." method="_on_active_area_2d_body_entered"]

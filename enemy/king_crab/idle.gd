@@ -18,14 +18,15 @@ func _choose_next_action() -> void:
 	
 	if obj.current_phase == 1:
 		# Randomly pick dive or coconut throw
-		if randf() < 0.5:
-			change_state(fsm.states.diveattack)
-		else:
-			var tree = obj.find_nearest_tree()
-			if tree:
-				change_state(fsm.states.walktotree)
-			else:
-				change_state(fsm.states.diveattack)
+		#if randf() < 0.5:
+			#change_state(fsm.states.diveattack)
+		#else:
+			#var tree = obj.find_nearest_tree()
+			#if tree:
+				#change_state(fsm.states.walktotree)
+			#else:
+				#change_state(fsm.states.diveattack)
+		change_state(fsm.states.bubbleattack)
 	else:
 		# Phase 2: All attacks available
 		var actions = [fsm.states.diveattack]

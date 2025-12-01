@@ -132,6 +132,14 @@ animations = [{
 "loop": true,
 "name": &"run",
 "speed": 10.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("6_2ri0v")
+}],
+"loop": false,
+"name": &"water_trap",
+"speed": 10.0
 }]
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_2mww5"]
@@ -232,6 +240,14 @@ animations = [{
 "loop": true,
 "name": &"run",
 "speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("21_kvcfx")
+}],
+"loop": false,
+"name": &"water_trap",
+"speed": 10.0
 }]
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_34yrj"]
@@ -259,7 +275,6 @@ max_health = 4
 metadata/_custom_type_script = "uid://w7xdmsdvf5vd"
 
 [node name="Camera2D" type="Camera2D" parent="."]
-zoom = Vector2(2, 2)
 limit_bottom = 500
 script = ExtResource("2_rsc2w")
 
@@ -272,12 +287,12 @@ shape = SubResource("RectangleShape2D_8r8n2")
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="Direction"]
 visible = false
 sprite_frames = SubResource("SpriteFrames_7xt5n")
-animation = &"jump"
+animation = &"water_trap"
 
 [node name="BladeAnimatedSprite2D" type="AnimatedSprite2D" parent="Direction"]
 visible = false
 sprite_frames = SubResource("SpriteFrames_2mww5")
-animation = &"idle"
+animation = &"water_trap"
 
 [node name="HitArea2D" type="Area2D" parent="Direction" groups=["player_attack"]]
 collision_layer = 64

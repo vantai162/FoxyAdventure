@@ -43,14 +43,14 @@ func fire_boomb():
 	var boomb1 = boomb_scene.instantiate()
 	boomb1.global_position = muzzle.global_position
 	boomb1.set_speed(350.0)
-	boomb1.direction =  -1
+	boomb1.roll_dir =  direction
 	get_tree().current_scene.add_child(boomb1)
 	bombs_launch_sound.play()
 	await get_tree().create_timer(0.2).timeout
 	var boomb2 = boomb_scene.instantiate()
 	boomb2.global_position = muzzle2.global_position
 	boomb2.set_speed(250.0)
-	boomb2.direction =  1
+	boomb2.roll_dir =  -direction
 	get_tree().current_scene.add_child(boomb2)
 	bombs_launch_sound.play()
 

@@ -8,6 +8,8 @@ func _enter() -> void:
 	obj.change_animation("run")
 
 func _update(_delta: float):
+	if obj.Effect["BubbleTrap"] > 0:
+		return
 	obj.current_oxygen = min(obj.max_oxygen, obj.current_oxygen + obj.oxygen_increase_rate * _delta)
 	if obj.Effect["Stun"] <= 0:
 		if control_jump():

@@ -14,6 +14,8 @@ func _exit() -> void:
 	pass
 
 func _update(delta: float):
+	if obj.Effect["BubbleTrap"] > 0:
+		return
 	# Update wall jump restriction timer if active
 	if obj.wall_jump_restriction_timer >= 0:
 		obj.wall_jump_restriction_timer += delta

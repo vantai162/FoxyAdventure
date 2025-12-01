@@ -42,6 +42,12 @@ extends EnemyCharacter
 @export var roll_bounce_velocity_y: float = -500.0
 @export var roll_max_bounces: int = 3
 
+@export_group("Bubble Attack")
+@export var bubble_scene: PackedScene
+@export var bubble_attack_interval: float = 3.5
+@export var bubble_speed: float = 300.0
+@export var bubble_trap_duration: float = 2.0
+
 @export_group("Coconut Throw - Phase 1")
 @export var coconut_p1_max_throws: int = 4
 @export var coconut_p1_interval: float = 0.6
@@ -66,6 +72,9 @@ var current_phase: int = 1
 @onready var coconut_factory = $Direction/CoconutFactory if has_node("Direction/CoconutFactory") else null
 @onready var claw_factory = $Direction/ClawFactory if has_node("Direction/ClawFactory") else null
 @onready var warning_factory = $Direction/WarningFactory if has_node("Direction/WarningFactory") else null
+@onready var water_bubble_factory = $Direction/WaterBubbleFactory if has_node("Direction/WaterBubbleFactory") else null
+@onready var upper_claw_pos = $Direction/WaterBubbleFactory/Marker2D_LowerClaw
+@onready var lower_claw_pos = $Direction/WaterBubbleFactory/Marker2D_UpperClaw
 
 func _ready() -> void:
 	add_to_group("king_crab")

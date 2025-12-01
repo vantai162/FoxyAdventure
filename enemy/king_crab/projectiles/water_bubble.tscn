@@ -1,0 +1,79 @@
+[gd_scene load_steps=13 format=3 uid="uid://bequ1v0oi2sg0"]
+
+[ext_resource type="Script" uid="uid://dgbfaqq7nkubp" path="res://enemy/king_crab/projectiles/water_bubble.gd" id="1_qvlyp"]
+[ext_resource type="Texture2D" uid="uid://ccklqihbfkt5n" path="res://assets/king_crab/water_bubble/3.png" id="2_gqvb0"]
+[ext_resource type="Texture2D" uid="uid://bqck43wv0r14y" path="res://assets/king_crab/water_bubble/4.png" id="3_w2b42"]
+[ext_resource type="Texture2D" uid="uid://bixa01jg131f5" path="res://assets/king_crab/water_bubble/5.png" id="4_qa5o3"]
+[ext_resource type="Texture2D" uid="uid://cjc654a6j0bhg" path="res://assets/king_crab/water_bubble/6.png" id="5_bwvst"]
+[ext_resource type="Texture2D" uid="uid://ctqf8l58bgrq7" path="res://assets/king_crab/water_bubble/7.png" id="6_uln0q"]
+[ext_resource type="Texture2D" uid="uid://s8m07adroehj" path="res://assets/king_crab/water_bubble/0.png" id="7_jf65n"]
+[ext_resource type="Texture2D" uid="uid://lajvkoo3mdtv" path="res://assets/king_crab/water_bubble/1.png" id="8_qlkii"]
+[ext_resource type="Texture2D" uid="uid://drwc3ohi6fgax" path="res://assets/king_crab/water_bubble/2.png" id="9_gnr00"]
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_wmq47"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("2_gqvb0")
+}, {
+"duration": 1.0,
+"texture": ExtResource("3_w2b42")
+}, {
+"duration": 1.0,
+"texture": ExtResource("4_qa5o3")
+}, {
+"duration": 1.0,
+"texture": ExtResource("5_bwvst")
+}, {
+"duration": 1.0,
+"texture": ExtResource("6_uln0q")
+}],
+"loop": false,
+"name": &"explode",
+"speed": 10.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("7_jf65n")
+}, {
+"duration": 1.0,
+"texture": ExtResource("8_qlkii")
+}, {
+"duration": 1.0,
+"texture": ExtResource("9_gnr00")
+}],
+"loop": true,
+"name": &"idle",
+"speed": 5.0
+}]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_uiict"]
+radius = 21.4709
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_qvlyp"]
+radius = 22.3607
+
+[node name="WaterBubble" type="RigidBody2D"]
+collision_layer = 128
+collision_mask = 2
+gravity_scale = 0.0
+script = ExtResource("1_qvlyp")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+sprite_frames = SubResource("SpriteFrames_wmq47")
+animation = &"idle"
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("CircleShape2D_uiict")
+
+[node name="life_timer" type="Timer" parent="."]
+
+[node name="Area2D" type="Area2D" parent="."]
+collision_layer = 0
+collision_mask = 2
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D"]
+shape = SubResource("CircleShape2D_qvlyp")
+
+[connection signal="timeout" from="life_timer" to="." method="_on_life_timer_timeout"]
+[connection signal="body_entered" from="Area2D" to="." method="_on_area_2d_body_entered"]

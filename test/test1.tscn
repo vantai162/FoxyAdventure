@@ -1,8 +1,8 @@
 [gd_scene load_steps=5 format=3 uid="uid://dy6cmmwsmdx2r"]
 
 [ext_resource type="PackedScene" uid="uid://bs816w0pr8all" path="res://player/foxy.tscn" id="1_c086n"]
-[ext_resource type="PackedScene" uid="uid://m0ec1cyfshdq" path="res://objects/scroll/scroll.tscn" id="3_my5ub"]
-[ext_resource type="PackedScene" uid="uid://duryp3ufmd0be" path="res://enemy/tribe/friendly_tribe.tscn" id="3_vwmmf"]
+[ext_resource type="PackedScene" uid="uid://bequ1v0oi2sg0" path="res://enemy/king_crab/projectiles/water_bubble.tscn" id="2_c086n"]
+[ext_resource type="Texture2D" uid="uid://b3aukwxehwfbv" path="res://icon.svg" id="3_vwmmf"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_my5ub"]
 size = Vector2(658.5, 87)
@@ -16,13 +16,14 @@ position = Vector2(394.75, 325.5)
 shape = SubResource("RectangleShape2D_my5ub")
 
 [node name="Foxy" parent="." instance=ExtResource("1_c086n")]
-position = Vector2(123, 195)
+position = Vector2(349, 262)
 jump_buffer = 0.1
 coyote_time = 0.15
 
-[node name="FriendlyTribe" parent="." instance=ExtResource("3_vwmmf")]
-position = Vector2(454, 243)
+[node name="WaterBubble" parent="." instance=ExtResource("2_c086n")]
+position = Vector2(443, 257)
 
-[node name="MemoryScroll" parent="." instance=ExtResource("3_my5ub")]
-position = Vector2(241, 266)
-story_text = "\"Ngày... Tháng... Bão lớn quá. Thuyền trưởng nói lũ dân làng ở hòn đảo này nắm giữ 'Hơi thở của biển'. Chúng ta chỉ đến để... xin lại nó thôi. Nếu tàu chìm, Foxy, nhớ lấy nhiệm vụ: Tập hợp lại và đừng tin bất cứ ai ngoài anh em mình.\""
+[node name="Icon" type="Sprite2D" parent="."]
+position = Vector2(416, 347)
+scale = Vector2(2.69531, 1)
+texture = ExtResource("3_vwmmf")

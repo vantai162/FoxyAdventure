@@ -66,7 +66,8 @@ signal coin_changed
 	"Stun": 0,
 	"DamAmplify": 0,
 	"Slow": 0,
-	"Invicibility": 0
+	"Invicibility": 0,
+	"BubbleTrap": 0	
 }
 
 enum attack_direction {
@@ -91,6 +92,7 @@ var last_ground_time: float = -1211.0
 var blade_count: int = 0
 var max_blade_capacity: int = 1
 var has_unlocked_blade: bool = false
+
 
 ## Get current air acceleration value based on wall jump restriction state
 func get_current_air_acceleration() -> float:
@@ -255,12 +257,28 @@ func _collect_blade() -> void:
 
 func _applyeffect(name: String, time: float) -> void:
 	Effect[name] = time
+	
+func apply_bubble_trap(duration: float = 2.0):
+	Effect["BubbleTrap"] = duration
+	
+	velocity = Vector2.ZERO  
+	set_physics_process(false)
+	
+	
+	if has_unlocked_blade:
+		$Direction/BladeAnimatedSprite2D.play("water_trap")
+	else:
+		$Direction/AnimatedSprite2D.play("water_trap")
+	
 
+	
 func _updateeffect(delta: float) -> void:
 	for key in Effect:
 		Effect[key] -= delta
 		if Effect[key] <= 0:
 			Effect[key] = 0
+	if Effect["BubbleTrap"] <= 0 and not is_physics_processing():
+		set_physics_process(true)
 
 func _update_timeline(delta: float) -> void:
 	timeline += delta
