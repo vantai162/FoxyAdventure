@@ -2,16 +2,16 @@ extends EnemyCharacter
 class_name AggressiveTribe
 
 @export_group("Throwing Behavior")
-@export var throw_force: float = 200.0
-@export var throw_arc: float = 300.0  ## Vertical component of throw velocity
-@export var burst_cooldown: float = 3.0
-@export var burst_throw_interval: float = 0.3
-@export var windup_time: float = 0.5
+@export var throw_force: float = 350.0  ## Horizontal throw speed
+@export var throw_arc: float = 400.0  ## Vertical component of throw velocity
+@export var burst_cooldown: float = 2.0  ## Time between attack bursts
+@export var burst_throw_interval: float = 0.25  ## Time between throws in a burst
+@export var windup_time: float = 0.4  ## Preparation time before throwing
 
 @export_group("Distance Scaling")
-@export var distance_scale_factor: float = 200.0  ## Distance to normalize throw strength
-@export var min_throw_multiplier: float = 0.6  ## Minimum throw force multiplier
-@export var max_throw_multiplier: float = 1.4  ## Maximum throw force multiplier
+@export var distance_scale_factor: float = 250.0  ## Distance to normalize throw strength
+@export var min_throw_multiplier: float = 0.7  ## Minimum throw force multiplier
+@export var max_throw_multiplier: float = 1.6  ## Maximum throw force multiplier
 
 @export_group("Projectiles")
 @export var normal_coconut_scene: PackedScene

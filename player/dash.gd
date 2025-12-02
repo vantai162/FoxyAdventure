@@ -26,7 +26,10 @@ func _update(delta: float):
 		fsm.change_state(fsm.states.wallcling)
 
 func create_ghost_trail():
-	var original = $"../../Direction/AnimatedSprite2D"
+	# Use the player's current active sprite (normal or blade)
+	var original = obj.animated_sprite
+	if not original:
+		original = $"../../Direction/AnimatedSprite2D"  # Fallback
 	
 	# Create a simple Sprite2D instead of duplicating
 	var ghost = Sprite2D.new()

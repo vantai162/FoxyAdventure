@@ -63,10 +63,14 @@ func _init_hurt_area():
 		var hurt_area = $Direction/HurtArea2D
 		hurt_area.hurt.connect(_on_hurt_area_2d_hurt)
 
-# check touch wall
+# check touch wall (ignores one-way platforms)
 func is_touch_wall() -> bool:
-	if front_ray_cast != null:
-		return front_ray_cast.is_colliding()
+	if front_ray_cast != null and front_ray_cast.is_colliding():
+		var collider = front_ray_cast.get_collider()
+		# Ignore one-way platforms - enemies should walk over them
+		if collider.is_in_group("one_way_platform"):
+			return false
+		return true
 	return false
 
 # check if touching another enemy (for stacking prevention)

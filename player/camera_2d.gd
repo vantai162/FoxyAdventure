@@ -37,6 +37,24 @@ func _process(delta: float) -> void:
 		if rot_strength <= 0.01:
 			rotation = default_rotation
 
+# --- HÀM SET CAMERA LIMITS (Call từ Stage scripts) ---
+func set_level_bounds(left: float = -10000000, right: float = 10000000, top: float = -10000000, bottom: float = 10000000) -> void:
+	limit_left = int(left)
+	limit_right = int(right)
+	limit_top = int(top)
+	limit_bottom = int(bottom)
+
+# --- HÀM AUTO-DETECT BOUNDS TỪ TILEMAP (Optional helper) ---
+func auto_detect_bounds_from_tilemap(tilemap: TileMapLayer, margin: Vector2 = Vector2(0, 0)) -> void:
+	var used_rect = tilemap.get_used_rect()
+	var tile_size = tilemap.tile_set.tile_size
+	var map_pos = tilemap.global_position
+	
+	limit_left = int(map_pos.x + used_rect.position.x * tile_size.x - margin.x)
+	limit_right = int(map_pos.x + used_rect.end.x * tile_size.x + margin.x)
+	limit_top = int(map_pos.y + used_rect.position.y * tile_size.y - margin.y)
+	limit_bottom = int(map_pos.y + used_rect.end.y * tile_size.y + margin.y)
+
 # --- HÀM 1: DÙNG CHO QUÁI ĐÁNH (Giữ tên cũ để không phải sửa code Player) ---
 func shake(amount: float = 10.0):
 	shake_strength = amount

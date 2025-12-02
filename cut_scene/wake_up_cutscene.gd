@@ -20,7 +20,8 @@ func start_sequence():
 		return
 
 	# --- 1. SETUP ---
-	#player.is_locked = true
+	# Lock player input during cutscene
+	GameManager.paused = true
 	player.visible = true
 	if player.has_method("change_animation"):
 		player.change_animation("dead")
@@ -89,7 +90,8 @@ func start_sequence():
 	
 	await get_tree().create_timer(1.0).timeout
 	
-#	player.is_locked = false
+	# Unlock player input after cutscene
+	GameManager.paused = false
 	emit_signal("finished")
 	queue_free()
 

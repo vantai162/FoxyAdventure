@@ -30,7 +30,7 @@ var health: int
 var is_in_water: bool = false
 @export var max_oxygen := 5.0          # số giây có thể ở dưới nước
 @export var oxygen_decrease_rate := 1.0  # mỗi giây giảm bao nhiêu oxy
-@export var oxygen_increase_rate := 1.5  # mỗi giây tăng bao nhiêu oxy khi ở trên mặt nước/đất
+@export var oxygen_increase_rate := 3.0  # mỗi giây tăng bao nhiêu oxy khi ở trên mặt nước/đất
 @export var damage_per_second := 1      # mất HP mỗi giây khi đã hết oxy
 var current_oxygen := max_oxygen
 
@@ -162,6 +162,9 @@ func _is_on_one_way_platform():
 	var collider = floor_ray_cast.get_collider()
 	if not collider: return false
 	
+	# Check by group first (preferred), fallback to name
+	if collider.is_in_group("one_way_platform"):
+		return true
 	return collider.name == "OneWayPlatform"
 	
 

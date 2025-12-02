@@ -37,6 +37,7 @@
 [ext_resource type="Script" uid="uid://dnkf3foccvr0j" path="res://enemy/boss/dead.gd" id="28_wuglq"]
 [ext_resource type="Script" uid="uid://dybr8136u5gn6" path="res://enemy/boss/raise_water.gd" id="29_raise"]
 [ext_resource type="Script" uid="uid://btbhb4moahkoo" path="res://enemy/boss/summon_whirlpool.gd" id="30_whirlpool"]
+[ext_resource type="Script" path="res://enemy/boss/phase_transition.gd" id="31_phase"]
 [ext_resource type="PackedScene" uid="uid://ct1tqxgwkuvbe" path="res://scripts/hurt_area_2d.tscn" id="33_llkam"]
 [ext_resource type="Script" uid="uid://dhymd74ihp7jc" path="res://enemy/boss/vulnerable.gd" id="34_32p7k"]
 [ext_resource type="AudioStream" uid="uid://c8j66nyxonjlv" path="res://assets/sounds/missiles_launch.wav" id="34_nqhb3"]
@@ -328,6 +329,9 @@ script = ExtResource("30_whirlpool")
 
 [node name="Vulnerable" type="Node" parent="States"]
 script = ExtResource("34_32p7k")
+
+[node name="PhaseTransition" type="Node" parent="States"]
+script = ExtResource("31_phase")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 position = Vector2(0, 0.5)

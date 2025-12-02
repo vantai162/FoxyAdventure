@@ -83,7 +83,7 @@ shape = SubResource("RectangleShape2D_5qelw")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="Direction"]
 sprite_frames = SubResource("SpriteFrames_x3h0i")
-animation = &"hurt"
+animation = &"run"
 
 [node name="FrontRayCast2D" type="RayCast2D" parent="Direction"]
 position = Vector2(9, -4)
