@@ -10,7 +10,7 @@
 radius = 8.0
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_45h00"]
-radius = 8.0
+radius = 13.0
 
 [node name="BladeProjectile" type="Area2D" groups=["player_attack"]]
 collision_layer = 0

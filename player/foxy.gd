@@ -33,6 +33,8 @@ var inventory= Inventory.new()
 
 @export_group("Attack")
 @export var attack_duration: float = 0.2
+@export var attack_cooldown_time: float = 0.35  ## Cooldown between attacks (prevents spam)
+@export var attack_air_gravity_scale: float = 0.3  ## Gravity multiplier during air attack (creates "hang time")
 @export var air_slash_spawn_delay: float = 0.05
 @export var air_slash_speed: float = 300.0
 @export var air_slash_deceleration: float = 500.0
@@ -40,6 +42,8 @@ var inventory= Inventory.new()
 @export var air_slash_active_time: float = 0.3
 @export var air_slash_fade_out_time: float = 0.3
 @export var air_slash_total_time: float = 0.8
+
+var attack_cooldown_remaining: float = 0.0  ## Tracks current cooldown countdown
 
 @export_group("Swimming")
 @export var swim_gravity: float = 300.0
@@ -114,7 +118,10 @@ func get_current_air_acceleration() -> float:
 	return air_acceleration
 
 func can_attack() -> bool:
-	return blade_count > 0 and Effect["Stun"] <= 0
+	return blade_count > 0 and Effect["Stun"] <= 0 and attack_cooldown_remaining <= 0
+
+func start_attack_cooldown() -> void:
+	attack_cooldown_remaining = attack_cooldown_time
 
 func can_throw_blade() -> bool:
 	return blade_count > 0 and Effect["Stun"] <= 0
@@ -232,12 +239,10 @@ func _process(delta: float) -> void:
 	oxy_changed.emit()
 	if invincible:
 		var blink_timer
-		var sprite
-		if has_unlocked_blade:
-			sprite = $Direction/BladeAnimatedSprite2D
-			
-		elif not has_unlocked_blade:
-			sprite = $Direction/AnimatedSprite2D
+		# Use the current active sprite (supports both normal and blade sprite)
+		var sprite = animated_sprite
+		if not sprite:
+			sprite = $Direction/AnimatedSprite2D  # Fallback
 		blink_timer = Timer.new()
 		blink_timer.wait_time = 0.1
 		blink_timer.one_shot = false
@@ -253,9 +258,13 @@ func _process(delta: float) -> void:
 
 func _collect_blade() -> void:
 	if not has_unlocked_blade:
+		# First blade: unlock ability and give one blade
 		has_unlocked_blade = true
+		blade_count = 1
 		set_animated_sprite($Direction/BladeAnimatedSprite2D)
-	return_blade()
+	else:
+		# Additional blades: increase capacity
+		increase_blade_capacity()
 
 func _applyeffect(name: String, time: float) -> void:
 	Effect[name] = time
@@ -291,6 +300,10 @@ func _updatecooldown(delta: float) -> void:
 		CoolDown[key] -= delta
 		if CoolDown[key] <= 0:
 			CoolDown[key] = 0
+	
+	# Attack cooldown (separate from skill cooldowns)
+	if attack_cooldown_remaining > 0:
+		attack_cooldown_remaining -= delta
 
 func set_cool_down(skillname: String) -> void:
 	CoolDown[skillname] = InitCoolDown[skillname]

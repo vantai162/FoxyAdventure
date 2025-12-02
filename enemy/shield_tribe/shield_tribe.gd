@@ -97,6 +97,12 @@ func face_player() -> void:
 		t.timeout.connect(Callable(self, "_on_turn_timeout"))
 
 func _on_turn_timeout() -> void:
+	# Don't turn during attack - would be unfair to player
+	if fsm.current_state.name == "attack":
+		_pending_direction = 0
+		_is_turning = false
+		return
+	
 	if _pending_direction != 0:
 		change_direction(_pending_direction)
 	_pending_direction = 0

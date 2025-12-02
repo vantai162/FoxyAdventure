@@ -20,7 +20,8 @@ func start_sequence():
 		return
 
 	# --- 1. SETUP ---
-	#player.is_locked = true
+	# Lock player input during cutscene
+	GameManager.paused = true
 	player.visible = true
 	if player.has_method("change_animation"):
 		player.change_animation("dead")
@@ -84,12 +85,18 @@ func start_sequence():
 	await t3.finished
 	
 	# --- 3. KẾT THÚC ---
-	# Foxy đứng dậy
-	player.change_animation("dead")
+	# Foxy đứng dậy - play dead animation in reverse to simulate getting up
+	if player.animated_sprite:
+		player.animated_sprite.play_backwards("dead")
+		await player.animated_sprite.animation_finished
 	
-	await get_tree().create_timer(1.0).timeout
+	# Switch to idle after standing up
+	player.change_animation("idle")
 	
-#	player.is_locked = false
+	await get_tree().create_timer(0.5).timeout
+	
+	# Unlock player input after cutscene
+	GameManager.paused = false
 	emit_signal("finished")
 	queue_free()
 

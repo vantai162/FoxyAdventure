@@ -28,11 +28,15 @@ func _ready() -> void:
 	explosion.visible = false
 	explosion_hitbox.set_deferred("disabled", true)
 	explosion_area.monitoring = false
-	apply_impulse(Vector2(-1*speed,lift_force))
 	explosion_timer.start()
 	
 	# Start checking for water
 	set_physics_process(true)
+
+## Launch the bomb in the specified direction. Call AFTER adding to scene tree.
+func launch(dir: int) -> void:
+	direction = dir
+	apply_impulse(Vector2(dir * speed, lift_force))
 func _physics_process(delta: float) -> void:
 	if exploded:
 		return
