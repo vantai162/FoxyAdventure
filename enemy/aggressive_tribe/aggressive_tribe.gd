@@ -25,7 +25,6 @@ class_name AggressiveTribe
 func _ready() -> void:
 	fsm = FSM.new(self, $States, $States/Run)
 	super._ready()
-	invincible = true
 	# Enable player detection
 	enable_check_player_in_sight()
 	

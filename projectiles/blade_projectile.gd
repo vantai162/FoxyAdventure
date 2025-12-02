@@ -38,6 +38,10 @@ var damage: int = 1
 @export var glow_off_brightness: float = 1.0  ## Brightness when "off" (normal sprite)
 @export var glow_on_brightness: float = 2.5  ## Brightness when "on" (super bright)
 
+@export_group("Safety")
+@export var void_y_threshold: float = 2000.0  ## Return blade if it falls below this Y position
+@export var max_bounced_time: float = 10.0  ## Max seconds in BOUNCED state before auto-return
+
 @export_group("Magnetism")
 @export var magnet_enabled: bool = true
 @export var magnet_range_grounded: float = 120.0  ## Pull range when blade is on ground
@@ -52,6 +56,7 @@ var thrower: Player = null
 var throw_direction: int = 1
 var trail_spawn_timer: float = 0.0
 var glow_time: float = 0.0  # For pulsing glow effect
+var bounced_time: float = 0.0  # Time spent in BOUNCED state
 
 @onready var ground_timer: Timer = $GroundTimer
 @onready var hit_area: Area2D = $HitArea2D
@@ -106,6 +111,12 @@ func _update_flying(delta: float) -> void:
 	rotation += rotation_speed_flying * delta * throw_direction
 
 func _update_bounced(delta: float) -> void:
+	# Safety: return blade if it's been bouncing too long or fell into void
+	bounced_time += delta
+	if bounced_time >= max_bounced_time or global_position.y > void_y_threshold:
+		_pickup_by_player()
+		return
+	
 	var gravity = ProjectSettings.get_setting("physics/2d/default_gravity")
 	velocity.y += gravity * delta
 	
@@ -222,11 +233,13 @@ func _update_grounded_visual(delta: float) -> void:
 
 func _transition_to_arc_down() -> void:
 	current_state = State.BOUNCED
+	bounced_time = 0.0
 	velocity.x *= speed_after_max_distance
 	velocity.y = 0
 
 func _transition_to_ricochet(_impact_normal: Vector2) -> void:
 	current_state = State.BOUNCED
+	bounced_time = 0.0
 	
 	var distance_ratio = distance_traveled / max_flight_distance
 	var backward_direction = Vector2(-throw_direction, first_bounce_upward_angle).normalized()
