@@ -5,7 +5,7 @@ extends Node2D
 @onready var bgm = $AudioStreamPlayer
 @onready var settings_ui = preload("res://scenes/game_screen/settings_popup.tscn")
 @export var wakeup_timeline: String = "wake_up_timeline"
-
+var cursetting=null
 func _enter_tree() -> void:
 	GameManager.current_stage = self
 
@@ -37,22 +37,13 @@ func _ready() -> void:
 func _process(delta: float) -> void:
 	if(Input.is_action_just_pressed("pause")):
 		if(GameManager.paused):
-			GameManager.unpause()
+			hide_pop_up()
 		else:
-			GameManager.pause_game()
+			create_and_open_setting_pop_up()
 
 func _on_body_entered(body: Node2D) -> void:
 	pass # Replace with function body.
-
-
-func _process(delta: float) -> void:
-	if Input.is_action_just_pressed("pause"):
-		if GameManager.paused:
-			return
-		var settings = settings_ui.instantiate()
-		$CanvasLayer.add_child(settings)
-			
-
+	
 func play_intro_cinematic():
 	# 1. Tạo instance của Cinematic
 	var cinematic = wake_up_cinematic_scn.instantiate()
@@ -71,5 +62,14 @@ func play_intro_cinematic():
 		bgm.play()
 		create_tween().tween_property(bgm, "volume_db", 0.0, 2.0)
 
-
+func create_and_open_setting_pop_up():
+	if(cursetting==null):
+		cursetting=settings_ui.instantiate()
+		$CanvasLayer.add_child(cursetting)
+		GameManager.pause_game()
+	
+func hide_pop_up():
+	if(cursetting!=null):
+		cursetting.hide_popup()
+		cursetting.queue_free()	
 		

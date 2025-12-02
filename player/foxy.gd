@@ -7,7 +7,7 @@ extends BaseCharacter
 @export var jump_buffer: float
 @export var coyote_time: float
 var inventory= Inventory.new()
-
+var skin
 
 @export_group("Movement Physics")
 @export var ground_friction: float = 0.25
@@ -341,5 +341,6 @@ func _on_hurt_area_2d_hurt(direction: Vector2, damage: float) -> void:
 		fsm.current_state.take_damage(damage)
 		health_changed.emit()
 	
-
+func heal_max_health():
+	heal(max_health)
 	

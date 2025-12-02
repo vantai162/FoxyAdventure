@@ -21,10 +21,11 @@ var paused=false
 
 func _ready() -> void:
 	load_checkpoint_data()
-	key_manager._get_key_dictionary_from_input_map()
+	key_manager.load_key()
+	if(key_manager.KeyDict.size()<=0):
+		key_manager._get_key_dictionary_from_input_map()
 	current_checkpoint_id = ""
 	checkpoint_data.clear()
-	
 	pass
 
 #change stage by path and target portal name

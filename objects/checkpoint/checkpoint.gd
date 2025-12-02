@@ -35,7 +35,7 @@ func activate() -> void:
 		return
 	is_activated = true
 	$AnimatedSprite2D.play("active")
-
+	GameManager.player.heal_max_health()
 	GameManager.save_checkpoint(checkpoint_id)
 	GameManager.save_checkpoint_data()
 	checkpoint_activated.emit(checkpoint_id)
