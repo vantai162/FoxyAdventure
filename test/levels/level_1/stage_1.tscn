@@ -54,7 +54,7 @@ position = Vector2(-75, 216)
 [node name="Mushroom" parent="." groups=["enemy"] instance=ExtResource("8_1p8jb")]
 position = Vector2(744, -53)
 
-[node name="Crab" parent="." groups=["enemy"] instance=ExtResource("9_4x5ew")]
+[node name="KingCrab" parent="." groups=["enemy"] instance=ExtResource("9_4x5ew")]
 position = Vector2(239, -116)
 
 [node name="AggressiveTribe" parent="." groups=["enemy"] instance=ExtResource("10_lq01q")]

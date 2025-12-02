@@ -4,18 +4,18 @@ extends EnemyCharacter
 @export var rocket_scene: PackedScene
 
 @export_group("Phase 2 - Water Mechanics")
-@export var water_raise_target_y: float = -80.0  ## Global Y position for raised water (negative = higher)
-@export var water_raise_duration: float = 6.0    ## Duration for water to raise/lower (seconds)
+@export var water_raise_target_y: float = 140  ## Global Y position for raised water (negative = higher)
+@export var water_raise_duration: float = 4.0    ## Duration for water to raise/lower (seconds)
 @export var water_action_cooldown: float = 8.0   ## Cooldown between water raises/lowers (seconds)
 
 @onready var muzzle = $Direction/BoomAndRocket/MuzzleBoom1
 @onready var muzzle2 = $Direction/BoomAndRocket/MuzzleBoom2
 @onready var muzzlerocket1 =  $Direction/BoomAndRocket/MuzzleRocket1
 @onready var muzzlerocket2 =  $Direction/BoomAndRocket/MuzzleRocket2
-@onready var node = $Direction/BoomAndRocket/WariningRocket
-@onready var node1 = $Direction/BoomAndRocket/WariningRocket2
-@onready var node2 = $Direction/BoomAndRocket/WariningRocket3
-@onready var node3 = $Direction/BoomAndRocket/WariningRocket4
+@onready var warning_marker = $Direction/BoomAndRocket/WarningRocket
+@onready var warning_marker2 = $Direction/BoomAndRocket/WarningRocket2
+@onready var warning_marker3 = $Direction/BoomAndRocket/WarningRocket3
+@onready var warning_marker4 = $Direction/BoomAndRocket/WarningRocket4
 @onready var HurtArea = $Direction/HurtArea2D/CollisionShape2D
 @onready var hurt_timer = $Direction/HurtArea2D/Timer
 
@@ -31,7 +31,7 @@ var current_phase: int = 1
 var water_raised: bool = false
 var last_water_action_time: float = 0.0
 var cached_water_node: water = null
-
+signal health_changed
 
 func _ready():
 	super._ready()
@@ -58,28 +58,28 @@ func fire_rocket():
 	rocket1.global_position = muzzlerocket1.global_position
 	rocket1.scale = Vector2(1.5, 1.5)
 	get_tree().current_scene.add_child(rocket1)
+	warning_marker.show_animation()
+	rocket1.shoot(rocket1.global_position, warning_marker.global_position, 1.5)
 	missles_launch_sound.play()
-	node.show_animation()
-	rocket1.shoot(rocket1.global_position,node.global_position,1.5)
 	await get_tree().create_timer(0.2).timeout
 	var rocket2 = rocket_scene.instantiate()
 	rocket2.global_position = muzzlerocket2.global_position
 	get_tree().current_scene.add_child(rocket2)
-	node1.show_animation()
-	rocket2.shoot(rocket2.global_position,node1.global_position,1.5)
+	warning_marker2.show_animation()
+	rocket2.shoot(rocket2.global_position, warning_marker2.global_position, 1.5)
 	await get_tree().create_timer(0.5).timeout
 	var rocket3 = rocket_scene.instantiate()
 	rocket3.global_position = muzzlerocket1.global_position
 	get_tree().current_scene.add_child(rocket3)
-	node2.show_animation()
-	rocket3.shoot(rocket3.global_position,node2.global_position,1.5)
+	warning_marker3.show_animation()
+	rocket3.shoot(rocket3.global_position, warning_marker3.global_position, 1.5)
+	missles_launch_sound.play()
 	await get_tree().create_timer(0.2).timeout
 	var rocket4 = rocket_scene.instantiate()
 	rocket4.global_position = muzzlerocket2.global_position
 	get_tree().current_scene.add_child(rocket4)
-	node3.show_animation()
-	rocket4.shoot(rocket4.global_position,node3.global_position,1.5)
-	missles_launch_sound.play()
+	warning_marker4.show_animation()
+	rocket4.shoot(rocket4.global_position, warning_marker4.global_position, 1.5)
 	
 func enable_hurt_for(seconds: float):
 	HurtArea.disabled = false
@@ -108,10 +108,28 @@ func can_use_water_action() -> bool:
 	return time_since_last >= water_action_cooldown
 	
 func _process(delta):
-	_update_laugh(delta)
+	if health >= 2:
+		_update_laugh(delta)
+	
 
 func _update_laugh(delta: float) -> void:
 	laugh_timer += delta
 	if laugh_timer >= laugh_interval:
 		laugh_sound.play()
 		laugh_timer = 0.0
+
+func take_damage(amount: int):
+	health -= amount
+	emit_signal("health_changed")
+
+	# Force vulnerable khi máu <= 1
+	if health == 1:
+		become_vulnerable()
+
+	# Check chết
+	if health <= 0:
+		die()
+		
+func become_vulnerable():
+	if fsm.current_state != fsm.states.vulnerable:
+		fsm.change_state(fsm.states.vulnerable)

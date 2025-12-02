@@ -292,7 +292,6 @@ shape = SubResource("CapsuleShape2D_34yrj")
 [node name="HurtArea2d" parent="Direction" instance=ExtResource("37_333wc")]
 collision_layer = 4
 collision_mask = 0
-metadata/_custom_type_script = "uid://csu2b21cwchqw"
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Direction/HurtArea2d"]
 position = Vector2(-1, -3)
@@ -355,5 +354,6 @@ target_position = Vector2(-1, 19)
 stream = ExtResource("51_a4g31")
 volume_db = 7.0
 max_polyphony = 12
+bus = &"SFX"
 
 [connection signal="hurt" from="Direction/HurtArea2d" to="." method="_on_hurt_area_2d_hurt"]

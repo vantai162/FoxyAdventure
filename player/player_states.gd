@@ -143,6 +143,7 @@ func take_damage(damage: int) -> void:
 	obj.take_damage(damage)
 	
 	if obj.health <= 0:
+		obj.emit_signal("died")
 		change_state(fsm.states.dead)
 	else:
-		pass
+		change_state(fsm.states.hurt)

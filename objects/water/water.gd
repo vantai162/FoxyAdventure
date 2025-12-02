@@ -239,9 +239,11 @@ func update_visuals() -> void:
 	
 	surface_line.points = final_points
 	
-	var bottom_y: float = surface_pos_y + water_size.y
-	final_points.append(Vector2(water_size.x,bottom_y))
-	final_points.append(Vector2(0,bottom_y))
+	# Fill polygon: water body from surface down to FIXED bottom
+	# Bottom is always at water_size.y (relative to node origin), regardless of surface position
+	var bottom_y: float = water_size.y
+	final_points.append(Vector2(water_size.x, bottom_y))
+	final_points.append(Vector2(0, bottom_y))
 	fill_polygon.polygon = final_points
 
 func splash(splash_pos:Vector2, splash_velocity:float) -> void:

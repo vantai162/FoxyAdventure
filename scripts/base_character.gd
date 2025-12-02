@@ -100,7 +100,6 @@ func stop_move() -> void:
 	velocity.y = 0
 
 func take_damage(damage: int) -> void:
-	print(damage)
 	health -= damage
 # Change the animation of the character on the next frame
 func change_animation(new_animation: String) -> void:
@@ -167,8 +166,7 @@ func _is_on_one_way_platform():
 	
 
 func spring():
-	velocity.y = -400
-	
+	velocity.y = -650
 		
 func drop_down_platform():
 	var PLATFORM_LAYER = 1
@@ -205,12 +203,10 @@ func die() -> void:
 	if fsm.current_state == fsm.states.get("dead"):
 		return
 		
-	print(name + " has died!")
-
 	# 2. Cập nhật chỉ số
 	health = 0
 	emit_signal("health_changed") # Để thanh máu tụt về 0
-
+	emit_signal("died")
 	# 3. Kích hoạt State Chết (Logic chính nằm ở đây)
 	# Kiểm tra xem trong danh sách states có "dead" không
 	if fsm.states.has("dead"):
