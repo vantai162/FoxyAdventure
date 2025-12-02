@@ -10,6 +10,9 @@ func _enter():
 	if obj.current_phase == 1 and obj.health <= obj.max_health / 2:
 		obj.current_phase = 2
 		print("PHASE 2")
+	
+	if obj.health <= 1:
+			change_state(fsm.states.vulnerable)
 
 func _update( delta: float):
 	if update_timer(delta):

@@ -109,10 +109,28 @@ func can_use_water_action() -> bool:
 	return time_since_last >= water_action_cooldown
 	
 func _process(delta):
-	_update_laugh(delta)
+	if health >= 2:
+		_update_laugh(delta)
+	
 
 func _update_laugh(delta: float) -> void:
 	laugh_timer += delta
 	if laugh_timer >= laugh_interval:
 		laugh_sound.play()
 		laugh_timer = 0.0
+
+func take_damage(amount: int):
+	health -= amount
+	emit_signal("health_changed")
+
+	# Force vulnerable khi máu <= 1
+	if health == 1:
+		become_vulnerable()
+
+	# Check chết
+	if health <= 0:
+		die()
+		
+func become_vulnerable():
+	if fsm.current_state != fsm.states.vulnerable:
+		fsm.change_state(fsm.states.vulnerable)

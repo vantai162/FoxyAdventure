@@ -1,0 +1,32 @@
+{
+"@path": "res://addons/dialogic/Resources/character.gd",
+"@subpath": NodePath(""),
+&"_translation_id": "",
+&"color": Color(1, 1, 1, 1),
+&"custom_info": {
+"prefix": "",
+"sound_mood_default": "",
+"sound_moods": {},
+"style": "dialogic_style 2",
+"suffix": ""
+},
+&"default_portrait": "idle",
+&"description": "",
+&"display_name": "Warlord",
+&"mirror": false,
+&"nicknames": [""],
+&"offset": Vector2(0, 0),
+&"portraits": {
+"idle": {
+"export_overrides": {
+"image": "\"res://assets/warlord_turle/war_lord_turtle1.png\""
+},
+"ignore_char_scale": false,
+"mirror": true,
+"offset": Vector2(0, 0),
+"scale": 1.0,
+"scene": "res://addons/dialogic/Modules/Character/default_portrait.tscn"
+}
+},
+&"scale": 1.0
+}

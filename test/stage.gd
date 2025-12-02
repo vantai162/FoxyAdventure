@@ -4,7 +4,7 @@ extends Node2D
 @onready var wake_up_cinematic_scn = preload("res://cut_scene/wake_up_cutscene.tscn")
 @onready var bgm = $AudioStreamPlayer
 @onready var settings_ui = preload("res://scenes/game_screen/settings_popup.tscn")
-
+@export var wakeup_timeline: String = "wake_up_timeline"
 
 func _enter_tree() -> void:
 	GameManager.current_stage = self
@@ -60,7 +60,7 @@ func play_intro_cinematic():
 	
 	# 4. SAU KHI CINEMATIC XONG THÌ LÀM GÌ?
 	print("Intro xong, bắt đầu game!")
-	Dialogic.start("wakeup_timeline") # Hiện hội thoại tự hỏi
+	Dialogic.start(wakeup_timeline) # Hiện hội thoại tự hỏi
 	if bgm: 
 		bgm.volume_db = -20 # Mẹo: Set nhỏ trước
 		bgm.play()
