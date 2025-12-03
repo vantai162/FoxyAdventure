@@ -18,13 +18,14 @@ var _pending_player_spawn_data: Dictionary = {}
 var player_spawn_requested: bool = false
 var player_spawn_data: Dictionary = {}
 var paused=false
-
+var skin_manager:SkinManager=SkinManager.new()
 func _ready() -> void:
 	load_checkpoint_data()
 	key_manager.load_key()
 	if(key_manager.KeyDict.size()<=0):
 		key_manager._get_key_dictionary_from_input_map()
 	current_checkpoint_id = ""
+	skin_manager._load_skin_data_from_save()
 	checkpoint_data.clear()
 	pass
 
