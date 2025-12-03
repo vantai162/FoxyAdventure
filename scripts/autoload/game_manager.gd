@@ -142,7 +142,7 @@ func load_checkpoint_data() -> void:
 func clear_checkpoint_data() -> void:
 	current_checkpoint_id = ""
 	checkpoint_data.clear()
-	SaveSystem.delete_save_file()
+	SaveSystem.delete_save_file(SaveSystem.SAVE_FILE)
 
 func fade_to_black(duration: float = 1.0):
 	var tween = create_tween()
