@@ -260,16 +260,10 @@ func _applyeffect(name: String, time: float) -> void:
 	
 func apply_bubble_trap(duration: float = 2.0):
 	Effect["BubbleTrap"] = duration
-	
-	velocity = Vector2.ZERO  
+	velocity = Vector2.ZERO
 	set_physics_process(false)
-	
-	
-	if has_unlocked_blade:
-		$Direction/BladeAnimatedSprite2D.play("water_trap")
-	else:
-		$Direction/AnimatedSprite2D.play("water_trap")
-	
+	fsm.change_state(fsm.states.frozen)
+
 
 	
 func _updateeffect(delta: float) -> void:
@@ -277,9 +271,8 @@ func _updateeffect(delta: float) -> void:
 		Effect[key] -= delta
 		if Effect[key] <= 0:
 			Effect[key] = 0
-	if Effect["BubbleTrap"] <= 0 and not is_physics_processing():
-		set_physics_process(true)
-
+		if Effect["BubbleTrap"] <= 0 and not is_physics_processing():
+			set_physics_process(true)
 func _update_timeline(delta: float) -> void:
 	timeline += delta
 	if is_on_floor():

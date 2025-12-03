@@ -1,14 +1,16 @@
-[gd_scene load_steps=58 format=3 uid="uid://ctmgnaqjtpp40"]
+[gd_scene load_steps=61 format=3 uid="uid://ctmgnaqjtpp40"]
 
 [ext_resource type="Script" uid="uid://bukicvldqmhxv" path="res://enemy/king_crab/king_crab.gd" id="1_script"]
 [ext_resource type="PackedScene" uid="uid://p5etops51kvs" path="res://enemy/king_crab/projectiles/shockwave.tscn" id="2_cqoo5"]
 [ext_resource type="Texture2D" uid="uid://wn070tchkeg3" path="res://assets/king_crab/King_Crab_1.png" id="2_kc1"]
 [ext_resource type="Texture2D" uid="uid://dhbdtq53r0ydu" path="res://assets/king_crab/King_Crab_19.png" id="3_8skpv"]
 [ext_resource type="Texture2D" uid="uid://ccp2i2pnjq71x" path="res://assets/king_crab/King_Crab_2.png" id="3_kc2"]
+[ext_resource type="PackedScene" uid="uid://ufmc2gkfnv58" path="res://enemy/crab/crab.tscn" id="3_pd0pn"]
 [ext_resource type="Texture2D" uid="uid://cmxwu0dm0jrog" path="res://assets/king_crab/King_Crab_3.png" id="4_kc3"]
 [ext_resource type="Texture2D" uid="uid://csy6aa012xx1w" path="res://assets/king_crab/King_Crab_20.png" id="4_qyq3g"]
 [ext_resource type="Texture2D" uid="uid://bo3g8ow24yvjo" path="res://assets/king_crab/King_Crab_4.png" id="5_kc4"]
 [ext_resource type="Texture2D" uid="uid://7dta0ln4ja4o" path="res://assets/king_crab/King_Crab_21.png" id="5_s2fvd"]
+[ext_resource type="Texture2D" uid="uid://bhga8xfrljf2s" path="res://assets/king_crab/King_Crab_33.png" id="6_12aoo"]
 [ext_resource type="Texture2D" uid="uid://bea48xdg7yhid" path="res://assets/king_crab/King_Crab_22.png" id="6_ijdas"]
 [ext_resource type="Texture2D" uid="uid://cll6j7xe8spj1" path="res://assets/king_crab/King_Crab_5.png" id="6_kc5"]
 [ext_resource type="Texture2D" uid="uid://b7nv7vp51k800" path="res://assets/king_crab/King_Crab_6.png" id="7_kc6"]
@@ -52,7 +54,8 @@
 [ext_resource type="PackedScene" uid="uid://dncnb1yncdpam" path="res://enemy/king_crab/projectiles/king_crab_claw.tscn" id="35_clawproj"]
 [ext_resource type="PackedScene" uid="uid://p1nb3n6xmbvs" path="res://objects/warning/warning_rocket.tscn" id="36_warning"]
 [ext_resource type="PackedScene" uid="uid://bequ1v0oi2sg0" path="res://enemy/king_crab/projectiles/water_bubble.tscn" id="43_s2fvd"]
-[ext_resource type="Script" uid="uid://8pclbcyle1bg" path="res://enemy/king_crab/shoot_water_bubble.gd" id="52_qyq3g"]
+[ext_resource type="Script" uid="uid://8pclbcyle1bg" path="res://enemy/king_crab/bubble_attack.gd" id="52_qyq3g"]
+[ext_resource type="Script" uid="uid://b1e6dns7i2b23" path="res://enemy/king_crab/summon_mini_crab.gd" id="54_ijdas"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_body"]
 size = Vector2(57, 57)
@@ -67,7 +70,7 @@ animations = [{
 "texture": ExtResource("13_kc14")
 }, {
 "duration": 1.0,
-"texture": ExtResource("14_kc15")
+"texture": ExtResource("6_12aoo")
 }],
 "loop": false,
 "name": &"bubble_attack",
@@ -362,6 +365,7 @@ scale = Vector2(2, 2)
 collision_layer = 8
 script = ExtResource("1_script")
 shockwave_scene = ExtResource("2_cqoo5")
+minicrab_scene = ExtResource("3_pd0pn")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 position = Vector2(0, -28)
@@ -373,6 +377,8 @@ shape = SubResource("RectangleShape2D_body")
 position = Vector2(0, -28)
 sprite_frames = SubResource("SpriteFrames_main")
 animation = &"bubble_attack"
+frame = 1
+frame_progress = 1.0
 flip_h = true
 
 [node name="FrontRayCast2D" type="RayCast2D" parent="Direction"]
@@ -430,11 +436,11 @@ script = ExtResource("26_factory")
 product_packed_scene = ExtResource("43_s2fvd")
 metadata/_custom_type_script = "uid://ifyit1vg4ktq"
 
+[node name="Marker2D_UpperClaw" type="Marker2D" parent="Direction/WaterBubbleFactory"]
+position = Vector2(64, -25.5)
+
 [node name="Marker2D_LowerClaw" type="Marker2D" parent="Direction/WaterBubbleFactory"]
 position = Vector2(17, -12)
-
-[node name="Marker2D_UpperClaw" type="Marker2D" parent="Direction/WaterBubbleFactory"]
-position = Vector2(62.5, -21)
 
 [node name="States" type="Node" parent="."]
 
@@ -467,6 +473,9 @@ script = ExtResource("33_roll")
 
 [node name="BubbleAttack" type="Node" parent="States"]
 script = ExtResource("52_qyq3g")
+
+[node name="SummonMiniCrab" type="Node" parent="States"]
+script = ExtResource("54_ijdas")
 
 [connection signal="hurt" from="Direction/HurtArea2D" to="." method="_on_hurt_area_2d_hurt"]
 [connection signal="body_entered" from="Direction/DetectPlayerArea2D" to="." method="_on_active_area_2d_body_entered"]

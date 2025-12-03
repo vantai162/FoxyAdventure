@@ -1,4 +1,4 @@
-[gd_scene load_steps=62 format=3 uid="uid://bs816w0pr8all"]
+[gd_scene load_steps=63 format=3 uid="uid://bs816w0pr8all"]
 
 [ext_resource type="Script" uid="uid://brl5yy4w7wich" path="res://player/foxy.gd" id="1_wod02"]
 [ext_resource type="Texture2D" uid="uid://m4di78taixns" path="res://assets/foxy/fox_hat/fox_defeat_1.png" id="2_70n8a"]
@@ -55,6 +55,7 @@
 [ext_resource type="Script" uid="uid://b4hwjgs0cti2b" path="res://player/swim.gd" id="49_2mww5"]
 [ext_resource type="AudioStream" uid="uid://c0fqro5ktfg8n" path="res://assets/sounds/zapsplat_warfare_sword_medieval_heavy_draw_scabbard_005_12092.mp3" id="50_eelxt"]
 [ext_resource type="AudioStream" uid="uid://b8tju1hs1dwa8" path="res://assets/sounds/jump.wav" id="51_a4g31"]
+[ext_resource type="Script" uid="uid://u7nv2cgrpty5" path="res://player/frozen.gd" id="56_dkaj1"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_8r8n2"]
 size = Vector2(21, 30)
@@ -352,6 +353,9 @@ script = ExtResource("47_333wc")
 
 [node name="Swim" type="Node" parent="States"]
 script = ExtResource("49_2mww5")
+
+[node name="Frozen" type="Node" parent="States"]
+script = ExtResource("56_dkaj1")
 
 [node name="EffectArea" type="Area2D" parent="."]
 visible = false

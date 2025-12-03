@@ -26,7 +26,9 @@ func _choose_next_action() -> void:
 				#change_state(fsm.states.walktotree)
 			#else:
 				#change_state(fsm.states.diveattack)
-		change_state(fsm.states.bubbleattack)
+			#change_state(fsm.states.summonminicrab)
+		#else:
+			change_state(fsm.states.bubbleattack)
 	else:
 		# Phase 2: All attacks available
 		var actions = [fsm.states.diveattack]

@@ -7,6 +7,7 @@ func _enter() -> void:
 	obj.change_animation("bubble_attack")
 	_timer = 0.0
 	interval = obj.bubble_attack_interval
+	await get_tree().create_timer(0.2).timeout
 	_fire_bubbles()  
 	
 
@@ -25,6 +26,7 @@ func _fire_bubbles():
 	var pos2 = obj.lower_claw_pos.global_position
 
 	_spawn_bubble_from(pos1, dir)
+	await get_tree().create_timer(0.5).timeout
 	_spawn_bubble_from(pos2, dir)
 
 

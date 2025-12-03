@@ -18,7 +18,7 @@
 [ext_resource type="PackedScene" uid="uid://bg3bfewcihuv0" path="res://objects/sign/sign.tscn" id="17_p1j52"]
 [ext_resource type="PackedScene" uid="uid://dl6sw76ff5y3a" path="res://spawner/turtle_spawner.tscn" id="18_rups3"]
 [ext_resource type="PackedScene" uid="uid://um44lmp2s6eq" path="res://spawner/healthpotion_spawner.tscn" id="19_lk4yk"]
-[ext_resource type="PackedScene" uid="uid://bdlk3sxo5ekwn" path="res://enemy/boss/warlordturtle.tscn" id="19_tku26"]
+[ext_resource type="PackedScene" uid="uid://ctmgnaqjtpp40" path="res://enemy/king_crab/king_crab.tscn" id="19_tku26"]
 
 [node name="WhirlpoolTest" type="Node2D"]
 
@@ -136,5 +136,5 @@ autoplay = true
 [node name="Node2D" type="Node2D" parent="." groups=["coconut_tree"]]
 position = Vector2(-59, -104)
 
-[node name="WarlordTurtle" parent="." instance=ExtResource("19_tku26")]
-position = Vector2(-376, 74)
+[node name="KingCrab" parent="." instance=ExtResource("19_tku26")]
+position = Vector2(-205, 124)
