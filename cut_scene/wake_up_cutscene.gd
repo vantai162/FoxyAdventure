@@ -94,7 +94,6 @@ func start_sequence():
 	player.change_animation("idle")
 	
 	await get_tree().create_timer(0.5).timeout
-	
 	# Unlock player input after cutscene
 	GameManager.paused = false
 	emit_signal("finished")

@@ -37,7 +37,7 @@
 [ext_resource type="Script" uid="uid://dnkf3foccvr0j" path="res://enemy/boss/dead.gd" id="28_wuglq"]
 [ext_resource type="Script" uid="uid://dybr8136u5gn6" path="res://enemy/boss/raise_water.gd" id="29_raise"]
 [ext_resource type="Script" uid="uid://btbhb4moahkoo" path="res://enemy/boss/summon_whirlpool.gd" id="30_whirlpool"]
-[ext_resource type="Script" uid="uid://cy11od50jr4eu" path="res://enemy/boss/phase_transition.gd" id="31_phase"]
+[ext_resource type="Script" path="res://enemy/boss/phase_transition.gd" id="31_phase"]
 [ext_resource type="PackedScene" uid="uid://ct1tqxgwkuvbe" path="res://scripts/hurt_area_2d.tscn" id="33_llkam"]
 [ext_resource type="Script" uid="uid://dhymd74ihp7jc" path="res://enemy/boss/vulnerable.gd" id="34_32p7k"]
 
