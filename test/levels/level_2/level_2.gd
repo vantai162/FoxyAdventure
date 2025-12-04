@@ -16,7 +16,7 @@ var healpotion_spawner_spawned = false
 var boss_phase1_healthbar: TextureProgressBar
 var boss_phase2_healthbar: TextureProgressBar
 var boss
-
+var can_pause = false
 
 func _enter_tree() -> void:
 	GameManager.current_stage = self
@@ -76,6 +76,8 @@ func _process(delta: float) -> void:
 			
 			
 	if Input.is_action_just_pressed("pause"):
+		if not can_pause:
+			return
 		if GameManager.paused:
 			return
 		var settings = settings_ui.instantiate()
@@ -115,6 +117,7 @@ func _on_meet_boss_area_2d_body_entered(body: Node2D) -> void:
 func _on_dialog_finished():
 	var player = GameManager.player
 	player.set_physics_process(true)
+	can_pause = true
 	
 func cleanup_after_winning():
 	# XÓA TẤT CẢ ENEMY TRONG MAP

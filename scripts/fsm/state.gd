@@ -42,4 +42,10 @@ func update_timer(delta: float) -> bool:
 
 
 func change_state(new_state: FSMState) -> void:
+	#neu player duoi 0 mau chac chac phai dead
+	if obj.health <= 0 and fsm.states.has("dead"):
+		if fsm.current_state == fsm.states.dead:
+			return
+		fsm.change_state(fsm.states.dead)
+		return
 	fsm.change_state(new_state)

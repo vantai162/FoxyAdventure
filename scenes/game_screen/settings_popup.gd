@@ -4,7 +4,7 @@ extends MarginContainer
 @onready var sound_check_button: CheckButton = $NinePatchRect/SoundCheckButton
 
 
-func _ready() -> void:
+func _ready():
 	sound_check_button.button_pressed = not AudioServer.is_bus_mute(AudioServer.get_bus_index("SFX"))
 	music_check_button.button_pressed = not AudioServer.is_bus_mute(AudioServer.get_bus_index("Music"))
 	GameManager.pause_game()
@@ -20,11 +20,11 @@ func _on_sound_check_button_toggled(toggled_on: bool) -> void:
 
 func hide_popup():
 	GameManager.unpause()
+	queue_free()
 
 
 func _on_close_texture_button_pressed() -> void:
 	hide_popup()
-	queue_free()
 
 
 func _on_music_check_button_toggled(toggled_on: bool) -> void:
