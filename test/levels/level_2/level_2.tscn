@@ -271,6 +271,7 @@ position = Vector2(1614, 243)
 
 [node name="Spawner" type="Node2D" parent="."]
 
+[connection signal="area_entered" from="DirtLayer/HealthPotion" to="DirtLayer/HealthPotion" method="_on_area_entered"]
 [connection signal="lever_activated" from="Lever" to="Gate" method="open_gate"]
 [connection signal="lever_deactivated" from="Lever" to="Gate" method="close_gate"]
 [connection signal="body_entered" from="MeetBossArea2D" to="." method="_on_meet_boss_area_2d_body_entered"]

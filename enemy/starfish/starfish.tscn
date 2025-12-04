@@ -99,7 +99,6 @@ size = Vector2(21, 26)
 
 [node name="Starfish" type="CharacterBody2D"]
 collision_layer = 8
-collision_mask = 9
 script = ExtResource("1_chqr0")
 metadata/_custom_type_script = "uid://s4xx82espxdt"
 

@@ -49,7 +49,7 @@ size = Vector2(64, 13)
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_water_detector"]
 size = Vector2(64, 64)
 
-[node name="FloatingBoatPlatform" type="AnimatableBody2D" groups=["can_interact_with_water", "platform"]]
+[node name="FloatingBoatPlatform" type="AnimatableBody2D" groups=["can_interact_with_water", "one_way_platform", "platform"]]
 script = ExtResource("1_boat")
 glide_distance = 120.0
 glide_pause_time = 0.36

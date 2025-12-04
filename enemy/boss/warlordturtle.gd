@@ -2,6 +2,11 @@ extends EnemyCharacter
 
 @export var boomb_scene: PackedScene
 @export var rocket_scene: PackedScene
+@export var whirlpool_scene: PackedScene  ## Used by summon_whirlpool state
+
+@export_group("Phase Transition")
+@export var phase_transition_pause: float = 1.5  ## Pause duration before phase 2 begins
+@export var phase_transition_roar_delay: float = 0.3  ## Delay before roar animation
 
 @export_group("Phase 2 - Water Mechanics")
 @export var water_raise_target_y: float = 140  ## Global Y position for raised water (negative = higher)
@@ -42,15 +47,15 @@ func fire_boomb():
 	var boomb1 = boomb_scene.instantiate()
 	boomb1.global_position = muzzle.global_position
 	boomb1.set_speed(350.0)
-	boomb1.direction =  -1
 	get_tree().current_scene.add_child(boomb1)
+	boomb1.launch(-1)  # Launch left
 	bombs_launch_sound.play()
 	await get_tree().create_timer(0.2).timeout
 	var boomb2 = boomb_scene.instantiate()
 	boomb2.global_position = muzzle2.global_position
 	boomb2.set_speed(250.0)
-	boomb2.direction =  1
 	get_tree().current_scene.add_child(boomb2)
+	boomb2.launch(1)  # Launch right
 	bombs_launch_sound.play()
 
 func fire_rocket():

@@ -9,6 +9,11 @@ func _enter() -> void:
 func _update(_delta):
 	super._update(_delta)
 	
+	# If touching another enemy, stop and wait instead of stacking
+	if obj.is_touching_enemy():
+		obj.velocity.x = 0
+		return
+	
 	if obj.is_on_floor():
 		# Normal surface: instant velocity
 		obj.velocity.x = obj.direction * obj.movement_speed
@@ -26,7 +31,9 @@ func _update(_delta):
 
 func _should_turn_around() -> bool:
 	if obj.is_touch_wall():
-		return true
+		# Only turn for walls/ground, not other enemies
+		if not obj.is_touching_enemy():
+			return true
 	if obj.is_on_floor() and obj.is_can_fall():
 		return true
 	return false

@@ -165,7 +165,7 @@ size = Vector2(46.875, 51.4705)
 position = Vector2(-23, 20)
 scale = Vector2(0.64, 0.680001)
 collision_layer = 8
-collision_mask = 9
+collision_mask = 1
 script = ExtResource("1_icd28")
 metadata/_custom_type_script = "uid://s4xx82espxdt"
 

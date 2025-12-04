@@ -1,6 +1,10 @@
 extends EnemyState
 
 ## Throw coconuts at player from tree top - intense barrage attack
+
+# King Crab attacks cannot be interrupted - take damage but keep attacking
+func take_damage(_damage_dir, damage: int) -> void:
+	obj.take_damage(damage)
 ## 
 ## Attack patterns:
 ##   - Aimed shots directly at player
@@ -10,15 +14,12 @@ extends EnemyState
 enum ThrowPattern { AIMED, PREDICTIVE, SPREAD }
 
 var throw_count: int = 0
-var max_throws: int = 3
 var time_since_throw: float = 0.0
 var current_pattern: ThrowPattern = ThrowPattern.AIMED
 
-@export var base_interval: float = 0.6  ## Base time between throws
-@export var interval_variance: float = 0.3  ## Randomize timing to break rhythm
-@export var coconut_speed: float = 350.0  ## How fast coconuts travel
-@export var prediction_factor: float = 0.4  ## How much to lead the player
-
+var max_throws: int = 4
+var base_interval: float = 0.6
+var coconut_speed: float = 350.0
 var next_interval: float = 0.0
 
 
@@ -29,11 +30,13 @@ func _enter() -> void:
 	
 	# Phase 2: more throws, faster, more aggressive
 	if obj.current_phase == 2:
-		max_throws = 7
-		base_interval = 0.45
-		coconut_speed = 420.0
+		max_throws = obj.coconut_p2_max_throws
+		base_interval = obj.coconut_p2_interval
+		coconut_speed = obj.coconut_p2_speed
 	else:
-		max_throws = 4
+		max_throws = obj.coconut_p1_max_throws
+		base_interval = obj.coconut_p1_interval
+		coconut_speed = obj.coconut_p1_speed
 	
 	# Throw first one immediately
 	_throw_coconut()
@@ -65,7 +68,7 @@ func _update(delta: float) -> void:
 
 func _randomize_next_interval() -> void:
 	## Vary timing to prevent player from getting into a comfortable dodge rhythm
-	next_interval = base_interval + randf_range(-interval_variance, interval_variance)
+	next_interval = base_interval + randf_range(-obj.coconut_interval_variance, obj.coconut_interval_variance)
 	# Occasional quick double-tap
 	if randf() < 0.2:
 		next_interval *= 0.5
@@ -106,7 +109,7 @@ func _calculate_throw_velocity(coconut: Node2D) -> Vector2:
 		ThrowPattern.PREDICTIVE:
 			# Lead the player based on their velocity
 			var player_vel = obj.found_player.velocity if obj.found_player.has_method("get") else Vector2.ZERO
-			var predicted_pos = player_pos + player_vel * prediction_factor
+			var predicted_pos = player_pos + player_vel * obj.coconut_prediction_factor
 			return _calculate_arc_to_target(coconut_pos, predicted_pos)
 		
 		_:

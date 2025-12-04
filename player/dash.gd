@@ -26,7 +26,10 @@ func _update(delta: float):
 		fsm.change_state(fsm.states.wallcling)
 
 func create_ghost_trail():
-	var original = $"../../Direction/AnimatedSprite2D"
+	# Use the player's current active sprite (normal or blade)
+	var original = obj.animated_sprite
+	if not original:
+		original = $"../../Direction/AnimatedSprite2D"  # Fallback
 	
 	# Create a simple Sprite2D instead of duplicating
 	var ghost = Sprite2D.new()
@@ -38,7 +41,6 @@ func create_ghost_trail():
 	# Match the original's properties
 	ghost.global_position = original.global_position
 	ghost.scale = original.get_parent().scale
-	print(ghost.global_scale)
 	ghost.modulate = Color(1, 1, 1, 0.4)
 	
 	# Add to the scene root so it doesn't move with the player

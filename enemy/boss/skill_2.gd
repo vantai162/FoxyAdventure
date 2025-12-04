@@ -9,7 +9,9 @@ func _update(delta):
 
 func _run_skill() -> void:
 	await get_tree().create_timer(0.5).timeout
-	obj.fire_rocket()
+	if fsm.current_state == self:
+		obj.fire_rocket()
 	await get_tree().create_timer(1.5).timeout
 	obj.invincible_timer = obj.max_invincible
-	change_state(fsm.states.idle)
+	if fsm.current_state == self:
+		change_state(fsm.states.idle)

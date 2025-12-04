@@ -2,16 +2,25 @@ extends Player_State
 
 var air_slash_timer: float = 0.0
 var air_slash_spawned: bool = false
+var original_gravity: float = 0.0
+var is_air_attack: bool = false
 
 func _enter() -> void:
 	super._enter()
 	# Change animation to attack
-	if obj.is_on_floor():
+	is_air_attack = not obj.is_on_floor()
+	if not is_air_attack:
 		obj.change_animation("attack")
 	else:
 		obj.change_animation("Jump_attack")
+		# Apply reduced gravity for air suspension effect
+		original_gravity = obj.gravity
+		obj.gravity = original_gravity * obj.attack_air_gravity_scale
 
 	timer = obj.attack_duration
+	
+	# Start attack cooldown
+	obj.start_attack_cooldown()
 	
 	# Stop player on normal ground, but preserve momentum on ice
 	if not (obj.is_on_floor() and obj._is_on_ice()):
@@ -28,6 +37,10 @@ func _enter() -> void:
 func _exit() -> void:
 	# Disable collision shape of hit area
 	obj.get_node("Direction/HitArea2D/CollisionShape2D").disabled = true
+	
+	# Restore normal gravity if this was an air attack
+	if is_air_attack:
+		obj.gravity = original_gravity
 
 
 func _update(delta: float) -> void:

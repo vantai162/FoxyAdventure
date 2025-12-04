@@ -5,7 +5,7 @@ extends EnemyState
 func _enter() -> void:
 	obj.change_animation("idle")
 	obj.velocity = Vector2.ZERO
-	timer = 1.5  # Wait before first attack
+	timer = obj.idle_duration
 
 func _update(delta: float) -> void:
 	# Use built-in timer from FSMState

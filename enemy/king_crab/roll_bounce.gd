@@ -1,6 +1,10 @@
 extends EnemyState
 
 ## Phase 2: Roll Bounce Attack - bouncy rolling with shockwaves on each landing
+
+# King Crab attacks cannot be interrupted - take damage but keep attacking
+func take_damage(_damage_dir, damage: int) -> void:
+	obj.take_damage(damage)
 ## 
 ## ANIMATION ASSUMPTIONS (create these in SpriteFrames):
 ##   - "roll_windup" : Curling into ball before launch (loop: false)
@@ -10,19 +14,10 @@ extends EnemyState
 enum AttackPhase { WINDUP, JUMPING, BOUNCING, WINDDOWN }
 var attack_phase: AttackPhase = AttackPhase.WINDUP
 
-@export var windup_time: float = 0.4  ## Time to curl up before rolling
-@export var winddown_time: float = 0.4  ## Time to uncurl after rolling
-@export var jump_speed_x: float = 300.0
-@export var jump_speed_y: float = -400.0
-@export var bounce_velocity_y: float = -500.0
-@export var max_bounces: int = 3
-
 var phase_timer: float = 0.0
 var bounce_count: int = 0
 var _was_on_floor: bool = false
 var launch_dir: int = 1
-
-const SHOCKWAVE_SCENE = preload("res://enemy/king_crab/projectiles/shockwave.tscn")
 
 
 func _enter() -> void:
@@ -51,7 +46,7 @@ func _update(delta: float) -> void:
 		AttackPhase.WINDUP:
 			obj.velocity = Vector2.ZERO
 			phase_timer += delta
-			if phase_timer >= windup_time:
+			if phase_timer >= obj.roll_windup_time:
 				_start_rolling()
 		
 		AttackPhase.JUMPING, AttackPhase.BOUNCING:
@@ -60,13 +55,13 @@ func _update(delta: float) -> void:
 		AttackPhase.WINDDOWN:
 			obj.velocity.x = 0
 			phase_timer += delta
-			if phase_timer >= winddown_time:
+			if phase_timer >= obj.roll_winddown_time:
 				change_state(fsm.states.idle)
 
 
 func _start_rolling() -> void:
 	attack_phase = AttackPhase.JUMPING
-	obj.velocity = Vector2(launch_dir * jump_speed_x, jump_speed_y)
+	obj.velocity = Vector2(launch_dir * obj.roll_jump_speed_x, obj.roll_jump_speed_y)
 	obj.change_animation("roll")
 
 
@@ -82,24 +77,26 @@ func _update_rolling() -> void:
 	# Turn around if hitting wall
 	if obj.is_touch_wall():
 		obj.turn_around()
-		obj.velocity.x = obj.direction * jump_speed_x
+		obj.velocity.x = obj.direction * obj.roll_jump_speed_x
 
 
 func _on_bounce() -> void:
 	_create_shockwave()
 	bounce_count += 1
 	
-	if bounce_count >= max_bounces:
+	if bounce_count >= obj.roll_max_bounces:
 		_start_winddown()
 	else:
 		attack_phase = AttackPhase.BOUNCING
 		# Bounce again with slightly less height each time
 		var height_factor = 1.0 - (bounce_count * 0.15)
-		obj.velocity.y = bounce_velocity_y * height_factor
+		obj.velocity.y = obj.roll_bounce_velocity_y * height_factor
 
 
 func _create_shockwave() -> void:
-	var shockwave = SHOCKWAVE_SCENE.instantiate()
+	if not obj.shockwave_scene:
+		return
+	var shockwave = obj.shockwave_scene.instantiate()
 	obj.get_tree().current_scene.add_child(shockwave)
 	shockwave.global_position = obj.global_position + Vector2(0, 20)
 	shockwave.max_radius = 60.0

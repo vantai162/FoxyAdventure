@@ -10,7 +10,6 @@ extends EnemyState
 @export var edge_margin: float = 200.0                ## Keep away from water edges
 @export var min_spacing: float = 250.0                ## Minimum distance between whirlpools
 
-var whirlpool_scene: PackedScene = preload("res://objects/whirlpool/whirlpool.tscn")
 
 func _enter():
 	obj.change_animation("summon")
@@ -74,6 +73,8 @@ func _summon_whirlpools() -> void:
 	change_state(fsm.states.idle)
 
 func _spawn_whirlpool(position: Vector2) -> void:
-	var whirlpool = whirlpool_scene.instantiate()
+	if not obj.whirlpool_scene:
+		return
+	var whirlpool = obj.whirlpool_scene.instantiate()
 	whirlpool.global_position = position
 	get_tree().current_scene.add_child(whirlpool)

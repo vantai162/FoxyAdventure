@@ -282,11 +282,12 @@ shape = SubResource("RectangleShape2D_bps14")
 [node name="Timer" type="Timer" parent="."]
 
 [node name="Label" type="Label" parent="."]
-offset_left = -83.3333
-offset_top = -75.0
-offset_right = 86.6667
-offset_bottom = -52.0
-text = "Nhấn Q đê trò chuyện"
+offset_left = -100.0
+offset_top = -90.0
+offset_right = 100.0
+offset_bottom = -60.0
+text = "Nhấn Q để trò chuyện"
+horizontal_alignment = 1
 
 [node name="AudioStreamPlayer2D" type="AudioStreamPlayer2D" parent="."]
 stream = ExtResource("60_wdgce")
