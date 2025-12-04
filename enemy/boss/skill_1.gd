@@ -9,9 +9,11 @@ func _enter():
 	shot = false
 
 func _update(delta):
+	var finished = update_timer(delta)
+	
 	if not shot and timer <= (1.0 - shoot_time):
 		obj.fire_boomb()
 		shot = true
 
-	if update_timer(delta):
-		change_state(fsm.states.skill2)
+	if finished:
+		change_state(fsm.states.idle)
