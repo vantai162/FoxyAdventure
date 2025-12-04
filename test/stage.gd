@@ -5,6 +5,7 @@ extends Node2D
 @onready var bgm = $AudioStreamPlayer
 @onready var settings_ui = preload("res://scenes/game_screen/settings_popup.tscn")
 @export var wakeup_timeline: String = "wake_up_timeline"
+var can_pause: bool = false
 
 func _enter_tree() -> void:
 	GameManager.current_stage = self
@@ -34,20 +35,18 @@ func _ready() -> void:
 	await GameManager.fade_from_black()
 
 
-
-
-func _on_body_entered(body: Node2D) -> void:
-	pass # Replace with function body.
-
-
 func _process(delta: float) -> void:
 	if Input.is_action_just_pressed("pause"):
+		if not can_pause:
+			return
 		if GameManager.paused:
 			return
 		var settings = settings_ui.instantiate()
 		$CanvasLayer.add_child(settings)
-			
 
+func _on_body_entered(body: Node2D) -> void:
+	pass # Replace with function body.
+	
 func play_intro_cinematic():
 	# 1. Tạo instance của Cinematic
 	var cinematic = wake_up_cinematic_scn.instantiate()
@@ -61,10 +60,9 @@ func play_intro_cinematic():
 	# 4. SAU KHI CINEMATIC XONG THÌ LÀM GÌ?
 	print("Intro xong, bắt đầu game!")
 	Dialogic.start(wakeup_timeline) # Hiện hội thoại tự hỏi
+	await Dialogic.timeline_ended
+	can_pause = true
 	if bgm: 
 		bgm.volume_db = -20 # Mẹo: Set nhỏ trước
 		bgm.play()
 		create_tween().tween_property(bgm, "volume_db", 0.0, 2.0)
-
-
-		

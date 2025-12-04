@@ -11,11 +11,13 @@ func _get_key_dictionary_from_input_map():
 			continue
 		var events=InputMap.action_get_events(action)
 		for event in events:
+			
 			if event is InputEventKey:
 					KeyDict[action]=event.physical_keycode
+		
 
 func _set_key(action:String,key:int):
-	if action=="paused":
+	if action=="pause":
 		print("You can not change the paused key")
 	if KeyDict.size()==0:
 		print("Oops!You dont have the KeyDictYet ")
@@ -27,6 +29,7 @@ func _set_key(action:String,key:int):
 		new_input.physical_keycode=key
 		InputMap.action_add_event(action,new_input)
 		KeyDict[action]=key
+		SaveSystem.save_setting(KeyDict)
 		
 func _listening_key(scene_tree:SceneTree)->int:
 	is_listening=true
@@ -61,4 +64,23 @@ func listening_and_set(scene_tree:SceneTree,action:String)->int:#only call this 
 		_set_key(action,keycode)
 	return keycode
 	
-  
+func disableinput(exception:Array):
+	for key in KeyDict.keys():
+		if(key!="pause"&&!(key in exception)):
+			InputMap.action_erase_events(key)
+
+func reloadinputmapbykeydict():
+	if(KeyDict.size()<0):
+		pass
+	for key in KeyDict.keys():
+		InputMap.action_erase_events(key)
+		var event=InputEventKey.new()
+		event.physical_keycode=KeyDict[key]
+		InputMap.action_add_event(key,event)
+				
+func enableinput():
+	reloadinputmapbykeydict()				
+	
+func load_key():
+	KeyDict=SaveSystem.load_setting()
+	reloadinputmapbykeydict()

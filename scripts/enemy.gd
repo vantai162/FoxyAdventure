@@ -67,10 +67,12 @@ func _init_hurt_area():
 func is_touch_wall() -> bool:
 	if front_ray_cast != null and front_ray_cast.is_colliding():
 		var collider = front_ray_cast.get_collider()
+		if collider:
 		# Ignore one-way platforms - enemies should walk over them
-		if collider.is_in_group("one_way_platform"):
-			return false
-		return true
+			if collider.is_in_group("one_way_platform"):
+				return false
+			else:
+				return true
 	return false
 
 # check if touching another enemy (for stacking prevention)
