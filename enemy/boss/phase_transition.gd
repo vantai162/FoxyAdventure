@@ -22,14 +22,13 @@ func _enter() -> void:
 func _update(delta: float) -> void:
 	if not has_started_enrage:
 		if update_timer(delta):
+			AudioManager.play_sound("warlord_roar",20.0)
 			# Start enrage animation (use skill2 as "roar" visual)
 			has_started_enrage = true
 			obj.change_animation("skill2")
 			timer = obj.phase_transition_pause
 			
-			# Play laugh/roar sound
-			if obj.laugh_sound:
-				obj.laugh_sound.play()
+			
 	else:
 		if update_timer(delta):
 			# Transition complete - enter phase 2

@@ -84,6 +84,7 @@ func launch(direction: int, from_player: Player) -> void:
 	scale.x = direction
 	current_state = State.FLYING
 	trail_spawn_timer = 0
+	AudioManager.play_sound("blade_spinning",15.0)
 
 func _physics_process(delta: float) -> void:
 	match current_state:

@@ -1,4 +1,4 @@
-[gd_scene load_steps=45 format=3 uid="uid://bdlk3sxo5ekwn"]
+[gd_scene load_steps=44 format=3 uid="uid://bdlk3sxo5ekwn"]
 
 [ext_resource type="Script" uid="uid://c7a5fg47r6h5l" path="res://enemy/boss/warlordturtle.gd" id="1_ef40p"]
 [ext_resource type="Texture2D" uid="uid://b405sim5qtso5" path="res://assets/warlord_turle/war_lord_turtle20.png" id="2_prdj8"]
@@ -40,7 +40,6 @@
 [ext_resource type="Script" uid="uid://cy11od50jr4eu" path="res://enemy/boss/phase_transition.gd" id="31_phase"]
 [ext_resource type="PackedScene" uid="uid://ct1tqxgwkuvbe" path="res://scripts/hurt_area_2d.tscn" id="33_llkam"]
 [ext_resource type="Script" uid="uid://dhymd74ihp7jc" path="res://enemy/boss/vulnerable.gd" id="34_32p7k"]
-[ext_resource type="AudioStream" uid="uid://26kiclm3hflh" path="res://assets/sounds/King Dice Attack Laugh (Nr. 1 Cuphead Sound) - Sound Effect for editing.wav" id="41_4o4vh"]
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_ladxf"]
 animations = [{
@@ -333,22 +332,5 @@ script = ExtResource("31_phase")
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 position = Vector2(0, 0.5)
 shape = SubResource("RectangleShape2D_dkh1m")
-
-[node name="MisslesLaunchSound" type="AudioStreamPlayer2D" parent="."]
-volume_db = 24.0
-bus = &"SFX"
-
-[node name="BombsLaunchSound" type="AudioStreamPlayer2D" parent="."]
-volume_db = 24.0
-bus = &"SFX"
-
-[node name="WaveSound" type="AudioStreamPlayer2D" parent="."]
-volume_db = 20.0
-bus = &"SFX"
-
-[node name="LaughSound" type="AudioStreamPlayer2D" parent="."]
-stream = ExtResource("41_4o4vh")
-volume_db = 20.0
-bus = &"SFX"
 
 [connection signal="hurt" from="Direction/HurtArea2D" to="." method="_on_hurt_area_2d_hurt"]

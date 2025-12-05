@@ -3,6 +3,7 @@ extends Player_State
 func _enter() -> void:
 	obj.change_animation("jump")
 	super._enter()
+	AudioManager.play_sound("player_jump",20.0)
 	# If coming from wall cling, activate wall jump air restriction
 	if fsm.previous_state == fsm.states.wallcling:
 		obj.wall_jump_restriction_timer = 0.0

@@ -1,10 +1,25 @@
-[gd_scene load_steps=4 format=3 uid="uid://coqrny0yf5swy"]
+[gd_scene load_steps=6 format=3 uid="uid://coqrny0yf5swy"]
 
 [ext_resource type="Script" uid="uid://bj7arxmrqub4q" path="res://objects/wind/wind_area.gd" id="1_3t54o"]
-[ext_resource type="AudioStream" uid="uid://ba2vr4x8m56fg" path="res://assets/sounds/675712__craigsmith__s21-11a-phoenix-wind.wav" id="2_tlnk4"]
+[ext_resource type="Shader" uid="uid://bvlkr41wo7oxd" path="res://assets/background/rain_and_snow_shader.gdshader" id="2_tlnk4"]
+[ext_resource type="AudioStream" uid="uid://ba2vr4x8m56fg" path="res://assets/sounds/675712__craigsmith__s21-11a-phoenix-wind.wav" id="3_nmj66"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_uiemc"]
 size = Vector2(238, 99)
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_tlnk4"]
+shader = ExtResource("2_tlnk4")
+shader_parameter/rain_amount = 20.0
+shader_parameter/near_rain_length = 0.026
+shader_parameter/far_rain_length = 0.232
+shader_parameter/near_rain_width = 1.0
+shader_parameter/far_rain_width = 0.5
+shader_parameter/near_rain_transparency = 1.0
+shader_parameter/far_rain_transparency = 0.5
+shader_parameter/rain_color = Color(0.74902, 0.74902, 0.74902, 0.792157)
+shader_parameter/base_rain_speed = 0.5
+shader_parameter/additional_rain_speed = 0.82
+shader_parameter/slant = -1.0
 
 [node name="WindArea" type="Area2D"]
 collision_layer = 0
@@ -12,13 +27,22 @@ collision_mask = 2
 script = ExtResource("1_3t54o")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(3, 4)
 shape = SubResource("RectangleShape2D_uiemc")
 
+[node name="ColorRect" type="ColorRect" parent="."]
+material = SubResource("ShaderMaterial_tlnk4")
+offset_left = -114.0
+offset_top = -45.0
+offset_right = 122.0
+offset_bottom = 53.0
+color = Color(1, 1, 1, 0)
+
 [node name="AudioStreamPlayer2D" type="AudioStreamPlayer2D" parent="."]
-stream = ExtResource("2_tlnk4")
+stream = ExtResource("3_nmj66")
 volume_db = 20.0
 autoplay = true
-max_distance = 1500.0
+max_distance = 983.0
 
 [connection signal="body_entered" from="." to="." method="_on_body_entered"]
 [connection signal="body_exited" from="." to="." method="_on_body_exited"]

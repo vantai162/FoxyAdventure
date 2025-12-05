@@ -7,6 +7,7 @@ var is_air_attack: bool = false
 
 func _enter() -> void:
 	super._enter()
+	AudioManager.play_sound("player_swing",20.0)
 	# Change animation to attack
 	is_air_attack = not obj.is_on_floor()
 	if not is_air_attack:

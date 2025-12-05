@@ -1,4 +1,4 @@
-[gd_scene load_steps=78 format=4 uid="uid://30po03m850f6"]
+[gd_scene load_steps=77 format=4 uid="uid://30po03m850f6"]
 
 [ext_resource type="Script" uid="uid://bl4jqlw4aef0m" path="res://test/stage.gd" id="1_7qv11"]
 [ext_resource type="PackedScene" uid="uid://dm741hii7d5nv" path="res://scenes/game_screen/health_bar.tscn" id="2_l7nct"]
@@ -48,7 +48,6 @@
 [ext_resource type="PackedScene" uid="uid://chfe3xrvw4004" path="res://objects/camp_fire/camp_fire.tscn" id="30_0gqyj"]
 [ext_resource type="PackedScene" uid="uid://ufmc2gkfnv58" path="res://enemy/crab/crab.tscn" id="38_5n806"]
 [ext_resource type="PackedScene" uid="uid://bmic0j4cnluey" path="res://objects/checkpoint/checkpoint.tscn" id="41_u4gqf"]
-[ext_resource type="AudioStream" uid="uid://bxavmfuoonbd0" path="res://assets/sounds/game_sound.mp3" id="44_8nic6"]
 [ext_resource type="PackedScene" uid="uid://b3cbk6lmh2cc3" path="res://effect_Item/heal_potion/health_potion.tscn" id="45_7s41y"]
 [ext_resource type="PackedScene" uid="uid://dl1jqgf5ab7l" path="res://effect_Item/chest/gold_chest.tscn" id="46_7s41y"]
 [ext_resource type="PackedScene" uid="uid://ckaw6wc7acih8" path="res://environment/death_zone/death_zone.tscn" id="50_nv8qq"]
@@ -5655,7 +5654,7 @@ position = Vector2(1676, 237)
 instruction_text = "Hãy cẩn thận với loài vật trên đảo..."
 
 [node name="Foxy" parent="." instance=ExtResource("2_xeh7v")]
-position = Vector2(112, 221)
+position = Vector2(145, 197)
 
 [node name="Blade" parent="." instance=ExtResource("7_g6ve3")]
 position = Vector2(1651, 255)
@@ -5777,12 +5776,6 @@ position = Vector2(2536, 242)
 [node name="Checkpoint2" parent="." instance=ExtResource("41_u4gqf")]
 position = Vector2(4568, 337)
 
-[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]
-stream = ExtResource("44_8nic6")
-volume_db = 10.0
-max_polyphony = 50
-bus = &"Music"
-
 [node name="HealthPotion" parent="." instance=ExtResource("45_7s41y")]
 position = Vector2(5868, 177)
 
@@ -5810,19 +5803,19 @@ target_stage = "uid://bxknbajfocd87"
 position = Vector2(4412, 326)
 
 [connection signal="area_entered" from="Layer1/Coin" to="Layer1/Coin" method="_on_area_entered"]
-[connection signal="area_entered" from="Layer1/@Area2D@81085" to="Layer1/@Area2D@81085" method="_on_area_entered"]
-[connection signal="area_entered" from="Layer1/@Area2D@81086" to="Layer1/@Area2D@81086" method="_on_area_entered"]
-[connection signal="area_entered" from="Layer1/@Area2D@81087" to="Layer1/@Area2D@81087" method="_on_area_entered"]
-[connection signal="area_entered" from="Layer1/@Area2D@81088" to="Layer1/@Area2D@81088" method="_on_area_entered"]
-[connection signal="area_entered" from="Layer1/@Area2D@81089" to="Layer1/@Area2D@81089" method="_on_area_entered"]
-[connection signal="area_entered" from="Layer1/@Area2D@81090" to="Layer1/@Area2D@81090" method="_on_area_entered"]
-[connection signal="area_entered" from="Layer1/@Area2D@81091" to="Layer1/@Area2D@81091" method="_on_area_entered"]
-[connection signal="area_entered" from="Layer1/@Area2D@81092" to="Layer1/@Area2D@81092" method="_on_area_entered"]
-[connection signal="area_entered" from="Layer1/@Area2D@81093" to="Layer1/@Area2D@81093" method="_on_area_entered"]
-[connection signal="area_entered" from="Layer1/@Area2D@81094" to="Layer1/@Area2D@81094" method="_on_area_entered"]
-[connection signal="area_entered" from="Layer1/@Area2D@81095" to="Layer1/@Area2D@81095" method="_on_area_entered"]
-[connection signal="area_entered" from="Layer1/@Area2D@81096" to="Layer1/@Area2D@81096" method="_on_area_entered"]
-[connection signal="area_entered" from="Layer1/@Area2D@81097" to="Layer1/@Area2D@81097" method="_on_area_entered"]
+[connection signal="area_entered" from="Layer1/@Area2D@126490" to="Layer1/@Area2D@126490" method="_on_area_entered"]
+[connection signal="area_entered" from="Layer1/@Area2D@126491" to="Layer1/@Area2D@126491" method="_on_area_entered"]
+[connection signal="area_entered" from="Layer1/@Area2D@126492" to="Layer1/@Area2D@126492" method="_on_area_entered"]
+[connection signal="area_entered" from="Layer1/@Area2D@126493" to="Layer1/@Area2D@126493" method="_on_area_entered"]
+[connection signal="area_entered" from="Layer1/@Area2D@126494" to="Layer1/@Area2D@126494" method="_on_area_entered"]
+[connection signal="area_entered" from="Layer1/@Area2D@126495" to="Layer1/@Area2D@126495" method="_on_area_entered"]
+[connection signal="area_entered" from="Layer1/@Area2D@126496" to="Layer1/@Area2D@126496" method="_on_area_entered"]
+[connection signal="area_entered" from="Layer1/@Area2D@126497" to="Layer1/@Area2D@126497" method="_on_area_entered"]
+[connection signal="area_entered" from="Layer1/@Area2D@126498" to="Layer1/@Area2D@126498" method="_on_area_entered"]
+[connection signal="area_entered" from="Layer1/@Area2D@126499" to="Layer1/@Area2D@126499" method="_on_area_entered"]
+[connection signal="area_entered" from="Layer1/@Area2D@126500" to="Layer1/@Area2D@126500" method="_on_area_entered"]
+[connection signal="area_entered" from="Layer1/@Area2D@126501" to="Layer1/@Area2D@126501" method="_on_area_entered"]
+[connection signal="area_entered" from="Layer1/@Area2D@126502" to="Layer1/@Area2D@126502" method="_on_area_entered"]
 [connection signal="area_entered" from="Layer1/Key" to="Layer1/Key" method="_on_area_entered"]
 [connection signal="body_entered" from="Objects/Lever" to="Objects/Gate" method="open_gate"]
 [connection signal="body_exited" from="Objects/Lever" to="Objects/Gate" method="close_gate"]

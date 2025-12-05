@@ -6,10 +6,11 @@ extends Node2D
 @onready var settings_ui = preload("res://scenes/game_screen/settings_popup.tscn")
 @export var timeline_name_1: String = "warlord_1"
 @export var timeline_name_2: String = "warlord_2"
+@onready var music_id = "warlord_theme"
+@onready var stage_music_id = "level_1_music"
 var timeline2_triggered = false
 var is_clean_up = false
 var endgame = false
-@onready var theme = $WarlordTheme
 var warlord_spawned = false
 var turtle_spawner_spawned = false
 var healpotion_spawner_spawned = false
@@ -41,7 +42,7 @@ func _ready() -> void:
 		GameManager.target_portal_name = ""
 	
 	await GameManager.fade_from_black()
-
+	AudioManager.play_music(stage_music_id,10.0,0.5)
 
 
 
@@ -72,7 +73,8 @@ func _process(delta: float) -> void:
 			Dialogic.start(timeline_name_2)
 			Dialogic.signal_event.connect(_on_dialogic_signal_event)
 			Dialogic.timeline_ended.connect(_on_dialog_finished)
-			theme.stop()
+			#theme.stop()
+			AudioManager.stop_music(0.5)
 			
 			
 	if Input.is_action_just_pressed("pause"):
@@ -112,7 +114,8 @@ func _on_meet_boss_area_2d_body_entered(body: Node2D) -> void:
 			player.stop_move()
 		Dialogic.start(timeline_name_1)
 		Dialogic.timeline_ended.connect(_on_dialog_finished)
-		theme.play()
+		#theme.play()
+		AudioManager.play_music(music_id,10.0,0.5)
 
 func _on_dialog_finished():
 	var player = GameManager.player
