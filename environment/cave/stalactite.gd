@@ -1,10 +1,22 @@
 extends Node2D
-## Stalactite Hazard - Ceiling spike that falls when player approaches
+class_name Stalactite
+## Stalactite Hazard - Ceiling spike that falls when triggered
+## Multiple trigger modes: player proximity, random timer, or manual (for puzzles)
 ## Deals damage on contact, can optionally respawn
 
-@export_group("Detection")
-@export var detection_radius: float = 80.0  ## How close player must be to trigger
+## Trigger mode determines how stalactite activates
+enum TriggerMode {
+	PLAYER_PROXIMITY,  ## Falls when player gets close (default)
+	RANDOM_TIMER,      ## Falls at random intervals
+	MANUAL             ## Only falls when trigger_fall() is called (puzzles)
+}
+
+@export_group("Trigger Settings")
+@export var trigger_mode: TriggerMode = TriggerMode.PLAYER_PROXIMITY
+@export var detection_radius: float = 80.0  ## How close player must be (PLAYER_PROXIMITY)
 @export var detection_below_only: bool = true  ## Only trigger if player is below
+@export var random_min_time: float = 3.0  ## Min time between falls (RANDOM_TIMER)
+@export var random_max_time: float = 8.0  ## Max time between falls (RANDOM_TIMER)
 
 @export_group("Fall Behavior")
 @export var fall_delay: float = 0.3  ## Shake time before falling
@@ -19,6 +31,7 @@ extends Node2D
 
 @export_group("Visual")
 @export var warning_particles: bool = true  ## Dust before falling
+@export var stalactite_scale: float = 1.0  ## Size multiplier
 
 enum State { IDLE, SHAKING, FALLING, DESTROYED }
 var current_state: State = State.IDLE
@@ -36,16 +49,43 @@ func _ready() -> void:
 	original_position = global_position
 	original_x = position.x
 	
-	if detection_area:
-		detection_area.body_entered.connect(_on_detection_body_entered)
-		# Set detection shape radius
-		var circle = CircleShape2D.new()
-		circle.radius = detection_radius
-		if detection_area.has_node("CollisionShape2D"):
-			detection_area.get_node("CollisionShape2D").shape = circle
+	# Generate procedural sprite if no texture
+	if sprite and sprite.texture == null:
+		_create_procedural_stalactite()
+	
+	# Setup based on trigger mode
+	match trigger_mode:
+		TriggerMode.PLAYER_PROXIMITY:
+			_setup_detection_area()
+		TriggerMode.RANDOM_TIMER:
+			_start_random_timer()
+		TriggerMode.MANUAL:
+			pass  # Wait for trigger_fall() call
 	
 	if hit_area:
 		hit_area.damage = damage
+
+func _setup_detection_area() -> void:
+	if not detection_area:
+		return
+	
+	detection_area.body_entered.connect(_on_detection_body_entered)
+	# Set detection shape radius
+	var circle = CircleShape2D.new()
+	circle.radius = detection_radius
+	if detection_area.has_node("CollisionShape2D"):
+		detection_area.get_node("CollisionShape2D").shape = circle
+
+func _start_random_timer() -> void:
+	if current_state != State.IDLE:
+		return
+	
+	var wait_time = randf_range(random_min_time, random_max_time)
+	await get_tree().create_timer(wait_time).timeout
+	
+	if current_state == State.IDLE:
+		_start_falling()
+
 
 func _physics_process(delta: float) -> void:
 	match current_state:
@@ -138,6 +178,10 @@ func _respawn() -> void:
 		sprite.modulate.a = 1.0
 	if collision:
 		collision.set_deferred("disabled", false)
+	
+	# Restart random timer if in that mode
+	if trigger_mode == TriggerMode.RANDOM_TIMER:
+		_start_random_timer()
 
 ## Manual trigger (for puzzles or scripted events)
 func trigger_fall() -> void:
@@ -147,3 +191,39 @@ func trigger_fall() -> void:
 ## Reset to idle state
 func reset() -> void:
 	_respawn()
+
+## Create a simple procedural stalactite shape when no sprite is assigned
+func _create_procedural_stalactite() -> void:
+	var stalactite_poly = Polygon2D.new()
+	stalactite_poly.name = "StalactiteShape"
+	
+	# Create pointed spike shape (pointing down)
+	var width = 12.0 * stalactite_scale
+	var height = 48.0 * stalactite_scale
+	
+	stalactite_poly.polygon = PackedVector2Array([
+		Vector2(-width, 0),           # Top left
+		Vector2(width, 0),            # Top right
+		Vector2(width * 0.6, height * 0.3),  # Mid right
+		Vector2(width * 0.3, height * 0.6),  # Lower right
+		Vector2(0, height),           # Tip (bottom)
+		Vector2(-width * 0.3, height * 0.6), # Lower left
+		Vector2(-width * 0.6, height * 0.3), # Mid left
+	])
+	stalactite_poly.color = Color(0.5, 0.55, 0.6, 1.0)  # Stone gray
+	add_child(stalactite_poly)
+	
+	# Add highlight
+	var highlight = Polygon2D.new()
+	highlight.name = "Highlight"
+	highlight.polygon = PackedVector2Array([
+		Vector2(-width * 0.3, 2),
+		Vector2(0, 2),
+		Vector2(0, height * 0.4),
+		Vector2(-width * 0.2, height * 0.3),
+	])
+	highlight.color = Color(0.7, 0.72, 0.75, 0.5)
+	add_child(highlight)
+	
+	# Hide the empty sprite
+	sprite.visible = false

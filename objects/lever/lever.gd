@@ -1,23 +1,40 @@
-# Đặt script này trực tiếp lên node Area2D của bạn
+# Lever - Interactive switch for gates, water levels, and custom actions
 extends Area2D
 class_name Lever
 
-# Biến để lưu trạng thái của cần gạt (đang bật hay tắt)
+## What the lever controls
+enum LeverTarget { SIGNAL_ONLY, WATER_LEVEL, GATE }
+
+@export_group("Lever Settings")
 @export var is_activated: bool = false
+@export var target_type: LeverTarget = LeverTarget.SIGNAL_ONLY
+
+@export_group("Water Control")
+@export var water_node: NodePath  ## Path to water node to control
+@export var water_on_level: float = -50.0  ## surface_pos_y when ON (negative = higher)
+@export var water_off_level: float = 50.0  ## surface_pos_y when OFF (positive = lower)
+@export var water_transition_time: float = 2.0
+
+@export_group("Gate Control")
+@export var gate_node: NodePath  ## Path to gate node to control
 
 signal lever_activated
 signal lever_deactivated
 
-# Biến để theo dõi xem player có đang ở gần không
 var player_is_near: bool = false
+var _water_ref: Node = null
+var _gate_ref: Node = null
 
 func _ready() -> void:
-	# Cập nhật animation lúc bắt đầu dựa trên trạng thái
 	update_animation()
+	
+	# Cache node references
+	if not water_node.is_empty():
+		_water_ref = get_node_or_null(water_node)
+	if not gate_node.is_empty():
+		_gate_ref = get_node_or_null(gate_node)
 
-# Hàm _process chạy mỗi frame
-func _process(delta: float) -> void:
-	# Chỉ kiểm tra input NẾU player đang ở gần
+func _process(_delta: float) -> void:
 	if player_is_near and Input.is_action_just_pressed("interact"):
 		activate()
 
@@ -26,26 +43,46 @@ func activate() -> void:
 	update_animation()
 
 	if is_activated:
-		print("ACTIVATED")
 		lever_activated.emit()
+		_on_lever_on()
 	else:
-		print("DEACTIVATED")
 		lever_deactivated.emit()
+		_on_lever_off()
+
+func _on_lever_on() -> void:
+	match target_type:
+		LeverTarget.WATER_LEVEL:
+			if _water_ref and _water_ref.has_method("raise_water"):
+				_water_ref.raise_water(water_on_level, water_transition_time)
+		LeverTarget.GATE:
+			if _gate_ref and _gate_ref.has_method("open_gate"):
+				_gate_ref.open_gate()
+
+func _on_lever_off() -> void:
+	match target_type:
+		LeverTarget.WATER_LEVEL:
+			if _water_ref and _water_ref.has_method("lower_water"):
+				_water_ref.lower_water(water_off_level, water_transition_time)
+		LeverTarget.GATE:
+			if _gate_ref and _gate_ref.has_method("close_gate"):
+				_gate_ref.close_gate()
 
 func update_animation() -> void:
-	if is_activated:
-		$AnimatedSprite2D.play("on")
-	else:
-		$AnimatedSprite2D.play("off")
+	if has_node("AnimatedSprite2D"):
+		if is_activated:
+			$AnimatedSprite2D.play("on")
+		else:
+			$AnimatedSprite2D.play("off")
 
-# Được gọi khi player (body) đi vào vùng Area2D
 func _on_body_entered(body: Node2D) -> void:
-	# Bạn nên kiểm tra xem body có phải là player không
 	if body is Player:
-		print("ACTIVATED")
 		player_is_near = true
 	
-# Được gọi khi player (body) đi ra khỏi vùng Area2D
 func _on_body_exited(body: Node2D) -> void:
 	if body is Player:
 		player_is_near = false
+
+## Force lever state (for scripted events)
+func set_state(activated: bool) -> void:
+	if is_activated != activated:
+		activate()

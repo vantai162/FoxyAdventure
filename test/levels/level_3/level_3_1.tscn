@@ -26,7 +26,8 @@ size = Vector2(64, 128)
 script = ExtResource("1_stage_script")
 
 [node name="CanvasModulate" type="CanvasModulate" parent="."]
-color = Color(0.7, 0.65, 0.8, 1)
+visible = false
+color = Color(0.15, 0.12, 0.18, 1)
 
 [node name="PlayerSpawn" type="Marker2D" parent="."]
 position = Vector2(140, 180)

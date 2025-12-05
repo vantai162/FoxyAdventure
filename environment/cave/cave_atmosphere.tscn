@@ -1,0 +1,16 @@
+[gd_scene load_steps=2 format=3 uid="uid://c8kmpvn3a2y1q"]
+
+[ext_resource type="Script" uid="uid://dwg5qxr2h6kma" path="res://environment/cave/cave_atmosphere.gd" id="1_atmos"]
+
+[node name="CaveAtmosphere" type="CanvasLayer"]
+layer = 90
+script = ExtResource("1_atmos")
+enabled = true
+darkness_color = Color(0, 0, 0.03, 1)
+center_opacity = 0.0
+edge_opacity = 0.5
+vignette_size = 0.35
+player_glow_enabled = true
+player_glow_radius = 180.0
+player_glow_softness = 120.0
+depth_fog_enabled = false

@@ -214,3 +214,5 @@ script = ExtResource("17_73cdu")
 
 [node name="Dead" type="Node" parent="States"]
 script = ExtResource("20_aecud")
+
+[connection signal="hurt" from="Direction/HurtArea2D" to="." method="_on_hurt_area_2d_hurt"]
