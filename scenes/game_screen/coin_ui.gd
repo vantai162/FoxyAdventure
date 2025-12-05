@@ -15,6 +15,5 @@ func setup():
 
 func _on_item_amount_changed(item_name: String, new_amount: int):
 	# Chỉ cập nhật Label nếu vật phẩm bị thay đổi là "Coin"
-	$AudioStreamPlayer.play()
 	if item_name == "Coin":
 		coin_label.text = str(new_amount)

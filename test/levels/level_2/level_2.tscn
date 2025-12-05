@@ -1,4 +1,4 @@
-[gd_scene load_steps=38 format=4 uid="uid://bxknbajfocd87"]
+[gd_scene load_steps=37 format=4 uid="uid://bxknbajfocd87"]
 
 [ext_resource type="Script" uid="uid://b6xvcjrh55sd6" path="res://test/levels/level_2/level_2.gd" id="1_5l4f7"]
 [ext_resource type="PackedScene" uid="uid://dm741hii7d5nv" path="res://scenes/game_screen/health_bar.tscn" id="1_x7kuf"]
@@ -24,7 +24,6 @@
 [ext_resource type="PackedScene" uid="uid://dav8b7a6d5e4f" path="res://enemy/shield_tribe/shield_tribe.tscn" id="20_5x4la"]
 [ext_resource type="PackedScene" uid="uid://bmic0j4cnluey" path="res://objects/checkpoint/checkpoint.tscn" id="20_x03np"]
 [ext_resource type="PackedScene" uid="uid://bxfs4fsx7ot6m" path="res://enemy/starfish/starfish.tscn" id="21_h7na1"]
-[ext_resource type="AudioStream" uid="uid://brn6bu26b2blg" path="res://assets/sounds/warlord_theme.wav" id="21_x03np"]
 [ext_resource type="PackedScene" uid="uid://bdkss15p4gbma" path="res://enemy/seahorse/seahorse.tscn" id="22_1xjcy"]
 [ext_resource type="PackedScene" uid="uid://bg3bfewcihuv0" path="res://objects/sign/sign.tscn" id="22_huoje"]
 [ext_resource type="PackedScene" uid="uid://ddcloveonpfdf" path="res://environment/staircase/stair_case.tscn" id="24_ykuqp"]
@@ -209,11 +208,6 @@ position = Vector2(-439, -191)
 [node name="Checkpoint" parent="." instance=ExtResource("20_x03np")]
 position = Vector2(-194, -208)
 
-[node name="WarlordTheme" type="AudioStreamPlayer" parent="."]
-stream = ExtResource("21_x03np")
-volume_db = 12.0
-bus = &"Music"
-
 [node name="Sign" parent="." instance=ExtResource("22_huoje")]
 position = Vector2(687, -215)
 instruction_text = "Đảo Rùa"
@@ -271,7 +265,6 @@ position = Vector2(1614, 243)
 
 [node name="Spawner" type="Node2D" parent="."]
 
-[connection signal="area_entered" from="DirtLayer/HealthPotion" to="DirtLayer/HealthPotion" method="_on_area_entered"]
 [connection signal="lever_activated" from="Lever" to="Gate" method="open_gate"]
 [connection signal="lever_deactivated" from="Lever" to="Gate" method="close_gate"]
 [connection signal="body_entered" from="MeetBossArea2D" to="." method="_on_meet_boss_area_2d_body_entered"]

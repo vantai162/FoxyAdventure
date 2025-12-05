@@ -2,7 +2,7 @@ extends Node2D
 
 
 @onready var wake_up_cinematic_scn = preload("res://cut_scene/wake_up_cutscene.tscn")
-@onready var bgm = $AudioStreamPlayer
+@export var music_id: String = "level_1_music" # ID music in AudioDatabase
 @onready var settings_ui = preload("res://scenes/game_screen/settings_popup.tscn")
 @export var wakeup_timeline: String = "wake_up_timeline"
 var can_pause: bool = false
@@ -62,7 +62,4 @@ func play_intro_cinematic():
 	Dialogic.start(wakeup_timeline) # Hiện hội thoại tự hỏi
 	await Dialogic.timeline_ended
 	can_pause = true
-	if bgm: 
-		bgm.volume_db = -20 # Mẹo: Set nhỏ trước
-		bgm.play()
-		create_tween().tween_property(bgm, "volume_db", 0.0, 2.0)
+	AudioManager.play_music(music_id,8.0,0.5)

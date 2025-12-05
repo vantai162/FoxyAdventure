@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="AudioClip" load_steps=3 format=3 uid="uid://bg17ces5g1fap"]
+
+[ext_resource type="Script" uid="uid://chlphbiuq1gay" path="res://scripts/audio/audio_clip.gd" id="1_pe0bq"]
+[ext_resource type="AudioStream" uid="uid://26kiclm3hflh" path="res://assets/sounds/King Dice Attack Laugh (Nr. 1 Cuphead Sound) - Sound Effect for editing.wav" id="2_baynr"]
+
+[resource]
+script = ExtResource("1_pe0bq")
+clip_id = "warlord_laugh"
+stream = ExtResource("2_baynr")
+volume_db = 0.0
+randomize_pitch = false
+pitch_min = 0.9
+pitch_max = 1.1
+description = ""
+metadata/_custom_type_script = "uid://chlphbiuq1gay"

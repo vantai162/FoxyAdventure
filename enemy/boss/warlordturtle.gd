@@ -25,9 +25,7 @@ extends EnemyCharacter
 @onready var hurt_timer = $Direction/HurtArea2D/Timer
 
 #Sound-related
-@onready var missles_launch_sound = $MisslesLaunchSound
-@onready var bombs_launch_sound = $BombsLaunchSound
-@onready var laugh_sound = $LaughSound
+
 var laugh_timer := 0.0
 var laugh_interval := 15.0
 
@@ -49,14 +47,16 @@ func fire_boomb():
 	boomb1.set_speed(350.0)
 	get_tree().current_scene.add_child(boomb1)
 	boomb1.launch(-1)  # Launch left
-	bombs_launch_sound.play()
+	#bombs_launch_sound.play()
+	AudioManager.play_sound("warlord_bomb_launch",20.0)
 	await get_tree().create_timer(0.2).timeout
 	var boomb2 = boomb_scene.instantiate()
 	boomb2.global_position = muzzle2.global_position
 	boomb2.set_speed(250.0)
 	get_tree().current_scene.add_child(boomb2)
 	boomb2.launch(1)  # Launch right
-	bombs_launch_sound.play()
+	#bombs_launch_sound.play()
+	AudioManager.play_sound("warlord_bomb_launch",20.0)
 
 func fire_rocket():
 	var rocket1 = rocket_scene.instantiate()
@@ -65,7 +65,8 @@ func fire_rocket():
 	get_tree().current_scene.add_child(rocket1)
 	warning_marker.show_animation()
 	rocket1.shoot(rocket1.global_position, warning_marker.global_position, 1.5)
-	missles_launch_sound.play()
+	#missles_launch_sound.play()
+	AudioManager.play_sound("warlord_missle_launch",20.0)
 	await get_tree().create_timer(0.2).timeout
 	var rocket2 = rocket_scene.instantiate()
 	rocket2.global_position = muzzlerocket2.global_position
@@ -78,7 +79,8 @@ func fire_rocket():
 	get_tree().current_scene.add_child(rocket3)
 	warning_marker3.show_animation()
 	rocket3.shoot(rocket3.global_position, warning_marker3.global_position, 1.5)
-	missles_launch_sound.play()
+	#missles_launch_sound.play()
+	AudioManager.play_sound("warlord_missle_launch",20.0)
 	await get_tree().create_timer(0.2).timeout
 	var rocket4 = rocket_scene.instantiate()
 	rocket4.global_position = muzzlerocket2.global_position
@@ -120,13 +122,14 @@ func _process(delta):
 func _update_laugh(delta: float) -> void:
 	laugh_timer += delta
 	if laugh_timer >= laugh_interval:
-		laugh_sound.play()
+		#laugh_sound.play()
+		AudioManager.play_sound("warlord_laugh",20.0)
 		laugh_timer = 0.0
 
 func take_damage(amount: int):
 	health -= amount
 	emit_signal("health_changed")
-
+	AudioManager.play_sound("hurt",20.0)
 	# Force vulnerable khi máu <= 1
 	if health == 1:
 		become_vulnerable()

@@ -6,6 +6,7 @@ var ghost_timer: float = 0.0
 func _enter():
 	super._enter()
 	obj.change_animation("run")
+	AudioManager.play_sound("player_dash",20.0)
 	obj.velocity.x = obj.dash_speed * obj.direction
 	obj.velocity.y = 0
 	timer = obj.dash_duration
