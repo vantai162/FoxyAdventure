@@ -1,0 +1,262 @@
+[gd_scene load_steps=14 format=3 uid="uid://bk7m0i5slxetd"]
+
+[ext_resource type="Script" uid="uid://dntapeem53gya" path="res://test/levels/level_3/stage_3_5.gd" id="1_stage_script"]
+[ext_resource type="PackedScene" uid="uid://bn3w2ymt5pkh7" path="res://test/wall.tscn" id="1_wall"]
+[ext_resource type="PackedScene" uid="uid://bmic0j4cnluey" path="res://objects/checkpoint/checkpoint.tscn" id="2_checkpoint"]
+[ext_resource type="PackedScene" uid="uid://mikmney07ycb" path="res://objects/platform/one_way_platform.tscn" id="3_oneway"]
+[ext_resource type="PackedScene" uid="uid://bs816w0pr8all" path="res://player/foxy.tscn" id="5_foxy"]
+[ext_resource type="PackedScene" uid="uid://bdlk3sxo5ekwn" path="res://enemy/boss/warlordturtle.tscn" id="6_warlordturtle"]
+[ext_resource type="PackedScene" uid="uid://giogr7michck" path="res://objects/water/water.tscn" id="7_water"]
+[ext_resource type="PackedScene" uid="uid://ctr1b8p1h6p8y" path="res://objects/gate/gate.tscn" id="8_gate"]
+[ext_resource type="PackedScene" path="res://environment/cave/glowing_mushroom.tscn" id="9_mushroom"]
+[ext_resource type="PackedScene" uid="uid://cn3lm5txngxlq" path="res://objects/spike/spike_static/spike.tscn" id="10_spike"]
+[ext_resource type="PackedScene" uid="uid://b3cbk6lmh2cc3" path="res://effect_Item/heal_potion/health_potion.tscn" id="11_heal_potion"]
+
+[sub_resource type="RectangleShape2D" id="trigger_shape"]
+size = Vector2(64, 128)
+
+[sub_resource type="RectangleShape2D" id="exit_shape"]
+size = Vector2(64, 96)
+
+[node name="Level_3_5" type="Node2D"]
+script = ExtResource("1_stage_script")
+
+[node name="CanvasModulate" type="CanvasModulate" parent="."]
+color = Color(0.4, 0.35, 0.5, 1)
+
+[node name="PlayerSpawn" type="Marker2D" parent="."]
+position = Vector2(100, 532)
+
+[node name="Terrain" type="Node2D" parent="."]
+
+[node name="TopL" parent="Terrain" instance=ExtResource("1_wall")]
+position = Vector2(200, 45)
+scale = Vector2(3, 0.6)
+
+[node name="TopML" parent="Terrain" instance=ExtResource("1_wall")]
+position = Vector2(550, 38)
+scale = Vector2(3, 0.5)
+
+[node name="TopMR" parent="Terrain" instance=ExtResource("1_wall")]
+position = Vector2(900, 50)
+scale = Vector2(3, 0.6)
+
+[node name="TopR" parent="Terrain" instance=ExtResource("1_wall")]
+position = Vector2(1260, 42)
+scale = Vector2(2.5, 0.55)
+
+[node name="LeftWall" parent="Terrain" instance=ExtResource("1_wall")]
+position = Vector2(40, 400)
+scale = Vector2(0.5, 5.5)
+
+[node name="RightWall" parent="Terrain" instance=ExtResource("1_wall")]
+position = Vector2(1368, 400)
+scale = Vector2(0.5, 5.5)
+
+[node name="BottomL" parent="Terrain" instance=ExtResource("1_wall")]
+position = Vector2(200, 668)
+scale = Vector2(3, 0.5)
+
+[node name="BottomM" parent="Terrain" instance=ExtResource("1_wall")]
+position = Vector2(700, 660)
+scale = Vector2(5, 0.6)
+
+[node name="BottomR" parent="Terrain" instance=ExtResource("1_wall")]
+position = Vector2(1200, 668)
+scale = Vector2(3, 0.5)
+
+[node name="EntryFloor" parent="Terrain" instance=ExtResource("1_wall")]
+position = Vector2(200, 580)
+scale = Vector2(2.5, 0.5)
+
+[node name="EntryCeiling" parent="Terrain" instance=ExtResource("1_wall")]
+position = Vector2(200, 420)
+scale = Vector2(2.5, 0.4)
+
+[node name="TransitionFloor" parent="Terrain" instance=ExtResource("1_wall")]
+position = Vector2(405, 580)
+scale = Vector2(0.7, 0.5)
+
+[node name="ArenaFloorL" parent="Terrain" instance=ExtResource("1_wall")]
+position = Vector2(650, 580)
+scale = Vector2(3, 0.5)
+
+[node name="ArenaFloorC" parent="Terrain" instance=ExtResource("1_wall")]
+position = Vector2(900, 580)
+scale = Vector2(1, 0.5)
+
+[node name="ArenaFloorR" parent="Terrain" instance=ExtResource("1_wall")]
+position = Vector2(1200, 580)
+scale = Vector2(2.5, 0.5)
+
+[node name="WaterPitFloor" parent="Terrain" instance=ExtResource("1_wall")]
+position = Vector2(1000, 640)
+scale = Vector2(1.2, 0.5)
+
+[node name="PillarFL" parent="Terrain" instance=ExtResource("1_wall")]
+position = Vector2(540, 480)
+scale = Vector2(0.4, 1.2)
+
+[node name="PillarM" parent="Terrain" instance=ExtResource("1_wall")]
+position = Vector2(750, 510)
+scale = Vector2(0.55, 0.9)
+
+[node name="PillarBR" parent="Terrain" instance=ExtResource("1_wall")]
+position = Vector2(1150, 490)
+scale = Vector2(0.45, 1.1)
+
+[node name="BossRock" parent="Terrain" instance=ExtResource("1_wall")]
+position = Vector2(1280, 540)
+scale = Vector2(0.5, 0.6)
+
+[node name="Platforms" type="Node2D" parent="."]
+
+[node name="HighPlat1" parent="Platforms" instance=ExtResource("3_oneway")]
+position = Vector2(480, 380)
+
+[node name="MidPlat1" parent="Platforms" instance=ExtResource("3_oneway")]
+position = Vector2(620, 420)
+
+[node name="MidPlat2" parent="Platforms" instance=ExtResource("3_oneway")]
+position = Vector2(850, 410)
+
+[node name="WaterBridge1" parent="Platforms" instance=ExtResource("3_oneway")]
+position = Vector2(970, 520)
+
+[node name="WaterBridge2" parent="Platforms" instance=ExtResource("3_oneway")]
+position = Vector2(1030, 520)
+
+[node name="BossPlat1" parent="Platforms" instance=ExtResource("3_oneway")]
+position = Vector2(1200, 430)
+
+[node name="Puzzles" type="Node2D" parent="."]
+
+[node name="EntryGate" parent="Puzzles" instance=ExtResource("8_gate")]
+position = Vector2(420, 520)
+
+[node name="GateTrigger" type="Area2D" parent="Puzzles"]
+position = Vector2(480, 520)
+
+[node name="GateTriggerShape" type="CollisionShape2D" parent="Puzzles/GateTrigger"]
+shape = SubResource("trigger_shape")
+
+[node name="WaterZone" type="Node2D" parent="."]
+
+[node name="ArenaPit" parent="WaterZone" instance=ExtResource("7_water")]
+position = Vector2(960, 570)
+water_size = Vector2(128, 60)
+
+[node name="Hazards" type="Node2D" parent="."]
+
+[node name="PitSpike1" parent="Hazards" instance=ExtResource("10_spike")]
+position = Vector2(950, 608)
+
+[node name="PitSpike2" parent="Hazards" instance=ExtResource("10_spike")]
+position = Vector2(980, 608)
+
+[node name="PitSpike3" parent="Hazards" instance=ExtResource("10_spike")]
+position = Vector2(1010, 608)
+
+[node name="PitSpike4" parent="Hazards" instance=ExtResource("10_spike")]
+position = Vector2(1040, 608)
+
+[node name="Enemies" type="Node2D" parent="."]
+
+[node name="WarlordTurtle" parent="Enemies" instance=ExtResource("6_warlordturtle")]
+position = Vector2(1300, 548)
+scale = Vector2(-1, 1)
+
+[node name="Atmosphere" type="Node2D" parent="."]
+
+[node name="EntryMush1" parent="Atmosphere" instance=ExtResource("9_mushroom")]
+position = Vector2(80, 548)
+
+[node name="EntryMush2" parent="Atmosphere" instance=ExtResource("9_mushroom")]
+position = Vector2(280, 548)
+
+[node name="ArenaMushL" parent="Atmosphere" instance=ExtResource("9_mushroom")]
+position = Vector2(500, 548)
+
+[node name="ArenaMushR" parent="Atmosphere" instance=ExtResource("9_mushroom")]
+position = Vector2(1320, 548)
+
+[node name="PillarMush1" parent="Atmosphere" instance=ExtResource("9_mushroom")]
+position = Vector2(540, 400)
+
+[node name="PillarMush2" parent="Atmosphere" instance=ExtResource("9_mushroom")]
+position = Vector2(1150, 420)
+
+[node name="BossMush1" parent="Atmosphere" instance=ExtResource("9_mushroom")]
+position = Vector2(1100, 548)
+
+[node name="BossMush2" parent="Atmosphere" instance=ExtResource("9_mushroom")]
+position = Vector2(1340, 548)
+
+[node name="Collectibles" type="Node2D" parent="."]
+
+[node name="PillarHeal1" parent="Collectibles" instance=ExtResource("11_heal_potion")]
+position = Vector2(540, 548)
+
+[node name="PillarHeal2" parent="Collectibles" instance=ExtResource("11_heal_potion")]
+position = Vector2(1280, 510)
+
+[node name="Objects" type="Node2D" parent="."]
+
+[node name="Checkpoint1" parent="Objects" instance=ExtResource("2_checkpoint")]
+position = Vector2(300, 548)
+
+[node name="ExitZone" type="Node2D" parent="."]
+position = Vector2(1350, 548)
+
+[node name="ExitArea" type="Area2D" parent="ExitZone"]
+
+[node name="ExitShape" type="CollisionShape2D" parent="ExitZone/ExitArea"]
+shape = SubResource("exit_shape")
+
+[node name="ExitLabel" type="Label" parent="ExitZone"]
+modulate = Color(1, 0.85, 0.3, 1)
+offset_left = -80.0
+offset_top = -48.0
+offset_right = 80.0
+offset_bottom = -16.0
+text = "★ LEVEL 3 COMPLETE ★"
+horizontal_alignment = 1
+
+[node name="DebugLabels" type="Node2D" parent="."]
+
+[node name="Label_Entry" type="Label" parent="DebugLabels"]
+modulate = Color(0.5, 0.8, 1, 0.8)
+offset_left = 100.0
+offset_top = 450.0
+offset_right = 100.0
+offset_bottom = 450.0
+text = "ENTRY CORRIDOR
+Walk toward your fate.
+Gate closes behind you.
+No escape."
+
+[node name="Label_Arena" type="Label" parent="DebugLabels"]
+modulate = Color(1, 0.5, 0.3, 0.8)
+offset_left = 550.0
+offset_top = 150.0
+offset_right = 550.0
+offset_bottom = 150.0
+text = "BOSS ARENA
+Pillars = cover from coconuts
+Water pit on RIGHT = don't get pushed!
+Wide floor = room for roll attack"
+
+[node name="Label_Boss" type="Label" parent="DebugLabels"]
+modulate = Color(1, 0.3, 0.3, 0.8)
+offset_left = 1050.0
+offset_top = 150.0
+offset_right = 1050.0
+offset_bottom = 150.0
+text = "⚔ WARLORD TURTLE ⚔
+Dive - horizontal, JUMP!
+Coconuts - use pillars!
+Claw - back away!
+Roll - needs full arena!"
+
+[node name="Foxy" parent="." instance=ExtResource("5_foxy")]
+position = Vector2(100, 532)

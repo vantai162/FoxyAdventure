@@ -1,0 +1,460 @@
+[gd_scene load_steps=8 format=3 uid="uid://dkt8idfm84loc"]
+
+[ext_resource type="Script" uid="uid://dntapeem53gya" path="res://test/levels/level_3/stage_3_5.gd" id="1_stage_script"]
+[ext_resource type="PackedScene" uid="uid://bn3w2ymt5pkh7" path="res://test/wall.tscn" id="1_wall"]
+[ext_resource type="PackedScene" uid="uid://bmic0j4cnluey" path="res://objects/checkpoint/checkpoint.tscn" id="2_checkpoint"]
+[ext_resource type="PackedScene" uid="uid://mikmney07ycb" path="res://objects/platform/one_way_platform.tscn" id="3_oneway"]
+[ext_resource type="Texture2D" uid="uid://dkta2oq0nm1o0" path="res://icon.svg" id="4_icon"]
+
+[sub_resource type="RectangleShape2D" id="boss_spawn_shape"]
+size = Vector2(128, 128)
+
+[sub_resource type="RectangleShape2D" id="transition_shape"]
+size = Vector2(64, 64)
+
+[node name="Level_3_5" type="Node2D"]
+script = ExtResource("1_stage_script")
+
+[node name="CanvasModulate" type="CanvasModulate" parent="."]
+color = Color(0.5, 0.4, 0.5, 1)
+
+[node name="Terrain" type="Node2D" parent="."]
+
+[node name="Ceiling1" parent="Terrain" instance=ExtResource("1_wall")]
+position = Vector2(160, 32)
+scale = Vector2(2.5, 0.5)
+
+[node name="Ceiling2" parent="Terrain" instance=ExtResource("1_wall")]
+position = Vector2(480, 32)
+scale = Vector2(2.5, 0.5)
+
+[node name="Ceiling3" parent="Terrain" instance=ExtResource("1_wall")]
+position = Vector2(800, 32)
+scale = Vector2(2.5, 0.5)
+
+[node name="Ceiling4" parent="Terrain" instance=ExtResource("1_wall")]
+position = Vector2(1120, 32)
+scale = Vector2(2.5, 0.5)
+
+[node name="LeftWall1" parent="Terrain" instance=ExtResource("1_wall")]
+position = Vector2(0, 224)
+scale = Vector2(0.25, 3)
+
+[node name="LeftWall2" parent="Terrain" instance=ExtResource("1_wall")]
+position = Vector2(0, 608)
+scale = Vector2(0.25, 3)
+
+[node name="RightWall1" parent="Terrain" instance=ExtResource("1_wall")]
+position = Vector2(1280, 224)
+scale = Vector2(0.25, 3)
+
+[node name="RightWall2" parent="Terrain" instance=ExtResource("1_wall")]
+position = Vector2(1280, 608)
+scale = Vector2(0.25, 3)
+
+[node name="Floor1" parent="Terrain" instance=ExtResource("1_wall")]
+position = Vector2(160, 576)
+scale = Vector2(2.5, 0.5)
+
+[node name="Floor2" parent="Terrain" instance=ExtResource("1_wall")]
+position = Vector2(480, 576)
+scale = Vector2(2.5, 0.5)
+
+[node name="Floor3" parent="Terrain" instance=ExtResource("1_wall")]
+position = Vector2(800, 576)
+scale = Vector2(2.5, 0.5)
+
+[node name="Floor4" parent="Terrain" instance=ExtResource("1_wall")]
+position = Vector2(1120, 576)
+scale = Vector2(2.5, 0.5)
+
+[node name="Bottom1" parent="Terrain" instance=ExtResource("1_wall")]
+position = Vector2(160, 768)
+scale = Vector2(2.5, 0.5)
+
+[node name="Bottom2" parent="Terrain" instance=ExtResource("1_wall")]
+position = Vector2(480, 768)
+scale = Vector2(2.5, 0.5)
+
+[node name="Bottom3" parent="Terrain" instance=ExtResource("1_wall")]
+position = Vector2(800, 768)
+scale = Vector2(2.5, 0.5)
+
+[node name="Bottom4" parent="Terrain" instance=ExtResource("1_wall")]
+position = Vector2(1120, 768)
+scale = Vector2(2.5, 0.5)
+
+[node name="EntryFloor" parent="Terrain" instance=ExtResource("1_wall")]
+position = Vector2(96, 448)
+scale = Vector2(1.5, 0.5)
+
+[node name="EntryWallTop" parent="Terrain" instance=ExtResource("1_wall")]
+position = Vector2(192, 320)
+scale = Vector2(0.25, 1.5)
+
+[node name="Platforms" type="Node2D" parent="."]
+
+[node name="Platform1" parent="Platforms" instance=ExtResource("3_oneway")]
+position = Vector2(256, 384)
+
+[node name="Platform2" parent="Platforms" instance=ExtResource("3_oneway")]
+position = Vector2(512, 352)
+
+[node name="Platform3" parent="Platforms" instance=ExtResource("3_oneway")]
+position = Vector2(640, 384)
+
+[node name="Platform4" parent="Platforms" instance=ExtResource("3_oneway")]
+position = Vector2(768, 352)
+
+[node name="Platform5" parent="Platforms" instance=ExtResource("3_oneway")]
+position = Vector2(1024, 384)
+
+[node name="WaterZones" type="Node2D" parent="."]
+
+[node name="WaterPool1" type="Area2D" parent="WaterZones"]
+position = Vector2(384, 672)
+
+[node name="Water1Shape" type="CollisionShape2D" parent="WaterZones/WaterPool1"]
+shape = SubResource("boss_spawn_shape")
+
+[node name="Water1Visual" type="ColorRect" parent="WaterZones/WaterPool1"]
+offset_left = -96.0
+offset_top = -48.0
+offset_right = 96.0
+offset_bottom = 48.0
+color = Color(0.2, 0.4, 0.8, 0.5)
+
+[node name="Water1Label" type="Label" parent="WaterZones/WaterPool1"]
+offset_left = -48.0
+offset_top = -16.0
+offset_right = 48.0
+offset_bottom = 16.0
+text = "~~~WATER~~~
+(slows player)"
+horizontal_alignment = 1
+
+[node name="WaterPool2" type="Area2D" parent="WaterZones"]
+position = Vector2(896, 672)
+
+[node name="Water2Shape" type="CollisionShape2D" parent="WaterZones/WaterPool2"]
+shape = SubResource("boss_spawn_shape")
+
+[node name="Water2Visual" type="ColorRect" parent="WaterZones/WaterPool2"]
+offset_left = -96.0
+offset_top = -48.0
+offset_right = 96.0
+offset_bottom = 48.0
+color = Color(0.2, 0.4, 0.8, 0.5)
+
+[node name="Water2Label" type="Label" parent="WaterZones/WaterPool2"]
+offset_left = -48.0
+offset_top = -16.0
+offset_right = 48.0
+offset_bottom = 16.0
+text = "~~~WATER~~~"
+horizontal_alignment = 1
+
+[node name="Stalactites" type="Node2D" parent="."]
+
+[node name="Stalactite1" type="Marker2D" parent="Stalactites"]
+position = Vector2(256, 96)
+
+[node name="Stal1Sprite" type="Sprite2D" parent="Stalactites/Stalactite1"]
+modulate = Color(0.5, 0.5, 0.5, 0.8)
+rotation = 3.14159
+scale = Vector2(0.3, 0.5)
+texture = ExtResource("4_icon")
+
+[node name="Stal1Label" type="Label" parent="Stalactites/Stalactite1"]
+offset_left = -32.0
+offset_top = -48.0
+offset_right = 32.0
+offset_bottom = -16.0
+text = "▼ STAL"
+horizontal_alignment = 1
+
+[node name="Stalactite2" type="Marker2D" parent="Stalactites"]
+position = Vector2(512, 96)
+
+[node name="Stal2Sprite" type="Sprite2D" parent="Stalactites/Stalactite2"]
+modulate = Color(0.5, 0.5, 0.5, 0.8)
+rotation = 3.14159
+scale = Vector2(0.3, 0.5)
+texture = ExtResource("4_icon")
+
+[node name="Stal2Label" type="Label" parent="Stalactites/Stalactite2"]
+offset_left = -32.0
+offset_top = -48.0
+offset_right = 32.0
+offset_bottom = -16.0
+text = "▼ STAL"
+horizontal_alignment = 1
+
+[node name="Stalactite3" type="Marker2D" parent="Stalactites"]
+position = Vector2(768, 96)
+
+[node name="Stal3Sprite" type="Sprite2D" parent="Stalactites/Stalactite3"]
+modulate = Color(0.5, 0.5, 0.5, 0.8)
+rotation = 3.14159
+scale = Vector2(0.3, 0.5)
+texture = ExtResource("4_icon")
+
+[node name="Stal3Label" type="Label" parent="Stalactites/Stalactite3"]
+offset_left = -32.0
+offset_top = -48.0
+offset_right = 32.0
+offset_bottom = -16.0
+text = "▼ STAL"
+horizontal_alignment = 1
+
+[node name="Stalactite4" type="Marker2D" parent="Stalactites"]
+position = Vector2(1024, 96)
+
+[node name="Stal4Sprite" type="Sprite2D" parent="Stalactites/Stalactite4"]
+modulate = Color(0.5, 0.5, 0.5, 0.8)
+rotation = 3.14159
+scale = Vector2(0.3, 0.5)
+texture = ExtResource("4_icon")
+
+[node name="Stal4Label" type="Label" parent="Stalactites/Stalactite4"]
+offset_left = -32.0
+offset_top = -48.0
+offset_right = 32.0
+offset_bottom = -16.0
+text = "▼ STAL"
+horizontal_alignment = 1
+
+[node name="Boss" type="Node2D" parent="."]
+metadata/_edit_group_ = true
+
+[node name="ArenaTitle" type="Label" parent="Boss"]
+offset_left = 400.0
+offset_top = 140.0
+offset_right = 900.0
+offset_bottom = 220.0
+text = "═══ KING'S ARENA ═══
+The throne room of King Crab
+No escape once battle begins..."
+horizontal_alignment = 1
+
+[node name="KingCrabSpawn" type="Marker2D" parent="Boss"]
+position = Vector2(1024, 512)
+
+[node name="BossSprite" type="Sprite2D" parent="Boss/KingCrabSpawn"]
+modulate = Color(0.8, 0.2, 0.2, 0.9)
+scale = Vector2(1.5, 1.5)
+texture = ExtResource("4_icon")
+
+[node name="BossLabel" type="Label" parent="Boss/KingCrabSpawn"]
+offset_left = -96.0
+offset_top = -128.0
+offset_right = 96.0
+offset_bottom = -32.0
+text = "👑 KING CRAB 👑
+LEVEL 3 BOSS
+
+PHASE 1 (100%-50%):
+• Claw Swipe (melee)
+• Ground Pound (AOE)
+• Coconut Throw (ranged)
+
+PHASE 2 (50%-0%):
+• FASTER ATTACKS!
+• Dive Attack (dash)
+• Roll Bounce (unpredictable)
+• Summons Crabs!"
+horizontal_alignment = 1
+
+[node name="Phase1Zone" type="Label" parent="Boss"]
+modulate = Color(1, 0.7, 0.3, 1)
+offset_left = 750.0
+offset_top = 400.0
+offset_right = 1100.0
+offset_bottom = 440.0
+text = "↑ PHASE 1 ↑
+Claw + Pound + Throw"
+horizontal_alignment = 1
+
+[node name="Phase2Warning" type="Label" parent="Boss"]
+modulate = Color(1, 0.3, 0.3, 1)
+offset_left = 750.0
+offset_top = 500.0
+offset_right = 1100.0
+offset_bottom = 560.0
+text = "⚠ PHASE 2 RAGE ⚠
+@50% HP - ENRAGE!
+Faster, adds dive + roll!"
+horizontal_alignment = 1
+
+[node name="ArenaTrigger" type="Area2D" parent="Boss"]
+position = Vector2(400, 480)
+
+[node name="TriggerShape" type="CollisionShape2D" parent="Boss/ArenaTrigger"]
+shape = SubResource("boss_spawn_shape")
+
+[node name="TriggerLabel" type="Label" parent="Boss/ArenaTrigger"]
+offset_left = -80.0
+offset_top = -48.0
+offset_right = 80.0
+offset_bottom = 16.0
+text = "⚠ BOSS TRIGGER ⚠
+Cross here = Door locks!
+NO ESCAPE"
+horizontal_alignment = 1
+
+[node name="CombatHint" type="Label" parent="Boss"]
+modulate = Color(0.7, 0.9, 0.7, 0.9)
+offset_left = 500.0
+offset_top = 620.0
+offset_right = 800.0
+offset_bottom = 700.0
+text = "💡 COMBAT TIPS:
+• Use platforms to dodge!
+• Water pools slow you!
+• Stalactites drop on ground pound!
+• Phase 2: Stay mobile!"
+horizontal_alignment = 1
+
+[node name="StalactiteHint" type="Label" parent="Boss"]
+modulate = Color(0.8, 0.8, 0.8, 0.8)
+offset_left = 400.0
+offset_top = 64.0
+offset_right = 900.0
+offset_bottom = 100.0
+text = "▼▼▼ STALACTITES ▼▼▼ Fall during Ground Pound!"
+horizontal_alignment = 1
+
+[node name="BossGate" type="Node2D" parent="."]
+position = Vector2(192, 400)
+
+[node name="GateBody" type="StaticBody2D" parent="BossGate"]
+visible = false
+
+[node name="GateShape" type="CollisionShape2D" parent="BossGate/GateBody"]
+shape = SubResource("transition_shape")
+
+[node name="GateVisual" type="ColorRect" parent="BossGate"]
+visible = false
+offset_left = -16.0
+offset_top = -48.0
+offset_right = 16.0
+offset_bottom = 48.0
+color = Color(0.6, 0.3, 0, 1)
+
+[node name="GateLabel" type="Label" parent="BossGate"]
+offset_left = -48.0
+offset_top = -80.0
+offset_right = 48.0
+offset_bottom = -48.0
+text = "BOSS GATE
+(closes during fight)"
+horizontal_alignment = 1
+
+[node name="Objects" type="Node2D" parent="."]
+
+[node name="Checkpoint" parent="Objects" instance=ExtResource("2_checkpoint")]
+position = Vector2(96, 416)
+
+[node name="VictoryReward" type="Marker2D" parent="Objects"]
+position = Vector2(640, 512)
+
+[node name="RewardLabel" type="Label" parent="Objects/VictoryReward"]
+offset_left = -64.0
+offset_top = -32.0
+offset_right = 64.0
+text = "🏆 VICTORY REWARD
+(spawns after boss)"
+horizontal_alignment = 1
+
+[node name="EntryZone" type="Node2D" parent="."]
+position = Vector2(32, 416)
+
+[node name="EntryArea" type="Area2D" parent="EntryZone"]
+
+[node name="EntryShape" type="CollisionShape2D" parent="EntryZone/EntryArea"]
+shape = SubResource("transition_shape")
+
+[node name="EntryLabel" type="Label" parent="EntryZone"]
+offset_left = -32.0
+offset_top = -48.0
+offset_right = 32.0
+offset_bottom = -16.0
+text = "← FROM 3-4"
+horizontal_alignment = 1
+
+[node name="ExitZone" type="Node2D" parent="."]
+position = Vector2(1248, 544)
+
+[node name="ExitArea" type="Area2D" parent="ExitZone"]
+
+[node name="ExitShape" type="CollisionShape2D" parent="ExitZone/ExitArea"]
+shape = SubResource("transition_shape")
+
+[node name="ExitArrow" type="Sprite2D" parent="ExitZone"]
+modulate = Color(0, 1, 0, 0.7)
+position = Vector2(0, -32)
+scale = Vector2(0.3, 0.3)
+texture = ExtResource("4_icon")
+
+[node name="ExitLabel" type="Label" parent="ExitZone"]
+offset_left = -48.0
+offset_top = -80.0
+offset_right = 48.0
+offset_bottom = -48.0
+text = "→ LEVEL 4
+or VICTORY!"
+horizontal_alignment = 1
+
+[node name="Navigation" type="Node2D" parent="."]
+metadata/_edit_group_ = true
+
+[node name="Nav1_Entry" type="Label" parent="Navigation"]
+modulate = Color(1, 0.3, 0.3, 1)
+offset_left = 50.0
+offset_top = 350.0
+offset_right = 180.0
+offset_bottom = 410.0
+text = "⚠ POINT OF ⚠
+⚠ NO RETURN ⚠
+Gate locks behind!"
+horizontal_alignment = 1
+
+[node name="Nav2_Arena" type="Label" parent="Navigation"]
+modulate = Color(1, 1, 0.3, 1)
+offset_left = 550.0
+offset_top = 280.0
+offset_right = 750.0
+offset_bottom = 340.0
+text = "★★★ THE ARENA ★★★
+Use platforms to dodge!
+Watch for ground pound!"
+horizontal_alignment = 1
+
+[node name="Nav3_WaterWarning" type="Label" parent="Navigation"]
+modulate = Color(0.3, 0.6, 1, 1)
+offset_left = 300.0
+offset_top = 720.0
+offset_right = 500.0
+offset_bottom = 760.0
+text = "~~ WATER SLOWS ~~
+Don't get trapped!"
+horizontal_alignment = 1
+
+[node name="Nav4_Victory" type="Label" parent="Navigation"]
+modulate = Color(0.3, 1, 0.3, 1)
+offset_left = 1100.0
+offset_top = 600.0
+offset_right = 1250.0
+offset_bottom = 660.0
+text = "→ VICTORY! →
+Exit unlocks after
+boss defeat!"
+horizontal_alignment = 1
+
+[node name="PlayerSpawn" type="Marker2D" parent="."]
+position = Vector2(96, 416)
+
+[node name="SpawnIndicator" type="Sprite2D" parent="PlayerSpawn"]
+modulate = Color(0, 1, 0, 0.5)
+scale = Vector2(0.5, 0.5)
+texture = ExtResource("4_icon")

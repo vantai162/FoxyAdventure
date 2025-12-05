@@ -1,0 +1,423 @@
+[gd_scene load_steps=18 format=3 uid="uid://caxibxcw4tq32"]
+
+[ext_resource type="Script" uid="uid://dw0q420qxl7ar" path="res://test/levels/level_3/stage_3_4.gd" id="1_stage_script"]
+[ext_resource type="PackedScene" uid="uid://bn3w2ymt5pkh7" path="res://test/wall.tscn" id="1_wall"]
+[ext_resource type="PackedScene" uid="uid://bmic0j4cnluey" path="res://objects/checkpoint/checkpoint.tscn" id="2_checkpoint"]
+[ext_resource type="PackedScene" uid="uid://mikmney07ycb" path="res://objects/platform/one_way_platform.tscn" id="3_oneway"]
+[ext_resource type="PackedScene" uid="uid://bs816w0pr8all" path="res://player/foxy.tscn" id="5_foxy"]
+[ext_resource type="PackedScene" uid="uid://bdkss15p4gbma" path="res://enemy/seahorse/seahorse.tscn" id="6_seahorse"]
+[ext_resource type="PackedScene" uid="uid://b1a2s3d4f5g6h" path="res://enemy/aggressive_tribe/aggressive_tribe.tscn" id="7_aggressive_tribe"]
+[ext_resource type="PackedScene" uid="uid://bmgv5cgan4yt" path="res://enemy/mushroom/mushroom.tscn" id="8_mushroom"]
+[ext_resource type="PackedScene" uid="uid://b0h8a022mpy26" path="res://objects/spike/spike_retractable/spike_retractable.tscn" id="9_spike_retract"]
+[ext_resource type="PackedScene" uid="uid://b6uwup34404a8" path="res://objects/spike/right_spike/right_spike.tscn" id="11_right_spike"]
+[ext_resource type="PackedScene" uid="uid://cn3lm5txngxlq" path="res://objects/spike/spike_static/spike.tscn" id="12_spike"]
+[ext_resource type="PackedScene" uid="uid://coqrny0yf5swy" path="res://objects/wind/WindArea.tscn" id="13_wind"]
+[ext_resource type="PackedScene" path="res://environment/cave/glowing_mushroom.tscn" id="14_mushroom_glow"]
+[ext_resource type="PackedScene" path="res://environment/cave/stalactite.tscn" id="15_stalactite"]
+[ext_resource type="PackedScene" uid="uid://lrdkn2gv1v1m" path="res://effect_Item/coin/coin.tscn" id="16_coin"]
+[ext_resource type="PackedScene" uid="uid://b3cbk6lmh2cc3" path="res://effect_Item/heal_potion/health_potion.tscn" id="17_heal_potion"]
+
+[sub_resource type="RectangleShape2D" id="exit_shape"]
+size = Vector2(64, 96)
+
+[node name="Level_3_4" type="Node2D"]
+script = ExtResource("1_stage_script")
+
+[node name="CanvasModulate" type="CanvasModulate" parent="."]
+color = Color(0.35, 0.3, 0.45, 1)
+
+[node name="PlayerSpawn" type="Marker2D" parent="."]
+position = Vector2(140, 312)
+
+[node name="Terrain" type="Node2D" parent="."]
+
+[node name="TopL" parent="Terrain" instance=ExtResource("1_wall")]
+position = Vector2(200, 40)
+scale = Vector2(3, 0.5)
+
+[node name="TopML" parent="Terrain" instance=ExtResource("1_wall")]
+position = Vector2(540, 56)
+scale = Vector2(2, 0.6)
+
+[node name="TopMR" parent="Terrain" instance=ExtResource("1_wall")]
+position = Vector2(880, 32)
+scale = Vector2(2.5, 0.5)
+
+[node name="TopR" parent="Terrain" instance=ExtResource("1_wall")]
+position = Vector2(1280, 48)
+scale = Vector2(2.5, 0.6)
+
+[node name="TopFR" parent="Terrain" instance=ExtResource("1_wall")]
+position = Vector2(1520, 64)
+scale = Vector2(1.2, 0.7)
+
+[node name="LeftU" parent="Terrain" instance=ExtResource("1_wall")]
+position = Vector2(40, 240)
+scale = Vector2(0.5, 3)
+
+[node name="LeftL" parent="Terrain" instance=ExtResource("1_wall")]
+position = Vector2(40, 680)
+scale = Vector2(0.5, 5)
+
+[node name="LeftB" parent="Terrain" instance=ExtResource("1_wall")]
+position = Vector2(40, 1080)
+scale = Vector2(0.5, 2)
+
+[node name="RightU" parent="Terrain" instance=ExtResource("1_wall")]
+position = Vector2(1568, 300)
+scale = Vector2(0.5, 4)
+
+[node name="RightL" parent="Terrain" instance=ExtResource("1_wall")]
+position = Vector2(1568, 900)
+scale = Vector2(0.5, 5)
+
+[node name="BottomL" parent="Terrain" instance=ExtResource("1_wall")]
+position = Vector2(300, 1168)
+scale = Vector2(4.5, 0.5)
+
+[node name="BottomM" parent="Terrain" instance=ExtResource("1_wall")]
+position = Vector2(800, 1152)
+scale = Vector2(4, 0.6)
+
+[node name="BottomR" parent="Terrain" instance=ExtResource("1_wall")]
+position = Vector2(1300, 1168)
+scale = Vector2(4.5, 0.5)
+
+[node name="StartFloor" parent="Terrain" instance=ExtResource("1_wall")]
+position = Vector2(140, 360)
+scale = Vector2(1.5, 0.5)
+
+[node name="SpikeCorridorFloor" parent="Terrain" instance=ExtResource("1_wall")]
+position = Vector2(580, 360)
+scale = Vector2(6, 0.5)
+
+[node name="SpikeCorridorCeiling" parent="Terrain" instance=ExtResource("1_wall")]
+position = Vector2(580, 240)
+scale = Vector2(6, 0.3)
+
+[node name="CorridorEnd" parent="Terrain" instance=ExtResource("1_wall")]
+position = Vector2(1080, 360)
+scale = Vector2(1.5, 0.5)
+
+[node name="Drop1Divider" parent="Terrain" instance=ExtResource("1_wall")]
+position = Vector2(1000, 440)
+scale = Vector2(1, 0.8)
+
+[node name="CrossfireFloor" parent="Terrain" instance=ExtResource("1_wall")]
+position = Vector2(900, 720)
+scale = Vector2(5, 0.5)
+
+[node name="SeahorseLedgeR" parent="Terrain" instance=ExtResource("1_wall")]
+position = Vector2(1360, 600)
+scale = Vector2(1.2, 0.5)
+
+[node name="SeahorseLedgeL" parent="Terrain" instance=ExtResource("1_wall")]
+position = Vector2(640, 580)
+scale = Vector2(1, 0.5)
+
+[node name="Cover1" parent="Terrain" instance=ExtResource("1_wall")]
+position = Vector2(800, 640)
+scale = Vector2(0.6, 0.6)
+
+[node name="Cover2" parent="Terrain" instance=ExtResource("1_wall")]
+position = Vector2(970, 655)
+scale = Vector2(0.5, 0.7)
+
+[node name="Cover3" parent="Terrain" instance=ExtResource("1_wall")]
+position = Vector2(1140, 645)
+scale = Vector2(0.55, 0.65)
+
+[node name="CrossfireExitWallTop" parent="Terrain" instance=ExtResource("1_wall")]
+position = Vector2(580, 520)
+scale = Vector2(0.5, 1.5)
+
+[node name="WindFloor" parent="Terrain" instance=ExtResource("1_wall")]
+position = Vector2(400, 880)
+scale = Vector2(5, 0.5)
+
+[node name="WindEntryR" parent="Terrain" instance=ExtResource("1_wall")]
+position = Vector2(580, 800)
+scale = Vector2(0.5, 1)
+
+[node name="WindSpikeWall" parent="Terrain" instance=ExtResource("1_wall")]
+position = Vector2(120, 800)
+scale = Vector2(0.8, 1.2)
+
+[node name="TribePlatform" parent="Terrain" instance=ExtResource("1_wall")]
+position = Vector2(240, 780)
+scale = Vector2(1, 0.4)
+
+[node name="Drop2Divider" parent="Terrain" instance=ExtResource("1_wall")]
+position = Vector2(680, 940)
+scale = Vector2(0.8, 0.6)
+
+[node name="FinalFloor" parent="Terrain" instance=ExtResource("1_wall")]
+position = Vector2(1000, 1040)
+scale = Vector2(7, 0.5)
+
+[node name="FinalRock1" parent="Terrain" instance=ExtResource("1_wall")]
+position = Vector2(760, 990)
+scale = Vector2(0.6, 0.4)
+
+[node name="FinalRock2" parent="Terrain" instance=ExtResource("1_wall")]
+position = Vector2(1100, 985)
+scale = Vector2(0.5, 0.45)
+
+[node name="ExitShaftL" parent="Terrain" instance=ExtResource("1_wall")]
+position = Vector2(1380, 800)
+scale = Vector2(0.5, 3.5)
+
+[node name="ExitPlatform" parent="Terrain" instance=ExtResource("1_wall")]
+position = Vector2(1480, 620)
+scale = Vector2(1.2, 0.5)
+
+[node name="Platforms" type="Node2D" parent="."]
+
+[node name="CrossfirePlat1" parent="Platforms" instance=ExtResource("3_oneway")]
+position = Vector2(1080, 520)
+
+[node name="CrossfirePlat2" parent="Platforms" instance=ExtResource("3_oneway")]
+position = Vector2(1140, 520)
+
+[node name="WindPlat1" parent="Platforms" instance=ExtResource("3_oneway")]
+position = Vector2(540, 790)
+
+[node name="WindPlat2" parent="Platforms" instance=ExtResource("3_oneway")]
+position = Vector2(430, 805)
+
+[node name="WindPlat3" parent="Platforms" instance=ExtResource("3_oneway")]
+position = Vector2(340, 795)
+
+[node name="ExitPlat1" parent="Platforms" instance=ExtResource("3_oneway")]
+position = Vector2(1420, 920)
+
+[node name="ExitPlat2" parent="Platforms" instance=ExtResource("3_oneway")]
+position = Vector2(1460, 820)
+
+[node name="ExitPlat3" parent="Platforms" instance=ExtResource("3_oneway")]
+position = Vector2(1420, 720)
+
+[node name="Hazards" type="Node2D" parent="."]
+
+[node name="RetractSpike1" parent="Hazards" instance=ExtResource("9_spike_retract")]
+position = Vector2(280, 296)
+
+[node name="RetractSpike2" parent="Hazards" instance=ExtResource("9_spike_retract")]
+position = Vector2(380, 296)
+
+[node name="RetractSpike3" parent="Hazards" instance=ExtResource("9_spike_retract")]
+position = Vector2(490, 296)
+
+[node name="RetractSpike4" parent="Hazards" instance=ExtResource("9_spike_retract")]
+position = Vector2(620, 296)
+
+[node name="RetractSpike5" parent="Hazards" instance=ExtResource("9_spike_retract")]
+position = Vector2(730, 296)
+
+[node name="RetractSpike6" parent="Hazards" instance=ExtResource("9_spike_retract")]
+position = Vector2(860, 296)
+
+[node name="RetractSpike7" parent="Hazards" instance=ExtResource("9_spike_retract")]
+position = Vector2(950, 296)
+
+[node name="CrossfireSpike1" parent="Hazards" instance=ExtResource("12_spike")]
+position = Vector2(620, 688)
+
+[node name="CrossfireSpike2" parent="Hazards" instance=ExtResource("12_spike")]
+position = Vector2(652, 688)
+
+[node name="CrossfireSpike3" parent="Hazards" instance=ExtResource("12_spike")]
+position = Vector2(1180, 688)
+
+[node name="CrossfireSpike4" parent="Hazards" instance=ExtResource("12_spike")]
+position = Vector2(1212, 688)
+
+[node name="WindZone" parent="Hazards" instance=ExtResource("13_wind")]
+position = Vector2(400, 830)
+
+[node name="WindSpike1" parent="Hazards" instance=ExtResource("11_right_spike")]
+position = Vector2(176, 770)
+
+[node name="WindSpike2" parent="Hazards" instance=ExtResource("11_right_spike")]
+position = Vector2(176, 800)
+
+[node name="WindSpike3" parent="Hazards" instance=ExtResource("11_right_spike")]
+position = Vector2(176, 830)
+
+[node name="Stalac1" parent="Hazards" instance=ExtResource("15_stalactite")]
+position = Vector2(820, 940)
+
+[node name="Stalac2" parent="Hazards" instance=ExtResource("15_stalactite")]
+position = Vector2(980, 935)
+
+[node name="Stalac3" parent="Hazards" instance=ExtResource("15_stalactite")]
+position = Vector2(1180, 942)
+
+[node name="Stalac4" parent="Hazards" instance=ExtResource("15_stalactite")]
+position = Vector2(1300, 938)
+
+[node name="ExitSpikeL1" parent="Hazards" instance=ExtResource("11_right_spike")]
+position = Vector2(1410, 850)
+
+[node name="ExitSpikeL2" parent="Hazards" instance=ExtResource("11_right_spike")]
+position = Vector2(1410, 760)
+
+[node name="Enemies" type="Node2D" parent="."]
+
+[node name="SeahorseR" parent="Enemies" instance=ExtResource("6_seahorse")]
+position = Vector2(1360, 568)
+scale = Vector2(-1, 1)
+
+[node name="SeahorseL" parent="Enemies" instance=ExtResource("6_seahorse")]
+position = Vector2(640, 548)
+
+[node name="CrossfireMushroom" parent="Enemies" instance=ExtResource("8_mushroom")]
+position = Vector2(700, 688)
+
+[node name="WindTribe1" parent="Enemies" instance=ExtResource("7_aggressive_tribe")]
+position = Vector2(240, 754)
+
+[node name="FinalMushroom" parent="Enemies" instance=ExtResource("8_mushroom")]
+position = Vector2(880, 1008)
+
+[node name="FinalTribe" parent="Enemies" instance=ExtResource("7_aggressive_tribe")]
+position = Vector2(1200, 1008)
+scale = Vector2(-1, 1)
+
+[node name="Atmosphere" type="Node2D" parent="."]
+
+[node name="Mush1" parent="Atmosphere" instance=ExtResource("14_mushroom_glow")]
+position = Vector2(100, 328)
+
+[node name="Mush2" parent="Atmosphere" instance=ExtResource("14_mushroom_glow")]
+position = Vector2(1050, 328)
+
+[node name="Mush3" parent="Atmosphere" instance=ExtResource("14_mushroom_glow")]
+position = Vector2(1300, 688)
+
+[node name="Mush4" parent="Atmosphere" instance=ExtResource("14_mushroom_glow")]
+position = Vector2(300, 848)
+
+[node name="Mush5" parent="Atmosphere" instance=ExtResource("14_mushroom_glow")]
+position = Vector2(1400, 1008)
+
+[node name="Collectibles" type="Node2D" parent="."]
+
+[node name="SpikeCoin1" parent="Collectibles" instance=ExtResource("16_coin")]
+position = Vector2(420, 296)
+
+[node name="SpikeCoin2" parent="Collectibles" instance=ExtResource("16_coin")]
+position = Vector2(680, 296)
+
+[node name="SpikeCoin3" parent="Collectibles" instance=ExtResource("16_coin")]
+position = Vector2(900, 296)
+
+[node name="CrossfireCoin1" parent="Collectibles" instance=ExtResource("16_coin")]
+position = Vector2(800, 600)
+
+[node name="CrossfireCoin2" parent="Collectibles" instance=ExtResource("16_coin")]
+position = Vector2(1140, 600)
+
+[node name="WindCoin1" parent="Collectibles" instance=ExtResource("16_coin")]
+position = Vector2(480, 780)
+
+[node name="WindCoin2" parent="Collectibles" instance=ExtResource("16_coin")]
+position = Vector2(320, 780)
+
+[node name="FinalCoin1" parent="Collectibles" instance=ExtResource("16_coin")]
+position = Vector2(1000, 980)
+
+[node name="Heal1" parent="Collectibles" instance=ExtResource("17_heal_potion")]
+position = Vector2(1100, 500)
+
+[node name="Heal2" parent="Collectibles" instance=ExtResource("17_heal_potion")]
+position = Vector2(600, 848)
+
+[node name="Heal3" parent="Collectibles" instance=ExtResource("17_heal_potion")]
+position = Vector2(1480, 588)
+
+[node name="Objects" type="Node2D" parent="."]
+
+[node name="Checkpoint1" parent="Objects" instance=ExtResource("2_checkpoint")]
+position = Vector2(140, 328)
+
+[node name="Checkpoint2" parent="Objects" instance=ExtResource("2_checkpoint")]
+position = Vector2(1100, 688)
+
+[node name="Checkpoint3" parent="Objects" instance=ExtResource("2_checkpoint")]
+position = Vector2(700, 1008)
+
+[node name="Checkpoint4" parent="Objects" instance=ExtResource("2_checkpoint")]
+position = Vector2(1420, 588)
+
+[node name="ExitZone" type="Node2D" parent="."]
+position = Vector2(1520, 588)
+
+[node name="ExitArea" type="Area2D" parent="ExitZone"]
+
+[node name="ExitShape" type="CollisionShape2D" parent="ExitZone/ExitArea"]
+shape = SubResource("exit_shape")
+
+[node name="ExitLabel" type="Label" parent="ExitZone"]
+modulate = Color(0.3, 1, 0.3, 1)
+offset_left = -48.0
+offset_top = -24.0
+offset_right = 48.0
+offset_bottom = 8.0
+text = "→ 3-5 BOSS"
+horizontal_alignment = 1
+
+[node name="DebugLabels" type="Node2D" parent="."]
+
+[node name="Label_Path" type="Label" parent="DebugLabels"]
+modulate = Color(1, 1, 1, 0.9)
+offset_left = 160.0
+offset_top = 120.0
+offset_right = 160.0
+offset_bottom = 120.0
+text = "THE WINDING GAUNTLET
+Path: RIGHT→DROP→LEFT→DROP→RIGHT
+Not a vertical slide - you ZIGZAG!"
+
+[node name="Label_Section1" type="Label" parent="DebugLabels"]
+modulate = Color(1, 0.6, 0.3, 0.8)
+offset_left = 350.0
+offset_top = 200.0
+offset_right = 350.0
+offset_bottom = 200.0
+text = "SPIKE CORRIDOR (→)
+Time your run!
+Low ceiling, can't jump over."
+
+[node name="Label_Section2" type="Label" parent="DebugLabels"]
+modulate = Color(1, 0.3, 0.3, 0.8)
+offset_left = 800.0
+offset_top = 480.0
+offset_right = 800.0
+offset_bottom = 480.0
+text = "CROSSFIRE CHAMBER
+Seahorses both sides!
+Use cover. Don't camp."
+
+[node name="Label_Section3" type="Label" parent="DebugLabels"]
+modulate = Color(0.3, 0.7, 1, 0.8)
+offset_left = 250.0
+offset_top = 870.0
+offset_right = 250.0
+offset_bottom = 870.0
+text = "WIND TUNNEL (←)
+Wind pushes toward spikes!
+Tribe throws coconuts."
+
+[node name="Label_Section4" type="Label" parent="DebugLabels"]
+modulate = Color(0.8, 0.3, 1, 0.8)
+offset_left = 900.0
+offset_top = 1060.0
+offset_right = 900.0
+offset_bottom = 1060.0
+text = "FINAL STRETCH (→)
+Stalactites! Enemies!
+Exit climb on right."
+
+[node name="Foxy" parent="." instance=ExtResource("5_foxy")]
+position = Vector2(140, 312)
