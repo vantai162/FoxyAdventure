@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="AudioClip" load_steps=3 format=3 uid="uid://cg5xg5d1nogi7"]
+
+[ext_resource type="Script" uid="uid://chlphbiuq1gay" path="res://scripts/audio/audio_clip.gd" id="1_mjqfh"]
+[ext_resource type="AudioStream" uid="uid://c8j66nyxonjlv" path="res://assets/sounds/missiles_launch.wav" id="2_f4inj"]
+
+[resource]
+script = ExtResource("1_mjqfh")
+clip_id = "warlord_missle_launch"
+stream = ExtResource("2_f4inj")
+volume_db = 0.0
+randomize_pitch = true
+pitch_min = 0.9
+pitch_max = 1.1
+description = ""
+metadata/_custom_type_script = "uid://chlphbiuq1gay"

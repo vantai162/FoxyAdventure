@@ -70,7 +70,7 @@ func open_chest():
 		else:
 			player.inventory.use_key(keys_required)
 	
-	# Play open sound
+	# Play open sound (could use AudioManager if sound_id mapping exists)
 	if open_sound:
 		var audio = AudioStreamPlayer2D.new()
 		audio.stream = open_sound

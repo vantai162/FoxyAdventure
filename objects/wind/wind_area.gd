@@ -22,6 +22,8 @@ func _physics_process(delta: float) -> void:
 			continue
 		_apply_wind_to_body(body, delta)
 
+
+
 func _on_body_entered(body: Node2D) -> void:
 	if body == null:
 		return

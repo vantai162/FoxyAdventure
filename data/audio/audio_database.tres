@@ -1,0 +1,27 @@
+[gd_resource type="Resource" script_class="AudioDatabase" load_steps=21 format=3 uid="uid://c114v4svixhnk"]
+
+[ext_resource type="Script" uid="uid://chlphbiuq1gay" path="res://scripts/audio/audio_clip.gd" id="1_x0dso"]
+[ext_resource type="Script" uid="uid://ovmtn36802i6" path="res://scripts/audio/audio_database.gd" id="2_quhjw"]
+[ext_resource type="Resource" uid="uid://dnmniv8y1ie6a" path="res://data/audio/level_1_music.tres" id="2_ut6nb"]
+[ext_resource type="Resource" uid="uid://dnl2m8dwkjq3r" path="res://data/audio/player_jump.tres" id="3_ut6nb"]
+[ext_resource type="Resource" uid="uid://b87xdhbjr8s0e" path="res://data/audio/player_dash.tres" id="4_xjxco"]
+[ext_resource type="Resource" uid="uid://b44ov2pyhdhlx" path="res://data/audio/game_over.tres" id="5_g1k8g"]
+[ext_resource type="Resource" uid="uid://ct57rqg56x2tl" path="res://data/audio/player_swing.tres" id="6_ykssl"]
+[ext_resource type="Resource" uid="uid://btobnhwy0hjce" path="res://data/audio/hurt.tres" id="7_g1k8g"]
+[ext_resource type="Resource" uid="uid://ccy8q58j1swd7" path="res://data/audio/warlord_theme.tres" id="8_ykssl"]
+[ext_resource type="Resource" uid="uid://do4x8qoqf7qed" path="res://data/audio/blade_spinning.tres" id="9_cw7wr"]
+[ext_resource type="Resource" uid="uid://tok18oinwvmp" path="res://data/audio/warlord_roar.tres" id="10_374as"]
+[ext_resource type="Resource" uid="uid://cmn8x53672lyi" path="res://data/audio/warlord_raise_water.tres" id="11_ugkvd"]
+[ext_resource type="Resource" uid="uid://cg5xg5d1nogi7" path="res://data/audio/warlord_missle_launch.tres" id="12_b71d2"]
+[ext_resource type="Resource" uid="uid://bg17ces5g1fap" path="res://data/audio/warlord_laugh.tres" id="13_4m8v6"]
+[ext_resource type="Resource" uid="uid://d0lqy244tfwmh" path="res://data/audio/warlord_bomb_launch.tres" id="14_owoq2"]
+[ext_resource type="Resource" uid="uid://b5pshoonpw25u" path="res://data/audio/bomb_explode.tres" id="15_1ae7c"]
+[ext_resource type="Resource" uid="uid://bwo1y40vlig4v" path="res://data/audio/power_up.tres" id="16_b71d2"]
+[ext_resource type="Resource" uid="uid://donbc7rhfp3lx" path="res://data/audio/heal.tres" id="17_owoq2"]
+[ext_resource type="Resource" uid="uid://ci7v80tqi0xbb" path="res://data/audio/coin_collected.tres" id="18_1ae7c"]
+[ext_resource type="Resource" uid="uid://beuv6wwqvf03g" path="res://data/audio/wind_area.tres" id="19_1ae7c"]
+
+[resource]
+script = ExtResource("2_quhjw")
+clips = Array[ExtResource("1_x0dso")]([ExtResource("2_ut6nb"), ExtResource("3_ut6nb"), ExtResource("4_xjxco"), ExtResource("5_g1k8g"), ExtResource("6_ykssl"), ExtResource("7_g1k8g"), ExtResource("8_ykssl"), ExtResource("9_cw7wr"), ExtResource("10_374as"), ExtResource("11_ugkvd"), ExtResource("12_b71d2"), ExtResource("13_4m8v6"), ExtResource("14_owoq2"), ExtResource("15_1ae7c"), ExtResource("16_b71d2"), ExtResource("17_owoq2"), ExtResource("18_1ae7c"), ExtResource("19_1ae7c")])
+metadata/_custom_type_script = "uid://ovmtn36802i6"

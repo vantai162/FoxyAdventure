@@ -42,20 +42,14 @@ func _on_area_entered(area: Area2D) -> void:
 		# Try to find player in parent hierarchy
 		player = area.get_parent()
 	
-	if player and player.has_node("inventory") or player.get("inventory"):
+	if player and (player.has_node("inventory") or player.get("inventory")):
 		_collected = true
 		
 		# Give coins
 		player.inventory.adjust_amount_item("Coin", coin_value)
 		
-		# Play sound
-		if collect_sound:
-			var audio = AudioStreamPlayer2D.new()
-			audio.stream = collect_sound
-			audio.bus = "SFX"
-			get_parent().add_child(audio)
-			audio.play()
-			audio.finished.connect(audio.queue_free)
+		# Play sound using AudioManager
+		AudioManager.play_sound("coin_collected", 15.0)
 		
 		# Play collection animation
 		if has_node("AnimatedSprite2D"):

@@ -101,6 +101,7 @@ func stop_move() -> void:
 
 func take_damage(damage: int) -> void:
 	health -= damage
+	AudioManager.play_sound("hurt",20.0)
 # Change the animation of the character on the next frame
 func change_animation(new_animation: String) -> void:
 	_next_animation = new_animation

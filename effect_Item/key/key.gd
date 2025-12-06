@@ -47,20 +47,18 @@ func _on_area_entered(area: Area2D) -> void:
 	else:
 		player.inventory.adjust_amount_item("Key_" + key_id, 1)
 	
-	# Visual/audio feedback
-	if play_sound and audio:
-		audio.play()
+	# Visual/audio feedback using AudioManager
+	if play_sound:
+		AudioManager.play_sound("coin_collected", 15.0)
 	
 	if show_particles:
 		_spawn_pickup_particles()
 	
-	# Hide immediately, queue_free after sound
+	# Hide immediately, cleanup after brief delay for particles
 	visible = false
 	set_process(false)
 	
-	if audio and audio.playing:
-		await audio.finished
-	
+	await get_tree().create_timer(0.5).timeout
 	queue_free()
 
 func _spawn_pickup_particles() -> void:

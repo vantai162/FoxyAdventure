@@ -334,20 +334,4 @@ script = ExtResource("31_phase")
 position = Vector2(0, 0.5)
 shape = SubResource("RectangleShape2D_dkh1m")
 
-[node name="MisslesLaunchSound" type="AudioStreamPlayer2D" parent="."]
-volume_db = 24.0
-bus = &"SFX"
-
-[node name="BombsLaunchSound" type="AudioStreamPlayer2D" parent="."]
-volume_db = 24.0
-bus = &"SFX"
-
-[node name="WaveSound" type="AudioStreamPlayer2D" parent="."]
-volume_db = 20.0
-bus = &"SFX"
-
-[node name="LaughSound" type="AudioStreamPlayer2D" parent="."]
-volume_db = 20.0
-bus = &"SFX"
-
 [connection signal="hurt" from="Direction/HurtArea2D" to="." method="_on_hurt_area_2d_hurt"]

@@ -12,6 +12,8 @@ func _update(delta):
 
 
 func _should_turn_around() -> bool:
+	if obj.is_touching_enemy():
+		return true
 	if obj.is_touch_wall():
 		return true
 	if obj.is_on_floor() and obj.is_can_fall():

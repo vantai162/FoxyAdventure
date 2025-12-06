@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="AudioClip" load_steps=3 format=3 uid="uid://b5pshoonpw25u"]
+
+[ext_resource type="Script" uid="uid://chlphbiuq1gay" path="res://scripts/audio/audio_clip.gd" id="1_b3uy7"]
+[ext_resource type="AudioStream" uid="uid://1ffv5ar6yciy" path="res://assets/sounds/explosion.wav" id="2_kc6m4"]
+
+[resource]
+script = ExtResource("1_b3uy7")
+clip_id = "bomb_explode"
+stream = ExtResource("2_kc6m4")
+volume_db = 0.0
+randomize_pitch = false
+pitch_min = 0.9
+pitch_max = 1.1
+description = ""
+metadata/_custom_type_script = "uid://chlphbiuq1gay"

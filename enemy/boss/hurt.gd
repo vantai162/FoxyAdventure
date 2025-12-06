@@ -2,7 +2,6 @@ extends EnemyState
 
 
 func _enter():
-	obj.health_changed.emit()
 	obj.change_animation("hurt")
 	timer = 0.2
 	

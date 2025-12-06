@@ -59,11 +59,9 @@ func _on_area_entered(area: Area2D) -> void:
 	# Heal player
 	player.heal(heal_amount)
 	
-	# Play sound
-	if audio:
-		if pickup_sound:
-			audio.stream = pickup_sound
-		audio.play()
-		await audio.finished
+	# Play sound using AudioManager
+	AudioManager.play_sound("heal", 20.0)
 	
+	# Brief delay for sound to play
+	await get_tree().create_timer(0.3).timeout
 	queue_free()

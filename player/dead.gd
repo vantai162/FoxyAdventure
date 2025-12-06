@@ -4,6 +4,7 @@ func _enter() -> void:
 	super._enter()
 	obj.velocity = Vector2.ZERO
 	obj.change_animation("dead")
+	AudioManager.play_sound("game_over",15.0)
 	await obj.animated_sprite.animation_finished
 	await get_tree().create_timer(obj.dead_delay_before_respawn).timeout
 	
