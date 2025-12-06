@@ -111,9 +111,9 @@ sprite_frames = SubResource("SpriteFrames_dcy5h")
 animation = &"hurt"
 
 [node name="FrontRayCast2D" type="RayCast2D" parent="Direction"]
-position = Vector2(9, -4)
+position = Vector2(8, 9)
 target_position = Vector2(14, 0)
-collision_mask = 9
+collision_mask = 1
 
 [node name="RayCast2D2" type="RayCast2D" parent="Direction"]
 position = Vector2(14, -4)

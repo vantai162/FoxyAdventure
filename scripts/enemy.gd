@@ -71,13 +71,6 @@ func is_touch_wall() -> bool:
 		return true
 	return false
 
-# check if touching another enemy (for stacking prevention)
-func is_touching_enemy() -> bool:
-	if front_ray_cast != null and front_ray_cast.is_colliding():
-		var collider = front_ray_cast.get_collider()
-		return collider is EnemyCharacter
-	return false
-
 # check can fall
 func is_can_fall() -> bool:
 	if down_ray_cast != null:

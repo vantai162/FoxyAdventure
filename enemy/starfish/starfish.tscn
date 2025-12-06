@@ -109,9 +109,9 @@ sprite_frames = SubResource("SpriteFrames_hanlh")
 animation = &"run"
 
 [node name="FrontRayCast2D" type="RayCast2D" parent="Direction"]
-position = Vector2(9, -4)
+position = Vector2(8, 12)
 target_position = Vector2(12, 0)
-collision_mask = 9
+collision_mask = 1
 
 [node name="DownRayCast2D" type="RayCast2D" parent="Direction"]
 position = Vector2(14, -4)

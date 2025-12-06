@@ -1,28 +1,13 @@
 # TileMap Light Occlusion Setup Guide
 
-## ⚠️ IMPORTANT: Two Different Darkness Systems
-
-There are **TWO** darkness systems - make sure you understand which one you need:
-
-### 1. Light Occlusion (CanvasModulate + PointLight2D) - This Guide
-- **What it does**: Dims everything uniformly, lights "pierce through" darkness
-- **Occlusion effect**: Light RAYS are blocked by walls (shadow casting)
-- **Player CAN STILL SEE**: Areas behind walls - they're just darker/dimmer
-- **Use when**: You want atmospheric darkness with visible geometry everywhere
-
-### 2. Vision Masking (VisionMaskSystem) - TRUE FOG OF WAR ⭐
-- **What it does**: Completely HIDES areas the player can't see
-- **Vision is blocked**: By walls using raycasting - can't see through terrain
-- **Player CANNOT SEE**: Anything behind walls - it's pitch black/hidden
-- **Use when**: You want the player to discover areas as they explore
-- **Setup**: Add `environment/cave/vision_mask_system.tscn` to your level
-
-**For Level 3's "can't see the ground below" effect, you need VisionMaskSystem!**
-
----
-
 ## Overview
 For Level 3's darkness mechanic to work properly, **solid terrain tiles must block light**. This is done through the TileSet's **Occlusion Layer** feature in Godot 4.
+
+Light Occlusion System:
+- **CanvasModulate** dims everything uniformly
+- **PointLight2D** creates illuminated circles
+- **Occlusion Layer** on tiles blocks light rays (creates shadows)
+- Result: Atmospheric darkness with walls blocking light
 
 ## The Problem
 Without occlusion, light from crystals/torches passes through walls, letting Foxy see into areas that should be dark. We need tiles that block light to create true darkness.
