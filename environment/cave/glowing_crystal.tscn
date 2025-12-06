@@ -7,5 +7,13 @@ script = ExtResource("1_crystal")
 
 [node name="CrystalLight" type="PointLight2D" parent="."]
 color = Color(0.3, 1, 0.5, 1)
-shadow_enabled = true
 texture_scale = 2.5
+
+[node name="Sparkles" type="GPUParticles2D" parent="."]
+emitting = false
+lifetime = 2.0
+randomness = 0.5
+
+[node name="VisibilityEnabler" type="VisibleOnScreenEnabler2D" parent="."]
+rect = Rect2(-150, -150, 300, 300)
+enable_mode = 1

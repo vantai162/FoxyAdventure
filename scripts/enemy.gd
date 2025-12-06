@@ -45,9 +45,7 @@ func _init_ray_cast():
 func _init_detect_player_area():
 	if has_node("Direction/DetectPlayerArea2D"):
 		detect_player_area = $Direction/DetectPlayerArea2D
-		print("detect_player_area 1")
 		detect_player_area.body_entered.connect(_on_body_entered)
-		print("detect_player_area 2")
 		detect_player_area.body_exited.connect(_on_body_exited)
 		
 

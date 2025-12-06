@@ -2,7 +2,8 @@ extends PointLight2D
 class_name PlayerTorch
 
 ## Torch light that follows the player
-## Flickers and can be extinguished
+## NOW GPU-ACCELERATED - zero CPU particle overhead
+## Flickers via Tween and uses GPUParticles2D for sparks
 ## Casts shadows when walls have LightOccluder2D
 
 @export_group("Torch Settings")
@@ -17,17 +18,14 @@ class_name PlayerTorch
 
 @export_group("Spark Particles")
 @export var emit_sparks: bool = true
-@export var spark_spawn_interval: float = 0.4  ## Seconds between spark bursts
-@export var sparks_per_burst: int = 2
+@export var spark_count: int = 8  ## Max particles active
 @export var spark_lifetime: float = 0.6
-@export var spark_speed: float = 30.0
 
 @export_group("State")
 @export var is_lit: bool = true
 
-var _flicker_time: float = 0.0
-var _spark_timer: float = 0.0
-var _sparks: Array[Node2D] = []
+var _spark_particles: GPUParticles2D
+var _flicker_tween: Tween
 
 func _ready() -> void:
 	texture_scale = base_radius / 512.0
@@ -38,8 +36,17 @@ func _ready() -> void:
 	# Create radial gradient texture if none exists
 	if texture == null:
 		_create_light_texture()
+	
+	# Setup GPU particles
+	if emit_sparks:
+		_setup_spark_particles()
+	
+	# Start flicker animation
+	if flicker_enabled and is_lit:
+		_start_flicker()
 
 func _create_light_texture() -> void:
+	## Smooth gradient for light glow - particles are the sharp bits!
 	var gradient = GradientTexture2D.new()
 	gradient.fill = GradientTexture2D.FILL_RADIAL
 	gradient.fill_from = Vector2(0.5, 0.5)
@@ -52,36 +59,100 @@ func _create_light_texture() -> void:
 	gradient.height = 512
 	texture = gradient
 
-func _process(delta: float) -> void:
-	if not is_lit:
-		return
+func _setup_spark_particles() -> void:
+	_spark_particles = GPUParticles2D.new()
+	_spark_particles.name = "TorchSparks"
+	_spark_particles.position = Vector2(0, -5)  # Slightly above center
+	_spark_particles.amount = spark_count
+	_spark_particles.lifetime = spark_lifetime
+	_spark_particles.randomness = 0.4
+	_spark_particles.emitting = is_lit
 	
-	if flicker_enabled:
-		_flicker_time += delta * flicker_speed
-		var flicker = sin(_flicker_time) * sin(_flicker_time * 0.7) * flicker_intensity
-		energy = base_energy + flicker
-		
-		# Slight scale variation for more organic feel
-		var scale_flicker = 1.0 + sin(_flicker_time * 1.3) * 0.02
-		texture_scale = (base_radius / 512.0) * scale_flicker
+	# Configure particle material - welding spark style
+	var mat = ParticleProcessMaterial.new()
+	mat.emission_shape = ParticleProcessMaterial.EMISSION_SHAPE_SPHERE
+	mat.emission_sphere_radius = 3.0
+	mat.direction = Vector3(0, -1, 0)  # Upward (Y- in Godot)
+	mat.spread = 40.0
+	mat.initial_velocity_min = 25.0
+	mat.initial_velocity_max = 35.0
+	mat.gravity = Vector3(0, 15, 0)  # Gravity pulls down (Y+ is down!)
+	mat.damping_min = 8.0  # Slow down quickly
+	mat.damping_max = 12.0
+	mat.scale_min = 1.5
+	mat.scale_max = 2.5
 	
-	# Spark particles
-	if emit_sparks:
-		_update_sparks(delta)
+	# Fade out curve
+	var alpha_curve = Curve.new()
+	alpha_curve.add_point(Vector2(0, 1))
+	alpha_curve.add_point(Vector2(0.6, 0.7))
+	alpha_curve.add_point(Vector2(1, 0))
+	var curve_tex = CurveTexture.new()
+	curve_tex.curve = alpha_curve
+	mat.alpha_curve = curve_tex
+	
+	# Scale shrink
+	var scale_curve = Curve.new()
+	scale_curve.add_point(Vector2(0, 1))
+	scale_curve.add_point(Vector2(1, 0.4))
+	var scale_tex = CurveTexture.new()
+	scale_tex.curve = scale_curve
+	mat.scale_curve = scale_tex
+	
+	# Use GradientTexture1D for color_ramp (like whirlpool)
+	var grad = Gradient.new()
+	grad.add_point(0.0, Color(1.0, 0.8, 0.5))
+	grad.add_point(0.7, Color(1.0, 0.5, 0.2, 0.5))
+	grad.add_point(1.0, Color.TRANSPARENT)
+	
+	var gradient_texture = GradientTexture1D.new()
+	gradient_texture.gradient = grad
+	mat.color_ramp = gradient_texture
+	
+	_spark_particles.process_material = mat
+	
+	add_child(_spark_particles)
+
+func _start_flicker() -> void:
+	if _flicker_tween:
+		_flicker_tween.kill()
+	
+	_flicker_tween = create_tween().set_loops()
+	var duration = 1.0 / max(0.1, flicker_speed)
+	var energy_high = base_energy + flicker_intensity
+	var energy_low = base_energy - flicker_intensity
+	
+	# Organic multi-phase flicker
+	_flicker_tween.tween_property(self, "energy", energy_high, duration * 0.35)\
+		.set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+	_flicker_tween.tween_property(self, "energy", energy_low, duration * 0.3)\
+		.set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+	_flicker_tween.tween_property(self, "energy", base_energy, duration * 0.35)\
+		.set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
 
 func light_torch() -> void:
 	is_lit = true
 	enabled = true
 	
+	if _spark_particles:
+		_spark_particles.emitting = true
+	
 	# Fade in effect
 	var tween = create_tween()
 	energy = 0
 	tween.tween_property(self, "energy", base_energy, 0.3)
+	
+	if flicker_enabled:
+		_start_flicker()
 
 func extinguish_torch() -> void:
 	is_lit = false
-	emit_sparks = false
-	_clear_sparks()
+	
+	if _spark_particles:
+		_spark_particles.emitting = false
+	
+	if _flicker_tween:
+		_flicker_tween.kill()
 	
 	# Fade out effect
 	var tween = create_tween()
@@ -92,89 +163,3 @@ func extinguish_torch() -> void:
 func set_radius(new_radius: float) -> void:
 	base_radius = new_radius
 	texture_scale = base_radius / 512.0
-
-## ============================================================================
-## SPARK PARTICLES
-## Small bright sparks that occasionally fly off the torch
-## ============================================================================
-
-func _update_sparks(delta: float) -> void:
-	_spark_timer += delta
-	
-	if _spark_timer >= spark_spawn_interval:
-		_spark_timer = 0.0
-		for i in range(sparks_per_burst):
-			_spawn_spark()
-	
-	# Update existing sparks
-	var to_remove: Array[Node2D] = []
-	for spark in _sparks:
-		if not is_instance_valid(spark):
-			to_remove.append(spark)
-			continue
-		
-		var age = spark.get_meta("age", 0.0) + delta
-		spark.set_meta("age", age)
-		
-		if age >= spark_lifetime:
-			to_remove.append(spark)
-			continue
-		
-		# Apply velocity (sparks drift upward and outward)
-		var velocity = spark.get_meta("velocity", Vector2.ZERO) as Vector2
-		velocity.y -= 20.0 * delta  # Slight upward drift
-		spark.set_meta("velocity", velocity)
-		spark.position += velocity * delta
-		
-		# Fade out
-		var life_ratio = age / spark_lifetime
-		var visual = spark.get_node_or_null("Visual") as Polygon2D
-		if visual:
-			visual.modulate.a = 1.0 - life_ratio
-			# Shrink
-			var s = 1.0 - life_ratio * 0.5
-			visual.scale = Vector2(s, s)
-	
-	for spark in to_remove:
-		_sparks.erase(spark)
-		if is_instance_valid(spark):
-			spark.queue_free()
-
-func _spawn_spark() -> void:
-	var spark = Node2D.new()
-	spark.name = "Spark"
-	
-	# Start near torch center
-	spark.position = Vector2(randf_range(-3, 3), randf_range(-5, 0))
-	
-	# Random outward velocity
-	var angle = randf_range(-PI * 0.8, -PI * 0.2)  # Mostly upward
-	var velocity = Vector2(cos(angle), sin(angle)) * spark_speed * randf_range(0.5, 1.2)
-	spark.set_meta("velocity", velocity)
-	spark.set_meta("age", 0.0)
-	
-	# Create spark visual - tiny bright diamond
-	var visual = Polygon2D.new()
-	visual.name = "Visual"
-	var size = randf_range(1.0, 2.0)
-	visual.polygon = PackedVector2Array([
-		Vector2(0, -size),
-		Vector2(size * 0.5, 0),
-		Vector2(0, size * 0.5),
-		Vector2(-size * 0.5, 0)
-	])
-	
-	# Warm yellow-orange color
-	var hue = randf_range(0.08, 0.15)
-	visual.color = Color.from_hsv(hue, 0.9, 1.0)
-	
-	spark.add_child(visual)
-	add_child(spark)
-	_sparks.append(spark)
-
-## Clear all sparks (when extinguished)
-func _clear_sparks() -> void:
-	for spark in _sparks:
-		if is_instance_valid(spark):
-			spark.queue_free()
-	_sparks.clear()

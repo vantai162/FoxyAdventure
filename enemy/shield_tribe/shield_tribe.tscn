@@ -168,7 +168,6 @@ size = Vector2(18, 36)
 
 [node name="ShieldTribe" type="CharacterBody2D"]
 collision_layer = 8
-collision_mask = 1
 script = ExtResource("1_shield_gd")
 spear_thrust_distance = 72.0
 spear_thrust_out_time = 0.6
@@ -180,9 +179,7 @@ metadata/_custom_type_script = "uid://s4xx82espxdt"
 position = Vector2(3, 6.5)
 scale = Vector2(1.09375, 1.20313)
 sprite_frames = SubResource("SpriteFrames_tribe")
-animation = &"dead"
-frame = 3
-frame_progress = 1.0
+animation = &"idle"
 
 [node name="DetectPlayerArea2D" type="Area2D" parent="Direction"]
 collision_layer = 0

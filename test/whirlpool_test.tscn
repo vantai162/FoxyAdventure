@@ -131,7 +131,3 @@ auto_despawn = false
 position = Vector2(-600, 0)
 script = ExtResource("18_rups3")
 lava_size = Vector2(1200, 400)
-drain_target_y = null
-fill_target_y = null
-default_drain_duration = null
-default_fill_duration = null

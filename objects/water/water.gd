@@ -188,8 +188,23 @@ func _initiate_water() -> void:
 
 
 func update_physics(delta: float) -> void:
-	# Safety: Clamp delta to prevent physics explosion on lag spikes
+	# CRITICAL: Delta clamping must account for energy scaling!
+	# At 60fps: delta=0.016, energy per frame = small
+	# At 15fps: delta=0.066, if we clamp to 0.05, we get 3× energy injection!
+	# 
+	# The issue: water_physics_speed is multiplied TWICE (velocity then position)
+	# So energy scales as: (safe_delta × speed)²
+	# 
+	# Solution: Add adaptive damping when delta is large (indicating lag/low FPS)
+	
 	var safe_delta = min(delta, 0.05)  # Cap at 20 FPS worst case
+	
+	# Lag compensation: if actual delta is larger than safe_delta, add extra damping
+	var lag_damping_factor = 1.0
+	if delta > 0.03:  # FPS below 33
+		# Quadratic increase in damping as lag gets worse
+		var lag_severity = (delta - 0.03) / 0.03  # 0.0 at 33fps, 1.0 at 16fps, 2.0+ at worse
+		lag_damping_factor = 1.0 + (lag_severity * lag_severity * 0.5)  # Up to 1.5× damping at bad lag
 	
 	for i in range(segment_count):
 		var displacement = segment_data[i]["height"] - segment_rest_height[i]
@@ -202,7 +217,7 @@ func update_physics(delta: float) -> void:
 			segment_data[i]["velocity"] *= 0.5  # Heavy damping
 			continue  # Skip normal physics for this segment
 		
-		var damping = wave_energy_loss
+		var damping = wave_energy_loss * lag_damping_factor  # Apply lag compensation
 		if abs(displacement) > 10.0:
 			var excess = abs(displacement) - 10.0
 			damping += excess * 0.04
@@ -215,8 +230,13 @@ func update_physics(delta: float) -> void:
 		segment_data[i]["velocity"] = clamp(segment_data[i]["velocity"], -max_velocity, max_velocity)
 		
 		segment_data[i]["height"] += segment_data[i]["velocity"] * safe_delta * water_physics_speed
-		
-	for updates in range(wave_spread_updates):
+	
+	# Adaptive wave spread: reduce iterations during lag to prevent zigzag artifacts
+	var actual_spread_updates = wave_spread_updates
+	if delta > 0.025:  # FPS below 40
+		actual_spread_updates = max(4, wave_spread_updates / 2)  # Half iterations during lag
+	
+	for updates in range(actual_spread_updates):
 		for i in range(segment_count):
 			# Skip segments in emergency mode
 			var i_displacement = abs(segment_data[i]["height"] - segment_rest_height[i])

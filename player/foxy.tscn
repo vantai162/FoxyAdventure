@@ -360,6 +360,7 @@ texture_scale = 0.5
 script = ExtResource("52_torch")
 base_energy = 0.8
 base_radius = 256.0
+flicker_enabled = false
 
 [node name="SFXPlayer" type="AudioStreamPlayer" parent="."]
 stream = ExtResource("51_a4g31")

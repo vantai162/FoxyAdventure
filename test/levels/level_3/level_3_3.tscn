@@ -77,12 +77,6 @@ player_splash_mutiplier = 0.12
 swim_disturbance_interval = 0.15
 swim_disturbance_strength = 0.3
 boat_depression_depth = 3.0
-emit_splash_particles = null
-splash_droplet_count = null
-splash_droplet_speed = null
-splash_droplet_lifetime = null
-splash_droplet_gravity = null
-splash_color = null
 
 [node name="Hazards" type="Node2D" parent="."]
 

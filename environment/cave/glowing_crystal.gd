@@ -24,26 +24,19 @@ class_name GlowingCrystal
 @export var sparkle_count: int = 8  ## Number of sparkle particles
 
 @export_group("Performance")
-@export var update_rate: int = 2  ## Update every N frames (1=every frame, 2=30fps, 3=20fps)
-
-@export_group("Interaction")
-@export var react_to_player: bool = false  ## Brighten when player nearby
-@export var reaction_radius: float = 60.0
-@export var reaction_boost: float = 0.5  ## Extra brightness when triggered
+@export var cast_shadows: bool = false  ## Enable shadow casting (expensive - use for 3-5 "hero" crystals only!)
+## Note: VisibleOnScreenEnabler2D handles culling automatically
 
 ## Scene node references
 @onready var light: PointLight2D = $CrystalLight
+@onready var sparkles: GPUParticles2D = $Sparkles
+@onready var visibility_enabler: VisibleOnScreenEnabler2D = $VisibilityEnabler
 
 ## Runtime state
-var time_offset: float = 0.0
-var player_nearby: bool = false
-var detection_area: Area2D
-var sparkle_particles: GPUParticles2D
-var sparkle_points: Array[Node2D] = []
 var _base_energy: float = 1.0
 var _base_color: Color = Color(0.3, 1.0, 0.5)  ## Emerald default
 var crystal_color: Color = Color(0.5, 1.0, 0.7)  ## Lighter for crystal body
-var _frame_counter: int = 0  ## For performance throttling
+var _pulse_tween: Tween
 
 # Color preset definitions (dungeon-appropriate - dim and moody)
 const COLOR_PRESETS = {
@@ -56,8 +49,6 @@ const COLOR_PRESETS = {
 }
 
 func _ready() -> void:
-	time_offset = randf() * TAU  # Random phase offset for variety
-	
 	# Apply color preset FIRST (before capturing from scene)
 	var preset = COLOR_PRESETS.get(color_preset, COLOR_PRESETS[0])
 	crystal_color = preset.crystal
@@ -66,6 +57,7 @@ func _ready() -> void:
 	if light:
 		_base_energy = light.energy
 		light.color = preset.light  # Apply preset color to light
+		light.shadow_enabled = cast_shadows  # Apply shadow setting
 		_base_color = preset.light
 		if light.texture == null:
 			_setup_light_texture()
@@ -73,34 +65,104 @@ func _ready() -> void:
 	_create_diamond_crystal()
 	
 	if enable_sparkles:
-		_setup_sparkles()
+		_setup_sparkles_gpu()
+	else:
+		sparkles.emitting = false
 	
-	if react_to_player:
-		_setup_detection_area()
+	# Setup visibility culling
+	if visibility_enabler:
+		visibility_enabler.screen_entered.connect(_on_screen_entered)
+		visibility_enabler.screen_exited.connect(_on_screen_exited)
+		# Initial state check (assume visible if just spawned, or let engine handle)
+		# But we start the pulse anyway
+	
+	_start_pulse()
 
-func _process(delta: float) -> void:
-	# Performance optimization: Update every N frames instead of every frame
-	_frame_counter += 1
-	if _frame_counter < update_rate:
+func _on_screen_entered() -> void:
+	# Re-enable animations when visible
+	if enable_sparkles and sparkles:
+		sparkles.emitting = true
+	_start_pulse()
+
+func _on_screen_exited() -> void:
+	# Disable expensive effects when offscreen, but KEEP LIGHT ON
+	# (Light without shadows is cheap, and this prevents jarring pop-in/out)
+	if enable_sparkles and sparkles:
+		sparkles.emitting = false
+	if _pulse_tween:
+		_pulse_tween.kill()
+	# Light stays enabled! Player won't see jarring on/off at screen edges
+
+func _start_pulse() -> void:
+	if _pulse_tween:
+		_pulse_tween.kill()
+	
+	if not light or not light.enabled:
 		return
-	_frame_counter = 0
+		
+	_pulse_tween = create_tween().set_loops()
+	var duration = 1.0 / max(0.1, pulse_speed)
+	# Pulse up
+	_pulse_tween.tween_property(light, "energy", _base_energy + pulse_amount, duration)\
+		.set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+	# Pulse down
+	_pulse_tween.tween_property(light, "energy", _base_energy - pulse_amount, duration)\
+		.set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+
+func _setup_sparkles_gpu() -> void:
+	if not sparkles:
+		return
+		
+	sparkles.amount = sparkle_count
+	sparkles.modulate = _base_color
+	sparkles.lifetime = 1.5  # Longer lifetime for visibility
+	sparkles.randomness = 0.6
 	
-	var time = Time.get_ticks_msec() / 1000.0
-	var pulse = sin((time * pulse_speed) + time_offset) * 0.5 + 0.5  # 0 to 1
+	# WELDING SPARK STYLE - like lava embers but omnidirectional
+	var mat = ParticleProcessMaterial.new()
+	mat.emission_shape = ParticleProcessMaterial.EMISSION_SHAPE_SPHERE
+	mat.emission_sphere_radius = 8.0 * crystal_scale  # Small emission zone
+	mat.direction = Vector3(0, -1, 0)  # Base upward direction
+	mat.spread = 180.0  # Full sphere spread (all directions!)
+	mat.initial_velocity_min = 15.0
+	mat.initial_velocity_max = 30.0
+	mat.gravity = Vector3(0, 10, 0)  # Fall down (Godot Y+ is down!)
+	mat.damping_min = 5.0  # Slow down over time
+	mat.damping_max = 10.0
+	mat.scale_min = 1.0
+	mat.scale_max = 2.0
 	
-	var target_energy = _base_energy + (pulse * pulse_amount)
-	if player_nearby:
-		target_energy += reaction_boost
+	# Fade and shrink over lifetime
+	var alpha_curve = Curve.new()
+	alpha_curve.add_point(Vector2(0, 1))
+	alpha_curve.add_point(Vector2(0.7, 0.6))
+	alpha_curve.add_point(Vector2(1, 0))
+	var curve_tex = CurveTexture.new()
+	curve_tex.curve = alpha_curve
+	mat.alpha_curve = curve_tex
 	
-	if light:
-		light.energy = target_energy
+	var scale_curve = Curve.new()
+	scale_curve.add_point(Vector2(0, 1))
+	scale_curve.add_point(Vector2(1, 0.3))
+	var scale_tex = CurveTexture.new()
+	scale_tex.curve = scale_curve
+	mat.scale_curve = scale_tex
 	
-	# Animate sparkle points only if enabled
-	if enable_sparkles and not sparkle_points.is_empty():
-		_animate_sparkles(time)
+	sparkles.process_material = mat
+	
+	# Use GradientTexture1D for color_ramp (like whirlpool)
+	var grad = Gradient.new()
+	grad.add_point(0.0, crystal_color)
+	grad.add_point(0.7, crystal_color * 0.5)
+	grad.add_point(1.0, Color.TRANSPARENT)
+	
+	var gradient_texture = GradientTexture1D.new()
+	gradient_texture.gradient = grad
+	mat.color_ramp = gradient_texture
+
 
 func _setup_light_texture() -> void:
-	## Only sets texture - all other properties configured in scene
+	## Smooth radial gradient for light - particles are sharp, not the light!
 	var gradient = GradientTexture2D.new()
 	gradient.fill = GradientTexture2D.FILL_RADIAL
 	gradient.fill_from = Vector2(0.5, 0.5)
@@ -112,32 +174,6 @@ func _setup_light_texture() -> void:
 	gradient.width = 256
 	gradient.height = 256
 	light.texture = gradient
-
-func _setup_detection_area() -> void:
-	detection_area = Area2D.new()
-	detection_area.name = "DetectionArea"
-	detection_area.collision_layer = 0
-	detection_area.collision_mask = 2  # Player layer
-	
-	var collision = CollisionShape2D.new()
-	collision.name = "CollisionShape2D"
-	var circle = CircleShape2D.new()
-	circle.radius = reaction_radius
-	collision.shape = circle
-	
-	detection_area.add_child(collision)
-	add_child(detection_area)
-	
-	detection_area.body_entered.connect(_on_body_entered)
-	detection_area.body_exited.connect(_on_body_exited)
-
-func _on_body_entered(body: Node2D) -> void:
-	if body.is_in_group("player"):
-		player_nearby = true
-
-func _on_body_exited(body: Node2D) -> void:
-	if body.is_in_group("player"):
-		player_nearby = false
 
 func _create_diamond_crystal() -> void:
 	var size = crystal_scale
@@ -252,86 +288,17 @@ func _create_mini_diamond(size: float, offset: Vector2, rot: float, col: Color) 
 	mini.color = col
 	add_child(mini)
 
-func _setup_sparkles() -> void:
-	# Create multiple sparkle points that twinkle
-	var radius = 25.0 * crystal_scale
-	
-	for i in range(sparkle_count):
-		var sparkle = Node2D.new()
-		sparkle.name = "Sparkle_%d" % i
-		
-		# Random position around crystal
-		var angle = (float(i) / sparkle_count) * TAU + randf_range(-0.3, 0.3)
-		var dist = radius * randf_range(0.5, 1.2)
-		sparkle.position = Vector2(cos(angle) * dist, sin(angle) * dist)
-		
-		# Create 4-pointed star shape for sparkle
-		var star = _create_sparkle_star(3.0 * crystal_scale)
-		star.modulate = _base_color
-		star.modulate.a = 0.0  # Start invisible
-		sparkle.add_child(star)
-		
-		# Store timing data
-		sparkle.set_meta("phase", randf() * TAU)
-		sparkle.set_meta("speed", randf_range(2.0, 4.0))
-		sparkle.set_meta("star", star)
-		
-		add_child(sparkle)
-		sparkle_points.append(sparkle)
-
-func _create_sparkle_star(size: float) -> Polygon2D:
-	var star = Polygon2D.new()
-	star.name = "StarShape"
-	
-	# 4-pointed star / twinkle shape
-	var outer = size
-	var inner = size * 0.25  # Sharp points
-	
-	var points: PackedVector2Array = []
-	for i in range(8):
-		var angle = (float(i) / 8.0) * TAU - PI / 2.0
-		var r = outer if i % 2 == 0 else inner
-		points.append(Vector2(cos(angle) * r, sin(angle) * r))
-	
-	star.polygon = points
-	star.color = Color.WHITE
-	return star
-
-func _animate_sparkles(time: float) -> void:
-	# Cache calculations outside loop
-	var half_time = time * 0.5
-	
-	for sparkle in sparkle_points:
-		var phase = sparkle.get_meta("phase", 0.0)
-		var speed = sparkle.get_meta("speed", 3.0)
-		var star = sparkle.get_meta("star") as Polygon2D
-		
-		if star:
-			# Twinkle: fade in/out with sharp peaks
-			var t = sin((time * speed) + phase)
-			var alpha = pow(max(0.0, t), 2.0) * sparkle_intensity  # Sharp peaks
-			star.modulate.a = alpha
-			
-			# Slight scale pulse (reuse alpha calculation)
-			var s = 0.8 + alpha * 0.4
-			star.scale = Vector2(s, s)
-			
-			# Subtle rotation (use cached value)
-			star.rotation = half_time
-
 ## Set crystal color (for variety)
 func set_glow_color(new_color: Color) -> void:
 	_base_color = new_color
 	crystal_color = new_color.lightened(0.2)
 	if light:
 		light.color = new_color
+	if sparkles:
+		sparkles.modulate = new_color
 	
-	# Update sparkle colors
-	for sparkle in sparkle_points:
-		var star = sparkle.get_meta("star") as Polygon2D
-		if star:
-			star.modulate = new_color
-			star.modulate.a = star.modulate.a  # Preserve alpha
+	# Restart pulse to pick up new base energy if needed
+	_start_pulse()
 
 ## Apply a color preset by index
 func apply_preset(preset_index: int) -> void:
@@ -345,4 +312,13 @@ func set_lit(lit: bool) -> void:
 	if light:
 		var tween = create_tween()
 		tween.tween_property(light, "energy", _base_energy if lit else 0.0, 0.3)
+		if lit:
+			_start_pulse()
+		else:
+			if _pulse_tween:
+				_pulse_tween.kill()
+	
+	if sparkles:
+		sparkles.emitting = lit
+	
 	visible = lit

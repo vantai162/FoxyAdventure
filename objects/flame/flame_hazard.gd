@@ -2,22 +2,16 @@ extends Node2D
 class_name FlameHazard
 
 ## Cycling flame hazard that also emits light
+## NOW GPU-ACCELERATED - zero CPU particle overhead
 ## Can be used both as a hazard and a light source in dark areas
 ##
-## SETUP: Scene includes FlameLight PointLight2D - configure color/energy/texture_scale
-## in the editor. Script handles on/off cycling and flicker animation.
+## SETUP: Scene includes FlameLight PointLight2D and SparkParticles GPUParticles2D
+## Configure in the editor. Script handles on/off cycling and flicker animation.
 
 @export_group("Flame Settings")
 @export var cycle_enabled: bool = true  ## If false, flame stays on permanently
 @export var on_duration: float = 2.0  ## How long flame stays active
 @export var off_duration: float = 1.5  ## How long flame stays off
-
-@export_group("Spark Particles")
-@export var emit_sparks: bool = true
-@export var spark_count: int = 8
-@export var spark_spawn_interval: float = 0.15
-@export var spark_lifetime: float = 0.5
-@export var spark_speed: float = 40.0
 
 @export_group("Damage")
 @export var damage: int = 1
@@ -26,13 +20,13 @@ class_name FlameHazard
 @onready var hit_area_1: Area2D = $HitArea2D
 @onready var hit_area_2: Area2D = $HitArea2D2
 @onready var flame_light: PointLight2D = $FlameLight
+@onready var spark_particles: GPUParticles2D = $SparkParticles
 
 var is_active: bool = false
 var current_phase: String = "off"
-var _sparks: Array[Node2D] = []
-var _spark_timer: float = 0.0
 var _base_energy: float = 0.8
 var _base_color: Color = Color(1.0, 0.7, 0.3, 1.0)
+var _flicker_tween: Tween
 
 func _ready() -> void:
 	# Setup collisions as disabled initially
@@ -46,6 +40,10 @@ func _ready() -> void:
 		if flame_light.texture == null:
 			_setup_light_texture()
 	
+	# Setup GPU particles
+	if spark_particles:
+		_setup_spark_particles()
+	
 	# Start the cycle
 	if cycle_enabled:
 		play_cycle()
@@ -54,13 +52,8 @@ func _ready() -> void:
 		await start_phase()
 		await active_phase_loop()
 
-func _process(delta: float) -> void:
-	# Update spark particles when flame is active
-	if emit_sparks and is_active:
-		_update_sparks(delta)
-
 func _setup_light_texture() -> void:
-	## Only sets texture if missing - other properties configured in scene
+	## Smooth gradient for flame glow
 	var gradient_tex = GradientTexture2D.new()
 	gradient_tex.width = 512
 	gradient_tex.height = 512
@@ -75,6 +68,44 @@ func _setup_light_texture() -> void:
 	
 	flame_light.texture = gradient_tex
 
+func _setup_spark_particles() -> void:
+	## Configure GPU particle material for sparks
+	var mat = ParticleProcessMaterial.new()
+	mat.emission_shape = ParticleProcessMaterial.EMISSION_SHAPE_BOX
+	mat.emission_box_extents = Vector3(20, 8, 0)
+	mat.direction = Vector3(0, -1, 0)  # Upward (Y- in Godot)
+	mat.spread = 30.0
+	mat.initial_velocity_min = 40.0
+	mat.initial_velocity_max = 60.0
+	mat.gravity = Vector3(0, 15, 0)  # Gravity pulls down (Y+ is down!)
+	mat.damping_min = 8.0  # Air resistance
+	mat.damping_max = 12.0
+	mat.scale_min = 1.5
+	mat.scale_max = 2.5
+	
+	# Fade out curve
+	var alpha_curve = Curve.new()
+	alpha_curve.add_point(Vector2(0, 1))
+	alpha_curve.add_point(Vector2(0.7, 0.7))
+	alpha_curve.add_point(Vector2(1, 0))
+	var curve_tex = CurveTexture.new()
+	curve_tex.curve = alpha_curve
+	mat.alpha_curve = curve_tex
+	
+	# Use GradientTexture1D for color_ramp (like whirlpool)
+	var grad = Gradient.new()
+	grad.add_point(0.0, Color(1.0, 0.8, 0.4))
+	grad.add_point(0.7, Color(1.0, 0.4, 0.1, 0.5))
+	grad.add_point(1.0, Color.TRANSPARENT)
+	
+	var gradient_texture = GradientTexture1D.new()
+	gradient_texture.gradient = grad
+	mat.color_ramp = gradient_texture
+	
+	spark_particles.process_material = mat
+	
+	add_child(spark_particles)
+
 func play_cycle() -> void:
 	while true:
 		await start_phase()
@@ -86,6 +117,10 @@ func start_phase() -> void:
 	current_phase = "starting"
 	animated_sprite.play("start")
 	_set_collision_enabled(true)
+	
+	# Enable GPU particles
+	if spark_particles:
+		spark_particles.emitting = true
 	
 	# Fade in light
 	if flame_light:
@@ -116,6 +151,9 @@ func active_phase_loop() -> void:
 	animated_sprite.play("active")
 	_set_collision_enabled(true)
 	
+	if spark_particles:
+		spark_particles.emitting = true
+	
 	if flame_light:
 		flame_light.energy = _base_energy
 		_start_flicker()
@@ -133,8 +171,9 @@ func end_phase() -> void:
 	animated_sprite.play("end")
 	_set_collision_enabled(false)
 	
-	# Clear sparks
-	_clear_sparks()
+	# Disable GPU particles
+	if spark_particles:
+		spark_particles.emitting = false
 	
 	# Fade out light
 	if flame_light:
@@ -150,17 +189,17 @@ func off_phase() -> void:
 func _set_collision_enabled(enabled: bool) -> void:
 	if hit_area_1 and hit_area_1.has_node("CollisionShape2D"):
 		hit_area_1.get_node("CollisionShape2D").disabled = not enabled
-	if hit_area_2 and hit_area_2.has_node("CollisionShape2D"):
-		hit_area_2.get_node("CollisionShape2D").disabled = not enabled
-
-var _flicker_tween: Tween
+		if hit_area_2.has_node("CollisionShape2D"):
+			hit_area_2.get_node("CollisionShape2D").disabled = not enabled
 
 func _start_flicker() -> void:
 	if flame_light == null:
 		return
 	
-	_flicker_tween = create_tween()
-	_flicker_tween.set_loops()
+	if _flicker_tween:
+		_flicker_tween.kill()
+	
+	_flicker_tween = create_tween().set_loops()
 	_flicker_tween.tween_property(flame_light, "energy", _base_energy * 1.1, 0.1)
 	_flicker_tween.tween_property(flame_light, "energy", _base_energy * 0.9, 0.15)
 	_flicker_tween.tween_property(flame_light, "energy", _base_energy, 0.1)
@@ -180,86 +219,3 @@ func ignite() -> void:
 func extinguish() -> void:
 	if is_active:
 		await end_phase()
-
-## ============================================================================
-## SPARK PARTICLES
-## Small sparks that fly off during active flame phase
-## ============================================================================
-
-func _update_sparks(delta: float) -> void:
-	_spark_timer += delta
-	
-	if _spark_timer >= spark_spawn_interval and _sparks.size() < spark_count:
-		_spark_timer = 0.0
-		_spawn_spark()
-	
-	# Update existing sparks
-	var to_remove: Array[Node2D] = []
-	for spark in _sparks:
-		if not is_instance_valid(spark):
-			to_remove.append(spark)
-			continue
-		
-		var age = spark.get_meta("age", 0.0) + delta
-		spark.set_meta("age", age)
-		
-		if age >= spark_lifetime:
-			to_remove.append(spark)
-			continue
-		
-		# Apply velocity
-		var velocity = spark.get_meta("velocity", Vector2.ZERO) as Vector2
-		velocity.y -= 30.0 * delta  # Upward drift
-		spark.set_meta("velocity", velocity)
-		spark.position += velocity * delta
-		
-		# Fade and shrink
-		var life_ratio = age / spark_lifetime
-		var visual = spark.get_node_or_null("Visual") as Polygon2D
-		if visual:
-			visual.modulate.a = 1.0 - life_ratio
-			var s = 1.0 - life_ratio * 0.6
-			visual.scale = Vector2(s, s)
-	
-	for spark in to_remove:
-		_sparks.erase(spark)
-		if is_instance_valid(spark):
-			spark.queue_free()
-
-func _spawn_spark() -> void:
-	var spark = Node2D.new()
-	spark.name = "Spark"
-	
-	# Start near flame center
-	spark.position = Vector2(randf_range(-15, 5), randf_range(-10, 10))
-	
-	# Random mostly-upward velocity
-	var angle = randf_range(-PI * 0.75, -PI * 0.25)
-	var velocity = Vector2(cos(angle), sin(angle)) * spark_speed * randf_range(0.6, 1.2)
-	spark.set_meta("velocity", velocity)
-	spark.set_meta("age", 0.0)
-	
-	# Create spark visual
-	var visual = Polygon2D.new()
-	visual.name = "Visual"
-	var size = randf_range(1.5, 3.0)
-	visual.polygon = PackedVector2Array([
-		Vector2(0, -size),
-		Vector2(size * 0.5, 0),
-		Vector2(0, size * 0.5),
-		Vector2(-size * 0.5, 0)
-	])
-	
-	# Yellow-orange spark color
-	var hue = randf_range(0.06, 0.12)
-	visual.color = Color.from_hsv(hue, 0.9, 1.0)
-	
-	spark.add_child(visual)
-	add_child(spark)
-	_sparks.append(spark)
-
-func _clear_sparks() -> void:
-	for spark in _sparks:
-		if is_instance_valid(spark):
-			spark.queue_free()
-	_sparks.clear()

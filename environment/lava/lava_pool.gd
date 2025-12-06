@@ -75,16 +75,14 @@ signal lava_filled   ## Emitted when fill animation completes
 var segment_data: Array = []
 var _ambient_wave_time: float = 0.0
 var _light_pulse_time: float = 0.0
-var _particle_timer: float = 0.0
 var _damage_timers: Dictionary = {}  ## Per-body damage cooldown
 
 var surface_line: Line2D
 var fill_polygon: Polygon2D
 var lava_area: Area2D
 var lava_light: PointLight2D
-var ember_particles: Array[Node2D] = []
-var bubble_particles: Array[Node2D] = []
-var _bubble_timer: float = 0.0
+var ember_gpu_particles: GPUParticles2D
+var bubble_gpu_particles: GPUParticles2D
 
 @export_tool_button("Update Lava") var update_lava_button: Callable = func():
 	_ready()
@@ -95,14 +93,19 @@ func _ready() -> void:
 		child.queue_free()
 	
 	segment_data.clear()
-	ember_particles.clear()
-	bubble_particles.clear()
 	_damage_timers.clear()
 	
 	_initiate_lava()
 	
 	if emit_light:
 		_setup_light()
+	
+	# Setup GPU particles
+	if not Engine.is_editor_hint():
+		if emit_particles:
+			_setup_ember_gpu_particles()
+		if emit_bubbles:
+			_setup_bubble_gpu_particles()
 	
 	if not Engine.is_editor_hint():
 		set_process(true)
@@ -120,14 +123,7 @@ func _process(delta: float) -> void:
 	if light_pulse_enabled and lava_light:
 		_update_light_pulse(delta)
 	
-	# Ember particles
-	if emit_particles and not Engine.is_editor_hint():
-		_update_particles(delta)
-	
-	# Bubble particles
-	if emit_bubbles and not Engine.is_editor_hint():
-		_update_bubbles(delta)
-	
+	# Wave physics (KEEP - this is gameplay interaction)
 	_update_physics(delta)
 	_update_visuals()
 
@@ -198,6 +194,100 @@ func _setup_light() -> void:
 	
 	add_child(lava_light)
 
+func _setup_ember_gpu_particles() -> void:
+	ember_gpu_particles = GPUParticles2D.new()
+	ember_gpu_particles.name = "LavaEmbers"
+	ember_gpu_particles.position = Vector2(lava_size.x / 2.0, surface_pos_y)
+	ember_gpu_particles.amount = particle_count
+	ember_gpu_particles.lifetime = particle_lifetime
+	ember_gpu_particles.randomness = 0.5
+	ember_gpu_particles.emitting = true
+	
+	# Configure particle material
+	var mat = ParticleProcessMaterial.new()
+	mat.emission_shape = ParticleProcessMaterial.EMISSION_SHAPE_BOX
+	mat.emission_box_extents = Vector3(lava_size.x / 2.0, 2, 0)
+	mat.direction = Vector3(0, -1, 0)  # Upward
+	mat.spread = 10.0
+	mat.initial_velocity_min = particle_rise_speed * 0.8
+	mat.initial_velocity_max = particle_rise_speed * 1.2
+	mat.gravity = Vector3(0, -particle_rise_speed * 0.3, 0)
+	mat.scale_min = 1.5
+	mat.scale_max = 3.0
+	
+	# Fade out curve
+	var alpha_curve = Curve.new()
+	alpha_curve.add_point(Vector2(0, 1))
+	alpha_curve.add_point(Vector2(0.5, 0.8))
+	alpha_curve.add_point(Vector2(1, 0))
+	var curve_tex = CurveTexture.new()
+	curve_tex.curve = alpha_curve
+	mat.alpha_curve = curve_tex
+	
+	ember_gpu_particles.process_material = mat
+	
+	# Create ember texture
+	var ember_tex = GradientTexture2D.new()
+	ember_tex.width = 8
+	ember_tex.height = 8
+	ember_tex.fill = GradientTexture2D.FILL_RADIAL
+	ember_tex.fill_from = Vector2(0.5, 0.5)
+	ember_tex.fill_to = Vector2(0.5, 0.0)
+	var ember_grad = Gradient.new()
+	ember_grad.set_color(0, Color(1, 0.5, 0.1, 1))
+	ember_grad.set_color(1, Color(1, 0.3, 0.0, 0))
+	ember_tex.gradient = ember_grad
+	ember_gpu_particles.texture = ember_tex
+	
+	add_child(ember_gpu_particles)
+
+func _setup_bubble_gpu_particles() -> void:
+	bubble_gpu_particles = GPUParticles2D.new()
+	bubble_gpu_particles.name = "LavaBubbles"
+	bubble_gpu_particles.position = Vector2(lava_size.x / 2.0, surface_pos_y + 10)
+	bubble_gpu_particles.amount = bubble_count
+	bubble_gpu_particles.lifetime = bubble_spawn_interval * bubble_count
+	bubble_gpu_particles.randomness = 0.6
+	bubble_gpu_particles.emitting = true
+	
+	# Configure particle material
+	var mat = ParticleProcessMaterial.new()
+	mat.emission_shape = ParticleProcessMaterial.EMISSION_SHAPE_BOX
+	mat.emission_box_extents = Vector3(lava_size.x / 2.0, 5, 0)
+	mat.direction = Vector3(0, -1, 0)  # Upward
+	mat.spread = 5.0
+	mat.initial_velocity_min = bubble_rise_speed * 0.8
+	mat.initial_velocity_max = bubble_rise_speed * 1.2
+	mat.gravity = Vector3(0, -bubble_rise_speed * 0.2, 0)
+	mat.scale_min = bubble_min_size
+	mat.scale_max = bubble_max_size
+	
+	# Pop at end
+	var alpha_curve = Curve.new()
+	alpha_curve.add_point(Vector2(0, 0.6))
+	alpha_curve.add_point(Vector2(0.9, 0.5))
+	alpha_curve.add_point(Vector2(1, 0))
+	var curve_tex = CurveTexture.new()
+	curve_tex.curve = alpha_curve
+	mat.alpha_curve = curve_tex
+	
+	bubble_gpu_particles.process_material = mat
+	
+	# Create bubble texture (darker orange circle)
+	var bubble_tex = GradientTexture2D.new()
+	bubble_tex.width = 12
+	bubble_tex.height = 12
+	bubble_tex.fill = GradientTexture2D.FILL_RADIAL
+	bubble_tex.fill_from = Vector2(0.5, 0.5)
+	bubble_tex.fill_to = Vector2(0.5, 0.0)
+	var bubble_grad = Gradient.new()
+	bubble_grad.set_color(0, Color(0.8, 0.3, 0.05, 0.6))
+	bubble_grad.set_color(1, Color(0.7, 0.2, 0.0, 0))
+	bubble_tex.gradient = bubble_grad
+	bubble_gpu_particles.texture = bubble_tex
+	
+	add_child(bubble_gpu_particles)
+
 func _update_light_pulse(delta: float) -> void:
 	_light_pulse_time += delta * light_pulse_speed
 	
@@ -212,11 +302,17 @@ func _update_light_pulse(delta: float) -> void:
 func _update_physics(delta: float) -> void:
 	var safe_delta = min(delta, 0.05)
 	
+	# Lag compensation: add extra damping when FPS drops (same as water.gd)
+	var lag_damping_factor = 1.0
+	if delta > 0.03:  # FPS below 33
+		var lag_severity = (delta - 0.03) / 0.03
+		lag_damping_factor = 1.0 + (lag_severity * lag_severity * 0.5)
+	
 	for i in range(segment_count):
 		var displacement = segment_data[i]["height"] - surface_pos_y
 		
 		# Spring force back to rest
-		var damping = wave_energy_loss
+		var damping = wave_energy_loss * lag_damping_factor  # Apply lag compensation
 		var acceleration = -lava_restoring_force * displacement - segment_data[i]["velocity"] * damping
 		
 		segment_data[i]["velocity"] += acceleration * safe_delta * lava_physics_speed
@@ -265,79 +361,6 @@ func _update_visuals() -> void:
 	final_points.append(Vector2(lava_size.x, bottom_y))
 	final_points.append(Vector2(0, bottom_y))
 	fill_polygon.polygon = final_points
-
-func _update_particles(delta: float) -> void:
-	_particle_timer += delta
-	
-	# Spawn new particles
-	if _particle_timer >= particle_spawn_rate:
-		_particle_timer = 0.0
-		_spawn_ember()
-	
-	# Update existing particles
-	var to_remove: Array[Node2D] = []
-	for ember in ember_particles:
-		if not is_instance_valid(ember):
-			to_remove.append(ember)
-			continue
-		
-		# Rise and fade
-		ember.position.y -= particle_rise_speed * delta
-		ember.position.x += sin(Time.get_ticks_msec() * 0.005 + ember.get_meta("phase", 0.0)) * 10.0 * delta
-		
-		var age = ember.get_meta("age", 0.0) + delta
-		ember.set_meta("age", age)
-		
-		if age >= particle_lifetime:
-			to_remove.append(ember)
-		else:
-			# Fade out
-			var alpha = 1.0 - (age / particle_lifetime)
-			var ember_visual = ember.get_node_or_null("Visual") as Polygon2D
-			if ember_visual:
-				ember_visual.modulate.a = alpha
-	
-	for ember in to_remove:
-		ember_particles.erase(ember)
-		if is_instance_valid(ember):
-			ember.queue_free()
-
-func _spawn_ember() -> void:
-	if ember_particles.size() >= particle_count:
-		return
-	
-	var ember = Node2D.new()
-	ember.name = "Ember"
-	
-	# Random position along lava surface
-	var spawn_x = randf() * lava_size.x
-	var spawn_y = surface_pos_y + randf_range(-2.0, 2.0)
-	ember.position = Vector2(spawn_x, spawn_y)
-	
-	# Random phase for horizontal wobble
-	ember.set_meta("phase", randf() * TAU)
-	ember.set_meta("age", 0.0)
-	
-	# Create visual - small glowing polygon
-	var visual = Polygon2D.new()
-	visual.name = "Visual"
-	
-	# Small diamond/spark shape
-	var size = randf_range(1.5, 3.0)
-	visual.polygon = PackedVector2Array([
-		Vector2(0, -size),
-		Vector2(size * 0.6, 0),
-		Vector2(0, size * 0.5),
-		Vector2(-size * 0.6, 0)
-	])
-	
-	# Random orange/yellow color
-	var hue_shift = randf_range(-0.05, 0.1)
-	visual.color = Color(1.0, 0.5 + hue_shift, 0.1 - hue_shift * 0.5, 1.0)
-	
-	ember.add_child(visual)
-	add_child(ember)
-	ember_particles.append(ember)
 
 func _on_body_entered(body: Node2D) -> void:
 	if instant_kill:
@@ -404,106 +427,6 @@ func splash(splash_pos: Vector2, splash_velocity: float) -> void:
 
 ## ============================================================================
 ## BUBBLE SYSTEM
-## Bubbles rise from within the lava and pop at the surface
-## ============================================================================
-
-func _update_bubbles(delta: float) -> void:
-	_bubble_timer += delta
-	
-	# Spawn new bubbles
-	if _bubble_timer >= bubble_spawn_interval and bubble_particles.size() < bubble_count:
-		_bubble_timer = 0.0
-		_spawn_bubble()
-	
-	# Update existing bubbles
-	var to_remove: Array[Node2D] = []
-	for bubble in bubble_particles:
-		if not is_instance_valid(bubble):
-			to_remove.append(bubble)
-			continue
-		
-		# Rise toward surface
-		bubble.position.y -= bubble_rise_speed * delta
-		
-		# Slight horizontal wobble
-		var wobble_phase = bubble.get_meta("wobble_phase", 0.0)
-		bubble.position.x += sin(wobble_phase + Time.get_ticks_msec() * 0.005) * 8.0 * delta
-		
-		# Grow slightly as it rises (pressure release)
-		var start_size = bubble.get_meta("start_size", bubble_min_size)
-		var growth = bubble.get_meta("growth", 0.0) + delta * 0.3
-		bubble.set_meta("growth", growth)
-		
-		var visual = bubble.get_node_or_null("Visual") as Polygon2D
-		if visual:
-			var current_size = start_size + growth
-			visual.scale = Vector2(current_size / start_size, current_size / start_size)
-		
-		# Check if reached surface - pop!
-		if bubble.position.y <= surface_pos_y:
-			_pop_bubble(bubble)
-			to_remove.append(bubble)
-	
-	# Cleanup
-	for bubble in to_remove:
-		bubble_particles.erase(bubble)
-		if is_instance_valid(bubble):
-			bubble.queue_free()
-
-func _spawn_bubble() -> void:
-	var bubble = Node2D.new()
-	bubble.name = "Bubble"
-	
-	# Random position within lava body (below surface)
-	var spawn_depth = randf_range(lava_size.y * 0.3, lava_size.y * 0.8)
-	bubble.position = Vector2(
-		randf_range(lava_size.x * 0.1, lava_size.x * 0.9),
-		spawn_depth
-	)
-	
-	var size = randf_range(bubble_min_size, bubble_max_size)
-	bubble.set_meta("start_size", size)
-	bubble.set_meta("growth", 0.0)
-	bubble.set_meta("wobble_phase", randf() * TAU)
-	
-	# Create bubble visual - circle approximation
-	var visual = Polygon2D.new()
-	visual.name = "Visual"
-	
-	var points: PackedVector2Array = []
-	for i in range(8):
-		var angle = (float(i) / 8.0) * TAU
-		points.append(Vector2(cos(angle) * size, sin(angle) * size))
-	visual.polygon = points
-	
-	# Lighter orange/yellow - hot gas inside
-	visual.color = Color(1.0, 0.7, 0.2, 0.7)
-	
-	# Add highlight for 3D effect
-	var highlight = Polygon2D.new()
-	highlight.name = "Highlight"
-	var hl_size = size * 0.4
-	var hl_points: PackedVector2Array = []
-	for i in range(6):
-		var angle = (float(i) / 6.0) * TAU
-		hl_points.append(Vector2(cos(angle) * hl_size - size * 0.3, sin(angle) * hl_size - size * 0.3))
-	highlight.polygon = hl_points
-	highlight.color = Color(1.0, 0.9, 0.5, 0.5)
-	
-	visual.add_child(highlight)
-	bubble.add_child(visual)
-	add_child(bubble)
-	bubble_particles.append(bubble)
-
-func _pop_bubble(bubble: Node2D) -> void:
-	## Create a small surface disturbance when bubble pops
-	var segment_width = lava_size.x / (segment_count - 1)
-	var index = int(clamp(bubble.position.x / segment_width, 1, segment_count - 2))
-	
-	# Small upward splash
-	var pop_strength = bubble.get_meta("start_size", bubble_min_size) * -0.3
-	segment_data[index]["velocity"] += pop_strength
-
 ## ============================================================================
 ## DRAIN/FILL SYSTEM
 ## For puzzle integration - lever controls lava level
