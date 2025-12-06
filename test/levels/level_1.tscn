@@ -5522,8 +5522,8 @@ motion_mirroring = Vector2(1820, 0)
 
 [node name="Sprite2D" type="Sprite2D" parent="CanvasLayer2/ParallaxBackground/ParallaxLayer"]
 use_parent_material = true
-position = Vector2(746.431, 44.4999)
-scale = Vector2(2.6128, 3.78902)
+position = Vector2(814.339, -115)
+scale = Vector2(2.74543, 4.71098)
 texture = ExtResource("3_nwtxg")
 
 [node name="Sprite2D2" type="Sprite2D" parent="CanvasLayer2/ParallaxBackground/ParallaxLayer"]
@@ -5802,21 +5802,6 @@ target_stage = "uid://bxknbajfocd87"
 [node name="FriendlyTribe" parent="." instance=ExtResource("17_fpaxw")]
 position = Vector2(4412, 326)
 
-[connection signal="area_entered" from="Layer1/Coin" to="Layer1/Coin" method="_on_area_entered"]
-[connection signal="area_entered" from="Layer1/@Area2D@126490" to="Layer1/@Area2D@126490" method="_on_area_entered"]
-[connection signal="area_entered" from="Layer1/@Area2D@126491" to="Layer1/@Area2D@126491" method="_on_area_entered"]
-[connection signal="area_entered" from="Layer1/@Area2D@126492" to="Layer1/@Area2D@126492" method="_on_area_entered"]
-[connection signal="area_entered" from="Layer1/@Area2D@126493" to="Layer1/@Area2D@126493" method="_on_area_entered"]
-[connection signal="area_entered" from="Layer1/@Area2D@126494" to="Layer1/@Area2D@126494" method="_on_area_entered"]
-[connection signal="area_entered" from="Layer1/@Area2D@126495" to="Layer1/@Area2D@126495" method="_on_area_entered"]
-[connection signal="area_entered" from="Layer1/@Area2D@126496" to="Layer1/@Area2D@126496" method="_on_area_entered"]
-[connection signal="area_entered" from="Layer1/@Area2D@126497" to="Layer1/@Area2D@126497" method="_on_area_entered"]
-[connection signal="area_entered" from="Layer1/@Area2D@126498" to="Layer1/@Area2D@126498" method="_on_area_entered"]
-[connection signal="area_entered" from="Layer1/@Area2D@126499" to="Layer1/@Area2D@126499" method="_on_area_entered"]
-[connection signal="area_entered" from="Layer1/@Area2D@126500" to="Layer1/@Area2D@126500" method="_on_area_entered"]
-[connection signal="area_entered" from="Layer1/@Area2D@126501" to="Layer1/@Area2D@126501" method="_on_area_entered"]
-[connection signal="area_entered" from="Layer1/@Area2D@126502" to="Layer1/@Area2D@126502" method="_on_area_entered"]
-[connection signal="area_entered" from="Layer1/Key" to="Layer1/Key" method="_on_area_entered"]
 [connection signal="body_entered" from="Objects/Lever" to="Objects/Gate" method="open_gate"]
 [connection signal="body_exited" from="Objects/Lever" to="Objects/Gate" method="close_gate"]
 [connection signal="lever_activated" from="Objects/Lever" to="Objects/Gate" method="open_gate"]

@@ -1,3 +1,3 @@
 class_name StatItem
 extends Node
-var value:int
+@export var value:int

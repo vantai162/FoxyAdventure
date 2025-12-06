@@ -288,12 +288,12 @@ func _checkcoyotea() -> bool:
 func _checkbuffer() -> bool:
 	return timeline - last_jumppress_onair < jump_buffer
 
-func take_damage(damage: int) -> void:
-	if Effect["Invicibility"] <= 0:
-		if has_node("Camera2D"):
-			$Camera2D.shake(8.0)
-		super.take_damage(damage)
-		fsm.change_state(fsm.states.hurt)
+#func take_damage(damage: int) -> void:
+#	if Effect["Invicibility"] <= 0:
+#		if has_node("Camera2D"):
+#			$Camera2D.shake(8.0)
+#		super.take_damage(damage)
+#		fsm.change_state(fsm.states.hurt)
 
 func _updatecooldown(delta: float) -> void:
 	for key in CoolDown:
@@ -356,4 +356,15 @@ func _on_hurt_area_2d_hurt(direction: Vector2, damage: float) -> void:
 	
 func heal_max_health():
 	heal(max_health)
+	
+func set_max_health(new_max:int) -> void:
+	max_health = new_max
+	# giữ current health <= max
+	health = min(health, max_health)
+
+func get_max_health() -> int:
+	return max_health
+
+func get_health() -> int:
+	return health
 	
