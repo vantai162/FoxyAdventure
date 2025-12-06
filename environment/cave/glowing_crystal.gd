@@ -3,63 +3,74 @@ class_name GlowingCrystal
 ## Crystal Light Source - Diamond/Ace shape with sparkle effects
 ## Illuminates dark cave areas with magical twinkling glow
 ## Essential for Level 3 darkness mechanics
+##
+## SETUP: Scene includes a PointLight2D child "CrystalLight" - configure its
+## color, energy, texture_scale in the editor. Script handles pulse animation.
 
-@export_group("Light Settings")
-@export var base_energy: float = 1.2  ## Base light brightness (stronger default)
+@export_group("Pulse Animation")
 @export var pulse_amount: float = 0.4  ## How much energy varies during pulse
 @export var pulse_speed: float = 2.0  ## Pulse frequency (higher = faster)
-@export var light_color: Color = Color(0.4, 0.9, 0.6, 1.0)  ## Cyan-green glow
-@export var light_radius: float = 120.0  ## How far light reaches
-
-@export_group("Shadow Settings")
-@export var cast_shadows: bool = true  ## Light blocked by walls with LightOccluder2D
 
 @export_group("Crystal Appearance")
-@export var crystal_color: Color = Color(0.6, 1.0, 0.8, 1.0)  ## Crystal tint
 @export var crystal_scale: float = 1.0  ## Overall size multiplier
 @export_enum("Small:0", "Medium:1", "Large:2", "Cluster:3") var crystal_type: int = 1
+
+@export_group("Color Preset")
+@export_enum("Emerald:0", "Sapphire:1", "Ruby:2", "Amethyst:3", "Gold:4", "Ice:5") var color_preset: int = 0
 
 @export_group("Sparkle Settings")
 @export var enable_sparkles: bool = true  ## Enable twinkle particle effects
 @export var sparkle_intensity: float = 1.0  ## Sparkle brightness multiplier
 @export var sparkle_count: int = 8  ## Number of sparkle particles
 
-@export_group("Color Presets")
-@export_enum("Emerald:0", "Sapphire:1", "Ruby:2", "Amethyst:3", "Gold:4", "Ice:5", "Custom:6") var color_preset: int = 0
+@export_group("Performance")
+@export var update_rate: int = 2  ## Update every N frames (1=every frame, 2=30fps, 3=20fps)
 
 @export_group("Interaction")
 @export var react_to_player: bool = false  ## Brighten when player nearby
 @export var reaction_radius: float = 60.0
 @export var reaction_boost: float = 0.5  ## Extra brightness when triggered
 
+## Scene node references
+@onready var light: PointLight2D = $CrystalLight
+
+## Runtime state
 var time_offset: float = 0.0
 var player_nearby: bool = false
-var light: PointLight2D
 var detection_area: Area2D
 var sparkle_particles: GPUParticles2D
 var sparkle_points: Array[Node2D] = []
+var _base_energy: float = 1.0
+var _base_color: Color = Color(0.3, 1.0, 0.5)  ## Emerald default
+var crystal_color: Color = Color(0.5, 1.0, 0.7)  ## Lighter for crystal body
+var _frame_counter: int = 0  ## For performance throttling
 
-# Color preset definitions
+# Color preset definitions (dungeon-appropriate - dim and moody)
 const COLOR_PRESETS = {
-	0: {"light": Color(0.3, 1.0, 0.5), "crystal": Color(0.5, 1.0, 0.7)},  # Emerald
-	1: {"light": Color(0.3, 0.6, 1.0), "crystal": Color(0.5, 0.7, 1.0)},  # Sapphire
-	2: {"light": Color(1.0, 0.3, 0.4), "crystal": Color(1.0, 0.5, 0.6)},  # Ruby
-	3: {"light": Color(0.8, 0.4, 1.0), "crystal": Color(0.9, 0.6, 1.0)},  # Amethyst
-	4: {"light": Color(1.0, 0.85, 0.3), "crystal": Color(1.0, 0.9, 0.5)}, # Gold
-	5: {"light": Color(0.7, 0.95, 1.0), "crystal": Color(0.85, 1.0, 1.0)}, # Ice
+	0: {"light": Color(0.3, 1.0, 0.5), "crystal": Color(0.5, 1.0, 0.7)},  # Emerald (default dungeon green)
+	1: {"light": Color(0.3, 0.6, 1.0), "crystal": Color(0.5, 0.7, 1.0)},  # Sapphire (cold blue)
+	2: {"light": Color(1.0, 0.3, 0.4), "crystal": Color(1.0, 0.5, 0.6)},  # Ruby (danger red)
+	3: {"light": Color(0.8, 0.4, 1.0), "crystal": Color(0.9, 0.6, 1.0)},  # Amethyst (mystic purple)
+	4: {"light": Color(1.0, 0.8, 0.3), "crystal": Color(1.0, 0.9, 0.5)}, # Gold (treasure glow)
+	5: {"light": Color(0.6, 0.9, 1.0), "crystal": Color(0.8, 0.95, 1.0)}, # Ice (frozen blue-white)
 }
 
 func _ready() -> void:
 	time_offset = randf() * TAU  # Random phase offset for variety
 	
-	# Apply color preset
-	if color_preset != 6:  # Not custom
-		var preset = COLOR_PRESETS.get(color_preset, COLOR_PRESETS[0])
-		light_color = preset.light
-		crystal_color = preset.crystal
+	# Apply color preset FIRST (before capturing from scene)
+	var preset = COLOR_PRESETS.get(color_preset, COLOR_PRESETS[0])
+	crystal_color = preset.crystal
+	
+	# Capture base values from scene-configured light, then override with preset
+	if light:
+		_base_energy = light.energy
+		light.color = preset.light  # Apply preset color to light
+		_base_color = preset.light
+		if light.texture == null:
+			_setup_light_texture()
 	
 	_create_diamond_crystal()
-	_setup_light()
 	
 	if enable_sparkles:
 		_setup_sparkles()
@@ -68,30 +79,28 @@ func _ready() -> void:
 		_setup_detection_area()
 
 func _process(delta: float) -> void:
+	# Performance optimization: Update every N frames instead of every frame
+	_frame_counter += 1
+	if _frame_counter < update_rate:
+		return
+	_frame_counter = 0
+	
 	var time = Time.get_ticks_msec() / 1000.0
 	var pulse = sin((time * pulse_speed) + time_offset) * 0.5 + 0.5  # 0 to 1
 	
-	var target_energy = base_energy + (pulse * pulse_amount)
+	var target_energy = _base_energy + (pulse * pulse_amount)
 	if player_nearby:
 		target_energy += reaction_boost
 	
 	if light:
 		light.energy = target_energy
 	
-	# Animate sparkle points
-	_animate_sparkles(time)
+	# Animate sparkle points only if enabled
+	if enable_sparkles and not sparkle_points.is_empty():
+		_animate_sparkles(time)
 
-func _setup_light() -> void:
-	light = PointLight2D.new()
-	light.name = "CrystalLight"
-	light.color = light_color
-	light.energy = base_energy
-	light.texture_scale = light_radius / 128.0
-	
-	# Enable shadow casting so walls block light
-	light.shadow_enabled = cast_shadows
-	
-	# Create radial gradient texture
+func _setup_light_texture() -> void:
+	## Only sets texture - all other properties configured in scene
 	var gradient = GradientTexture2D.new()
 	gradient.fill = GradientTexture2D.FILL_RADIAL
 	gradient.fill_from = Vector2(0.5, 0.5)
@@ -103,8 +112,6 @@ func _setup_light() -> void:
 	gradient.width = 256
 	gradient.height = 256
 	light.texture = gradient
-	
-	add_child(light)
 
 func _setup_detection_area() -> void:
 	detection_area = Area2D.new()
@@ -154,10 +161,10 @@ func _create_single_diamond(size: float, offset: Vector2, rot: float) -> void:
 	diamond.position = offset
 	diamond.rotation = rot
 	
-	# Diamond/ace proportions - wider points for that playing card feel
-	var h = 20.0 * size  # Half height (total height = 40)
-	var w = 12.0 * size  # Half width (total width = 24)
-	var pinch = 0.15     # How much the middle pinches in (0 = straight edges)
+	# Diamond/ace proportions - SMALLER for dungeon feel
+	var h = 12.0 * size  # Half height (was 20, now 12)
+	var w = 8.0 * size   # Half width (was 12, now 8)
+	var pinch = 0.15     # How much the middle pinches in
 	
 	# 4-pointed diamond with slight curves via extra points
 	diamond.polygon = PackedVector2Array([
@@ -260,7 +267,7 @@ func _setup_sparkles() -> void:
 		
 		# Create 4-pointed star shape for sparkle
 		var star = _create_sparkle_star(3.0 * crystal_scale)
-		star.modulate = light_color
+		star.modulate = _base_color
 		star.modulate.a = 0.0  # Start invisible
 		sparkle.add_child(star)
 		
@@ -291,6 +298,9 @@ func _create_sparkle_star(size: float) -> Polygon2D:
 	return star
 
 func _animate_sparkles(time: float) -> void:
+	# Cache calculations outside loop
+	var half_time = time * 0.5
+	
 	for sparkle in sparkle_points:
 		var phase = sparkle.get_meta("phase", 0.0)
 		var speed = sparkle.get_meta("speed", 3.0)
@@ -302,16 +312,16 @@ func _animate_sparkles(time: float) -> void:
 			var alpha = pow(max(0.0, t), 2.0) * sparkle_intensity  # Sharp peaks
 			star.modulate.a = alpha
 			
-			# Slight scale pulse
+			# Slight scale pulse (reuse alpha calculation)
 			var s = 0.8 + alpha * 0.4
 			star.scale = Vector2(s, s)
 			
-			# Subtle rotation
-			star.rotation = time * 0.5
+			# Subtle rotation (use cached value)
+			star.rotation = half_time
 
 ## Set crystal color (for variety)
 func set_glow_color(new_color: Color) -> void:
-	light_color = new_color
+	_base_color = new_color
 	crystal_color = new_color.lightened(0.2)
 	if light:
 		light.color = new_color
@@ -334,5 +344,5 @@ func apply_preset(preset_index: int) -> void:
 func set_lit(lit: bool) -> void:
 	if light:
 		var tween = create_tween()
-		tween.tween_property(light, "energy", base_energy if lit else 0.0, 0.3)
+		tween.tween_property(light, "energy", _base_energy if lit else 0.0, 0.3)
 	visible = lit

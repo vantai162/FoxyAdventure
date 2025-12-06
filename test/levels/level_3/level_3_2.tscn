@@ -26,7 +26,6 @@ size = Vector2(64, 96)
 script = ExtResource("1_stage_script")
 
 [node name="CanvasModulate" type="CanvasModulate" parent="."]
-visible = false
 color = Color(0.1, 0.08, 0.12, 1)
 
 [node name="PlayerSpawn" type="Marker2D" parent="."]
@@ -77,6 +76,14 @@ position = Vector2(880, 510)
 [node name="GrottoPool" parent="WaterZones" instance=ExtResource("9_water")]
 position = Vector2(1080, 340)
 water_size = Vector2(450, 100)
+surface_line_thickness = 1.0
+ambient_wave_amplitude = 1.5
+ambient_wave_speed = 1.2
+ambient_wave_length = 0.3
+player_splash_mutiplier = 0.12
+swim_disturbance_interval = 0.15
+swim_disturbance_strength = 0.3
+boat_depression_depth = 3.0
 
 [node name="Hazards" type="Node2D" parent="."]
 

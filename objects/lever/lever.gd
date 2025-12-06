@@ -1,9 +1,9 @@
-# Lever - Interactive switch for gates, water levels, and custom actions
+# Lever - Interactive switch for gates, water, lava, flames, and custom actions
 extends Area2D
 class_name Lever
 
 ## What the lever controls
-enum LeverTarget { SIGNAL_ONLY, WATER_LEVEL, GATE }
+enum LeverTarget { SIGNAL_ONLY, WATER_LEVEL, GATE, LAVA_LEVEL, FLAME }
 
 @export_group("Lever Settings")
 @export var is_activated: bool = false
@@ -18,12 +18,22 @@ enum LeverTarget { SIGNAL_ONLY, WATER_LEVEL, GATE }
 @export_group("Gate Control")
 @export var gate_node: NodePath  ## Path to gate node to control
 
+@export_group("Lava Control")
+@export var lava_node: NodePath  ## Path to lava pool to control
+@export var lava_drain_time: float = 2.0  ## How fast lava drains
+@export var lava_fill_time: float = 3.0  ## How fast lava fills (slower = more tension)
+
+@export_group("Flame Control")
+@export var flame_node: NodePath  ## Path to flame hazard to control
+
 signal lever_activated
 signal lever_deactivated
 
 var player_is_near: bool = false
 var _water_ref: Node = null
 var _gate_ref: Node = null
+var _lava_ref: Node = null
+var _flame_ref: Node = null
 
 func _ready() -> void:
 	update_animation()
@@ -33,6 +43,10 @@ func _ready() -> void:
 		_water_ref = get_node_or_null(water_node)
 	if not gate_node.is_empty():
 		_gate_ref = get_node_or_null(gate_node)
+	if not lava_node.is_empty():
+		_lava_ref = get_node_or_null(lava_node)
+	if not flame_node.is_empty():
+		_flame_ref = get_node_or_null(flame_node)
 
 func _process(_delta: float) -> void:
 	if player_is_near and Input.is_action_just_pressed("interact"):
@@ -57,6 +71,12 @@ func _on_lever_on() -> void:
 		LeverTarget.GATE:
 			if _gate_ref and _gate_ref.has_method("open_gate"):
 				_gate_ref.open_gate()
+		LeverTarget.LAVA_LEVEL:
+			if _lava_ref and _lava_ref.has_method("drain"):
+				_lava_ref.drain(lava_drain_time)
+		LeverTarget.FLAME:
+			if _flame_ref and _flame_ref.has_method("extinguish"):
+				_flame_ref.extinguish()
 
 func _on_lever_off() -> void:
 	match target_type:
@@ -66,6 +86,12 @@ func _on_lever_off() -> void:
 		LeverTarget.GATE:
 			if _gate_ref and _gate_ref.has_method("close_gate"):
 				_gate_ref.close_gate()
+		LeverTarget.LAVA_LEVEL:
+			if _lava_ref and _lava_ref.has_method("fill"):
+				_lava_ref.fill(lava_fill_time)
+		LeverTarget.FLAME:
+			if _flame_ref and _flame_ref.has_method("ignite"):
+				await _flame_ref.ignite()
 
 func update_animation() -> void:
 	if has_node("AnimatedSprite2D"):

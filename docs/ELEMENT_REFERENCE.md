@@ -71,31 +71,23 @@ Toggle switch with multiple control modes.
 | `water_off_level` | float | 50.0 | Water height when OFF |
 | `water_transition_time` | float | 2.0 | Animation duration |
 | `gate_node` | NodePath | "" | Path to gate (GATE mode) |
+| `lava_node` | NodePath | "" | Path to lava (LAVA_LEVEL mode) |
+| `lava_drain_time` | float | 2.0 | Drain animation duration |
+| `lava_fill_time` | float | 3.0 | Fill animation duration |
+| `flame_node` | NodePath | "" | Path to flame (FLAME mode) |
 
 **Target Types:**
-- `SIGNAL_ONLY` - Just emits signals (legacy, use for custom scripts)
-- `WATER_LEVEL` - Directly controls water height
-- `GATE` - Directly controls gate open/close
+- `SIGNAL_ONLY` - Just emits signals (for custom scripts)
+- `WATER_LEVEL` - Controls water height
+- `GATE` - Controls gate open/close
+- `LAVA_LEVEL` - Controls lava drain/fill
+- `FLAME` - Controls flame ignite/extinguish
 
 **Signals:**
 - `lever_activated` - Player turned lever ON
 - `lever_deactivated` - Player turned lever OFF
 
-**Water Control Example (in editor):**
-1. Add Lever node
-2. Set `target_type` = WATER_LEVEL
-3. Set `water_node` = path to your Water node
-4. Set `water_on_level` = -100 (raise water)
-5. Set `water_off_level` = 50 (lower water)
-
-**Legacy Signal Usage:**
-```gdscript
-var lever = get_node_or_null("Puzzle/MyLever")
-var gate = get_node_or_null("Puzzle/MyGate")
-if lever and gate:
-    lever.lever_activated.connect(gate.open_gate)
-    lever.lever_deactivated.connect(gate.close_gate)
-```
+**See also:** `docs/PUZZLE_MECHANICS.md` for comprehensive puzzle design guide.
 
 ---
 
@@ -109,6 +101,29 @@ Timed toggle - stays ON for duration then auto-deactivates.
 | `duration` | float | 3.0 | Seconds before auto-deactivate |
 
 **Signals:** Same as Lever
+
+---
+
+### Pressure Plate (`objects/pressure_plate/pressure_plate.tscn`)
+**UID:** `uid://pressure_plate_001`
+
+Activates while player/object stands on it.
+
+| Export | Type | Default | Description |
+|--------|------|---------|-------------|
+| `target_type` | enum | SIGNAL_ONLY | GATE, LAVA_LEVEL, FLAME, WATER_LEVEL |
+| `stay_activated` | bool | false | If true, stays ON after first press |
+| `require_weight` | bool | false | Only heavy/pushable objects trigger |
+| `pressed_offset` | Vector2 | (0, 2) | Visual sink when pressed |
+
+**Signals:**
+- `plate_pressed` - When activated
+- `plate_released` - When cleared (if not stay_activated)
+
+**Design Patterns:**
+- Hold-to-open: Player must stay on plate
+- Weight puzzle: Push crate onto plate for permanent activation
+- See `docs/PUZZLE_MECHANICS.md` for more patterns
 
 ---
 
@@ -218,34 +233,25 @@ Wall spike pointing RIGHT.
 
 ---
 
-### FlameHazard (`objects/flame/flame_hazard.gd`) ⭐ RECOMMENDED
-**Use with:** `objects/flame/flame.tscn`
+### FlameHazard (`objects/flame/flame_hazard.tscn`)
+**UID:** `uid://d3h5flame_hazard`
 
-Cycling fire hazard with **light emission**. Preferred for dark levels.
+Cycling flame jet hazard with **light emission**. The "flamethrower" style spray.
 
 | Export | Type | Default | Description |
 |--------|------|---------|-------------|
 | `cycle_enabled` | bool | true | If false, stays ON permanently |
 | `on_duration` | float | 2.0 | Active time |
 | `off_duration` | float | 1.5 | Off time |
-| `emit_light` | bool | true | Creates PointLight2D |
-| `light_radius` | float | 150.0 | Light reach |
-| `light_color` | Color | warm orange | Glow color |
-| `light_energy` | float | 0.8 | Brightness |
+| `emit_sparks` | bool | true | Spawn spark particles |
+| `spark_count` | int | 8 | Max sparks |
 | `damage` | int | 1 | Damage per hit |
+
+**Scene Setup:** Includes `FlameLight` (PointLight2D) - configure color, energy, texture_scale in editor.
 
 **Methods:**
 - `ignite()` - Force flame ON (puzzles)
 - `extinguish()` - Force flame OFF
-
-**Note:** Legacy `flame.gd` exists but doesn't emit light. Use FlameHazard for Level 3.
-
----
-
-### Flame (`objects/flame/flame.tscn`) - LEGACY
-**UID:** `uid://b01cdevi245kn`
-
-Cyclic fire without light. **Use FlameHazard instead for dark levels.**
 
 ---
 

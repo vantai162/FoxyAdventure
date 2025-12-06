@@ -24,6 +24,8 @@ class_name FloatingBoatPlatform
 @export var buoyancy_strength: float = 50.0  ## Spring force to water surface
 @export var float_damping: float = 5.0  ## Prevents endless bouncing
 @export var float_height_offset: float = -8.0  ## Target height above water surface
+@export var rider_weight_sink: float = 3.0  ## Extra sink depth when player is on boat (pixels)
+@export var rider_landing_impulse: float = 2.5  ## Downward push when player lands on boat
 
 ## === GENERAL ===
 @export_group("General")
@@ -37,6 +39,11 @@ var is_floating: bool = false
 var current_water: water = null
 var velocity_x: float = 0.0
 var velocity_y: float = 0.0
+
+## Rider detection
+var _rider_on_boat: bool = false
+var _rider_just_landed: bool = false
+var _rider_check_area: Area2D = null
 
 ## Randomized motion state
 var _bob_phase: float = 0.0
@@ -54,6 +61,9 @@ func _ready() -> void:
 	_drift_direction = 1 if randf() > 0.5 else -1
 	_drift_timer = randf() * drift_change_interval
 	_drift_speed_actual = drift_speed * randf_range(0.5, 1.0)
+	
+	# Create rider detection area
+	_setup_rider_detection()
 
 func _physics_process(delta: float) -> void:
 	_detect_water()
@@ -116,7 +126,13 @@ func _update_buoyancy(delta: float) -> void:
 		return
 	
 	var surface_y = current_water.get_water_surface_global_y()
-	var target_y = surface_y + float_height_offset
+	
+	# Calculate target depth - sink deeper when carrying a rider
+	var effective_offset = float_height_offset
+	if _rider_on_boat:
+		effective_offset += rider_weight_sink  # Sink deeper with rider
+	
+	var target_y = surface_y + effective_offset
 	var displacement = global_position.y - target_y
 	
 	# Spring force
@@ -124,6 +140,11 @@ func _update_buoyancy(delta: float) -> void:
 	
 	# Damping
 	var damping = -velocity_y * float_damping
+	
+	# Landing impulse - push boat down when player first lands
+	if _rider_just_landed:
+		velocity_y += rider_landing_impulse * 50.0  # Immediate downward push
+		_rider_just_landed = false
 	
 	velocity_y += (spring_force + damping) * delta
 	velocity_y = clamp(velocity_y, -max_fall_speed, max_fall_speed)
@@ -155,3 +176,51 @@ func _update_drift(delta: float) -> void:
 		_drift_speed_actual = drift_speed * randf_range(0.3, 1.0)
 	
 	velocity_x = move_toward(velocity_x, _drift_speed_actual * _drift_direction, drift_speed * delta * 2.0)
+
+## ============================================================================
+## RIDER DETECTION
+## Detects when player lands on boat for weight-based buoyancy
+## ============================================================================
+
+func _setup_rider_detection() -> void:
+	## Create an Area2D above the boat to detect when player lands
+	_rider_check_area = Area2D.new()
+	_rider_check_area.name = "RiderDetector"
+	_rider_check_area.collision_layer = 0
+	_rider_check_area.collision_mask = 2  # Player layer
+	_rider_check_area.monitoring = true
+	_rider_check_area.monitorable = false
+	
+	var shape = CollisionShape2D.new()
+	var rect = RectangleShape2D.new()
+	rect.size = Vector2(56, 20)  # Slightly wider than boat, thin height
+	shape.shape = rect
+	shape.position = Vector2(0, -12)  # Above boat surface
+	
+	_rider_check_area.add_child(shape)
+	add_child(_rider_check_area)
+	
+	_rider_check_area.body_entered.connect(_on_rider_entered)
+	_rider_check_area.body_exited.connect(_on_rider_exited)
+
+func _on_rider_entered(body: Node2D) -> void:
+	if body.is_in_group("player"):
+		var was_on_boat = _rider_on_boat
+		_rider_on_boat = true
+		
+		# Check if player just landed (falling onto boat)
+		if not was_on_boat and body.velocity.y > 50.0:
+			_rider_just_landed = true
+			
+			# Also create a splash in water when player lands on boat
+			if current_water:
+				var landing_splash = body.velocity.y * 0.15
+				current_water.splash(global_position, landing_splash)
+
+func _on_rider_exited(body: Node2D) -> void:
+	if body.is_in_group("player"):
+		_rider_on_boat = false
+		
+		# Create small splash when player jumps off
+		if current_water and is_floating:
+			current_water.splash(global_position, -1.5)

@@ -294,7 +294,34 @@ animations = [{
 [node name="CampFire" type="Node2D"]
 position = Vector2(0, 8)
 script = ExtResource("1_f54s0")
+emit_light = null
+light_color = null
+light_energy = null
+light_radius = null
+flicker_enabled = null
+flicker_speed = null
+flicker_intensity = null
+emit_sparks = null
+spark_count = null
+spark_rise_speed = null
+spark_lifetime = null
+spark_spread = null
+emit_smoke = null
+smoke_count = null
+smoke_rise_speed = null
+smoke_lifetime = null
+emit_embers = null
+ember_count = null
+ember_float_speed = null
+warmth_zone_enabled = null
+warmth_radius = null
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
 sprite_frames = SubResource("SpriteFrames_ft1f5")
 frame_progress = 0.257231
+
+[node name="FireLight" type="PointLight2D" parent="."]
+position = Vector2(0, -12)
+color = Color(1, 0.6, 0.2, 1)
+shadow_enabled = true
+texture_scale = 1.4

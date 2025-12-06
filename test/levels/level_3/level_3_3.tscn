@@ -69,6 +69,20 @@ position = Vector2(700, 250)
 [node name="LeftPool" parent="WaterZones" instance=ExtResource("10_water")]
 position = Vector2(100, 1040)
 water_size = Vector2(350, 60)
+surface_line_thickness = 1.0
+ambient_wave_amplitude = 1.5
+ambient_wave_speed = 1.2
+ambient_wave_length = 0.3
+player_splash_mutiplier = 0.12
+swim_disturbance_interval = 0.15
+swim_disturbance_strength = 0.3
+boat_depression_depth = 3.0
+emit_splash_particles = null
+splash_droplet_count = null
+splash_droplet_speed = null
+splash_droplet_lifetime = null
+splash_droplet_gravity = null
+splash_color = null
 
 [node name="Hazards" type="Node2D" parent="."]
 

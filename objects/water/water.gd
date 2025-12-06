@@ -7,9 +7,16 @@ class_name water
 @export_range(2,512) var segment_count: int = 64
 
 @export_group("Visuals")
-@export var surface_line_thickness: float = 1.0
+@export var surface_line_thickness: float = 2.0  ## Thicker for visibility
 @export var surface_color: Color = Color("3ce1da")
 @export var water_fill_color: Color = Color(0.216, 0.690, 0.773, 0.6)  ## Semi-transparent blue (adjust alpha in editor)
+@export var enable_antialiasing: bool = true  ## Smooth surface line
+
+@export_group("Ambient Waves")
+@export var ambient_wave_enabled: bool = true  ## Gentle constant wave motion
+@export var ambient_wave_amplitude: float = 2.0  ## How high/low waves go (pixels) - more visible
+@export var ambient_wave_speed: float = 1.5  ## Wave frequency - slightly faster
+@export var ambient_wave_length: float = 0.25  ## Wavelength (0.1-1.0, lower = more waves)
 
 @export_group("Physics Simulation")
 @export_range(0.0,1000.0) var water_physics_speed: float = 80.0
@@ -25,7 +32,21 @@ class_name water
 @export var gradient_damping_factor: float = 0.5      ## Reduce wave propagation on steep gradients
 
 @export_group("Interaction")
-@export var player_splash_mutiplier: float = 0.12
+@export var player_splash_mutiplier: float = 0.35  ## Stronger splashes for visible impact
+@export var swim_disturbance_enabled: bool = true  ## Create ripples while swimming
+@export var swim_disturbance_interval: float = 0.12  ## Time between swim ripples (seconds)
+@export var swim_disturbance_strength: float = 0.8  ## Ripple intensity (stronger for visibility)
+@export var boat_depression_enabled: bool = true  ## Boats push water surface down
+@export var boat_depression_depth: float = 4.0  ## How deep boats push water (pixels)
+@export var boat_depression_width: float = 48.0  ## Width of depression zone (pixels)
+
+@export_group("Splash Particles")
+@export var emit_splash_particles: bool = true  ## Visual splash droplets on entry/exit
+@export var splash_droplet_count: int = 8  ## Droplets per splash
+@export var splash_droplet_speed: float = 150.0  ## Launch speed
+@export var splash_droplet_lifetime: float = 0.8
+@export var splash_droplet_gravity: float = 400.0
+@export var splash_color: Color = Color(0.8, 0.95, 1.0, 0.9)  ## Light blue-white
 
 @export_group("Debug")
 @export var enable_debug_diagnostics: bool = false  ## Enable water stability monitoring (prints every second)
@@ -40,6 +61,20 @@ var _water_raise_start_heights: Array = []
 var _water_raise_target: float = 0.0
 var _water_raise_duration: float = 0.0
 var _water_raise_elapsed: float = 0.0
+
+## Swim disturbance tracking
+var _bodies_in_water: Array = []  ## Track all bodies currently in water
+var _swim_disturbance_timers: Dictionary = {}  ## Per-body timers for swim ripples
+
+## Boat depression tracking
+var _boats_in_water: Array = []  ## Track boats for weight depression
+var _boat_depression_offsets: Array = []  ## Per-segment depression from boats (additive to rest_height)
+
+## Ambient wave phase
+var _ambient_wave_time: float = 0.0
+
+## Splash particles
+var _splash_droplets: Array[Node2D] = []
 
 var surface_line: Line2D
 var fill_polygon: Polygon2D
@@ -62,6 +97,10 @@ func _ready() -> void:
 		i.queue_free()
 	segment_data.clear()
 	segment_rest_height.clear()
+	_boat_depression_offsets.clear()
+	_bodies_in_water.clear()
+	_swim_disturbance_timers.clear()
+	_boats_in_water.clear()
 	_initiate_water()
 	if not Engine.is_editor_hint():
 		set_process(true)
@@ -78,6 +117,22 @@ func _process(delta:float)->void:
 	if _water_raise_active:
 		_update_water_raise(delta)
 	
+	# Ambient wave animation (always runs for visual life)
+	if ambient_wave_enabled:
+		_ambient_wave_time += delta
+	
+	# Swim disturbance: create periodic ripples for bodies in water
+	if swim_disturbance_enabled:
+		_update_swim_disturbances(delta)
+	
+	# Boat depression: update segment rest heights based on boat positions
+	if boat_depression_enabled:
+		_update_boat_depressions()
+	
+	# Update splash particles
+	if emit_splash_particles:
+		_update_splash_droplets(delta)
+	
 	update_physics(delta)
 	update_visuals()
 	_update_collision_shape()  # Update collision shape to match water level
@@ -85,6 +140,7 @@ func _process(delta:float)->void:
 func _initiate_water() -> void:
 	segment_data.clear()
 	segment_rest_height.clear()
+	_boat_depression_offsets.clear()
 	for i in range(segment_count):
 		segment_data.append({
 			"height": surface_pos_y,
@@ -93,9 +149,14 @@ func _initiate_water() -> void:
 			"wave_to_right": 0.0
 		})
 		segment_rest_height.append(surface_pos_y)  # Default: all segments rest at surface
+		_boat_depression_offsets.append(0.0)  # No boat depression initially
 	var new_line: Line2D = Line2D.new()
 	new_line.width = surface_line_thickness
 	new_line.default_color = surface_color
+	new_line.antialiased = enable_antialiasing  # Smooth edges
+	new_line.begin_cap_mode = Line2D.LINE_CAP_ROUND
+	new_line.end_cap_mode = Line2D.LINE_CAP_ROUND
+	new_line.joint_mode = Line2D.LINE_JOINT_ROUND
 	add_child(new_line)
 	surface_line = new_line
 	
@@ -216,7 +277,10 @@ func update_physics(delta: float) -> void:
 			if abs(segment_data[i]["height"] - segment_rest_height[i]) > 0.01:
 				is_still = false
 				break
-		set_process(!is_still)
+		# Keep processing if ambient waves are enabled (for visual animation)
+		# Also keep processing if there are bodies in water (for swim disturbance)
+		var should_stop = is_still and not ambient_wave_enabled and _bodies_in_water.is_empty()
+		set_process(!should_stop)
 	else:
 		recently_splashed = false
 	
@@ -225,7 +289,15 @@ func update_visuals() -> void:
 	var points: Array[Vector2] = []
 	var segment_width: float = water_size.x / (segment_count - 1)
 	for i in range(segment_count):
-		points.append(Vector2(i * segment_width, segment_data[i]["height"]))
+		var base_height = segment_data[i]["height"]
+		
+		# Add ambient wave offset (purely visual, doesn't affect physics)
+		var ambient_offset = 0.0
+		if ambient_wave_enabled:
+			var wave_phase = _ambient_wave_time * ambient_wave_speed + (float(i) / segment_count) * TAU / ambient_wave_length
+			ambient_offset = sin(wave_phase) * ambient_wave_amplitude
+		
+		points.append(Vector2(i * segment_width, base_height + ambient_offset))
 		
 	#var left_static_point: Vector2 = Vector2(points[0].x,surface_pos_y)
 	#var right_static_point: Vector2 = Vector2(points[points.size()-1].x,surface_pos_y)
@@ -254,9 +326,25 @@ func splash(splash_pos:Vector2, splash_velocity:float) -> void:
 	recently_splashed = true
 	set_process(true)
 	
+	# Spawn visual splash particles
+	if emit_splash_particles and not Engine.is_editor_hint():
+		var impact_strength = abs(splash_velocity)
+		if impact_strength > 0.5:  # Only splash for meaningful impacts
+			_spawn_splash_particles(splash_pos, impact_strength)
+	
 func _on_body_entered(body: Node2D) -> void:
 	if body.is_in_group("can_interact_with_water"):
 		splash(body.global_position, -body.velocity.y * player_splash_mutiplier)
+		
+		# Track body for swim disturbance
+		if not _bodies_in_water.has(body):
+			_bodies_in_water.append(body)
+			_swim_disturbance_timers[body] = 0.0
+		
+		# Track boats separately for weight depression
+		if body.is_in_group("platform") and not _boats_in_water.has(body):
+			_boats_in_water.append(body)
+		
 		if body.is_in_group("player"):
 			body.current_water = self
 			emit_signal("player_entered_water", body)
@@ -264,6 +352,12 @@ func _on_body_entered(body: Node2D) -> void:
 func _on_body_exited(body: Node2D) -> void:
 	if body.is_in_group("can_interact_with_water"):
 		splash(body.global_position, body.velocity.y * player_splash_mutiplier)
+		
+		# Remove from tracking
+		_bodies_in_water.erase(body)
+		_swim_disturbance_timers.erase(body)
+		_boats_in_water.erase(body)
+		
 		if body.is_in_group("player"):
 			body.current_water = null
 			emit_signal("player_exited_water", body)
@@ -398,3 +492,212 @@ func _print_water_diagnostics() -> void:
 		print("  ⚠️ WARNING: %d segments exhibiting runaway behavior!" % runaway_count)
 	if max_displacement > 300.0:
 		print("  🔥 CRITICAL: Water displacement exceeding 300px threshold!")
+
+## ============================================================================
+## SWIM DISTURBANCE SYSTEM
+## Creates periodic ripples when bodies are swimming in water
+## ============================================================================
+
+func _update_swim_disturbances(delta: float) -> void:
+	## Create periodic small splashes for bodies actively in water
+	var bodies_to_remove: Array = []
+	
+	for body in _bodies_in_water:
+		if not is_instance_valid(body):
+			bodies_to_remove.append(body)
+			continue
+		
+		# Update timer for this body
+		if not _swim_disturbance_timers.has(body):
+			_swim_disturbance_timers[body] = 0.0
+		
+		_swim_disturbance_timers[body] += delta
+		
+		# Check if it's time for a ripple
+		if _swim_disturbance_timers[body] >= swim_disturbance_interval:
+			_swim_disturbance_timers[body] = 0.0
+			
+			# Only create ripples if body is moving (swimming, not floating still)
+			var vel = Vector2.ZERO
+			if "velocity" in body:
+				vel = body.velocity
+			
+			var speed = vel.length()
+			if speed > 10.0:  # Moving threshold
+				# Scale ripple by movement speed (more movement = bigger ripple)
+				var ripple_strength = clamp(speed / 200.0, 0.3, 1.0) * swim_disturbance_strength
+				
+				# Alternate up/down for natural wave pattern
+				var direction = 1.0 if randf() > 0.5 else -1.0
+				splash(body.global_position, direction * ripple_strength)
+	
+	# Clean up invalid bodies
+	for body in bodies_to_remove:
+		_bodies_in_water.erase(body)
+		_swim_disturbance_timers.erase(body)
+
+## ============================================================================
+## BOAT WEIGHT DEPRESSION SYSTEM
+## Boats push the water surface down where they float
+## Uses temporary offsets, doesn't interfere with whirlpool's rest_height system
+## ============================================================================
+
+func _update_boat_depressions() -> void:
+	## Calculate and apply boat weight depressions to water surface
+	## This modifies segment heights temporarily (per-frame) without changing rest_height
+	
+	# First, reset all boat depression offsets
+	for i in range(_boat_depression_offsets.size()):
+		_boat_depression_offsets[i] = 0.0
+	
+	# Ensure array size matches segment count
+	while _boat_depression_offsets.size() < segment_count:
+		_boat_depression_offsets.append(0.0)
+	
+	var segment_width: float = water_size.x / (segment_count - 1)
+	var boats_to_remove: Array = []
+	
+	for boat in _boats_in_water:
+		if not is_instance_valid(boat):
+			boats_to_remove.append(boat)
+			continue
+		
+		# Get boat position in local water coordinates
+		var local_x = to_local(boat.global_position).x
+		
+		# Skip if boat is outside water bounds
+		if local_x < 0 or local_x > water_size.x:
+			continue
+		
+		# Find center segment under boat
+		var center_index = int(clamp(local_x / segment_width, 0, segment_count - 1))
+		
+		# Calculate affected segment range based on boat depression width
+		var half_width_segments = int((boat_depression_width / 2.0) / segment_width) + 1
+		
+		# Apply V-shaped depression under boat
+		for offset in range(-half_width_segments, half_width_segments + 1):
+			var seg_idx = center_index + offset
+			if seg_idx < 2 or seg_idx >= segment_count - 2:  # Avoid edge segments
+				continue
+			
+			# Distance from center (0 to 1)
+			var distance_ratio = abs(float(offset)) / float(half_width_segments)
+			
+			# Smooth falloff (inverse parabolic)
+			var falloff = 1.0 - (distance_ratio * distance_ratio)
+			falloff = max(0.0, falloff)
+			
+			# Add depression offset (positive = push down in Godot's Y-down coordinate)
+			_boat_depression_offsets[seg_idx] += boat_depression_depth * falloff
+	
+	# Clean up invalid boats
+	for boat in boats_to_remove:
+		_boats_in_water.erase(boat)
+	
+	# Apply boat depressions to segment heights (temporary, each frame)
+	# This adds to the physics height, so waves still propagate naturally
+	for i in range(segment_count):
+		if _boat_depression_offsets[i] > 0.0:
+			# Push segment down by depression amount
+			# Use velocity injection instead of direct height change for smoother physics
+			var current_depression = segment_data[i]["height"] - segment_rest_height[i]
+			var target_depression = _boat_depression_offsets[i]
+			
+			# Gentle push toward target depression
+			if current_depression < target_depression:
+				segment_data[i]["velocity"] += (target_depression - current_depression) * 0.5
+
+## ============================================================================
+## SPLASH PARTICLE SYSTEM
+## Visual water droplets that fly up when something enters/exits water
+## ============================================================================
+
+func _spawn_splash_particles(splash_global_pos: Vector2, impact_strength: float) -> void:
+	## Create splash droplets at the splash position
+	var local_pos = to_local(splash_global_pos)
+	
+	# Scale droplet count by impact strength
+	var droplet_count = int(splash_droplet_count * clamp(impact_strength / 3.0, 0.5, 1.5))
+	
+	for i in range(droplet_count):
+		var droplet = Node2D.new()
+		droplet.name = "Droplet"
+		
+		# Start at surface
+		droplet.position = Vector2(local_pos.x + randf_range(-8, 8), surface_pos_y)
+		
+		# Random upward velocity with spread
+		var angle = randf_range(-PI * 0.7, -PI * 0.3)  # Upward arc (between -126 and -54 degrees)
+		var speed = splash_droplet_speed * randf_range(0.6, 1.2) * clamp(impact_strength / 2.0, 0.5, 1.5)
+		var velocity = Vector2(cos(angle), sin(angle)) * speed
+		
+		droplet.set_meta("velocity", velocity)
+		droplet.set_meta("age", 0.0)
+		
+		# Create droplet visual - small elongated shape
+		var visual = Polygon2D.new()
+		visual.name = "Visual"
+		var size = randf_range(1.5, 3.0)
+		visual.polygon = PackedVector2Array([
+			Vector2(0, -size * 1.5),
+			Vector2(size * 0.5, 0),
+			Vector2(0, size * 0.5),
+			Vector2(-size * 0.5, 0)
+		])
+		
+		# Water color with slight variation
+		var color_var = randf_range(-0.05, 0.05)
+		visual.color = Color(
+			splash_color.r + color_var,
+			splash_color.g + color_var,
+			splash_color.b,
+			splash_color.a
+		)
+		
+		droplet.add_child(visual)
+		add_child(droplet)
+		_splash_droplets.append(droplet)
+
+func _update_splash_droplets(delta: float) -> void:
+	## Update all splash droplets - physics and cleanup
+	var to_remove: Array[Node2D] = []
+	
+	for droplet in _splash_droplets:
+		if not is_instance_valid(droplet):
+			to_remove.append(droplet)
+			continue
+		
+		var age = droplet.get_meta("age", 0.0) + delta
+		droplet.set_meta("age", age)
+		
+		if age >= splash_droplet_lifetime:
+			to_remove.append(droplet)
+			continue
+		
+		# Apply physics
+		var velocity = droplet.get_meta("velocity", Vector2.ZERO) as Vector2
+		velocity.y += splash_droplet_gravity * delta  # Gravity
+		droplet.set_meta("velocity", velocity)
+		
+		droplet.position += velocity * delta
+		
+		# Rotate to face movement direction
+		if velocity.length() > 10.0:
+			droplet.rotation = velocity.angle() + PI / 2.0
+		
+		# Fade out
+		var life_ratio = age / splash_droplet_lifetime
+		var visual = droplet.get_node_or_null("Visual") as Polygon2D
+		if visual:
+			visual.modulate.a = 1.0 - life_ratio
+		
+		# Remove if fallen back into water
+		if droplet.position.y > surface_pos_y + 10.0:
+			to_remove.append(droplet)
+	
+	# Cleanup
+	for droplet in to_remove:
+		_splash_droplets.erase(droplet)
+		if is_instance_valid(droplet):
+			droplet.queue_free()

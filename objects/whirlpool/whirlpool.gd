@@ -14,6 +14,12 @@ class_name Whirlpool
 @export_group("Advanced Tuning")
 @export var boat_influence: float = 1.2   ## Boat pull multiplier
 
+@export_group("Visuals")
+@export var enable_visuals: bool = true  ## Show foam and spiral effect
+@export var foam_particle_count: int = 12  ## Number of foam particles
+@export var foam_color: Color = Color(0.9, 0.95, 1.0, 0.7)  ## White foam
+@export var spiral_rotation_speed: float = 2.0  ## Revolutions per second
+
 const OSCILLATION_STRENGTH: float = 1500.0        ## Horizontal bobbing force
 const OSCILLATION_FREQUENCY: float = 3.0           ## Oscillation speed (Hz)
 const DOWNWARD_SUCTION: float = 2500.0             ## Vertical pull into V
@@ -42,6 +48,10 @@ var boats_in_range: Array = []
 var player_in_range: Node2D = null
 var water_node: water = null
 var depression_applied: bool = false
+
+## Visual elements
+var foam_particles: Array[Node2D] = []
+var spiral_rotation: float = 0.0
 
 func _ready() -> void:
 	center_x = global_position.x
@@ -92,6 +102,10 @@ func _physics_process(delta: float) -> void:
 	
 	_update_boat_pulls(delta)
 	_update_player_interaction(delta)
+	
+	# Update visuals
+	if enable_visuals:
+		_update_visuals(delta)
 
 func _on_body_entered(body: Node2D) -> void:
 	if body.is_in_group("platform"):
@@ -249,10 +263,82 @@ func _restore_water_rest_heights() -> void:
 		water_node.segment_rest_height[segment_idx] = water_node.surface_pos_y
 
 func _setup_visuals() -> void:
-	pass
+	if not enable_visuals:
+		return
+	
+	# Create foam particles in a spiral pattern
+	for i in range(foam_particle_count):
+		var foam = Node2D.new()
+		foam.name = "Foam_%d" % i
+		
+		# Distribute around the whirlpool
+		var angle = (float(i) / foam_particle_count) * TAU
+		var radius = randf_range(whirlpool_width * 0.2, whirlpool_width * 0.45)
+		
+		foam.set_meta("base_angle", angle)
+		foam.set_meta("radius", radius)
+		foam.set_meta("radius_offset", randf_range(-10, 10))
+		foam.set_meta("y_offset", randf_range(-5, 5))
+		
+		# Create foam visual - small irregular blob
+		var visual = Polygon2D.new()
+		visual.name = "Visual"
+		var size = randf_range(3.0, 6.0)
+		
+		# Irregular foam shape
+		var points: PackedVector2Array = []
+		for j in range(6):
+			var pt_angle = (float(j) / 6.0) * TAU
+			var r = size * randf_range(0.7, 1.0)
+			points.append(Vector2(cos(pt_angle) * r, sin(pt_angle) * r))
+		visual.polygon = points
+		visual.color = foam_color
+		
+		foam.add_child(visual)
+		add_child(foam)
+		foam_particles.append(foam)
+
+func _update_visuals(delta: float) -> void:
+	# Rotate the spiral
+	spiral_rotation += delta * spiral_rotation_speed * TAU
+	
+	# Update foam particle positions - they spiral inward
+	for foam in foam_particles:
+		if not is_instance_valid(foam):
+			continue
+		
+		var base_angle = foam.get_meta("base_angle", 0.0)
+		var base_radius = foam.get_meta("radius", 50.0)
+		var radius_offset = foam.get_meta("radius_offset", 0.0)
+		var y_offset = foam.get_meta("y_offset", 0.0)
+		
+		# Current angle (rotating around center)
+		var current_angle = base_angle + spiral_rotation
+		
+		# Radius pulses in and out
+		var radius_pulse = sin(spiral_rotation * 2.0 + base_angle) * 8.0
+		var current_radius = base_radius + radius_offset + radius_pulse
+		
+		# Calculate position relative to whirlpool center (which is at 0,0 local)
+		foam.position.x = cos(current_angle) * current_radius
+		foam.position.y = y_offset + sin(current_angle * 0.5) * 3.0  # Slight bobbing
+		
+		# Fade based on distance from center (more visible at edges)
+		var visual = foam.get_node_or_null("Visual") as Polygon2D
+		if visual:
+			var fade = clamp(current_radius / (whirlpool_width * 0.4), 0.3, 1.0)
+			visual.modulate.a = fade * foam_color.a
+			
+			# Scale down near center
+			var s = clamp(current_radius / 40.0, 0.5, 1.2)
+			visual.scale = Vector2(s, s)
 
 func _play_despawn_effect() -> void:
-	pass
+	# Clear foam particles
+	for foam in foam_particles:
+		if is_instance_valid(foam):
+			foam.queue_free()
+	foam_particles.clear()
 
 func _get_affected_segment_range() -> Dictionary:
 	if not water_node:
