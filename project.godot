@@ -21,6 +21,7 @@ GameManager="*res://scripts/autoload/game_manager.tscn"
 SaveSystem="*res://scripts/autoload/save_system.gd"
 Dialogic="*res://addons/dialogic/Core/DialogicGameHandler.gd"
 AudioManager="*res://scripts/audio/audio_manager.gd"
+ShopSystem="*res://objects/npc/shop/shop_system.gd"
 
 [dialogic]
 

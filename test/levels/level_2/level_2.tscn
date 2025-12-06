@@ -1,4 +1,4 @@
-[gd_scene load_steps=37 format=4 uid="uid://bxknbajfocd87"]
+[gd_scene load_steps=39 format=4 uid="uid://bxknbajfocd87"]
 
 [ext_resource type="Script" uid="uid://b6xvcjrh55sd6" path="res://test/levels/level_2/level_2.gd" id="1_5l4f7"]
 [ext_resource type="PackedScene" uid="uid://dm741hii7d5nv" path="res://scenes/game_screen/health_bar.tscn" id="1_x7kuf"]
@@ -32,8 +32,10 @@
 [ext_resource type="PackedScene" uid="uid://ca1f6r665b1nr" path="res://objects/lever/lever.tscn" id="31_chxal"]
 [ext_resource type="PackedScene" uid="uid://cc07u3qfgccmq" path="res://objects/spring/spring.tscn" id="32_chxal"]
 [ext_resource type="PackedScene" uid="uid://duryp3ufmd0be" path="res://enemy/tribe/friendly_tribe.tscn" id="33_40lrn"]
-[ext_resource type="PackedScene" uid="uid://bs816w0pr8all" path="res://player/foxy.tscn" id="33_ajdfl"]
+[ext_resource type="PackedScene" uid="uid://fwuimc71t468" path="res://objects/npc/shop/shop_item/shop_vendor.tscn" id="34_5l4f7"]
 [ext_resource type="Script" uid="uid://d33ee5tueerss" path="res://test/levels/level_2/meet_boss_area_2d.gd" id="34_ajdfl"]
+[ext_resource type="PackedScene" uid="uid://bs816w0pr8all" path="res://player/foxy.tscn" id="35_5l4f7"]
+[ext_resource type="PackedScene" uid="uid://lrdkn2gv1v1m" path="res://effect_Item/coin/coin.tscn" id="36_6st13"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_c7bg8"]
 size = Vector2(29.5, 32)
@@ -257,14 +259,21 @@ script = ExtResource("34_ajdfl")
 position = Vector2(121, -186)
 shape = SubResource("RectangleShape2D_40lrn")
 
-[node name="Foxy" parent="." instance=ExtResource("33_ajdfl")]
-position = Vector2(1644, 220)
-
 [node name="Blade2" parent="." instance=ExtResource("15_7ulr3")]
 position = Vector2(1614, 243)
 
 [node name="Spawner" type="Node2D" parent="."]
 
+[node name="ShopVendor" parent="." instance=ExtResource("34_5l4f7")]
+position = Vector2(1715, 212)
+
+[node name="Foxy" parent="." instance=ExtResource("35_5l4f7")]
+position = Vector2(1637, 223)
+
+[node name="Coin" parent="." instance=ExtResource("36_6st13")]
+position = Vector2(1708, 150)
+
+[connection signal="area_entered" from="DirtLayer/HealthPotion" to="DirtLayer/HealthPotion" method="_on_area_entered"]
 [connection signal="lever_activated" from="Lever" to="Gate" method="open_gate"]
 [connection signal="lever_deactivated" from="Lever" to="Gate" method="close_gate"]
 [connection signal="body_entered" from="MeetBossArea2D" to="." method="_on_meet_boss_area_2d_body_entered"]

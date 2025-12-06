@@ -1,0 +1,22 @@
+[gd_scene load_steps=4 format=3 uid="uid://fwuimc71t468"]
+
+[ext_resource type="Script" uid="uid://dilc6ns6vi7db" path="res://objects/npc/shop/shop_item/shop_vendor.gd" id="1_hdfdq"]
+[ext_resource type="Texture2D" uid="uid://jxppmk7s0j7j" path="res://assets/objects/SeasonalandHolidayFurniture1.png" id="2_jd1oc"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_hdfdq"]
+size = Vector2(87, 88)
+
+[node name="ShopVendor" type="Area2D"]
+collision_layer = 0
+collision_mask = 2
+script = ExtResource("1_hdfdq")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = ExtResource("2_jd1oc")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(-0.5, 1)
+shape = SubResource("RectangleShape2D_hdfdq")
+
+[connection signal="body_entered" from="." to="." method="_on_body_entered"]
+[connection signal="body_exited" from="." to="." method="_on_body_exited"]

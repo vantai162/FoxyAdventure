@@ -47,3 +47,16 @@ func use_key(amount:int):
 			print("Not enough keys to use")
 	else:
 		print("Key item not found")
+		
+func use_coin(amount:int):
+	if AmountItem.has("Coin"):
+		if AmountItem["Coin"] >= amount:
+			AmountItem["Coin"] -= amount
+			item_amount_changed.emit("Coin", AmountItem["Coin"])
+		else:
+			print("Not enough coins to use")
+	else:
+		print("Coin item not found")
+
+func get_coin():
+	return AmountItem["Coin"]

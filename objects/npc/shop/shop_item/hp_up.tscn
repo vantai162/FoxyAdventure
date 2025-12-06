@@ -1,0 +1,9 @@
+[gd_scene load_steps=3 format=3 uid="uid://lusi7nof8k6n"]
+
+[ext_resource type="Script" uid="uid://byirkeqg34mvm" path="res://objects/npc/shop/shop_item/hp_up.gd" id="1_eq5yx"]
+[ext_resource type="Texture2D" uid="uid://d3p85f5j5nn8n" path="res://assets/objects/heart.png" id="2_850p8"]
+
+[node name="HpUp" type="Node"]
+script = ExtResource("1_eq5yx")
+icon = ExtResource("2_850p8")
+value = 1
