@@ -55,7 +55,6 @@ tile_set = ExtResource("2_a6ecy")
 z_index = 1
 position = Vector2(176, 2115)
 water_size = Vector2(1113, 220)
-wave_strength = 15.0
 enable_debug_diagnostics = true
 
 [node name="FloatingBoatPlatform" parent="WaterZones" instance=ExtResource("14_dyh06")]

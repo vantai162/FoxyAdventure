@@ -11,14 +11,15 @@ class_name Whirlpool
 @export var lifetime: float = 8.0         ## Duration before despawn (0 = infinite)
 @export var auto_despawn: bool = true     ## Auto-remove when lifetime expires
 
+@export_group("Water Depression")
+@export var depression_depth: float = 67.0  ## Water depression depth in pixels (V-depth at center)
+@export var depression_width: float = 120.0  ## Horizontal radius of depression influence
+
 @export_group("Advanced Tuning")
 @export var boat_influence: float = 1.2   ## Boat pull multiplier
 
 @export_group("Visuals")
 @export var enable_visuals: bool = true  ## Show foam and spiral effect
-@export var foam_particle_count: int = 12  ## Number of foam particles
-@export var foam_color: Color = Color(0.9, 0.95, 1.0, 0.7)  ## White foam
-@export var spiral_rotation_speed: float = 2.0  ## Revolutions per second
 
 const OSCILLATION_STRENGTH: float = 1500.0        ## Horizontal bobbing force
 const OSCILLATION_FREQUENCY: float = 3.0           ## Oscillation speed (Hz)
@@ -31,14 +32,10 @@ const MAX_HORIZONTAL_VELOCITY: float = 400.0       ## Hard cap on horizontal pul
 const MAX_VERTICAL_VELOCITY: float = 500.0         ## Hard cap on downward suction speed
 
 const WATER_CHECK_INTERVAL: float = 0.5            ## How often to verify we're still in water (seconds)
-
-const DEPRESSION_DEPTH: float = 90.0               ## Water depression depth in pixels
 const SEGMENT_BUFFER_MARGIN: int = 2               ## Extra segments to affect beyond calculated radius
 
 var center_x: float
 var center_y: float
-var whirlpool_width: float = 160.0
-var whirlpool_depth: float = 200.0
 var damage_cooldown_timer: float = 0.0
 var lifetime_timer: float = 0.0
 var oscillation_phase: float = 0.0
@@ -49,20 +46,20 @@ var player_in_range: Node2D = null
 var water_node: water = null
 var depression_applied: bool = false
 
-## Visual elements
-var foam_particles: Array[Node2D] = []
-var spiral_rotation: float = 0.0
+## GPU Particle reference
+var water_particles: GPUParticles2D = null
 
 func _ready() -> void:
 	center_x = global_position.x
 	center_y = global_position.y
 	lifetime_timer = lifetime
 	
+	# Get collision shape size from scene
 	var collision_shape = $PullRadius as CollisionShape2D
 	if collision_shape and collision_shape.shape is RectangleShape2D:
 		var rect = collision_shape.shape as RectangleShape2D
-		whirlpool_width = rect.size.x
-		whirlpool_depth = rect.size.y
+		# Use depression_width for horizontal influence, keep vertical from shape
+		rect.size = Vector2(depression_width, rect.size.y)
 	else:
 		push_error("Whirlpool: PullRadius must use RectangleShape2D!")
 	
@@ -74,7 +71,11 @@ func _ready() -> void:
 	body_entered.connect(_on_body_entered)
 	body_exited.connect(_on_body_exited)
 	
-	_setup_visuals()
+	# Setup GPU particles
+	if enable_visuals:
+		water_particles = get_node_or_null("WaterParticles") as GPUParticles2D
+		if water_particles:
+			water_particles.emitting = true
 
 func _physics_process(delta: float) -> void:
 	oscillation_phase += delta * OSCILLATION_FREQUENCY * TAU
@@ -102,10 +103,6 @@ func _physics_process(delta: float) -> void:
 	
 	_update_boat_pulls(delta)
 	_update_player_interaction(delta)
-	
-	# Update visuals
-	if enable_visuals:
-		_update_visuals(delta)
 
 func _on_body_entered(body: Node2D) -> void:
 	if body.is_in_group("platform"):
@@ -133,13 +130,14 @@ func _apply_pull_to_boat(boat, delta: float) -> void:
 	var horizontal_distance = abs(boat.global_position.x - center_x)
 	var vertical_distance = abs(boat.global_position.y - center_y)
 	
-	if horizontal_distance > whirlpool_width / 2.0:
+	if horizontal_distance > depression_width / 2.0:
 		return
-	if vertical_distance > whirlpool_depth / 2.0:
+	# Keep vertical check reasonable (slightly larger than depression width for lenient zone)
+	if vertical_distance > depression_width:
 		return
 	
 	var direction_to_center = sign(center_x - boat.global_position.x)
-	var linear_falloff = clamp(1.0 - (horizontal_distance / (whirlpool_width / 2.0)), 0.0, 1.0)
+	var linear_falloff = clamp(1.0 - (horizontal_distance / (depression_width / 2.0)), 0.0, 1.0)
 	
 	var pull_toward_line = direction_to_center * strength * boat_influence * linear_falloff
 	var oscillation = sin(oscillation_phase) * OSCILLATION_STRENGTH * boat_influence * linear_falloff * 0.5
@@ -172,9 +170,9 @@ func _update_player_interaction(delta: float) -> void:
 	var horizontal_distance = abs(player.global_position.x - center_x)
 	var vertical_distance = abs(player.global_position.y - center_y)
 	
-	if horizontal_distance > whirlpool_width / 2.0:
+	if horizontal_distance > depression_width / 2.0:
 		return
-	if vertical_distance > whirlpool_depth / 2.0:
+	if vertical_distance > depression_width:
 		return
 	
 	var is_underwater = player.is_head_underwater(5.0)
@@ -184,12 +182,12 @@ func _update_player_interaction(delta: float) -> void:
 	else:
 		_apply_underwater_vortex(player, horizontal_distance, delta)
 	
-	if horizontal_distance < whirlpool_width / 4.0:
+	if horizontal_distance < depression_width / 4.0:
 		_apply_damage_to_player(player)
 
 func _apply_surface_current(player, horizontal_distance: float, delta: float) -> void:
 	var direction_to_center = sign(center_x - player.global_position.x)
-	var linear_falloff = clamp(1.0 - (horizontal_distance / (whirlpool_width / 2.0)), 0.0, 1.0)
+	var linear_falloff = clamp(1.0 - (horizontal_distance / (depression_width / 2.0)), 0.0, 1.0)
 	
 	# Apply drag first to prevent accumulation
 	player.velocity.x *= DRAG_COEFFICIENT
@@ -204,7 +202,7 @@ func _apply_surface_current(player, horizontal_distance: float, delta: float) ->
 
 func _apply_underwater_vortex(player, horizontal_distance: float, delta: float) -> void:
 	var direction_to_center = sign(center_x - player.global_position.x)
-	var linear_falloff = clamp(1.0 - (horizontal_distance / (whirlpool_width / 2.0)), 0.0, 1.0)
+	var linear_falloff = clamp(1.0 - (horizontal_distance / (depression_width / 2.0)), 0.0, 1.0)
 	
 	# Apply drag FIRST to prevent exponential growth
 	player.velocity.x *= DRAG_COEFFICIENT
@@ -238,9 +236,9 @@ func _apply_damage_to_player(player) -> void:
 	
 	damage_cooldown_timer = DAMAGE_COOLDOWN
 
+
 func _on_lifetime_expired() -> void:
 	_restore_water_rest_heights()
-	_play_despawn_effect()
 	queue_free()
 
 func _restore_water_rest_heights() -> void:
@@ -261,84 +259,15 @@ func _restore_water_rest_heights() -> void:
 			continue
 		
 		water_node.segment_rest_height[segment_idx] = water_node.surface_pos_y
-
-func _setup_visuals() -> void:
-	if not enable_visuals:
-		return
 	
-	# Create foam particles in a spiral pattern
-	for i in range(foam_particle_count):
-		var foam = Node2D.new()
-		foam.name = "Foam_%d" % i
-		
-		# Distribute around the whirlpool
-		var angle = (float(i) / foam_particle_count) * TAU
-		var radius = randf_range(whirlpool_width * 0.2, whirlpool_width * 0.45)
-		
-		foam.set_meta("base_angle", angle)
-		foam.set_meta("radius", radius)
-		foam.set_meta("radius_offset", randf_range(-10, 10))
-		foam.set_meta("y_offset", randf_range(-5, 5))
-		
-		# Create foam visual - small irregular blob
-		var visual = Polygon2D.new()
-		visual.name = "Visual"
-		var size = randf_range(3.0, 6.0)
-		
-		# Irregular foam shape
-		var points: PackedVector2Array = []
-		for j in range(6):
-			var pt_angle = (float(j) / 6.0) * TAU
-			var r = size * randf_range(0.7, 1.0)
-			points.append(Vector2(cos(pt_angle) * r, sin(pt_angle) * r))
-		visual.polygon = points
-		visual.color = foam_color
-		
-		foam.add_child(visual)
-		add_child(foam)
-		foam_particles.append(foam)
+	# Wake up segments when restoring rest heights (for smooth transition back to flat)
+	if "_settled_segments" in water_node and water_node._settled_segments.size() > 0:
+		for offset in range(-range_segments, range_segments + 1):
+			var segment_idx = center_index + offset
+			if segment_idx < 0 or segment_idx >= segment_count:
+				continue
+			water_node._settled_segments[segment_idx] = 0
 
-func _update_visuals(delta: float) -> void:
-	# Rotate the spiral
-	spiral_rotation += delta * spiral_rotation_speed * TAU
-	
-	# Update foam particle positions - they spiral inward
-	for foam in foam_particles:
-		if not is_instance_valid(foam):
-			continue
-		
-		var base_angle = foam.get_meta("base_angle", 0.0)
-		var base_radius = foam.get_meta("radius", 50.0)
-		var radius_offset = foam.get_meta("radius_offset", 0.0)
-		var y_offset = foam.get_meta("y_offset", 0.0)
-		
-		# Current angle (rotating around center)
-		var current_angle = base_angle + spiral_rotation
-		
-		# Radius pulses in and out
-		var radius_pulse = sin(spiral_rotation * 2.0 + base_angle) * 8.0
-		var current_radius = base_radius + radius_offset + radius_pulse
-		
-		# Calculate position relative to whirlpool center (which is at 0,0 local)
-		foam.position.x = cos(current_angle) * current_radius
-		foam.position.y = y_offset + sin(current_angle * 0.5) * 3.0  # Slight bobbing
-		
-		# Fade based on distance from center (more visible at edges)
-		var visual = foam.get_node_or_null("Visual") as Polygon2D
-		if visual:
-			var fade = clamp(current_radius / (whirlpool_width * 0.4), 0.3, 1.0)
-			visual.modulate.a = fade * foam_color.a
-			
-			# Scale down near center
-			var s = clamp(current_radius / 40.0, 0.5, 1.2)
-			visual.scale = Vector2(s, s)
-
-func _play_despawn_effect() -> void:
-	# Clear foam particles
-	for foam in foam_particles:
-		if is_instance_valid(foam):
-			foam.queue_free()
-	foam_particles.clear()
 
 func _get_affected_segment_range() -> Dictionary:
 	if not water_node:
@@ -348,7 +277,7 @@ func _get_affected_segment_range() -> Dictionary:
 	var segment_width = water_node.water_size.x / (segment_count - 1)
 	var water_local_center_x = water_node.to_local(Vector2(center_x, center_y)).x
 	var center_segment_index = int(clamp(water_local_center_x / segment_width, 0, segment_count - 1))
-	var influence_radius_segments = int((whirlpool_width / 2.0) / segment_width) + SEGMENT_BUFFER_MARGIN
+	var influence_radius_segments = int((depression_width / 2.0) / segment_width) + SEGMENT_BUFFER_MARGIN
 	
 	return {
 		"center_index": center_segment_index,
@@ -372,7 +301,7 @@ func _apply_water_depression() -> void:
 	
 	print("[WHIRLPOOL DEBUG] Applying depression [Instance: %s, WaterInstance: %s]:" % [get_instance_id(), water_node.get_instance_id()])
 	print("  Center segment: %d, Range: %d, Width: %.1f" % [center_index, range_segments, segment_width])
-	print("  Depression depth: %.1f, Whirlpool width: %.1f" % [DEPRESSION_DEPTH, whirlpool_width])
+	print("  Depression depth: %.1f, Depression width: %.1f" % [depression_depth, depression_width])
 	
 	var segments_modified = 0
 	for offset in range(-range_segments, range_segments + 1):
@@ -381,20 +310,35 @@ func _apply_water_depression() -> void:
 			continue
 		
 		var distance_from_center = abs(offset * segment_width)
-		var falloff = 1.0 - clamp(distance_from_center / (whirlpool_width / 2.0), 0.0, 1.0)
+		var falloff = 1.0 - clamp(distance_from_center / (depression_width / 2.0), 0.0, 1.0)
 		falloff = falloff * falloff
 		
 		var old_rest = water_node.segment_rest_height[segment_idx]
-		var target_rest_height = water_node.surface_pos_y + (DEPRESSION_DEPTH * falloff)
+		var target_rest_height = water_node.surface_pos_y + (depression_depth * falloff)
 		water_node.segment_rest_height[segment_idx] = target_rest_height
 		segments_modified += 1
 		
 		if abs(offset) <= 2:  # Log center segments
 			print("    Seg %d: rest %.1f → %.1f (falloff %.2f, depression %.1f)" % [
-				segment_idx, old_rest, target_rest_height, falloff, DEPRESSION_DEPTH * falloff
+				segment_idx, old_rest, target_rest_height, falloff, depression_depth * falloff
 			])
 	
 	print("  Modified %d segments" % segments_modified)
+	
+	# CRITICAL: Wake up affected segments so they respond to new rest heights
+	# Without this, settled segments will ignore the depression
+	if "_settled_segments" in water_node and water_node._settled_segments.size() > 0:
+		for offset in range(-range_segments, range_segments + 1):
+			var segment_idx = center_index + offset
+			if segment_idx < 0 or segment_idx >= segment_count:
+				continue
+			water_node._settled_segments[segment_idx] = 0
+			
+			# Also wake immediate neighbors to ensure wave propagation
+			if segment_idx > 0:
+				water_node._settled_segments[segment_idx - 1] = 0
+			if segment_idx < segment_count - 1:
+				water_node._settled_segments[segment_idx + 1] = 0
 	
 	depression_applied = true
 	water_node.recently_splashed = true

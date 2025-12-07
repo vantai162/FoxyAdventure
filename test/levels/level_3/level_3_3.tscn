@@ -73,7 +73,6 @@ surface_line_thickness = 1.0
 ambient_wave_amplitude = 1.5
 ambient_wave_speed = 1.2
 ambient_wave_length = 0.3
-quadratic_damping = null
 player_splash_mutiplier = 0.12
 swim_disturbance_interval = 0.15
 swim_disturbance_strength = 0.3
