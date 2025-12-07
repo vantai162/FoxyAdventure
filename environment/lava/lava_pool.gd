@@ -34,7 +34,8 @@ signal lava_filled   ## Emitted when fill animation completes
 @export var emit_light: bool = true  ## Lava glows in darkness
 @export var light_color: Color = Color(1.0, 0.5, 0.1, 1.0)  ## Orange glow
 @export var light_energy: float = 1.2  ## Brightness
-@export var light_radius: float = 150.0  ## How far light reaches
+@export var light_sample_points: int = 5  ## Number of light sources along surface (1-8, more = distributed glow)
+@export var light_spacing_mode: String = "distributed"  ## "distributed" or "surface_tracking"
 @export var light_pulse_enabled: bool = true  ## Flickering glow
 @export var light_pulse_speed: float = 3.0
 @export var light_pulse_amount: float = 0.3
@@ -46,11 +47,19 @@ signal lava_filled   ## Emitted when fill animation completes
 @export var ambient_wave_length: float = 0.35
 
 @export_group("Physics Simulation")
-@export_range(0.0, 500.0) var lava_physics_speed: float = 40.0  ## Slower, more viscous
-@export var lava_restoring_force: float = 0.015  ## Weaker spring (thicker fluid)
-@export var wave_energy_loss: float = 0.08  ## More damping (viscous)
-@export var wave_strength: float = 0.15  ## Weaker wave spread
+@export var lava_restoring_force: float = 24.0  ## Spring constant (recalibrated from 0.015×40²)
+@export var wave_energy_loss: float = 3.2  ## Linear damping (recalibrated from 0.08×40)
+@export var quadratic_damping: float = 3.2  ## Quadratic damping - prevents overshoot
+@export var wave_strength: float = 6.0  ## Wave spread (recalibrated from 0.15×40)
 @export_range(1, 32) var wave_spread_updates: int = 4
+
+@export_group("Advanced Physics")
+@export var rest_zone_damping: float = 0.7  ## Extra damping near rest to kill micro-oscillations
+@export var rest_zone_threshold: float = 1.0  ## Displacement threshold for rest-zone damping
+@export var emergency_displacement_threshold: float = 50.0  ## Displacement threshold for emergency correction (viscous lava can't reach 150px)
+
+@export_group("Debug")
+@export var enable_debug_diagnostics: bool = false  ## Enable lava stability monitoring
 
 @export_group("Ember Particles")
 @export var emit_particles: bool = true
@@ -73,14 +82,25 @@ signal lava_filled   ## Emitted when fill animation completes
 @export var damage_interval: float = 0.25  ## Damage tick rate
 
 var segment_data: Array = []
+var segment_rest_height: Array = []  ## Per-segment equilibrium height (future: lava geysers/vents)
 var _ambient_wave_time: float = 0.0
 var _light_pulse_time: float = 0.0
 var _damage_timers: Dictionary = {}  ## Per-body damage cooldown
 
+## Performance optimization: track settled segments to skip physics
+var _settled_segments: PackedByteArray = []  ## 0 = needs update, 1 = at rest
+var _settled_count: int = 0
+var _last_active_min: int = 0
+var _last_active_max: int = 0
+
+## Debug monitoring
+var debug_timer: float = 0.0
+var debug_interval: float = 1.0
+
 var surface_line: Line2D
 var fill_polygon: Polygon2D
 var lava_area: Area2D
-var lava_light: PointLight2D
+var lava_lights: Array[PointLight2D] = []  ## Multiple light sources for distributed glow
 var ember_gpu_particles: GPUParticles2D
 var bubble_gpu_particles: GPUParticles2D
 
@@ -93,6 +113,8 @@ func _ready() -> void:
 		child.queue_free()
 	
 	segment_data.clear()
+	segment_rest_height.clear()
+	_settled_segments.clear()
 	_damage_timers.clear()
 	
 	_initiate_lava()
@@ -111,6 +133,13 @@ func _ready() -> void:
 		set_process(true)
 
 func _process(delta: float) -> void:
+	# Debug diagnostics
+	if enable_debug_diagnostics:
+		debug_timer += delta
+		if debug_timer >= debug_interval:
+			_print_lava_diagnostics()
+			debug_timer = 0.0
+	
 	# Drain/fill animation
 	if _drain_active:
 		_update_drain_fill(delta)
@@ -120,12 +149,53 @@ func _process(delta: float) -> void:
 		_ambient_wave_time += delta
 	
 	# Light pulsing
-	if light_pulse_enabled and lava_light:
+	if light_pulse_enabled and lava_lights.size() > 0:
 		_update_light_pulse(delta)
 	
 	# Wave physics (KEEP - this is gameplay interaction)
 	_update_physics(delta)
 	_update_visuals()
+	
+	# Update light/particle positions to track surface (dynamic positioning)
+	if lava_lights.size() > 0 and not _drain_active:
+		# Each light tracks local segment height for distributed glow
+		for i in range(lava_lights.size()):
+			var light = lava_lights[i]
+			if not light:
+				continue
+			
+			# Calculate which segments this light should track
+			var segment_start = int(float(i) / lava_lights.size() * segment_count)
+			var segment_end = int(float(i + 1) / lava_lights.size() * segment_count)
+			segment_end = min(segment_end, segment_count - 1)
+			
+			# Average height of tracked segments
+			var local_height = 0.0
+			var count = 0
+			for seg_idx in range(segment_start, segment_end + 1):
+				local_height += segment_data[seg_idx]["height"]
+				count += 1
+			local_height /= count if count > 0 else 1
+			
+			light.position.y = local_height
+	
+	if ember_gpu_particles and not _drain_active:
+		var avg_height = 0.0
+		for i in range(segment_count):
+			avg_height += segment_data[i]["height"]
+		avg_height /= segment_count
+		ember_gpu_particles.position.y = avg_height
+		# Enable particles only when lava is active
+		ember_gpu_particles.emitting = not (_drain_active and _is_draining)
+	
+	if bubble_gpu_particles and not _drain_active:
+		var avg_height = 0.0
+		for i in range(segment_count):
+			avg_height += segment_data[i]["height"]
+		avg_height /= segment_count
+		bubble_gpu_particles.position.y = avg_height + 10
+		# Enable particles only when lava is active
+		bubble_gpu_particles.emitting = not (_drain_active and _is_draining)
 
 func _initiate_lava() -> void:
 	# Initialize segment data
@@ -134,6 +204,11 @@ func _initiate_lava() -> void:
 			"height": surface_pos_y,
 			"velocity": 0.0
 		})
+		segment_rest_height.append(surface_pos_y)  # Default: all segments rest at surface
+		_settled_segments.append(1)  # Start at rest
+	_settled_count = segment_count
+	_last_active_min = 0
+	_last_active_max = segment_count - 1
 	
 	# Create surface line
 	surface_line = Line2D.new()
@@ -156,7 +231,7 @@ func _initiate_lava() -> void:
 	lava_area.monitoring = true
 	lava_area.monitorable = false
 	lava_area.collision_layer = 0
-	lava_area.collision_mask = 2 | 4  # Player (2) and enemies (4)
+	lava_area.collision_mask = 2 | 8  # Player body (2) + Enemy body (8)
 	lava_area.body_entered.connect(_on_body_entered)
 	lava_area.body_exited.connect(_on_body_exited)
 	add_child(lava_area)
@@ -169,30 +244,44 @@ func _initiate_lava() -> void:
 	lava_area.add_child(collision_shape)
 
 func _setup_light() -> void:
-	lava_light = PointLight2D.new()
-	lava_light.name = "LavaGlow"
-	lava_light.color = light_color
-	lava_light.energy = light_energy
-	lava_light.texture_scale = light_radius / 128.0
-	lava_light.shadow_enabled = true  # Cast shadows from walls
+	# Create multiple point lights along lava surface for distributed glow
+	var num_lights = clamp(light_sample_points, 1, 8)
+	lava_lights.clear()
 	
-	# Position light at center of lava surface
-	lava_light.position = Vector2(lava_size.x / 2.0, surface_pos_y)
-	
-	# Create radial gradient texture
-	var gradient = GradientTexture2D.new()
-	gradient.fill = GradientTexture2D.FILL_RADIAL
-	gradient.fill_from = Vector2(0.5, 0.5)
-	gradient.fill_to = Vector2(0.5, 0.0)
-	var grad = Gradient.new()
-	grad.set_color(0, Color.WHITE)
-	grad.set_color(1, Color.TRANSPARENT)
-	gradient.gradient = grad
-	gradient.width = 256
-	gradient.height = 256
-	lava_light.texture = gradient
-	
-	add_child(lava_light)
+	for i in range(num_lights):
+		var light = PointLight2D.new()
+		light.name = "LavaGlow_%d" % i
+		light.color = light_color
+		light.energy = light_energy / float(num_lights) * 1.5  # Distribute energy, slight boost
+		light.texture_scale = 2.0  # Radius per light
+		light.shadow_enabled = false  # Shadows only on first light to save performance
+		light.z_index = 10
+		light.blend_mode = Light2D.BLEND_MODE_ADD  # Additive blend for overlapping glows
+		
+		# Create radial gradient texture (shared across lights for efficiency)
+		if i == 0:
+			var gradient = GradientTexture2D.new()
+			gradient.fill = GradientTexture2D.FILL_RADIAL
+			gradient.fill_from = Vector2(0.5, 0.5)
+			gradient.fill_to = Vector2(0.5, 0.0)
+			var grad = Gradient.new()
+			grad.set_color(0, Color.WHITE)
+			grad.set_color(1, Color.TRANSPARENT)
+			gradient.gradient = grad
+			gradient.width = 128
+			gradient.height = 128
+			light.texture = gradient
+			light.shadow_enabled = true  # Only first light casts shadows
+		else:
+			# Reuse texture from first light
+			light.texture = lava_lights[0].texture
+		
+		# Position evenly along lava width
+		var x_pos = lava_size.x * (float(i) / float(num_lights - 1 if num_lights > 1 else 1))
+		light.position = Vector2(x_pos, surface_pos_y)
+		
+		add_child(light)
+		lava_lights.append(light)
 
 func _setup_ember_gpu_particles() -> void:
 	ember_gpu_particles = GPUParticles2D.new()
@@ -297,42 +386,147 @@ func _update_light_pulse(delta: float) -> void:
 	flicker += sin(_light_pulse_time * 0.7) * 0.2
 	flicker = clamp(flicker / 2.0, 0.0, 1.0)
 	
-	lava_light.energy = light_energy + (flicker * light_pulse_amount)
+	# Apply to all lights
+	for light in lava_lights:
+		if light:
+			light.energy = (light_energy / float(lava_lights.size()) * 1.5) + (flicker * light_pulse_amount)
 
 func _update_physics(delta: float) -> void:
-	var safe_delta = min(delta, 0.05)
+	# CRITICAL: Validate delta to prevent catastrophic physics behavior
+	if not is_finite(delta) or delta <= 0.0 or delta > 1.0:
+		push_warning("Lava physics: invalid delta %.3f, skipping frame" % delta)
+		return
 	
-	# Lag compensation: add extra damping when FPS drops (same as water.gd)
+	var safe_delta = min(delta, 0.05)  # Cap at 20 FPS worst case
+	
+	# Lag compensation: if actual delta is larger than safe_delta, add extra damping
 	var lag_damping_factor = 1.0
 	if delta > 0.03:  # FPS below 33
 		var lag_severity = (delta - 0.03) / 0.03
 		lag_damping_factor = 1.0 + (lag_severity * lag_severity * 0.5)
 	
-	for i in range(segment_count):
-		var displacement = segment_data[i]["height"] - surface_pos_y
-		
-		# Spring force back to rest
-		var damping = wave_energy_loss * lag_damping_factor  # Apply lag compensation
-		var acceleration = -lava_restoring_force * displacement - segment_data[i]["velocity"] * damping
-		
-		segment_data[i]["velocity"] += acceleration * safe_delta * lava_physics_speed
-		segment_data[i]["velocity"] = clamp(segment_data[i]["velocity"], -3.0, 3.0)
-		segment_data[i]["height"] += segment_data[i]["velocity"] * safe_delta * lava_physics_speed
+	# OPTIMIZATION: Track active region to skip settled segments
+	var active_min = segment_count
+	var active_max = -1
 	
-	# Wave propagation
-	for _update in range(wave_spread_updates):
-		for i in range(1, segment_count - 1):
-			var left_diff = segment_data[i]["height"] - segment_data[i - 1]["height"]
-			var right_diff = segment_data[i]["height"] - segment_data[i + 1]["height"]
+	# CRITICAL: Reset settled count each frame and recalculate from scratch
+	_settled_count = 0
+	
+	# Expand search window around last active region
+	var search_min = max(0, _last_active_min - 2)
+	var search_max = min(segment_count - 1, _last_active_max + 2)
+	
+	# Process segments (only check potentially active ones)
+	for i in range(search_min, search_max + 1):
+		# Skip if marked as settled
+		if _settled_segments[i] == 1:
+			_settled_count += 1
+			continue
+		
+		var seg = segment_data[i]
+		var rest = segment_rest_height[i]
+		var displacement = seg["height"] - rest
+		
+		# Emergency displacement: prevent total runaway
+		if abs(displacement) > emergency_displacement_threshold:
+			var emergency_correction = -sign(displacement) * abs(displacement) * 0.5
+			seg["height"] += emergency_correction * safe_delta
+			seg["velocity"] *= 0.5
+			active_min = min(active_min, i)
+			active_max = max(active_max, i)
+			continue
+		
+		var velocity = seg["velocity"]
+		
+		# OPTIMIZATION: Check if segment has settled (before expensive math)
+		# Note: velocity threshold accounts for lava_physics_speed inflation
+		if abs(displacement) < 0.3 and abs(velocity) < 1.2:
+			_settled_segments[i] = 1
+			_settled_count += 1
+			seg["velocity"] = 0.0
+			seg["height"] = rest  # Snap to rest
+			continue
+		
+		# Mark as active
+		active_min = min(active_min, i)
+		active_max = max(active_max, i)
+		
+		# Physics integration (direct, no artificial time multiplier)
+		var spring_force = -lava_restoring_force * displacement
+		var linear_damping = wave_energy_loss * lag_damping_factor * velocity
+		var quadratic_damping_force = quadratic_damping * velocity * abs(velocity)
+		var acceleration = spring_force - linear_damping - quadratic_damping_force
+		
+		# Velocity integration
+		seg["velocity"] += acceleration * safe_delta
+		
+		# REST-ZONE DAMPING: Kill micro-oscillations near rest
+		if abs(displacement) < rest_zone_threshold and abs(seg["velocity"]) < 5.0:
+			seg["velocity"] *= rest_zone_damping
+		
+		# Dynamic velocity clamp (based on displacement magnitude)
+		var max_velocity = 8.0 + abs(displacement) * 1.5
+		seg["velocity"] = clamp(seg["velocity"], -max_velocity, max_velocity)
+		
+		# Position integration
+		seg["height"] += seg["velocity"] * safe_delta
+	
+	# Update active region tracking
+	if active_min < segment_count:
+		_last_active_min = active_min
+		_last_active_max = active_max
+	
+	# OPTIMIZATION: Skip wave propagation if no active segments
+	if active_min >= segment_count:
+		return
+	
+	# Wave propagation (only in active region)
+	var actual_spread_updates = wave_spread_updates
+	if delta > 0.025:
+		actual_spread_updates = max(2, wave_spread_updates / 2)
+	
+	for _update in range(actual_spread_updates):
+		for i in range(max(1, active_min), min(segment_count - 1, active_max + 1)):
+			var seg = segment_data[i]
+			var rest = segment_rest_height[i]
+			var i_displacement = abs(seg["height"] - rest)
+			var i_velocity = abs(seg["velocity"])
 			
-			segment_data[i - 1]["velocity"] += left_diff * wave_strength * safe_delta * lava_physics_speed
-			segment_data[i + 1]["velocity"] += right_diff * wave_strength * safe_delta * lava_physics_speed
+			# Skip settled or emergency segments
+			if i_displacement > emergency_displacement_threshold or (i_displacement < 0.5 and i_velocity < 1.0):
+				continue
+			
+			# Left neighbor
+			if i > 0:
+				var left_seg = segment_data[i - 1]
+				var left_diff = seg["height"] - left_seg["height"]
+				var wave_force = left_diff * wave_strength
+				left_seg["velocity"] += wave_force * safe_delta
+				
+				# Wake up left neighbor if significant force applied
+				if abs(wave_force) > 2.0 and _settled_segments[i - 1] == 1:
+					_settled_segments[i - 1] = 0
+			
+			# Right neighbor
+			if i < segment_count - 1:
+				var right_seg = segment_data[i + 1]
+				var right_diff = seg["height"] - right_seg["height"]
+				var wave_force = right_diff * wave_strength
+				right_seg["velocity"] += wave_force * safe_delta
+				
+				# Wake up right neighbor if significant force applied
+				if abs(wave_force) > 2.0 and _settled_segments[i + 1] == 1:
+					_settled_segments[i + 1] = 0
 	
-	# Lock edges
-	segment_data[0]["height"] = surface_pos_y
-	segment_data[0]["velocity"] = 0.0
-	segment_data[segment_count - 1]["height"] = surface_pos_y
-	segment_data[segment_count - 1]["velocity"] = 0.0
+	# Edge segments: smooth convergence
+	var edge_convergence_strength = 2.0
+	for edge_idx in [0, 1, segment_count - 2, segment_count - 1]:
+		var seg = segment_data[edge_idx]
+		var rest = segment_rest_height[edge_idx]
+		var displacement_from_rest = rest - seg["height"]
+		var correction_force = displacement_from_rest * edge_convergence_strength * safe_delta
+		seg["velocity"] += correction_force
+		seg["velocity"] = clamp(seg["velocity"], -10.0, 10.0)
 
 func _update_visuals() -> void:
 	var points: Array[Vector2] = []
@@ -363,6 +557,11 @@ func _update_visuals() -> void:
 	fill_polygon.polygon = final_points
 
 func _on_body_entered(body: Node2D) -> void:
+	# Create splash effect for visual feedback
+	if body.has_method("get_velocity"):
+		var vel = body.get_velocity() if body.has_method("get_velocity") else body.velocity if "velocity" in body else Vector2.ZERO
+		splash(body.global_position, -vel.y * 0.3)
+	
 	if instant_kill:
 		_kill_body(body)
 	else:
@@ -374,15 +573,28 @@ func _on_body_exited(body: Node2D) -> void:
 	_damage_timers.erase(body)
 
 func _kill_body(body: Node2D) -> void:
-	if body.has_method("die"):
-		body.die()
-	elif body is CharacterBody2D:
-		# Fallback: try to find hurt signal or just free
+	# Player-specific kill (die method)
+	if body.is_in_group("player"):
+		if body.has_method("die"):
+			body.die()
+		return
+	
+	# Enemy-specific kill (take_damage with massive damage)
+	if body.has_method("take_damage"):
+		# Enemies use take_damage, not die
+		if body.has_method("get_max_health"):  # Has health system
+			body.take_damage(body.get_max_health() * 10)  # Overkill
+		else:
+			body.take_damage(9999)
+		return
+	
+	# Generic fallback for any CharacterBody2D
+	if body is CharacterBody2D:
 		var hurt_area = body.get_node_or_null("Direction/HurtArea2D")
 		if hurt_area and hurt_area.has_signal("hurt"):
 			hurt_area.emit_signal("hurt", Vector2.ZERO, 9999)
-		elif body.has_method("take_damage"):
-			body.take_damage(9999)
+		elif body.has_method("die"):
+			body.die()
 
 func _apply_damage(body: Node2D) -> void:
 	if not _damage_timers.has(body):
@@ -424,6 +636,13 @@ func splash(splash_pos: Vector2, splash_velocity: float) -> void:
 	
 	# Lava splashes are smaller (more viscous)
 	segment_data[index]["velocity"] += splash_velocity * 0.5
+	
+	# Wake up segment and neighbors
+	_settled_segments[index] = 0
+	if index > 0:
+		_settled_segments[index - 1] = 0
+	if index < segment_count - 1:
+		_settled_segments[index + 1] = 0
 
 ## ============================================================================
 ## BUBBLE SYSTEM
@@ -485,19 +704,38 @@ func _update_drain_fill(delta: float) -> void:
 	# Interpolate surface position
 	surface_pos_y = lerp(_drain_start_y, _drain_target_y, eased)
 	
-	# Update all segment heights to follow
+	# Update all segment heights and rest heights to follow
 	for i in range(segment_count):
 		segment_data[i]["height"] = surface_pos_y
+		segment_rest_height[i] = surface_pos_y
+		_settled_segments[i] = 1  # Mark as settled after forced movement
+	_settled_count = segment_count
+	_last_active_min = 0
+	_last_active_max = segment_count - 1
 	
-	# Update collision shape position
+	# Update collision shape position AND size
 	if lava_area:
 		var collision = lava_area.get_node_or_null("CollisionShape2D") as CollisionShape2D
-		if collision:
-			collision.position.y = surface_pos_y + (lava_size.y - surface_pos_y) / 2.0
+		if collision and collision.shape is RectangleShape2D:
+			var shape = collision.shape as RectangleShape2D
+			var new_height = lava_size.y - surface_pos_y
+			shape.size = Vector2(lava_size.x, new_height)
+			collision.position = Vector2(lava_size.x / 2.0, surface_pos_y + new_height / 2.0)
 	
-	# Update light position
-	if lava_light:
-		lava_light.position.y = surface_pos_y
+	# Update light and particle positions during animation
+	if lava_lights.size() > 0:
+		for light in lava_lights:
+			if light:
+				light.position.y = surface_pos_y
+				# Dim lights when draining (fade out effect)
+				if _is_draining:
+					light.energy = (light_energy / float(lava_lights.size()) * 1.5) * (1.0 - progress)
+	if ember_gpu_particles:
+		ember_gpu_particles.position.y = surface_pos_y
+		ember_gpu_particles.emitting = not _is_draining  # Stop emitting when draining
+	if bubble_gpu_particles:
+		bubble_gpu_particles.position.y = surface_pos_y + 10
+		bubble_gpu_particles.emitting = not _is_draining
 	
 	if progress >= 1.0:
 		_drain_active = false
@@ -507,6 +745,15 @@ func _update_drain_fill(delta: float) -> void:
 		else:
 			# Re-enable damage when filled
 			_set_damage_enabled(true)
+			# Restore light energy after fill
+			for light in lava_lights:
+				if light:
+					light.energy = light_energy / float(lava_lights.size()) * 1.5
+			# Re-enable particles after fill
+			if ember_gpu_particles:
+				ember_gpu_particles.emitting = true
+			if bubble_gpu_particles:
+				bubble_gpu_particles.emitting = true
 			lava_filled.emit()
 
 func _set_damage_enabled(enabled: bool) -> void:
@@ -524,3 +771,43 @@ func is_drained() -> bool:
 func is_filled() -> bool:
 	## Check if lava is at full level (dangerous)
 	return surface_pos_y <= fill_target_y + 5.0
+
+## ============================================================================
+## DEBUG DIAGNOSTICS
+## ============================================================================
+
+func _print_lava_diagnostics() -> void:
+	## Print lava health metrics for debugging
+	var max_displacement = 0.0
+	var max_velocity = 0.0
+	var avg_displacement = 0.0
+	var avg_velocity = 0.0
+	
+	for i in range(segment_count):
+		var displacement = abs(segment_data[i]["height"] - segment_rest_height[i])
+		var velocity = abs(segment_data[i]["velocity"])
+		max_displacement = max(max_displacement, displacement)
+		max_velocity = max(max_velocity, velocity)
+		avg_displacement += displacement
+		avg_velocity += velocity
+	
+	avg_displacement /= segment_count
+	avg_velocity /= segment_count
+	
+	# Sanity check: recalculate settled count if it seems corrupted
+	var recalc_settled = 0
+	for i in range(segment_count):
+		if _settled_segments[i] == 1:
+			recalc_settled += 1
+	
+	var settled_mismatch = ""
+	if recalc_settled != _settled_count:
+		settled_mismatch = " [MISMATCH! Recalc=%d]" % recalc_settled
+		_settled_count = recalc_settled  # Auto-fix
+	
+	print("[LAVA AUDIT] Settled: %d/%d%s | Active region: [%d, %d] | Max disp: %.2f | Max vel: %.2f | Avg disp: %.2f | Avg vel: %.2f" % [
+		_settled_count, segment_count, settled_mismatch,
+		_last_active_min, _last_active_max,
+		max_displacement, max_velocity,
+		avg_displacement, avg_velocity
+	])
