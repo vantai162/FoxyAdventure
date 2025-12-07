@@ -351,7 +351,7 @@ func heal(amount:int): # Giữ: func heal
 		health=max_health
 	else:
 		health=amount+health
-		health_changed.emit()
+	health_changed.emit()
 
 func checkfullhealth()->bool: # Giữ: func checkfullhealth
 	return health==max_health
