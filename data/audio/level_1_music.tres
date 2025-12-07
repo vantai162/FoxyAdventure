@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="AudioClip" load_steps=3 format=3 uid="uid://dnmniv8y1ie6a"]
+
+[ext_resource type="Script" uid="uid://chlphbiuq1gay" path="res://scripts/audio/audio_clip.gd" id="1_cb50l"]
+[ext_resource type="AudioStream" uid="uid://bxavmfuoonbd0" path="res://assets/sounds/game_sound.mp3" id="2_8uunb"]
+
+[resource]
+script = ExtResource("1_cb50l")
+clip_id = "level_1_music"
+stream = ExtResource("2_8uunb")
+volume_db = 0.0
+randomize_pitch = false
+pitch_min = 0.9
+pitch_max = 1.1
+description = ""
+metadata/_custom_type_script = "uid://chlphbiuq1gay"

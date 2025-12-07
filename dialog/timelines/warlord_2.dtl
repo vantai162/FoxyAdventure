@@ -1,0 +1,24 @@
+audio music "res://assets/sounds/675712__craigsmith__s21-11a-phoenix-wind.wav"
+
+(Gió rít mạnh, bụi bay)
+audio "res://assets/sounds/king_dice_curious.wav"
+Warlord: [portrait=idle] Khụ… ngươi… mạnh hơn ta tưởng…
+Warlord: [portrait=idle] 30 năm… chưa ai từng khiến ta quỳ xuống…
+Warlord: [portrait=idle] Nhưng ngươi… một con cáo bé nhỏ… lại phá nát kiêu hãnh của ta…
+Warlord: [portrait=idle] Ta nhớ rồi!!!
+Warlord: [portrait=idle] Chiếc nón đó... Ngươi là...
+Hãy lựa chọn kĩ hành động tiếp theo của bạn
+- KẾT LIỄU WARLORD | [=""]
+	Foxy: [portrait=idle] ...
+	(Bạn chém một đường chém xuyên thấu da thịt)
+	[signal arg="kill_warlord"]
+	audio "res://assets/sounds/king_dice_die.wav"
+	Foxy: [portrait=idle]…Vĩnh biệt.
+- THA CHO WARLORD
+	Foxy: [portrait=idle] Ta không muốn giết ngươi. Ngươi đã thua… hãy dừng lại.
+	Warlord: [portrait=idle]…Ngươi… tha mạng cho ta?
+	Foxy: [portrait=idle]Kẻ mạnh không phải là kẻ biết giết… mà là kẻ biết dừng tay.
+	Warlord: [portrait=idle]Hahaha...thú vị thật…
+	audio "res://assets/sounds/King Dice Attack Laugh (Nr. 2 Cuphead Sound) - Sound Effect for editing.wav"
+	Warlord: [portrait=idle]Từ hôm nay… ta nợ ngươi một mạng.
+	[signal arg="spare_warlord"]

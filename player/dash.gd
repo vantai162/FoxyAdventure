@@ -6,6 +6,7 @@ var ghost_timer: float = 0.0
 func _enter():
 	super._enter()
 	obj.change_animation("run")
+	AudioManager.play_sound("player_dash",20.0)
 	obj.velocity.x = obj.dash_speed * obj.direction
 	obj.velocity.y = 0
 	timer = obj.dash_duration
@@ -26,7 +27,10 @@ func _update(delta: float):
 		fsm.change_state(fsm.states.wallcling)
 
 func create_ghost_trail():
-	var original = $"../../Direction/AnimatedSprite2D"
+	# Use the player's current active sprite (normal or blade)
+	var original = obj.animated_sprite
+	if not original:
+		original = $"../../Direction/AnimatedSprite2D"  # Fallback
 	
 	# Create a simple Sprite2D instead of duplicating
 	var ghost = Sprite2D.new()

@@ -1,4 +1,4 @@
-[gd_scene load_steps=9 format=3 uid="uid://db82ftu2sobir"]
+[gd_scene load_steps=12 format=3 uid="uid://db82ftu2sobir"]
 
 [ext_resource type="Script" uid="uid://cig4g2ihj1ay6" path="res://scenes/game_screen/settings_popup.gd" id="1_a4it1"]
 [ext_resource type="Texture2D" uid="uid://bm66ag0j7y3qi" path="res://assets/ui/popup.png" id="1_ry1hr"]
@@ -13,6 +13,16 @@ font = ExtResource("2_a4it1")
 [sub_resource type="LabelSettings" id="LabelSettings_x0ywr"]
 font = ExtResource("2_a4it1")
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_68arw"]
+bg_color = Color(0.6, 0.6, 0.6, 0)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_8o1es"]
+bg_color = Color(0.6, 0.6, 0.6, 0)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_2tnjg"]
+bg_color = Color(0.6, 0.6, 0.6, 0.00392157)
+shadow_offset = Vector2(0, 3.41)
+
 [node name="SettingsPopup" type="MarginContainer"]
 process_mode = 3
 anchors_preset = 15
@@ -24,14 +34,15 @@ script = ExtResource("1_a4it1")
 
 [node name="OverlayColorRect" type="ColorRect" parent="."]
 layout_mode = 2
-color = Color(0.0352941, 0.54902, 0.870588, 0.694118)
+color = Color(0, 0.027451, 0.0705882, 0.427451)
 
 [node name="NinePatchRect" type="NinePatchRect" parent="."]
-custom_minimum_size = Vector2(160, 96)
+custom_minimum_size = Vector2(300, 200)
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 4
 texture = ExtResource("1_ry1hr")
+region_rect = Rect2(0, 0, 96, 96)
 patch_margin_left = 32
 patch_margin_top = 32
 patch_margin_right = 32
@@ -41,28 +52,28 @@ axis_stretch_vertical = 1
 
 [node name="Label" type="Label" parent="NinePatchRect"]
 layout_mode = 0
-offset_left = 20.0
-offset_top = 28.0
-offset_right = 87.0
-offset_bottom = 51.0
+offset_left = 63.0
+offset_top = 41.0
+offset_right = 130.0
+offset_bottom = 64.0
 text = "MUSIC"
 label_settings = SubResource("LabelSettings_rbs2k")
 
 [node name="Label2" type="Label" parent="NinePatchRect"]
 layout_mode = 0
-offset_left = 19.0
-offset_top = 49.0
-offset_right = 117.0
-offset_bottom = 72.0
+offset_left = 62.0
+offset_top = 62.0
+offset_right = 160.0
+offset_bottom = 85.0
 text = "SOUND FX"
 label_settings = SubResource("LabelSettings_x0ywr")
 
 [node name="CloseTextureButton" type="TextureButton" parent="NinePatchRect"]
 layout_mode = 0
-offset_left = 150.0
-offset_top = -5.0
-offset_right = 164.0
-offset_bottom = 10.0
+offset_left = 267.0
+offset_top = 15.0
+offset_right = 281.0
+offset_bottom = 30.0
 toggle_mode = true
 texture_normal = ExtResource("3_5ccg2")
 texture_pressed = ExtResource("3_5ccg2")
@@ -72,23 +83,64 @@ texture_focused = ExtResource("3_5ccg2")
 
 [node name="MusicCheckButton" type="CheckButton" parent="NinePatchRect"]
 layout_mode = 0
-offset_left = 123.0
-offset_top = 25.0
-offset_right = 147.0
-offset_bottom = 46.0
+offset_left = 204.0
+offset_top = 38.0
+offset_right = 228.0
+offset_bottom = 59.0
 theme_override_icons/checked = ExtResource("4_43ojk")
 theme_override_icons/unchecked = ExtResource("5_ovj3y")
 
 [node name="SoundCheckButton" type="CheckButton" parent="NinePatchRect"]
 layout_mode = 0
-offset_left = 123.0
-offset_top = 46.0
-offset_right = 147.0
-offset_bottom = 67.0
+offset_left = 204.0
+offset_top = 59.0
+offset_right = 228.0
+offset_bottom = 80.0
 theme_override_icons/checked = ExtResource("4_43ojk")
 theme_override_icons/unchecked = ExtResource("5_ovj3y")
 
-[connection signal="gui_input" from="OverlayColorRect" to="." method="_on_overlay_color_rect_gui_input"]
+[node name="RestartButton" type="Button" parent="NinePatchRect"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -123.0
+offset_top = 31.0
+offset_right = -23.0
+offset_bottom = 53.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_fonts/font = ExtResource("2_a4it1")
+theme_override_font_sizes/font_size = 17
+theme_override_styles/hover_pressed = SubResource("StyleBoxFlat_68arw")
+theme_override_styles/hover = SubResource("StyleBoxFlat_8o1es")
+theme_override_styles/normal = SubResource("StyleBoxFlat_2tnjg")
+text = "RESTART"
+
+[node name="MainMenuButton" type="Button" parent="NinePatchRect"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = 12.0
+offset_top = 32.0
+offset_right = 130.0
+offset_bottom = 54.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_fonts/font = ExtResource("2_a4it1")
+theme_override_font_sizes/font_size = 17
+theme_override_styles/hover_pressed = SubResource("StyleBoxFlat_68arw")
+theme_override_styles/hover = SubResource("StyleBoxFlat_8o1es")
+theme_override_styles/normal = SubResource("StyleBoxFlat_2tnjg")
+text = "MAIN MENU"
+
 [connection signal="pressed" from="NinePatchRect/CloseTextureButton" to="." method="_on_close_texture_button_pressed"]
 [connection signal="toggled" from="NinePatchRect/MusicCheckButton" to="." method="_on_music_check_button_toggled"]
 [connection signal="toggled" from="NinePatchRect/SoundCheckButton" to="." method="_on_sound_check_button_toggled"]
+[connection signal="pressed" from="NinePatchRect/RestartButton" to="." method="_on_restart_button_pressed"]
+[connection signal="pressed" from="NinePatchRect/MainMenuButton" to="." method="_on_main_menu_button_pressed"]

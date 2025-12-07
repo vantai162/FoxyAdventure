@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="AudioClip" load_steps=3 format=3 uid="uid://beuv6wwqvf03g"]
+
+[ext_resource type="Script" uid="uid://chlphbiuq1gay" path="res://scripts/audio/audio_clip.gd" id="1_j21b6"]
+[ext_resource type="AudioStream" uid="uid://ba2vr4x8m56fg" path="res://assets/sounds/675712__craigsmith__s21-11a-phoenix-wind.wav" id="2_8vaq5"]
+
+[resource]
+script = ExtResource("1_j21b6")
+clip_id = "wind_area"
+stream = ExtResource("2_8vaq5")
+volume_db = 0.0
+randomize_pitch = false
+pitch_min = 0.9
+pitch_max = 1.1
+description = ""
+metadata/_custom_type_script = "uid://chlphbiuq1gay"

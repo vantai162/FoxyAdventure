@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="AudioClip" load_steps=3 format=3 uid="uid://d0lqy244tfwmh"]
+
+[ext_resource type="Script" uid="uid://chlphbiuq1gay" path="res://scripts/audio/audio_clip.gd" id="1_xbeky"]
+[ext_resource type="AudioStream" uid="uid://d4druhwdf3ge" path="res://assets/sounds/impactWood_heavy_001.ogg" id="2_npyoq"]
+
+[resource]
+script = ExtResource("1_xbeky")
+clip_id = "warlord_bomb_launch"
+stream = ExtResource("2_npyoq")
+volume_db = 0.0
+randomize_pitch = true
+pitch_min = 0.9
+pitch_max = 1.1
+description = ""
+metadata/_custom_type_script = "uid://chlphbiuq1gay"

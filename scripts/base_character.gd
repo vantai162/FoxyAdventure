@@ -30,7 +30,7 @@ var health: int
 var is_in_water: bool = false
 @export var max_oxygen := 5.0          # số giây có thể ở dưới nước
 @export var oxygen_decrease_rate := 1.0  # mỗi giây giảm bao nhiêu oxy
-@export var oxygen_increase_rate := 1.5  # mỗi giây tăng bao nhiêu oxy khi ở trên mặt nước/đất
+@export var oxygen_increase_rate := 3.0  # mỗi giây tăng bao nhiêu oxy khi ở trên mặt nước/đất
 @export var damage_per_second := 1      # mất HP mỗi giây khi đã hết oxy
 var current_oxygen := max_oxygen
 
@@ -101,6 +101,7 @@ func stop_move() -> void:
 
 func take_damage(damage: int) -> void:
 	health -= damage
+	AudioManager.play_sound("hurt",20.0)
 # Change the animation of the character on the next frame
 func change_animation(new_animation: String) -> void:
 	_next_animation = new_animation
@@ -162,12 +163,14 @@ func _is_on_one_way_platform():
 	var collider = floor_ray_cast.get_collider()
 	if not collider: return false
 	
+	# Check by group first (preferred), fallback to name
+	if collider.is_in_group("one_way_platform"):
+		return true
 	return collider.name == "OneWayPlatform"
 	
 
 func spring():
-	velocity.y = -400
-	
+	velocity.y = -650
 		
 func drop_down_platform():
 	var PLATFORM_LAYER = 1
@@ -207,7 +210,7 @@ func die() -> void:
 	# 2. Cập nhật chỉ số
 	health = 0
 	emit_signal("health_changed") # Để thanh máu tụt về 0
-
+	emit_signal("died")
 	# 3. Kích hoạt State Chết (Logic chính nằm ở đây)
 	# Kiểm tra xem trong danh sách states có "dead" không
 	if fsm.states.has("dead"):

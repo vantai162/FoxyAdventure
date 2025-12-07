@@ -7,4 +7,4 @@ extends Node2D
 func _on_timer_timeout() -> void:
 	var ene = enemy.instantiate()
 	ene.position = position
-	get_parent().get_node("Enemy").add_child(ene)
+	get_parent().get_parent().get_node("Enemy").add_child(ene)

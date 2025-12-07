@@ -18,13 +18,15 @@ var _pending_player_spawn_data: Dictionary = {}
 var player_spawn_requested: bool = false
 var player_spawn_data: Dictionary = {}
 var paused=false
-
+var skin_manager:SkinManager=SkinManager.new()
 func _ready() -> void:
 	load_checkpoint_data()
-	key_manager._get_key_dictionary_from_input_map()
+	key_manager.load_key()
+	if(key_manager.KeyDict.size()<=0):
+		key_manager._get_key_dictionary_from_input_map()
 	current_checkpoint_id = ""
+	skin_manager._load_skin_data_from_save()
 	checkpoint_data.clear()
-	
 	pass
 
 #change stage by path and target portal name
@@ -112,6 +114,9 @@ func respawn_at_checkpoint() -> void:
 	var hp_bar = current_stage.get_node("CanvasLayer/TextureProgressBar")
 	var coin_ui = current_stage.get_node("CanvasLayer/CoinUI")
 	var key_ui = current_stage.get_node("CanvasLayer/KeyUI")
+	if current_stage.get_node("CanvasLayer/OxyBar"):
+		var oxy_bar = current_stage.get_node("CanvasLayer/OxyBar")
+		oxy_bar.setup()
 	hp_bar.setup()
 	coin_ui.setup()
 	key_ui.setup()
@@ -137,7 +142,7 @@ func load_checkpoint_data() -> void:
 func clear_checkpoint_data() -> void:
 	current_checkpoint_id = ""
 	checkpoint_data.clear()
-	SaveSystem.delete_save_file()
+	SaveSystem.delete_save_file(SaveSystem.SAVE_FILE)
 
 func fade_to_black(duration: float = 1.0):
 	var tween = create_tween()
@@ -181,7 +186,6 @@ func spawn_player(spawn_data: Dictionary) -> Player:
 		new_player.fsm.change_state(new_player.fsm.states.idle)
 	else:
 		printerr("Player FSM not initialized!")
-	
 	player = new_player
 	return new_player
 
@@ -207,10 +211,13 @@ func request_player_spawn() -> void:
 func pause_game():
 		Engine.time_scale=0
 		paused=true
+		key_manager.disableinput([])
 		
 func unpause():
 		Engine.time_scale=1
 		paused=false
+		key_manager.enableinput()
+		
 #handling key
 func _input(event: InputEvent) -> void:
 	if(key_manager.is_listening):

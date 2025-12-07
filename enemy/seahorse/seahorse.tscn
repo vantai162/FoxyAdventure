@@ -88,7 +88,7 @@ animations = [{
 "speed": 6.7
 }]
 
-[node name="Barrel" type="CharacterBody2D"]
+[node name="Seahorse" type="CharacterBody2D"]
 collision_layer = 8
 script = ExtResource("1_ao4iv")
 metadata/_custom_type_script = "uid://s4xx82espxdt"
@@ -100,11 +100,12 @@ shape = SubResource("RectangleShape2D_pdnpt")
 [node name="Direction" type="Node2D" parent="."]
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="Direction"]
+position = Vector2(0, 6)
 sprite_frames = SubResource("SpriteFrames_vpg65")
-animation = &"dead"
+animation = &"idle"
 
 [node name="BulletFactory" type="Marker2D" parent="Direction"]
-position = Vector2(10, 10)
+position = Vector2(10, 16)
 script = ExtResource("11_jkhqg")
 product_packed_scene = ExtResource("12_sk3dx")
 target_container_name = &"Bullets"

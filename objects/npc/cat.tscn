@@ -1,0 +1,117 @@
+[gd_scene load_steps=17 format=3 uid="uid://doluitvimvxhk"]
+
+[ext_resource type="Texture2D" uid="uid://cb3h1l5svkblh" path="res://assets/cat/PirateCat1.png" id="1_6nn0a"]
+[ext_resource type="Script" uid="uid://c5phrjm5ime3f" path="res://objects/npc/cat.gd" id="1_oaidb"]
+[ext_resource type="Texture2D" uid="uid://dkp12wlt3a3v1" path="res://assets/cat/PirateCat2.png" id="2_oaidb"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_4svcy"]
+atlas = ExtResource("1_6nn0a")
+region = Rect2(0, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ygtm8"]
+atlas = ExtResource("1_6nn0a")
+region = Rect2(32, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_e07v8"]
+atlas = ExtResource("1_6nn0a")
+region = Rect2(64, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_degs6"]
+atlas = ExtResource("1_6nn0a")
+region = Rect2(96, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_7m7bu"]
+atlas = ExtResource("1_6nn0a")
+region = Rect2(128, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_41xx1"]
+atlas = ExtResource("1_6nn0a")
+region = Rect2(160, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_qjcy3"]
+atlas = ExtResource("1_6nn0a")
+region = Rect2(192, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_a85qf"]
+atlas = ExtResource("2_oaidb")
+region = Rect2(0, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_f6stu"]
+atlas = ExtResource("2_oaidb")
+region = Rect2(32, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_wajnu"]
+atlas = ExtResource("2_oaidb")
+region = Rect2(64, 0, 32, 32)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_rvfaf"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_4svcy")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_ygtm8")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_e07v8")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_degs6")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_7m7bu")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_41xx1")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_qjcy3")
+}],
+"loop": true,
+"name": &"default",
+"speed": 10.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_a85qf")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_f6stu")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_wajnu")
+}],
+"loop": true,
+"name": &"idle",
+"speed": 10.0
+}]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_4svcy"]
+
+[sub_resource type="FontVariation" id="FontVariation_oaidb"]
+
+[node name="Cat" type="Node2D"]
+script = ExtResource("1_oaidb")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+sprite_frames = SubResource("SpriteFrames_rvfaf")
+animation = &"idle"
+frame_progress = 0.872557
+
+[node name="Area2D" type="Area2D" parent="."]
+collision_mask = 2
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D"]
+shape = SubResource("RectangleShape2D_4svcy")
+
+[node name="Label" type="Label" parent="."]
+offset_left = -84.0
+offset_top = -46.0
+offset_right = 82.0
+offset_bottom = -23.0
+theme_override_fonts/font = SubResource("FontVariation_oaidb")
+text = "Nhấn Q để trò chuyện"
+
+[connection signal="body_entered" from="Area2D" to="." method="_on_interaction_zone_body_entered"]
+[connection signal="body_exited" from="Area2D" to="." method="_on_interaction_zone_body_entered"]

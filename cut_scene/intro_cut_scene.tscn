@@ -1,0 +1,9 @@
+[gd_scene format=3 uid="uid://cpeohwyqwj7u3"]
+
+[node name="IntroCutScene" type="Node2D"]
+
+[node name="Parallax2D" type="Parallax2D" parent="."]
+
+[node name="ParallaxLayer2" type="ParallaxLayer" parent="Parallax2D"]
+
+[node name="ParallaxLayer" type="ParallaxLayer" parent="Parallax2D"]

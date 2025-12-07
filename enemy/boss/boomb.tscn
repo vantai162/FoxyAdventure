@@ -1,4 +1,4 @@
-[gd_scene load_steps=42 format=3 uid="uid://dy012gt2k7xmt"]
+[gd_scene load_steps=41 format=3 uid="uid://dy012gt2k7xmt"]
 
 [ext_resource type="Texture2D" uid="uid://dcjgi1lf4jyut" path="res://assets/warlord_turle/turtle_bullets/bullet_cannon.png" id="1_8vi56"]
 [ext_resource type="Script" uid="uid://fas3eq4tonw" path="res://enemy/boss/boomb.gd" id="1_l0drh"]
@@ -36,7 +36,6 @@
 [ext_resource type="Texture2D" uid="uid://bld3rcmi7k6ln" path="res://assets/warlord_turle/turtle_bullets/explosion_effect/1_30.png" id="34_jrbne"]
 [ext_resource type="Texture2D" uid="uid://b1a22jj0bisf6" path="res://assets/warlord_turle/turtle_bullets/explosion_effect/1_31.png" id="35_k35md"]
 [ext_resource type="Texture2D" uid="uid://d1fy0r3lsydec" path="res://assets/warlord_turle/turtle_bullets/explosion_effect/1_32.png" id="36_ix0yx"]
-[ext_resource type="AudioStream" uid="uid://bihapr5ljslku" path="res://assets/sounds/bomb-small.mp3" id="37_rx481"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_fxee5"]
 radius = 18.6263
@@ -195,10 +194,6 @@ speed_scale = 2.0
 
 [node name="Explosion_Timer" type="Timer" parent="."]
 wait_time = 3.0
-
-[node name="ExplodeSound" type="AudioStreamPlayer2D" parent="."]
-stream = ExtResource("37_rx481")
-volume_db = 18.0
 
 [connection signal="timeout" from="Timer" to="." method="_on_timer_timeout"]
 [connection signal="area_entered" from="DirectionArea" to="." method="_on_direction_area_area_entered"]

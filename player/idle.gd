@@ -11,10 +11,9 @@ func _update(delta: float) -> void:
 	if obj.Effect["BubbleTrap"] > 0:
 		return
 	obj.current_oxygen = min(obj.max_oxygen, obj.current_oxygen + obj.oxygen_increase_rate * delta)
-	if obj.Effect["Stun"] <= 0:
-		control_throw()
-		control_attack()
-		control_moving()
-		control_jump()
+	control_throw()
+	control_attack()
+	control_moving()
+	control_jump()
 	if not obj.is_on_floor():
 		change_state(fsm.states.fall)

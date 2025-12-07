@@ -1,0 +1,22 @@
+[gd_scene load_steps=4 format=3 uid="uid://tpuba3bux4at"]
+
+[ext_resource type="Texture2D" uid="uid://b7mrkw5n3mxnl" path="res://assets/ui/warlord_hp_ui.png" id="1_dyqt4"]
+[ext_resource type="Texture2D" uid="uid://dhfkhkdrtoik1" path="res://assets/ui/warlord_hp_ui_under.png" id="2_3xlj7"]
+[ext_resource type="Script" uid="uid://xx13xcgrssnx" path="res://scenes/game_screen/warlord_health_bar.gd" id="3_3xlj7"]
+
+[node name="WarlordHealthBar" type="TextureProgressBar"]
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -1034.0
+offset_top = -8.0
+offset_right = -10.0
+offset_bottom = 1016.0
+grow_horizontal = 0
+scale = Vector2(0.284602, 0.303524)
+min_value = 30.0
+value = 100.0
+fill_mode = 1
+texture_under = ExtResource("2_3xlj7")
+texture_progress = ExtResource("1_dyqt4")
+script = ExtResource("3_3xlj7")

@@ -1,0 +1,24 @@
+# 1. SETUP VỊ TRÍ (Rất quan trọng)
+# Để cat đứng bên trái (left), Foxy đứng bên phải (right) để không bị đè lên nhau.
+
+# 2. HỘI THOẠI BẮT ĐẦU
+cat: Meo... meooo...
+
+# 3. SUY NGHĨ & LỰA CHỌN
+# Lưu ý: Godot dùng [b] để in đậm, không dùng **
+Foxy: [b]Trông Miu có vẻ lo lắng...[/b]
+
+- Sao thế Miu? Đói à?
+	# Nếu chọn dòng này, Foxy sẽ nói:
+	Foxy: Sao thế Miu? Đói à?
+	cat: Gừ gừ... [pause=0.5] Meo!
+
+- Có gì bất ổn hay sao?
+	# Nếu chọn dòng này, Foxy sẽ nói:
+	Foxy: Có gì bất ổn hay sao?
+	cat: Meo... (Mèo lờ đi)
+
+# 4. KẾT THÚC HỘI THOẠI (Gộp lại mạch chung)
+Foxy: Chắc lại thấy chuột rồi.
+
+cat: Meo...

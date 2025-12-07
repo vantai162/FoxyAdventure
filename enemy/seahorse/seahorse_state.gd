@@ -9,7 +9,6 @@ func _ready() -> void:
 	fsm = FSM.new(self, $States, $States/Idle)
 	change_direction(-1)
 	super._ready()
-	invincible = true
 
 func fire() -> void:
 

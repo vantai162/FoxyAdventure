@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="AudioClip" load_steps=3 format=3 uid="uid://ccy8q58j1swd7"]
+
+[ext_resource type="Script" uid="uid://chlphbiuq1gay" path="res://scripts/audio/audio_clip.gd" id="1_i1kiw"]
+[ext_resource type="AudioStream" uid="uid://brn6bu26b2blg" path="res://assets/sounds/warlord_theme.wav" id="2_7rb4e"]
+
+[resource]
+script = ExtResource("1_i1kiw")
+clip_id = "warlord_theme"
+stream = ExtResource("2_7rb4e")
+volume_db = 0.0
+randomize_pitch = false
+pitch_min = 0.9
+pitch_max = 1.1
+description = ""
+metadata/_custom_type_script = "uid://chlphbiuq1gay"

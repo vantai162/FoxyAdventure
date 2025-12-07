@@ -66,6 +66,8 @@ func control_jump() -> bool:
 	if(GameManager.paused):
 		return false
 	if (Input.is_action_just_pressed("jump") and obj.jump_count < 2) or (obj._checkbuffer() and obj.is_on_floor()):
+		if(obj.jump_count==0&& fsm.current_state==fsm.states.fall):
+			obj.jump_count=1
 		if state_sound:
 			obj.play_sfx(state_sound)
 		if obj.jump_count == 1:
@@ -143,6 +145,7 @@ func take_damage(damage: int) -> void:
 	obj.take_damage(damage)
 	
 	if obj.health <= 0:
+		obj.emit_signal("died")
 		change_state(fsm.states.dead)
 	else:
-		pass
+		change_state(fsm.states.hurt)

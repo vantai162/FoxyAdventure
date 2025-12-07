@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="AudioClip" load_steps=3 format=3 uid="uid://cmn8x53672lyi"]
+
+[ext_resource type="Script" uid="uid://chlphbiuq1gay" path="res://scripts/audio/audio_clip.gd" id="1_d2whn"]
+[ext_resource type="AudioStream" uid="uid://bxqme8ahi0tpd" path="res://assets/sounds/wave.mp3" id="2_371tn"]
+
+[resource]
+script = ExtResource("1_d2whn")
+clip_id = "warlord_raise_water"
+stream = ExtResource("2_371tn")
+volume_db = 0.0
+randomize_pitch = false
+pitch_min = 0.9
+pitch_max = 1.1
+description = ""
+metadata/_custom_type_script = "uid://chlphbiuq1gay"

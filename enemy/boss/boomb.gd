@@ -9,7 +9,7 @@ extends RigidBody2D
 @export var water_drag: float = 3.0            ## Velocity dampening in water
 @export var float_offset: float = -10.0        ## Target height above water surface
 @export var max_buoyancy_velocity: float = 300.0  ## Cap on upward speed in water
-@onready var explode_sound = $ExplodeSound
+
 
 var roll_dir =1
 var direction := 1
@@ -34,6 +34,11 @@ func _ready() -> void:
 	
 	# Start checking for water
 	set_physics_process(true)
+
+## Launch the bomb in the specified direction. Call AFTER adding to scene tree.
+func launch(dir: int) -> void:
+	direction = dir
+	apply_impulse(Vector2(dir * speed, lift_force))
 func _physics_process(delta: float) -> void:
 	if exploded:
 		return
@@ -126,7 +131,8 @@ func explode():
 	explosion.play("default")
 	explosion_hitbox.disabled = false
 	timer.start()
-	explode_sound.play()
+	#explode_sound.play()
+	AudioManager.play_sound("bomb_explode",10.0)
 	
 
 

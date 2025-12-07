@@ -7,7 +7,7 @@ extends BaseCharacter
 @export var jump_buffer: float
 @export var coyote_time: float
 var inventory= Inventory.new()
-
+var skin
 
 @export_group("Movement Physics")
 @export var ground_friction: float = 0.25
@@ -33,6 +33,8 @@ var inventory= Inventory.new()
 
 @export_group("Attack")
 @export var attack_duration: float = 0.2
+@export var attack_cooldown_time: float = 0.35  ## Cooldown between attacks (prevents spam)
+@export var attack_air_gravity_scale: float = 0.3  ## Gravity multiplier during air attack (creates "hang time")
 @export var air_slash_spawn_delay: float = 0.05
 @export var air_slash_speed: float = 300.0
 @export var air_slash_deceleration: float = 500.0
@@ -40,6 +42,8 @@ var inventory= Inventory.new()
 @export var air_slash_active_time: float = 0.3
 @export var air_slash_fade_out_time: float = 0.3
 @export var air_slash_total_time: float = 0.8
+
+var attack_cooldown_remaining: float = 0.0  ## Tracks current cooldown countdown
 
 @export_group("Swimming")
 @export var swim_gravity: float = 300.0
@@ -58,9 +62,14 @@ var wall_jump_restriction_timer: float = -1.0  ## -1 = not active, >=0 = active 
 var current_water: Node2D = null  ## Reference to current water body player is in
 signal health_changed
 signal coin_changed
+signal oxy_changed
+signal died
+
 @export_group("Blade")
 @export var blade_projectile_scene: PackedScene
 @export var air_slash_scene: PackedScene
+
+@onready var stun_ani: = $Direction/Stun_Effect
 
 @export var Effect = {
 	"Stun": 0,
@@ -98,7 +107,6 @@ var has_unlocked_blade: bool = false
 func get_current_air_acceleration() -> float:
 	if wall_jump_restriction_timer < 0:
 		return air_acceleration
-	
 	# Wall jump restriction active - check phase
 	if wall_jump_restriction_timer < wall_jump_control_delay:
 		return wall_jump_air_acceleration  # Locked phase: minimal control
@@ -113,7 +121,10 @@ func get_current_air_acceleration() -> float:
 	return air_acceleration
 
 func can_attack() -> bool:
-	return blade_count > 0 and Effect["Stun"] <= 0
+	return blade_count > 0 and Effect["Stun"] <= 0 and attack_cooldown_remaining <= 0
+
+func start_attack_cooldown() -> void:
+	attack_cooldown_remaining = attack_cooldown_time
 
 func can_throw_blade() -> bool:
 	return blade_count > 0 and Effect["Stun"] <= 0
@@ -177,6 +188,7 @@ func _ready() -> void:
 	super._ready()
 	fsm = FSM.new(self, $States, $States/Idle)
 	$Direction/HitArea2D/CollisionShape2D.disabled = true
+	stun_ani.visible=false
 	call_deferred("_connect_water_signals")
 	emit_signal("health_changed")
 	
@@ -228,14 +240,28 @@ func _process(delta: float) -> void:
 	_updateeffect(delta)
 	_update_timeline(delta)
 	_updatecooldown(delta)
-	if invincible:
-		var blink_timer
-		var sprite
-		if has_unlocked_blade:
-			sprite = $Direction/BladeAnimatedSprite2D
-			
-		elif not has_unlocked_blade:
-			sprite = $Direction/AnimatedSprite2D
+	oxy_changed.emit()
+	
+		
+
+func _collect_blade() -> void:
+	if not has_unlocked_blade:
+		# First blade: unlock ability and give one blade
+		has_unlocked_blade = true
+		blade_count = 1
+		set_animated_sprite($Direction/BladeAnimatedSprite2D)
+	else:
+		# Additional blades: increase capacity
+		increase_blade_capacity()
+
+func _applyeffect(name: String, time: float) -> void:
+	Effect[name] = time
+	if Effect["Invicibility"] > 0:
+		var blink_timer 
+		# Use the current active sprite (supports both normal and blade sprite)
+		var sprite = animated_sprite
+		if not sprite:
+			sprite = $Direction/AnimatedSprite2D  # Fallback
 		blink_timer = Timer.new()
 		blink_timer.wait_time = 0.1
 		blink_timer.one_shot = false
@@ -244,7 +270,7 @@ func _process(delta: float) -> void:
 			sprite.visible = not sprite.visible
 		)
 		blink_timer.start()
-		await get_tree().create_timer(invincible_timer).timeout
+		await get_tree().create_timer(time).timeout
 		blink_timer.stop()
 		blink_timer.queue_free()
 		sprite.visible = true
@@ -258,21 +284,19 @@ func _collect_blade() -> void:
 func _applyeffect(name: String, time: float) -> void:
 	Effect[name] = time
 	
-func apply_bubble_trap(duration: float = 2.0):
-	Effect["BubbleTrap"] = duration
-	velocity = Vector2.ZERO
-	set_physics_process(false)
-	fsm.change_state(fsm.states.frozen)
 
 
 	
 func _updateeffect(delta: float) -> void:
+	print("stun:",Effect["Stun"])
 	for key in Effect:
 		Effect[key] -= delta
 		if Effect[key] <= 0:
 			Effect[key] = 0
-		if Effect["BubbleTrap"] <= 0 and not is_physics_processing():
-			set_physics_process(true)
+	if Effect["Stun"] > 0 and fsm.current_state != fsm.states.stun:
+		fsm.change_state(fsm.states.stun)
+
+
 func _update_timeline(delta: float) -> void:
 	timeline += delta
 	if is_on_floor():
@@ -290,7 +314,9 @@ func take_damage(damage: int) -> void:
 	if Effect["Invicibility"] <= 0:
 		if has_node("Camera2D"):
 			$Camera2D.shake(8.0)
+		#health_changed.emit()
 		super.take_damage(damage)
+		_applyeffect("Invicibility",2.0)
 		fsm.change_state(fsm.states.hurt)
 
 func _updatecooldown(delta: float) -> void:
@@ -298,11 +324,16 @@ func _updatecooldown(delta: float) -> void:
 		CoolDown[key] -= delta
 		if CoolDown[key] <= 0:
 			CoolDown[key] = 0
+	
+	# Attack cooldown (separate from skill cooldowns)
+	if attack_cooldown_remaining > 0:
+		attack_cooldown_remaining -= delta
 
 func set_cool_down(skillname: String) -> void:
 	CoolDown[skillname] = InitCoolDown[skillname]
 	
 func save_state() -> Dictionary:
+	print("DEBUG save_state health:", health)
 	return {
 		"position": [global_position.x, global_position.y],
 		"blade_count": blade_count,
@@ -325,9 +356,11 @@ func load_state(data: Dictionary) -> void:
 		has_unlocked_blade = data["has_unlocked_blade"]
 		if has_unlocked_blade:
 			set_animated_sprite($Direction/BladeAnimatedSprite2D)
-	
 	if data.has("health"):
+		print("DEBUG load_state health:", data["health"])
 		health = data["health"]
+	else:
+		print("DEBUG load_state health missing, current:", health)
 	if data.has("Inventory"):
 		inventory._load_inventory(data["Inventory"])
 	# Đã loại bỏ logic: if data.has("has_blade") and data["has_blade"] == true:
@@ -338,13 +371,26 @@ func heal(amount:int): # Giữ: func heal
 		health=max_health
 	else:
 		health=amount+health
-		health_changed.emit()
+	health_changed.emit()
 
 func checkfullhealth()->bool: # Giữ: func checkfullhealth
 	return health==max_health
 
 func _on_hurt_area_2d_hurt(direction: Vector2, damage: float) -> void:
-	if not invincible:
-		fsm.current_state.take_damage(damage)
-		health_changed.emit()
+	fsm.current_state.take_damage(damage)
+	health_changed.emit()
+	
+func heal_max_health():
+	heal(max_health)
+	
+func set_max_health(new_max:int) -> void:
+	max_health = new_max
+	# giữ current health <= max
+	health = min(health, max_health)
+
+func get_max_health() -> int:
+	return max_health
+
+func get_health() -> int:
+	return health
 	

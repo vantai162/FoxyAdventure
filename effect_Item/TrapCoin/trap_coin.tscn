@@ -1,10 +1,10 @@
 [gd_scene load_steps=8 format=3 uid="uid://dy2go6q81lmqg"]
 
 [ext_resource type="Script" uid="uid://mtevjbiti430" path="res://effect_Item/TrapCoin/trap_coin.gd" id="1_fje8i"]
-[ext_resource type="Texture2D" uid="uid://cpcg358wuu50i" path="res://assets/coin/01.png" id="2_o1ulh"]
-[ext_resource type="Texture2D" uid="uid://cast16eu1ka7p" path="res://assets/coin/02.png" id="3_rdpj7"]
-[ext_resource type="Texture2D" uid="uid://im347baaq2w5" path="res://assets/coin/03.png" id="4_sfsmy"]
-[ext_resource type="Texture2D" uid="uid://bn4wcasxcy8d1" path="res://assets/coin/04.png" id="5_yixqh"]
+[ext_resource type="Texture2D" uid="uid://cpcg358wuu50i" path="res://assets/objects/coin/01.png" id="2_o1ulh"]
+[ext_resource type="Texture2D" uid="uid://cast16eu1ka7p" path="res://assets/objects/coin/02.png" id="3_rdpj7"]
+[ext_resource type="Texture2D" uid="uid://im347baaq2w5" path="res://assets/objects/coin/03.png" id="4_sfsmy"]
+[ext_resource type="Texture2D" uid="uid://bn4wcasxcy8d1" path="res://assets/objects/coin/04.png" id="5_yixqh"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_51wr1"]
 size = Vector2(11, 10)

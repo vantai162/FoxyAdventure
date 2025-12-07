@@ -1,4 +1,8 @@
+
 [gd_scene load_steps=63 format=3 uid="uid://bs816w0pr8all"]
+
+[gd_scene load_steps=68 format=3 uid="uid://bs816w0pr8all"]
+
 
 [ext_resource type="Script" uid="uid://brl5yy4w7wich" path="res://player/foxy.gd" id="1_wod02"]
 [ext_resource type="Texture2D" uid="uid://m4di78taixns" path="res://assets/foxy/fox_hat/fox_defeat_1.png" id="2_70n8a"]
@@ -46,8 +50,12 @@
 [ext_resource type="Script" uid="uid://devihpb45ajdr" path="res://player/hurt.gd" id="36_reoh7"]
 [ext_resource type="PackedScene" uid="uid://ct1tqxgwkuvbe" path="res://scripts/hurt_area_2d.tscn" id="37_333wc"]
 [ext_resource type="Script" uid="uid://dp045kw80ykvv" path="res://player/dash.gd" id="37_reoh7"]
+[ext_resource type="Texture2D" uid="uid://bw5mcmqst1ydj" path="res://assets/effects/stun_effect/Stun_Effect_1.png" id="38_7sy1l"]
 [ext_resource type="Script" uid="uid://ntfj07p0fh86" path="res://player/throw.gd" id="39_6yfce"]
+[ext_resource type="Texture2D" uid="uid://j338dp3ijwtx" path="res://assets/effects/stun_effect/Stun_Effect_2.png" id="39_k5uq8"]
 [ext_resource type="Script" uid="uid://bhv3i7yhtjluc" path="res://player/attack.gd" id="39_kvcfx"]
+[ext_resource type="Texture2D" uid="uid://bci356ba7ifex" path="res://assets/effects/stun_effect/Stun_Effect_3.png" id="40_xn1qk"]
+[ext_resource type="Texture2D" uid="uid://8w68wb55nr2n" path="res://assets/effects/stun_effect/Stun_Effect_4.png" id="41_eflbx"]
 [ext_resource type="AudioStream" uid="uid://nt3g1qg64dbo" path="res://assets/sounds/minecraft-grass-walking-sound-effect.mp3" id="42_n4xm4"]
 [ext_resource type="AudioStream" uid="uid://dde4nldsvcrqr" path="res://assets/sounds/lose.wav" id="46_xr5x0"]
 [ext_resource type="Script" uid="uid://bifti36mnutt4" path="res://player/wall_cling.gd" id="47_333wc"]
@@ -56,6 +64,7 @@
 [ext_resource type="AudioStream" uid="uid://c0fqro5ktfg8n" path="res://assets/sounds/zapsplat_warfare_sword_medieval_heavy_draw_scabbard_005_12092.mp3" id="50_eelxt"]
 [ext_resource type="AudioStream" uid="uid://b8tju1hs1dwa8" path="res://assets/sounds/jump.wav" id="51_a4g31"]
 [ext_resource type="Script" uid="uid://u7nv2cgrpty5" path="res://player/frozen.gd" id="56_dkaj1"]
+[ext_resource type="Script" uid="uid://itto4t514erb" path="res://player/stun.gd" id="56_dkaj1"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_8r8n2"]
 size = Vector2(21, 30)
@@ -141,6 +150,9 @@ animations = [{
 "loop": false,
 "name": &"water_trap",
 "speed": 10.0
+"loop": true,
+"name": &"stun",
+"speed": 5.0
 }]
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_2mww5"]
@@ -249,6 +261,31 @@ animations = [{
 "loop": false,
 "name": &"water_trap",
 "speed": 10.0
+"texture": ExtResource("6_2ri0v")
+}],
+"loop": true,
+"name": &"stun",
+"speed": 5.0
+}]
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_6dqk0"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("38_7sy1l")
+}, {
+"duration": 1.0,
+"texture": ExtResource("39_k5uq8")
+}, {
+"duration": 1.0,
+"texture": ExtResource("40_xn1qk")
+}, {
+"duration": 1.0,
+"texture": ExtResource("41_eflbx")
+}],
+"loop": true,
+"name": &"default",
+"speed": 5.0
 }]
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_34yrj"]
@@ -289,11 +326,20 @@ shape = SubResource("RectangleShape2D_8r8n2")
 visible = false
 sprite_frames = SubResource("SpriteFrames_7xt5n")
 animation = &"water_trap"
+animation = &"stun"
+frame_progress = 0.160714
 
 [node name="BladeAnimatedSprite2D" type="AnimatedSprite2D" parent="Direction"]
 visible = false
 sprite_frames = SubResource("SpriteFrames_2mww5")
 animation = &"water_trap"
+animation = &"stun"
+
+[node name="Stun_Effect" type="AnimatedSprite2D" parent="Direction"]
+position = Vector2(0, -12)
+scale = Vector2(0.5, 0.5)
+sprite_frames = SubResource("SpriteFrames_6dqk0")
+frame_progress = 0.631754
 
 [node name="HitArea2D" type="Area2D" parent="Direction" groups=["player_attack"]]
 collision_layer = 64
@@ -355,6 +401,7 @@ script = ExtResource("47_333wc")
 script = ExtResource("49_2mww5")
 
 [node name="Frozen" type="Node" parent="States"]
+[node name="Stun" type="Node" parent="States"]
 script = ExtResource("56_dkaj1")
 
 [node name="EffectArea" type="Area2D" parent="."]
@@ -368,10 +415,5 @@ shape = SubResource("RectangleShape2D_u75vx")
 
 [node name="FloorRayCast2D" type="RayCast2D" parent="."]
 target_position = Vector2(-1, 19)
-
-[node name="SFXPlayer" type="AudioStreamPlayer" parent="."]
-stream = ExtResource("51_a4g31")
-volume_db = 7.0
-max_polyphony = 12
 
 [connection signal="hurt" from="Direction/HurtArea2d" to="." method="_on_hurt_area_2d_hurt"]

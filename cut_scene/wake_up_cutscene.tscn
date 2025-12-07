@@ -1,0 +1,41 @@
+[gd_scene load_steps=6 format=3 uid="uid://dsnrphqkwkg5e"]
+
+[ext_resource type="Script" uid="uid://58bbdbin7g80" path="res://cut_scene/wake_up_cutscene.gd" id="1_2krkx"]
+[ext_resource type="Shader" uid="uid://cyr2no3idghup" path="res://cut_scene/eyelid.gdshader" id="2_6e8md"]
+[ext_resource type="Shader" uid="uid://dwugh1d43h5bv" path="res://cut_scene/blur.gdshader" id="3_eao6j"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_2krkx"]
+shader = ExtResource("2_6e8md")
+shader_parameter/openness = 0.0
+shader_parameter/smoothness = 0.1
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_i5vxi"]
+shader = ExtResource("3_eao6j")
+shader_parameter/amount = 0.0
+
+[node name="WakeUpCutscene" type="CanvasLayer"]
+layer = 128
+script = ExtResource("1_2krkx")
+
+[node name="EyelidRect" type="ColorRect" parent="."]
+material = SubResource("ShaderMaterial_2krkx")
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="BlurRect" type="ColorRect" parent="."]
+material = SubResource("ShaderMaterial_i5vxi")
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="BlackFade" type="ColorRect" parent="."]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
