@@ -69,6 +69,8 @@ signal died
 @export var blade_projectile_scene: PackedScene
 @export var air_slash_scene: PackedScene
 
+@onready var stun_ani: = $Direction/Stun_Effect
+
 @export var Effect = {
 	"Stun": 0,
 	"DamAmplify": 0,
@@ -103,7 +105,6 @@ var has_unlocked_blade: bool = false
 func get_current_air_acceleration() -> float:
 	if wall_jump_restriction_timer < 0:
 		return air_acceleration
-	
 	# Wall jump restriction active - check phase
 	if wall_jump_restriction_timer < wall_jump_control_delay:
 		return wall_jump_air_acceleration  # Locked phase: minimal control
@@ -185,6 +186,7 @@ func _ready() -> void:
 	super._ready()
 	fsm = FSM.new(self, $States, $States/Idle)
 	$Direction/HitArea2D/CollisionShape2D.disabled = true
+	stun_ani.visible=false
 	call_deferred("_connect_water_signals")
 	emit_signal("health_changed")
 	
@@ -272,10 +274,13 @@ func _applyeffect(name: String, time: float) -> void:
 		sprite.visible = true
 
 func _updateeffect(delta: float) -> void:
+	print("stun:",Effect["Stun"])
 	for key in Effect:
 		Effect[key] -= delta
 		if Effect[key] <= 0:
 			Effect[key] = 0
+	if Effect["Stun"] > 0 and fsm.current_state != fsm.states.stun:
+		fsm.change_state(fsm.states.stun)
 
 func _update_timeline(delta: float) -> void:
 	timeline += delta
