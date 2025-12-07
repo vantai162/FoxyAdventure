@@ -1,0 +1,183 @@
+[gd_scene load_steps=29 format=3 uid="uid://bj35soojaj5hs"]
+
+[ext_resource type="Script" uid="uid://chjigae24mwx6" path="res://enemy/starfish/elite_ricochet_starfish.gd" id="1_elite"]
+[ext_resource type="Script" uid="uid://naenc7pdtvr0" path="res://enemy/elite_eye_trail.gd" id="2_eye"]
+[ext_resource type="Shader" uid="uid://q33y13b56v1g" path="res://enemy/elite_enemy.gdshader" id="2_shader"]
+[ext_resource type="Texture2D" uid="uid://div7ykrnkcmbm" path="res://assets/monsters/starfish/starfish_atk_01.png" id="3_atk"]
+[ext_resource type="Texture2D" uid="uid://b7fyajqfeium5" path="res://assets/monsters/starfish/starfish_atk_02.png" id="4_atk"]
+[ext_resource type="Texture2D" uid="uid://kkpwv3jqgs40" path="res://assets/monsters/starfish/starfish_atk_03.png" id="5_atk"]
+[ext_resource type="Texture2D" uid="uid://brx56liv83bir" path="res://assets/monsters/starfish/starfish_atk_04.png" id="6_atk"]
+[ext_resource type="Texture2D" uid="uid://bauqbopb4s1be" path="res://assets/monsters/starfish/starfish_atk_05.png" id="7_atk"]
+[ext_resource type="Texture2D" uid="uid://77tvy0q7r4ec" path="res://assets/monsters/starfish/starfish_atk_06.png" id="8_atk"]
+[ext_resource type="Texture2D" uid="uid://bohjxisajkyem" path="res://assets/monsters/starfish/starfish_hurt_01.png" id="9_hurt"]
+[ext_resource type="Texture2D" uid="uid://8usoreyem8l6" path="res://assets/foxy/smoke/jump_smoke_1.png" id="10_dead"]
+[ext_resource type="Texture2D" uid="uid://dm4exe7w2fi23" path="res://assets/monsters/starfish/starfish_hurt_02.png" id="11_hurt"]
+[ext_resource type="Texture2D" uid="uid://jtpy308mqnwi" path="res://assets/foxy/smoke/jump_smoke_2.png" id="12_dead"]
+[ext_resource type="Texture2D" uid="uid://cbk136ktae42o" path="res://assets/foxy/smoke/jump_smoke_3.png" id="13_dead"]
+[ext_resource type="Texture2D" uid="uid://c1k5spj3k7htj" path="res://assets/monsters/starfish/starfish_01.png" id="14_run"]
+[ext_resource type="Texture2D" uid="uid://c8cs1hwh7venp" path="res://assets/foxy/smoke/jump_smoke_4.png" id="15_dead"]
+[ext_resource type="Texture2D" uid="uid://cqc7ruwipvqko" path="res://assets/monsters/starfish/starfish_02.png" id="16_run"]
+[ext_resource type="Texture2D" uid="uid://dejbsdoig628p" path="res://assets/monsters/starfish/starfish_03.png" id="17_run"]
+[ext_resource type="Script" uid="uid://xqvgljx4hk1s" path="res://scripts/hit_area_2d.gd" id="18_hit"]
+[ext_resource type="PackedScene" uid="uid://ct1tqxgwkuvbe" path="res://scripts/hurt_area_2d.tscn" id="20_hurt"]
+[ext_resource type="Script" uid="uid://bgymgx1f0o122" path="res://enemy/starfish/states/elite_run.gd" id="21_643px"]
+[ext_resource type="Script" uid="uid://jcw10mo6pgth" path="res://enemy/starfish/states/hurt.gd" id="21_hurt_state"]
+[ext_resource type="Script" uid="uid://c0fhqm6it2ls5" path="res://enemy/starfish/states/ricochet_dash.gd" id="22_ricochet"]
+[ext_resource type="Script" uid="uid://8nk1e0hupl7j" path="res://enemy/starfish/states/dead.gd" id="23_dead"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_elite"]
+shader = ExtResource("2_shader")
+shader_parameter/hue_shift = 180.0
+shader_parameter/saturation = 1.8
+shader_parameter/contrast = 1.6
+shader_parameter/edge_glow = 0.4
+shader_parameter/glow_color = Color(0.6, 1, 1, 1)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_elite"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("3_atk")
+}, {
+"duration": 1.0,
+"texture": ExtResource("4_atk")
+}, {
+"duration": 1.0,
+"texture": ExtResource("5_atk")
+}, {
+"duration": 1.0,
+"texture": ExtResource("6_atk")
+}, {
+"duration": 1.0,
+"texture": ExtResource("7_atk")
+}, {
+"duration": 1.0,
+"texture": ExtResource("8_atk")
+}],
+"loop": true,
+"name": &"attack",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("10_dead")
+}, {
+"duration": 1.0,
+"texture": ExtResource("12_dead")
+}, {
+"duration": 1.0,
+"texture": ExtResource("13_dead")
+}, {
+"duration": 1.0,
+"texture": ExtResource("15_dead")
+}],
+"loop": false,
+"name": &"dead",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("9_hurt")
+}, {
+"duration": 1.0,
+"texture": ExtResource("11_hurt")
+}],
+"loop": false,
+"name": &"hurt",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("14_run")
+}, {
+"duration": 1.0,
+"texture": ExtResource("16_run")
+}, {
+"duration": 1.0,
+"texture": ExtResource("17_run")
+}],
+"loop": true,
+"name": &"run",
+"speed": 5.0
+}]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_body"]
+size = Vector2(28, 31)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_hurt"]
+size = Vector2(21, 26)
+
+[node name="EliteRicochetStarfish" type="CharacterBody2D"]
+collision_layer = 8
+script = ExtResource("1_elite")
+
+[node name="Direction" type="Node2D" parent="."]
+
+[node name="EliteEyeTrail" type="Node2D" parent="Direction"]
+script = ExtResource("2_eye")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="Direction"]
+material = SubResource("ShaderMaterial_elite")
+sprite_frames = SubResource("SpriteFrames_elite")
+animation = &"run"
+
+[node name="FrontRayCast2D" type="RayCast2D" parent="Direction"]
+position = Vector2(8, 12)
+target_position = Vector2(12, 0)
+
+[node name="DownRayCast2D" type="RayCast2D" parent="Direction"]
+position = Vector2(14, -4)
+target_position = Vector2(0, 29)
+
+[node name="HitArea2D" type="Area2D" parent="Direction"]
+collision_layer = 0
+collision_mask = 4
+script = ExtResource("18_hit")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Direction/HitArea2D"]
+position = Vector2(-2, -1.5)
+shape = SubResource("RectangleShape2D_body")
+
+[node name="DetectPlayerRayCast2D" type="RayCast2D" parent="Direction"]
+target_position = Vector2(100, 0)
+collision_mask = 3
+
+[node name="DetectPlayerRayCast2D2" type="RayCast2D" parent="Direction"]
+target_position = Vector2(100, 30)
+collision_mask = 3
+
+[node name="DetectPlayerRayCast2D3" type="RayCast2D" parent="Direction"]
+target_position = Vector2(100, -30)
+collision_mask = 3
+
+[node name="DetectPlayerRayCast2D4" type="RayCast2D" parent="Direction"]
+target_position = Vector2(-100, 0)
+collision_mask = 3
+
+[node name="HurtArea2D" parent="Direction" instance=ExtResource("20_hurt")]
+collision_layer = 80
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Direction/HurtArea2D"]
+position = Vector2(-2, -1.5)
+shape = SubResource("RectangleShape2D_body")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(-1.5, 2)
+shape = SubResource("RectangleShape2D_hurt")
+
+[node name="States" type="Node" parent="."]
+
+[node name="Run" type="Node" parent="States"]
+script = ExtResource("21_643px")
+
+[node name="Hurt" type="Node" parent="States"]
+script = ExtResource("21_hurt_state")
+
+[node name="RicochetDash" type="Node" parent="States"]
+script = ExtResource("22_ricochet")
+
+[node name="Dead" type="Node" parent="States"]
+script = ExtResource("23_dead")
+
+[connection signal="hurt" from="Direction/HurtArea2D" to="." method="_on_hurt_area_2d_hurt"]

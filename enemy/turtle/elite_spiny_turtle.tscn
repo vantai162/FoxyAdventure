@@ -1,0 +1,158 @@
+[gd_scene load_steps=27 format=3 uid="uid://dumayxma7am7b"]
+
+[ext_resource type="Script" uid="uid://doc61op57jxqn" path="res://enemy/turtle/elite_spiny_turtle.gd" id="1_elite_turtle"]
+[ext_resource type="Script" uid="uid://naenc7pdtvr0" path="res://enemy/elite_eye_trail.gd" id="2_eye_trail"]
+[ext_resource type="Shader" uid="uid://q33y13b56v1g" path="res://enemy/elite_enemy.gdshader" id="2_shader"]
+[ext_resource type="PackedScene" path="res://projectiles/spike_projectile.tscn" id="3_spike"]
+[ext_resource type="Texture2D" uid="uid://8usoreyem8l6" path="res://assets/foxy/smoke/jump_smoke_1.png" id="4_livia"]
+[ext_resource type="Texture2D" uid="uid://c4cikv5rwcywi" path="res://assets/turtle/turtle_blue_05.png" id="5_p2yqw"]
+[ext_resource type="Texture2D" uid="uid://jtpy308mqnwi" path="res://assets/foxy/smoke/jump_smoke_2.png" id="6_e4l57"]
+[ext_resource type="Texture2D" uid="uid://dd47b1gdvohc2" path="res://assets/turtle/turtle_blue_04.png" id="7_n3t07"]
+[ext_resource type="PackedScene" uid="uid://cbjbo6gtyss6f" path="res://scripts/hit_area_2d.tscn" id="8_raxgc"]
+[ext_resource type="Texture2D" uid="uid://cbk136ktae42o" path="res://assets/foxy/smoke/jump_smoke_3.png" id="9_38t8l"]
+[ext_resource type="PackedScene" uid="uid://ct1tqxgwkuvbe" path="res://scripts/hurt_area_2d.tscn" id="10_ehiyd"]
+[ext_resource type="Texture2D" uid="uid://7hte3rp2thdv" path="res://assets/turtle/turtle_blue_03.png" id="11_yt53j"]
+[ext_resource type="Texture2D" uid="uid://c8cs1hwh7venp" path="res://assets/foxy/smoke/jump_smoke_4.png" id="12_6bdcj"]
+[ext_resource type="Script" uid="uid://11bngkdi5rr8" path="res://enemy/turtle/run.gd" id="13_ehiyd"]
+[ext_resource type="Texture2D" uid="uid://d2uo75yv7f5bl" path="res://assets/turtle/turtle_blue_01.png" id="14_jolqy"]
+[ext_resource type="Texture2D" uid="uid://dm32dj4ri3uc8" path="res://assets/turtle/turtle_blue_02.png" id="15_eo1cv"]
+[ext_resource type="Script" uid="uid://b1c4gy1qtdl5l" path="res://enemy/turtle/aggressive_pursue.gd" id="16_pursue"]
+[ext_resource type="Script" uid="uid://l1xuywwvsedu" path="res://enemy/turtle/defensive_hide.gd" id="17_def_hide"]
+[ext_resource type="Script" uid="uid://bhiga40ocqjpx" path="res://enemy/turtle/states/elite_hurt.gd" id="18_0ekdt"]
+[ext_resource type="Texture2D" uid="uid://bq7nxdv5i1ha5" path="res://assets/turtle/turtle_blue_walk_01.png" id="19_livia"]
+[ext_resource type="Texture2D" uid="uid://cgt4s4vn5nfar" path="res://assets/turtle/turtle_blue_walk_02.png" id="20_e4l57"]
+[ext_resource type="Script" uid="uid://k4wow2443kjb" path="res://enemy/turtle/dead.gd" id="21_n3t07"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_livia"]
+size = Vector2(20, 26)
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_elite"]
+shader = ExtResource("2_shader")
+shader_parameter/hue_shift = 180.0
+shader_parameter/saturation = 1.8
+shader_parameter/contrast = 1.6
+shader_parameter/edge_glow = 0.4
+shader_parameter/glow_color = Color(0.6, 1, 1, 1)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_v3mmh"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("4_livia")
+}, {
+"duration": 1.0,
+"texture": ExtResource("6_e4l57")
+}, {
+"duration": 1.0,
+"texture": ExtResource("9_38t8l")
+}, {
+"duration": 1.0,
+"texture": ExtResource("12_6bdcj")
+}],
+"loop": false,
+"name": &"dead",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("5_p2yqw")
+}, {
+"duration": 1.0,
+"texture": ExtResource("7_n3t07")
+}, {
+"duration": 1.0,
+"texture": ExtResource("11_yt53j")
+}, {
+"duration": 1.0,
+"texture": ExtResource("14_jolqy")
+}, {
+"duration": 1.0,
+"texture": ExtResource("15_eo1cv")
+}],
+"loop": false,
+"name": &"hide",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("19_livia")
+}, {
+"duration": 1.0,
+"texture": ExtResource("20_e4l57")
+}, {
+"duration": 1.0,
+"texture": ExtResource("5_p2yqw")
+}],
+"loop": true,
+"name": &"run",
+"speed": 5.0
+}]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_pkty3"]
+radius = 15.0
+
+[node name="EliteSpinyTurtle" type="CharacterBody2D" groups=["can_interact_with_water"]]
+collision_layer = 8
+script = ExtResource("1_elite_turtle")
+spike_projectile_scene = ExtResource("3_spike")
+max_health = 2
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(0, 3)
+shape = SubResource("RectangleShape2D_livia")
+
+[node name="Direction" type="Node2D" parent="."]
+
+[node name="EliteEyeTrail" type="Node2D" parent="Direction"]
+position = Vector2(9, 10)
+script = ExtResource("2_eye_trail")
+
+[node name="EliteEyeTrail2" type="Node2D" parent="Direction"]
+position = Vector2(5, 10)
+script = ExtResource("2_eye_trail")
+
+[node name="FrontRayCast2D" type="RayCast2D" parent="Direction"]
+position = Vector2(0, 13)
+target_position = Vector2(14, 0)
+
+[node name="DownRayCast2D" type="RayCast2D" parent="Direction"]
+position = Vector2(10, 0)
+target_position = Vector2(0, 29)
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="Direction"]
+material = SubResource("ShaderMaterial_elite")
+sprite_frames = SubResource("SpriteFrames_v3mmh")
+animation = &"run"
+
+[node name="HitArea2D" parent="Direction" instance=ExtResource("8_raxgc")]
+collision_layer = 0
+collision_mask = 4
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Direction/HitArea2D"]
+shape = SubResource("CircleShape2D_pkty3")
+
+[node name="HurtArea2D" parent="Direction" instance=ExtResource("10_ehiyd")]
+collision_layer = 16
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Direction/HurtArea2D"]
+shape = SubResource("CircleShape2D_pkty3")
+
+[node name="States" type="Node" parent="."]
+
+[node name="Run" type="Node" parent="States"]
+script = ExtResource("13_ehiyd")
+
+[node name="AggressivePursue" type="Node" parent="States"]
+script = ExtResource("16_pursue")
+
+[node name="DefensiveHide" type="Node" parent="States"]
+script = ExtResource("17_def_hide")
+
+[node name="Hurt" type="Node" parent="States"]
+script = ExtResource("18_0ekdt")
+
+[node name="Dead" type="Node" parent="States"]
+script = ExtResource("21_n3t07")
+
+[connection signal="hurt" from="Direction/HurtArea2D" to="." method="_on_hurt_area_2d_hurt"]

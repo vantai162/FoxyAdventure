@@ -1,0 +1,155 @@
+[gd_scene load_steps=24 format=3 uid="uid://jm5jjtt5tfsj"]
+
+[ext_resource type="Script" uid="uid://k3vih610ckvp" path="res://enemy/crab/elite_hunter_crab.gd" id="1_elite"]
+[ext_resource type="Script" uid="uid://naenc7pdtvr0" path="res://enemy/elite_eye_trail.gd" id="2_eye"]
+[ext_resource type="Shader" uid="uid://q33y13b56v1g" path="res://enemy/elite_enemy.gdshader" id="2_shader"]
+[ext_resource type="Texture2D" uid="uid://8usoreyem8l6" path="res://assets/foxy/smoke/jump_smoke_1.png" id="3_a0e87"]
+[ext_resource type="Texture2D" uid="uid://boxmc12qq7a8a" path="res://assets/monsters/crab/crab_hurt_02.png" id="4_mdcuw"]
+[ext_resource type="Texture2D" uid="uid://bheixrcxv5gb4" path="res://assets/monsters/crab/crab_hurt_01.png" id="5_0eync"]
+[ext_resource type="Texture2D" uid="uid://jtpy308mqnwi" path="res://assets/foxy/smoke/jump_smoke_2.png" id="6_h3mse"]
+[ext_resource type="Texture2D" uid="uid://cbk136ktae42o" path="res://assets/foxy/smoke/jump_smoke_3.png" id="7_d7tli"]
+[ext_resource type="Texture2D" uid="uid://div7bok06185o" path="res://assets/monsters/crab/crab_01.png" id="8_uvpl2"]
+[ext_resource type="Texture2D" uid="uid://c8cs1hwh7venp" path="res://assets/foxy/smoke/jump_smoke_4.png" id="9_4x0fy"]
+[ext_resource type="Texture2D" uid="uid://d24uce3wqmwe6" path="res://assets/monsters/crab/crab_02.png" id="10_52lys"]
+[ext_resource type="Texture2D" uid="uid://dq122qahq1rm2" path="res://assets/monsters/crab/crab_03.png" id="11_a0e87"]
+[ext_resource type="Script" uid="uid://xqvgljx4hk1s" path="res://scripts/hit_area_2d.gd" id="12_h3mse"]
+[ext_resource type="Script" uid="uid://xiou1t8t4fyo" path="res://enemy/crab/run.gd" id="13_mekln"]
+[ext_resource type="PackedScene" uid="uid://ct1tqxgwkuvbe" path="res://scripts/hurt_area_2d.tscn" id="14_mdcuw"]
+[ext_resource type="Script" uid="uid://d3rue3v1os1bt" path="res://enemy/crab/hurt.gd" id="15_mdcuw"]
+[ext_resource type="Script" uid="uid://yuoupvpkqxoc" path="res://enemy/crab/dead.gd" id="16_0eync"]
+[ext_resource type="Script" uid="uid://d0bjmbsqre10f" path="res://enemy/crab/hunt.gd" id="17_hunt"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_5qelw"]
+size = Vector2(35, 27)
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_elite"]
+shader = ExtResource("2_shader")
+shader_parameter/hue_shift = 180.0
+shader_parameter/saturation = 1.8
+shader_parameter/contrast = 1.6
+shader_parameter/edge_glow = 0.4
+shader_parameter/glow_color = Color(0.6, 1, 1, 1)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_x3h0i"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("3_a0e87")
+}, {
+"duration": 1.0,
+"texture": ExtResource("6_h3mse")
+}, {
+"duration": 1.0,
+"texture": ExtResource("7_d7tli")
+}, {
+"duration": 1.0,
+"texture": ExtResource("9_4x0fy")
+}],
+"loop": false,
+"name": &"dead",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("5_0eync")
+}, {
+"duration": 1.0,
+"texture": ExtResource("4_mdcuw")
+}],
+"loop": false,
+"name": &"hurt",
+"speed": 10.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("8_uvpl2")
+}, {
+"duration": 1.0,
+"texture": ExtResource("10_52lys")
+}, {
+"duration": 1.0,
+"texture": ExtResource("11_a0e87")
+}],
+"loop": true,
+"name": &"run",
+"speed": 5.0
+}]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_c1mj8"]
+size = Vector2(35, 27)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_mdcuw"]
+size = Vector2(527, 237)
+
+[node name="EliteHunterCrab" type="CharacterBody2D"]
+collision_layer = 8
+script = ExtResource("1_elite")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(-0.5, -0.5)
+shape = SubResource("RectangleShape2D_5qelw")
+
+[node name="Direction" type="Node2D" parent="."]
+
+[node name="EliteEyeTrail" type="Node2D" parent="Direction"]
+position = Vector2(5, -7)
+script = ExtResource("2_eye")
+
+[node name="EliteEyeTrail2" type="Node2D" parent="Direction"]
+position = Vector2(-6, -7)
+script = ExtResource("2_eye")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="Direction"]
+material = SubResource("ShaderMaterial_elite")
+sprite_frames = SubResource("SpriteFrames_x3h0i")
+animation = &"run"
+
+[node name="FrontRayCast2D" type="RayCast2D" parent="Direction"]
+position = Vector2(9, 10)
+target_position = Vector2(14, 0)
+
+[node name="DownRayCast2D" type="RayCast2D" parent="Direction"]
+position = Vector2(14, -4)
+target_position = Vector2(0, 36)
+
+[node name="HitArea2D" type="Area2D" parent="Direction"]
+collision_layer = 0
+collision_mask = 4
+script = ExtResource("12_h3mse")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Direction/HitArea2D"]
+position = Vector2(-0.5, -0.5)
+shape = SubResource("RectangleShape2D_c1mj8")
+
+[node name="HurtArea2D" parent="Direction" instance=ExtResource("14_mdcuw")]
+collision_layer = 16
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Direction/HurtArea2D"]
+position = Vector2(-0.5, -0.5)
+shape = SubResource("RectangleShape2D_c1mj8")
+
+[node name="DetectPlayerArea2D" type="Area2D" parent="Direction"]
+collision_layer = 0
+collision_mask = 2
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Direction/DetectPlayerArea2D"]
+position = Vector2(1, -1.5)
+shape = SubResource("RectangleShape2D_mdcuw")
+
+[node name="States" type="Node" parent="."]
+
+[node name="Run" type="Node" parent="States"]
+script = ExtResource("13_mekln")
+
+[node name="Hunt" type="Node" parent="States"]
+script = ExtResource("17_hunt")
+
+[node name="Hurt" type="Node" parent="States"]
+script = ExtResource("15_mdcuw")
+
+[node name="Dead" type="Node" parent="States"]
+script = ExtResource("16_0eync")
+
+[connection signal="hurt" from="Direction/HurtArea2D" to="." method="_on_hurt_area_2d_hurt"]
+[connection signal="body_entered" from="Direction/DetectPlayerArea2D" to="." method="_on_active_area_2d_body_entered"]

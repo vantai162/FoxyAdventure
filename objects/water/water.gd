@@ -19,15 +19,16 @@ class_name water
 @export var ambient_wave_length: float = 0.25  ## Wavelength (0.1-1.0, lower = more waves)
 
 @export_group("Physics Simulation")
-@export_range(0.0,1000.0) var water_physics_speed: float = 80.0
-@export var water_restoring_force: float = 0.02
-@export var wave_energy_loss: float = 0.04
-@export var wave_strength: float = 0.25
+@export_range(0.0,1000.0) var water_physics_speed: float = 80.0  ## DEPRECATED: Legacy parameter, no longer used
+@export var water_restoring_force: float = 300.0  ## Spring constant pulling toward rest_height (higher = faster response)
+@export var wave_energy_loss: float = 35.0  ## Linear damping coefficient (base resistance)
+@export var quadratic_damping: float = 0.15  ## Quadratic damping (v²) - prevents overshoot at high velocities
+@export var wave_strength: float = 6.0  ## Energy transfer between segments (LOWER = localized, HIGHER = wide spread)
 @export_range(1,64) var wave_spread_updates:int = 8
 
 @export_group("Advanced Physics")
 @export var critical_damping_threshold: float = 10.0  ## Displacement threshold for critical damping
-@export var critical_damping_strength: float = 0.3    ## Extra damping for large displacements
+@export var critical_damping_strength: float = 1.0    ## Critical damping multiplier (1.0 = textbook critical damping)
 @export var gradient_damping_threshold: float = 5.0   ## Height diff threshold for wave damping
 @export var gradient_damping_factor: float = 0.5      ## Reduce wave propagation on steep gradients
 
@@ -217,19 +218,56 @@ func update_physics(delta: float) -> void:
 			segment_data[i]["velocity"] *= 0.5  # Heavy damping
 			continue  # Skip normal physics for this segment
 		
-		var damping = wave_energy_loss * lag_damping_factor  # Apply lag compensation
-		if abs(displacement) > 10.0:
-			var excess = abs(displacement) - 10.0
-			damping += excess * 0.04
+		var velocity = segment_data[i]["velocity"]
 		
-		var acceleration = -water_restoring_force * displacement - segment_data[i]["velocity"] * damping
+		# LINEAR DAMPING: Base resistance (responsive at low speeds)
+		var linear_damping_force = wave_energy_loss * lag_damping_factor * velocity
 		
-		segment_data[i]["velocity"] += acceleration * safe_delta * water_physics_speed
+		# QUADRATIC DAMPING: Fluid drag (F ∝ v²) - naturally stronger at high velocities
+		# This prevents overshoot without threshold logic:
+		#   vel=50  → quadratic adds ~375   (modest)
+		#   vel=300 → quadratic adds ~13,500 (dominant)
+		# Null safety: Use 0.15 default if parameter not set in scene instances
+		var quad_coeff = quadratic_damping if quadratic_damping != null else 0.15
+		var quadratic_damping_force = quad_coeff * velocity * abs(velocity)
 		
-		var max_velocity = 5.0 + abs(displacement) * 0.2
+		# TOTAL FORCE: Spring restoring + linear damping + quadratic damping
+		# acceleration = -k×x - c₁×v - c₂×v×|v|
+		var spring_force = -water_restoring_force * displacement
+		var acceleration = spring_force - linear_damping_force - quadratic_damping_force
+		
+		# VERBOSE DEBUG for segment 37 (whirlpool center)
+		if i == 37 and enable_debug_diagnostics and debug_timer <= 0 and not Engine.is_editor_hint():
+			print("  [PHYSICS DEBUG] Seg 37 [Instance: %s]:" % get_instance_id())
+			print("    disp=%.1f, vel=%.2f" % [displacement, velocity])
+			print("    spring_force=%.1f, linear_damp=%.1f, quad_damp=%.1f" % [spring_force, linear_damping_force, quadratic_damping_force])
+			print("    acceleration=%.1f" % acceleration)
+		
+		# Velocity integration (NO speed multiplier - causes exponential energy growth)
+		segment_data[i]["velocity"] += acceleration * safe_delta
+		
+		# REST-ZONE DAMPING: Kill micro-oscillations (like static friction)
+		# When segment is very close to rest with low velocity, aggressively damp to prevent shivering
+		# This creates a "dead zone" where the system settles completely instead of oscillating forever
+		if abs(displacement) < 1.0 and abs(segment_data[i]["velocity"]) < 12.0:
+			segment_data[i]["velocity"] *= 0.7  # Strong damping (30% energy loss per frame)
+		
+		# Velocity clamp: prevent extreme runaway (but allow fast whirlpool response)
+		var max_velocity = 200.0 + abs(displacement) * 2.0  # Much higher limit for whirlpool effects
 		segment_data[i]["velocity"] = clamp(segment_data[i]["velocity"], -max_velocity, max_velocity)
 		
-		segment_data[i]["height"] += segment_data[i]["velocity"] * safe_delta * water_physics_speed
+		# Position integration (velocity already contains all forces)
+		var old_height = segment_data[i]["height"]
+		segment_data[i]["height"] += segment_data[i]["velocity"] * safe_delta
+		
+		# DEBUG: Log significant rest_height deviations (whirlpool effect)
+		if abs(segment_rest_height[i] - surface_pos_y) > 5.0 and i % 4 == 0:  # Every 4th affected segment
+			var height_change = segment_data[i]["height"] - old_height
+			if enable_debug_diagnostics and debug_timer <= 0 and not Engine.is_editor_hint():
+				print("  [WATER] Seg %d: disp=%.1f, rest=%.1f, accel=%.2f, vel=%.2f, Δheight=%.3f" % [
+					i, displacement, segment_rest_height[i], acceleration, 
+					segment_data[i]["velocity"], height_change
+				])
 	
 	# Adaptive wave spread: reduce iterations during lag to prevent zigzag artifacts
 	var actual_spread_updates = wave_spread_updates
@@ -243,52 +281,90 @@ func update_physics(delta: float) -> void:
 			if i_displacement > 200.0:
 				continue
 			
+			# WAVE PROPAGATION CUTOFF: Don't propagate waves from segments at rest
+			# This prevents perpetual oscillation at whirlpool centers
+			# A resting segment (small displacement, low velocity) shouldn't disturb neighbors
+			var i_velocity = abs(segment_data[i]["velocity"])
+			if i_displacement < 0.5 and i_velocity < 1.0:
+				continue  # Segment is settled, don't propagate waves
+			
 			if i > 0:
 				var neighbor_displacement = abs(segment_data[i-1]["height"] - segment_rest_height[i-1])
 				if neighbor_displacement > 200.0:
 					continue  # Don't spread from unstable neighbors
 				
+				# FIXED: Allow wave propagation even across rest_height gradients (whirlpool V-depressions)
+				# Old logic blocked propagation when rest_diff >= 5.0, causing energy accumulation
+				# New logic: always propagate, but dampen waves proportional to rest_height gradient steepness
 				var rest_diff = abs(segment_rest_height[i] - segment_rest_height[i-1])
-				if rest_diff < 5.0:
-					var height_diff = segment_data[i]["height"] - segment_data[i-1]["height"]
-					var wave_multiplier = 1.0
-					if abs(height_diff) > gradient_damping_threshold:
-						wave_multiplier = gradient_damping_factor
-					segment_data[i]["wave_to_left"] = height_diff * wave_strength * wave_multiplier
-					segment_data[i-1]["velocity"] += segment_data[i]["wave_to_left"] * safe_delta * water_physics_speed
-				else:
-					segment_data[i]["wave_to_left"] = 0.0
+				var height_diff = segment_data[i]["height"] - segment_data[i-1]["height"]
+				
+				# Gradient damping: steeper rest_height slopes reduce wave transmission (not block it entirely)
+				var wave_multiplier = 1.0
+				if abs(height_diff) > gradient_damping_threshold:
+					wave_multiplier *= gradient_damping_factor
+				
+				# Additional damping for steep rest_height gradients (whirlpool V-walls)
+				# Allows energy to flow but prevents reflection amplification
+				if rest_diff > 10.0:
+					wave_multiplier *= 0.1  # Heavily damp transmission across steep V-walls
+				elif rest_diff > 5.0:
+					wave_multiplier *= 0.3  # Moderate damping for gentle slopes
+				
+				segment_data[i]["wave_to_left"] = height_diff * wave_strength * wave_multiplier
+				# CRITICAL FIX: Wave energy transfer should NOT multiply by water_physics_speed
+				# That speed factor is already in main integration (applied to velocity → position)
+				# Double application causes (80)² = 6400x energy amplification!
+				segment_data[i-1]["velocity"] += segment_data[i]["wave_to_left"] * safe_delta
+				
+				# DEBUG: Log wave propagation for segments near whirlpool
+				if i == 37 and enable_debug_diagnostics and debug_timer <= 0 and not Engine.is_editor_hint():
+					print("  [WAVE DEBUG] Seg 37→36: rest_diff=%.1f, height_diff=%.1f, multiplier=%.3f, wave_force=%.2f" % [
+						rest_diff, height_diff, wave_multiplier, segment_data[i]["wave_to_left"]
+					])
+			
 			if i < segment_count - 1:
 				var neighbor_displacement_right = abs(segment_data[i+1]["height"] - segment_rest_height[i+1])
 				if neighbor_displacement_right > 200.0:
 					continue
 				
+				# Same fix for right neighbor
 				var rest_diff_right = abs(segment_rest_height[i] - segment_rest_height[i+1])
-				if rest_diff_right < 5.0:
-					var height_diff_right = segment_data[i]["height"] - segment_data[i+1]["height"]
-					var wave_multiplier_right = 1.0
-					if abs(height_diff_right) > gradient_damping_threshold:
-						wave_multiplier_right = gradient_damping_factor
-					segment_data[i]["wave_to_right"] = height_diff_right * wave_strength * wave_multiplier_right
-					segment_data[i+1]["velocity"] += segment_data[i]["wave_to_right"] * safe_delta * water_physics_speed
-				else:
-					segment_data[i]["wave_to_right"] = 0.0
-		for i in range(segment_count):	
-			if i > 0:
-				segment_data[i-1]["height"] += segment_data[i]["wave_to_left"] * safe_delta * water_physics_speed
-			if i < segment_count - 1:
-				segment_data[i+1]["height"] += segment_data[i]["wave_to_right"] * safe_delta * water_physics_speed
+				var height_diff_right = segment_data[i]["height"] - segment_data[i+1]["height"]
+				
+				var wave_multiplier_right = 1.0
+				if abs(height_diff_right) > gradient_damping_threshold:
+					wave_multiplier_right *= gradient_damping_factor
+				
+				if rest_diff_right > 10.0:
+					wave_multiplier_right *= 0.1
+				elif rest_diff_right > 5.0:
+					wave_multiplier_right *= 0.3
+				
+				segment_data[i]["wave_to_right"] = height_diff_right * wave_strength * wave_multiplier_right
+				# CRITICAL FIX: Same as above - no water_physics_speed multiplication here
+				segment_data[i+1]["velocity"] += segment_data[i]["wave_to_right"] * safe_delta
 		
-	# Lock edges to their rest heights (not hardcoded surface)
-	segment_data[0]["height"] = segment_rest_height[0]
-	segment_data[1]["height"] = segment_rest_height[1]
-	segment_data[0]["velocity"] = 0.0
-	segment_data[1]["velocity"] = 0.0
+		# REMOVED: Direct height application (was causing double energy injection!)
+		# Wave energy is now applied ONLY to velocity, which naturally updates position via integration
+		# This prevents exponential energy growth that caused runaway behavior
 	
-	segment_data[segment_count - 1]["height"] = segment_rest_height[segment_count - 1]
-	segment_data[segment_count - 2]["height"] = segment_rest_height[segment_count - 2]
-	segment_data[segment_count - 1]["velocity"] = 0.0
-	segment_data[segment_count - 2]["velocity"] = 0.0
+	# REMOVED: Preemptive velocity clamping loop (was overriding main loop's velocity limits)
+	# Velocity clamping now handled in main integration loop only (lines 243-245)
+	
+	# Edge segments: smoothly approach rest_height with ADDITIVE velocity correction
+	# CRITICAL FIX: ADD to velocity instead of REPLACE (was causing runaway when whirlpool modifies rest_height)
+	var edge_convergence_strength = 2.0  # Restoring force coefficient (LOWER = allows sharp V near edges)
+	
+	for edge_idx in [0, 1, segment_count - 2, segment_count - 1]:
+		var displacement_from_rest = segment_rest_height[edge_idx] - segment_data[edge_idx]["height"]
+		# Apply smooth correction via ADDITIVE velocity (like a spring force)
+		var correction_force = displacement_from_rest * edge_convergence_strength * safe_delta
+		segment_data[edge_idx]["velocity"] += correction_force
+		# Clamp edge velocity to prevent violent snaps
+		segment_data[edge_idx]["velocity"] = clamp(segment_data[edge_idx]["velocity"], -20.0, 20.0)
+		# Position update happens in main integration loop (NO DOUBLE UPDATE!)
+
 	
 	if !recently_splashed:
 		var is_still: bool = true
@@ -303,6 +379,13 @@ func update_physics(delta: float) -> void:
 		set_process(!should_stop)
 	else:
 		recently_splashed = false
+	
+	# Diagnostic logging (when enabled in editor)
+	if enable_debug_diagnostics:
+		debug_timer += delta
+		if debug_timer >= debug_interval:
+			debug_timer = 0.0
+			_print_water_diagnostics()
 	
 	
 func update_visuals() -> void:
@@ -491,13 +574,21 @@ func _print_water_diagnostics() -> void:
 	var max_velocity: float = 0.0
 	var total_energy: float = 0.0
 	var runaway_count: int = 0
+	var max_disp_idx: int = -1
+	var max_vel_idx: int = -1
 	
 	for i in range(segment_count):
 		var displacement = abs(segment_data[i]["height"] - segment_rest_height[i])
 		var velocity = abs(segment_data[i]["velocity"])
 		
-		max_displacement = max(max_displacement, displacement)
-		max_velocity = max(max_velocity, velocity)
+		if displacement > max_displacement:
+			max_displacement = displacement
+			max_disp_idx = i
+		
+		if velocity > max_velocity:
+			max_velocity = velocity
+			max_vel_idx = i
+		
 		total_energy += displacement + velocity
 		
 		if displacement > 200.0 or velocity > 50.0:
@@ -505,13 +596,39 @@ func _print_water_diagnostics() -> void:
 	
 	var avg_energy = total_energy / segment_count
 	
-	print("[WATER AUDIT] segments=%d | max_disp=%.1f | max_vel=%.1f | avg_energy=%.2f | runaways=%d" % 
-		[segment_count, max_displacement, max_velocity, avg_energy, runaway_count])
+	print("[WATER AUDIT] segments=%d | max_disp=%.1f (seg %d) | max_vel=%.1f (seg %d) | avg_energy=%.2f | runaways=%d" % 
+		[segment_count, max_displacement, max_disp_idx, max_velocity, max_vel_idx, avg_energy, runaway_count])
 	
 	if runaway_count > 0:
 		print("  ⚠️ WARNING: %d segments exhibiting runaway behavior!" % runaway_count)
+	
 	if max_displacement > 300.0:
 		print("  🔥 CRITICAL: Water displacement exceeding 300px threshold!")
+	
+	# Detailed segment analysis for worst offenders
+	if max_disp_idx >= 0 and max_displacement > 250.0:
+		print("  📊 Segment %d: height=%.1f, rest=%.1f, disp=%.1f, vel=%.1f" % [
+			max_disp_idx,
+			segment_data[max_disp_idx]["height"],
+			segment_rest_height[max_disp_idx],
+			segment_data[max_disp_idx]["height"] - segment_rest_height[max_disp_idx],
+			segment_data[max_disp_idx]["velocity"]
+		])
+		
+		# Check neighbors for wave propagation analysis
+		if max_disp_idx > 0:
+			print("    Left neighbor (seg %d): disp=%.1f, vel=%.1f" % [
+				max_disp_idx - 1,
+				segment_data[max_disp_idx - 1]["height"] - segment_rest_height[max_disp_idx - 1],
+				segment_data[max_disp_idx - 1]["velocity"]
+			])
+		
+		if max_disp_idx < segment_count - 1:
+			print("    Right neighbor (seg %d): disp=%.1f, vel=%.1f" % [
+				max_disp_idx + 1,
+				segment_data[max_disp_idx + 1]["height"] - segment_rest_height[max_disp_idx + 1],
+				segment_data[max_disp_idx + 1]["velocity"]
+			])
 
 ## ============================================================================
 ## SWIM DISTURBANCE SYSTEM

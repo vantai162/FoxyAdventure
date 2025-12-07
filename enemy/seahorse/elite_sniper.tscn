@@ -1,0 +1,165 @@
+[gd_scene load_steps=28 format=3 uid="uid://bodccm7jppcjv"]
+
+[ext_resource type="Script" uid="uid://b1pbnwjcmh1c8" path="res://enemy/seahorse/elite_sniper.gd" id="1_elite_sniper"]
+[ext_resource type="Script" uid="uid://naenc7pdtvr0" path="res://enemy/elite_eye_trail.gd" id="2_eye_trail"]
+[ext_resource type="Shader" uid="uid://q33y13b56v1g" path="res://enemy/elite_enemy.gdshader" id="2_shader"]
+[ext_resource type="Texture2D" uid="uid://ch0hp25m7evv1" path="res://assets/monsters/barrel/barrel_hurt_01.png" id="3_5djrk"]
+[ext_resource type="Texture2D" uid="uid://8usoreyem8l6" path="res://assets/foxy/smoke/jump_smoke_1.png" id="4_qo5wi"]
+[ext_resource type="Texture2D" uid="uid://jtpy308mqnwi" path="res://assets/foxy/smoke/jump_smoke_2.png" id="5_0qhhs"]
+[ext_resource type="Texture2D" uid="uid://ckjp4ccybo5i6" path="res://assets/monsters/barrel/barrel_hurt_02.png" id="6_r4ccg"]
+[ext_resource type="Texture2D" uid="uid://cbk136ktae42o" path="res://assets/foxy/smoke/jump_smoke_3.png" id="7_mev0i"]
+[ext_resource type="Texture2D" uid="uid://dfnk2rp7cs1vg" path="res://assets/monsters/barrel/barrel_01.png" id="8_nles5"]
+[ext_resource type="Texture2D" uid="uid://bwg8hpav3cy74" path="res://assets/monsters/barrel/barrel_02.png" id="9_htoel"]
+[ext_resource type="Texture2D" uid="uid://c8cs1hwh7venp" path="res://assets/foxy/smoke/jump_smoke_4.png" id="10_jkhqg"]
+[ext_resource type="Texture2D" uid="uid://de0p6wfv2rc7g" path="res://assets/monsters/barrel/barrel_atk_01.png" id="11_kkkta"]
+[ext_resource type="Texture2D" uid="uid://2igv4kkux8c6" path="res://assets/monsters/barrel/barrel_atk_02.png" id="12_2nx84"]
+[ext_resource type="Texture2D" uid="uid://lxyxy6hj6rja" path="res://assets/monsters/barrel/barrel_atk_03.png" id="13_qo5wi"]
+[ext_resource type="Texture2D" uid="uid://c2c1sjpl4vgrq" path="res://assets/monsters/barrel/barrel_atk_04.png" id="14_0qhhs"]
+[ext_resource type="Texture2D" uid="uid://b564c7jpiwbh0" path="res://assets/monsters/barrel/barrel_atk_05.png" id="15_mev0i"]
+[ext_resource type="Script" uid="uid://ifyit1vg4ktq" path="res://scripts/node2d_factory.gd" id="16_jkhqg"]
+[ext_resource type="PackedScene" uid="uid://bmabvmpusba5l" path="res://enemy/seahorse/seahorse_bullet.tscn" id="17_sk3dx"]
+[ext_resource type="Script" uid="uid://dmcx88tdtqlvo" path="res://enemy/seahorse/states/idle.gd" id="18_gmpqy"]
+[ext_resource type="PackedScene" uid="uid://ct1tqxgwkuvbe" path="res://scripts/hurt_area_2d.tscn" id="19_r4ccg"]
+[ext_resource type="Script" uid="uid://dyca3wr01a60o" path="res://enemy/seahorse/states/sniper_shoot.gd" id="20_sniper"]
+[ext_resource type="Script" uid="uid://budybf78cqjcn" path="res://enemy/seahorse/hurt.gd" id="21_5djrk"]
+[ext_resource type="Script" uid="uid://ceivkbcn2nfiw" path="res://enemy/seahorse/dead.gd" id="22_nles5"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_pdnpt"]
+size = Vector2(20, 22)
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_elite"]
+shader = ExtResource("2_shader")
+shader_parameter/hue_shift = 180.0
+shader_parameter/saturation = 1.8
+shader_parameter/contrast = 1.6
+shader_parameter/edge_glow = 0.4
+shader_parameter/glow_color = Color(0.6, 1, 1, 1)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_vpg65"]
+resource_local_to_scene = true
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("4_qo5wi")
+}, {
+"duration": 1.0,
+"texture": ExtResource("5_0qhhs")
+}, {
+"duration": 1.0,
+"texture": ExtResource("7_mev0i")
+}, {
+"duration": 1.0,
+"texture": ExtResource("10_jkhqg")
+}],
+"loop": true,
+"name": &"dead",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("3_5djrk")
+}, {
+"duration": 1.0,
+"texture": ExtResource("6_r4ccg")
+}],
+"loop": true,
+"name": &"hurt",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("8_nles5")
+}, {
+"duration": 1.0,
+"texture": ExtResource("9_htoel")
+}],
+"loop": true,
+"name": &"idle",
+"speed": 7.0
+}, {
+"frames": [{
+"duration": 0.8,
+"texture": ExtResource("11_kkkta")
+}, {
+"duration": 0.9,
+"texture": ExtResource("12_2nx84")
+}, {
+"duration": 0.8,
+"texture": ExtResource("13_qo5wi")
+}, {
+"duration": 1.0,
+"texture": ExtResource("14_0qhhs")
+}, {
+"duration": 1.0,
+"texture": ExtResource("15_mev0i")
+}],
+"loop": true,
+"name": &"shoot",
+"speed": 6.7
+}]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_detect"]
+radius = 600.0
+
+[node name="EliteSniperSeahorse" type="CharacterBody2D"]
+collision_layer = 8
+script = ExtResource("1_elite_sniper")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(0, 6)
+shape = SubResource("RectangleShape2D_pdnpt")
+
+[node name="Direction" type="Node2D" parent="."]
+
+[node name="EliteEyeTrail" type="Node2D" parent="Direction"]
+position = Vector2(3, 10)
+script = ExtResource("2_eye_trail")
+
+[node name="EliteEyeTrail2" type="Node2D" parent="Direction"]
+position = Vector2(-2, 10)
+script = ExtResource("2_eye_trail")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="Direction"]
+material = SubResource("ShaderMaterial_elite")
+position = Vector2(0, 6)
+sprite_frames = SubResource("SpriteFrames_vpg65")
+animation = &"idle"
+
+[node name="BulletFactory" type="Marker2D" parent="Direction"]
+position = Vector2(10, 16)
+script = ExtResource("16_jkhqg")
+product_packed_scene = ExtResource("17_sk3dx")
+target_container_name = &"Bullets"
+
+[node name="HurtArea2D" parent="Direction" instance=ExtResource("19_r4ccg")]
+collision_layer = 16
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Direction/HurtArea2D"]
+position = Vector2(0, 6)
+shape = SubResource("RectangleShape2D_pdnpt")
+
+[node name="PlayerDetectionArea" type="Area2D" parent="."]
+collision_layer = 0
+collision_mask = 2
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="PlayerDetectionArea"]
+shape = SubResource("CircleShape2D_detect")
+
+[node name="States" type="Node" parent="."]
+
+[node name="Idle" type="Node" parent="States"]
+script = ExtResource("18_gmpqy")
+
+[node name="SniperShoot" type="Node" parent="States"]
+script = ExtResource("20_sniper")
+
+[node name="Hurt" type="Node" parent="States"]
+script = ExtResource("21_5djrk")
+
+[node name="Dead" type="Node" parent="States"]
+script = ExtResource("22_nles5")
+
+[connection signal="hurt" from="Direction/HurtArea2D" to="." method="_on_hurt_area_2d_hurt"]
+[connection signal="body_entered" from="PlayerDetectionArea" to="." method="_on_player_detection_area_body_entered"]
+[connection signal="body_exited" from="PlayerDetectionArea" to="." method="_on_player_detection_area_body_exited"]

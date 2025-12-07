@@ -370,6 +370,11 @@ func _apply_water_depression() -> void:
 	var segment_width = segment_info["segment_width"]
 	var segment_count = segment_info["segment_count"]
 	
+	print("[WHIRLPOOL DEBUG] Applying depression [Instance: %s, WaterInstance: %s]:" % [get_instance_id(), water_node.get_instance_id()])
+	print("  Center segment: %d, Range: %d, Width: %.1f" % [center_index, range_segments, segment_width])
+	print("  Depression depth: %.1f, Whirlpool width: %.1f" % [DEPRESSION_DEPTH, whirlpool_width])
+	
+	var segments_modified = 0
 	for offset in range(-range_segments, range_segments + 1):
 		var segment_idx = center_index + offset
 		if segment_idx < 0 or segment_idx >= segment_count:
@@ -379,8 +384,17 @@ func _apply_water_depression() -> void:
 		var falloff = 1.0 - clamp(distance_from_center / (whirlpool_width / 2.0), 0.0, 1.0)
 		falloff = falloff * falloff
 		
+		var old_rest = water_node.segment_rest_height[segment_idx]
 		var target_rest_height = water_node.surface_pos_y + (DEPRESSION_DEPTH * falloff)
 		water_node.segment_rest_height[segment_idx] = target_rest_height
+		segments_modified += 1
+		
+		if abs(offset) <= 2:  # Log center segments
+			print("    Seg %d: rest %.1f → %.1f (falloff %.2f, depression %.1f)" % [
+				segment_idx, old_rest, target_rest_height, falloff, DEPRESSION_DEPTH * falloff
+			])
+	
+	print("  Modified %d segments" % segments_modified)
 	
 	depression_applied = true
 	water_node.recently_splashed = true

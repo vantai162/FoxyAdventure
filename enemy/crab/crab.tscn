@@ -88,7 +88,6 @@ animation = &"run"
 [node name="FrontRayCast2D" type="RayCast2D" parent="Direction"]
 position = Vector2(9, 10)
 target_position = Vector2(14, 0)
-collision_mask = 1
 
 [node name="DownRayCast2D" type="RayCast2D" parent="Direction"]
 position = Vector2(14, -4)

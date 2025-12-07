@@ -1,4 +1,4 @@
-[gd_scene load_steps=16 format=4 uid="uid://cownslw7ms6s4"]
+[gd_scene load_steps=19 format=4 uid="uid://cownslw7ms6s4"]
 
 [ext_resource type="Script" uid="uid://cblkjof8tqn71" path="res://test/levels/level_3/stage_3_1.gd" id="1_stage_script"]
 [ext_resource type="TileSet" uid="uid://0yf5cmwk6u1i" path="res://assets/island/terrain/ice_tile_set.tres" id="2_a6ecy"]
@@ -15,12 +15,16 @@
 [ext_resource type="PackedScene" uid="uid://demnh2f4ooy6n" path="res://objects/platform/floating_boat_platform.tscn" id="14_dyh06"]
 [ext_resource type="PackedScene" uid="uid://giogr7michck" path="res://objects/water/water.tscn" id="14_water"]
 [ext_resource type="PackedScene" uid="uid://c5m8vno0qh3xy" path="res://objects/whirlpool/whirlpool.tscn" id="15_erfut"]
+[ext_resource type="PackedScene" uid="uid://jm5jjtt5tfsj" path="res://enemy/crab/elite_hunter_crab.tscn" id="16_erfut"]
+[ext_resource type="PackedScene" uid="uid://bj35soojaj5hs" path="res://enemy/starfish/elite_ricochet_starfish.tscn" id="17_a6ecy"]
+[ext_resource type="PackedScene" uid="uid://clavapool001" path="res://environment/lava/lava_pool.tscn" id="18_a6ecy"]
 
 [node name="Level_3_1" type="Node2D"]
 script = ExtResource("1_stage_script")
 
 [node name="CanvasModulate" type="CanvasModulate" parent="."]
-color = Color(0.15, 0.12, 0.18, 1)
+visible = false
+color = Color(0.0558769, 0.0395219, 0.0722072, 1)
 
 [node name="PlayerSpawn" type="Marker2D" parent="."]
 position = Vector2(140, 180)
@@ -51,6 +55,7 @@ tile_set = ExtResource("2_a6ecy")
 z_index = 1
 position = Vector2(176, 2115)
 water_size = Vector2(1113, 220)
+wave_strength = 15.0
 enable_debug_diagnostics = true
 
 [node name="FloatingBoatPlatform" parent="WaterZones" instance=ExtResource("14_dyh06")]
@@ -64,21 +69,6 @@ position = Vector2(713, 2109)
 
 [node name="Whirlpool" parent="WaterZones" instance=ExtResource("15_erfut")]
 position = Vector2(839, 2216)
-lifetime = 0.0
-auto_despawn = false
-
-[node name="Whirlpool2" parent="WaterZones" instance=ExtResource("15_erfut")]
-position = Vector2(341, 2216)
-lifetime = 0.0
-auto_despawn = false
-
-[node name="Whirlpool3" parent="WaterZones" instance=ExtResource("15_erfut")]
-position = Vector2(589, 2216)
-lifetime = 0.0
-auto_despawn = false
-
-[node name="Whirlpool4" parent="WaterZones" instance=ExtResource("15_erfut")]
-position = Vector2(1013, 2216)
 lifetime = 0.0
 auto_despawn = false
 
@@ -149,12 +139,14 @@ direction = -1
 [node name="Puzzle" type="Node2D" parent="."]
 
 [node name="Objects" type="Node2D" parent="."]
+visible = false
 
 [node name="GlowingCrystal" parent="Objects" instance=ExtResource("4_fak2n")]
 position = Vector2(129, 127)
 pulse_amount = 0.36
 pulse_speed = 0.36
 crystal_scale = 0.36
+crystal_type = 3
 color_preset = 4
 sparkle_intensity = 3.0
 
@@ -163,6 +155,7 @@ position = Vector2(564, 187)
 pulse_amount = 0.36
 pulse_speed = 0.36
 crystal_scale = 0.36
+crystal_type = 3
 color_preset = 4
 sparkle_intensity = 3.0
 
@@ -171,6 +164,7 @@ position = Vector2(956, 203)
 pulse_amount = 0.36
 pulse_speed = 0.36
 crystal_scale = 0.36
+crystal_type = 3
 color_preset = 4
 sparkle_intensity = 3.0
 
@@ -179,6 +173,7 @@ position = Vector2(1450, 185)
 pulse_amount = 0.36
 pulse_speed = 0.36
 crystal_scale = 0.36
+crystal_type = 3
 color_preset = 4
 sparkle_intensity = 3.0
 
@@ -187,6 +182,7 @@ position = Vector2(1249, 387)
 pulse_amount = 0.36
 pulse_speed = 0.36
 crystal_scale = 0.36
+crystal_type = 3
 color_preset = 4
 sparkle_intensity = 3.0
 
@@ -195,6 +191,7 @@ position = Vector2(1360, 554)
 pulse_amount = 0.36
 pulse_speed = 0.36
 crystal_scale = 0.36
+crystal_type = 3
 color_preset = 4
 sparkle_intensity = 3.0
 
@@ -203,6 +200,7 @@ position = Vector2(888, 618)
 pulse_amount = 0.36
 pulse_speed = 0.36
 crystal_scale = 0.36
+crystal_type = 3
 color_preset = 4
 sparkle_intensity = 3.0
 
@@ -211,6 +209,7 @@ position = Vector2(405, 639)
 pulse_amount = 0.36
 pulse_speed = 0.36
 crystal_scale = 0.36
+crystal_type = 3
 color_preset = 4
 sparkle_intensity = 3.0
 
@@ -219,6 +218,7 @@ position = Vector2(592, 749)
 pulse_amount = 0.36
 pulse_speed = 0.36
 crystal_scale = 0.36
+crystal_type = 3
 color_preset = 4
 sparkle_intensity = 3.0
 
@@ -227,6 +227,7 @@ position = Vector2(991, 784)
 pulse_amount = 0.36
 pulse_speed = 0.36
 crystal_scale = 0.36
+crystal_type = 3
 color_preset = 4
 sparkle_intensity = 3.0
 
@@ -235,6 +236,7 @@ position = Vector2(506, 997)
 pulse_amount = 0.36
 pulse_speed = 0.36
 crystal_scale = 0.36
+crystal_type = 3
 color_preset = 4
 sparkle_intensity = 3.0
 
@@ -243,6 +245,7 @@ position = Vector2(1073, 1119)
 pulse_amount = 0.36
 pulse_speed = 0.36
 crystal_scale = 0.36
+crystal_type = 3
 color_preset = 4
 sparkle_intensity = 3.0
 
@@ -251,6 +254,7 @@ position = Vector2(396, 1200)
 pulse_amount = 0.36
 pulse_speed = 0.36
 crystal_scale = 0.36
+crystal_type = 3
 color_preset = 4
 sparkle_intensity = 3.0
 
@@ -259,6 +263,7 @@ position = Vector2(1368, 1693)
 pulse_amount = 0.36
 pulse_speed = 0.36
 crystal_scale = 0.36
+crystal_type = 3
 color_preset = 4
 sparkle_intensity = 3.0
 
@@ -267,6 +272,7 @@ position = Vector2(843, 1590)
 pulse_amount = 0.36
 pulse_speed = 0.36
 crystal_scale = 0.36
+crystal_type = 3
 color_preset = 4
 sparkle_intensity = 3.0
 
@@ -275,6 +281,7 @@ position = Vector2(228, 1755)
 pulse_amount = 0.36
 pulse_speed = 0.36
 crystal_scale = 0.36
+crystal_type = 3
 color_preset = 4
 sparkle_intensity = 3.0
 
@@ -283,6 +290,7 @@ position = Vector2(708, 1959)
 pulse_amount = 0.36
 pulse_speed = 0.36
 crystal_scale = 0.36
+crystal_type = 3
 color_preset = 4
 sparkle_intensity = 3.0
 
@@ -291,6 +299,7 @@ position = Vector2(1181, 2104)
 pulse_amount = 0.36
 pulse_speed = 0.36
 crystal_scale = 0.36
+crystal_type = 3
 color_preset = 4
 sparkle_intensity = 3.0
 
@@ -298,4 +307,18 @@ sparkle_intensity = 3.0
 position = Vector2(1500, 2140)
 
 [node name="Foxy" parent="." instance=ExtResource("6_foxy")]
-position = Vector2(65, 181)
+position = Vector2(949, 2043)
+
+[node name="EliteHunterCrab" parent="." instance=ExtResource("16_erfut")]
+position = Vector2(1010, 419)
+
+[node name="EliteRicochetStarfish" parent="." instance=ExtResource("17_a6ecy")]
+position = Vector2(423, 193)
+
+[node name="EliteHunterCrab2" parent="." instance=ExtResource("16_erfut")]
+position = Vector2(588, 226)
+
+[node name="LavaPool" parent="." instance=ExtResource("18_a6ecy")]
+z_index = 1
+position = Vector2(1159, 1705)
+lava_size = Vector2(400, 300)
