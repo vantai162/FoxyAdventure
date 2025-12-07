@@ -75,8 +75,7 @@ signal died
 	"Stun": 0,
 	"DamAmplify": 0,
 	"Slow": 0,
-	"Invicibility": 0,
-	"BubbleTrap": 0	
+	"Invicibility": 0
 }
 
 enum attack_direction {
@@ -101,7 +100,6 @@ var last_ground_time: float = -1211.0
 var blade_count: int = 0
 var max_blade_capacity: int = 1
 var has_unlocked_blade: bool = false
-
 
 ## Get current air acceleration value based on wall jump restriction state
 func get_current_air_acceleration() -> float:
@@ -275,27 +273,13 @@ func _applyeffect(name: String, time: float) -> void:
 		blink_timer.queue_free()
 		sprite.visible = true
 
-func _collect_blade() -> void:
-	if not has_unlocked_blade:
-		has_unlocked_blade = true
-		set_animated_sprite($Direction/BladeAnimatedSprite2D)
-	return_blade()
-
-func _applyeffect(name: String, time: float) -> void:
-	Effect[name] = time
-	
-
-
-	
 func _updateeffect(delta: float) -> void:
-	print("stun:",Effect["Stun"])
 	for key in Effect:
 		Effect[key] -= delta
 		if Effect[key] <= 0:
 			Effect[key] = 0
 	if Effect["Stun"] > 0 and fsm.current_state != fsm.states.stun:
 		fsm.change_state(fsm.states.stun)
-
 
 func _update_timeline(delta: float) -> void:
 	timeline += delta

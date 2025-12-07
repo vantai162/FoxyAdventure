@@ -1,15 +1,11 @@
 extends Player_State
 
 func _enter() -> void:
-	if obj.Effect["BubbleTrap"] > 0:
-		return
 	# Don't force velocity to 0 - let control_moving() handle deceleration
 	# This allows ice sliding and other physics to work naturally
 	obj.change_animation("idle")
 
 func _update(delta: float) -> void:
-	if obj.Effect["BubbleTrap"] > 0:
-		return
 	obj.current_oxygen = min(obj.max_oxygen, obj.current_oxygen + obj.oxygen_increase_rate * delta)
 	control_throw()
 	control_attack()

@@ -138,5 +138,6 @@ position = Vector2(-59, -104)
 
 [node name="KingCrab" parent="." instance=ExtResource("19_tku26")]
 position = Vector2(-205, 124)
+
 [node name="TrapCoin" parent="." instance=ExtResource("19_tku26")]
 position = Vector2(138, 103)
