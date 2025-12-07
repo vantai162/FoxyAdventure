@@ -186,7 +186,6 @@ func spawn_player(spawn_data: Dictionary) -> Player:
 		new_player.fsm.change_state(new_player.fsm.states.idle)
 	else:
 		printerr("Player FSM not initialized!")
-	
 	player = new_player
 	return new_player
 

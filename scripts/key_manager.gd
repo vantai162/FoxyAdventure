@@ -68,6 +68,9 @@ func disableinput(exception:Array):
 	for key in KeyDict.keys():
 		if(key!="pause"&&!(key in exception)):
 			InputMap.action_erase_events(key)
+	GameManager.player.velocity=Vector2.ZERO
+	for key in InputMap.get_actions():
+		Input.action_release(key)
 
 func reloadinputmapbykeydict():
 	if(KeyDict.size()<0):

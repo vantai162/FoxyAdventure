@@ -237,24 +237,8 @@ func _process(delta: float) -> void:
 	_update_timeline(delta)
 	_updatecooldown(delta)
 	oxy_changed.emit()
-	if invincible:
-		var blink_timer
-		# Use the current active sprite (supports both normal and blade sprite)
-		var sprite = animated_sprite
-		if not sprite:
-			sprite = $Direction/AnimatedSprite2D  # Fallback
-		blink_timer = Timer.new()
-		blink_timer.wait_time = 0.1
-		blink_timer.one_shot = false
-		add_child(blink_timer)
-		blink_timer.timeout.connect(func():
-			sprite.visible = not sprite.visible
-		)
-		blink_timer.start()
-		await get_tree().create_timer(invincible_timer).timeout
-		blink_timer.stop()
-		blink_timer.queue_free()
-		sprite.visible = true
+	
+		
 
 func _collect_blade() -> void:
 	if not has_unlocked_blade:
@@ -268,6 +252,24 @@ func _collect_blade() -> void:
 
 func _applyeffect(name: String, time: float) -> void:
 	Effect[name] = time
+	if Effect["Invicibility"] > 0:
+		var blink_timer 
+		# Use the current active sprite (supports both normal and blade sprite)
+		var sprite = animated_sprite
+		if not sprite:
+			sprite = $Direction/AnimatedSprite2D  # Fallback
+		blink_timer = Timer.new()
+		blink_timer.wait_time = 0.1
+		blink_timer.one_shot = false
+		add_child(blink_timer)
+		blink_timer.timeout.connect(func():
+			sprite.visible = not sprite.visible
+		)
+		blink_timer.start()
+		await get_tree().create_timer(time).timeout
+		blink_timer.stop()
+		blink_timer.queue_free()
+		sprite.visible = true
 
 func _updateeffect(delta: float) -> void:
 	for key in Effect:
@@ -288,12 +290,14 @@ func _checkcoyotea() -> bool:
 func _checkbuffer() -> bool:
 	return timeline - last_jumppress_onair < jump_buffer
 
-#func take_damage(damage: int) -> void:
-#	if Effect["Invicibility"] <= 0:
-#		if has_node("Camera2D"):
-#			$Camera2D.shake(8.0)
-#		super.take_damage(damage)
-#		fsm.change_state(fsm.states.hurt)
+func take_damage(damage: int) -> void:
+	if Effect["Invicibility"] <= 0:
+		if has_node("Camera2D"):
+			$Camera2D.shake(8.0)
+		#health_changed.emit()
+		super.take_damage(damage)
+		_applyeffect("Invicibility",2.0)
+		fsm.change_state(fsm.states.hurt)
 
 func _updatecooldown(delta: float) -> void:
 	for key in CoolDown:
@@ -309,6 +313,7 @@ func set_cool_down(skillname: String) -> void:
 	CoolDown[skillname] = InitCoolDown[skillname]
 	
 func save_state() -> Dictionary:
+	print("DEBUG save_state health:", health)
 	return {
 		"position": [global_position.x, global_position.y],
 		"blade_count": blade_count,
@@ -331,9 +336,11 @@ func load_state(data: Dictionary) -> void:
 		has_unlocked_blade = data["has_unlocked_blade"]
 		if has_unlocked_blade:
 			set_animated_sprite($Direction/BladeAnimatedSprite2D)
-	
 	if data.has("health"):
+		print("DEBUG load_state health:", data["health"])
 		health = data["health"]
+	else:
+		print("DEBUG load_state health missing, current:", health)
 	if data.has("Inventory"):
 		inventory._load_inventory(data["Inventory"])
 	# Đã loại bỏ logic: if data.has("has_blade") and data["has_blade"] == true:
@@ -350,9 +357,8 @@ func checkfullhealth()->bool: # Giữ: func checkfullhealth
 	return health==max_health
 
 func _on_hurt_area_2d_hurt(direction: Vector2, damage: float) -> void:
-	if not invincible:
-		fsm.current_state.take_damage(damage)
-		health_changed.emit()
+	fsm.current_state.take_damage(damage)
+	health_changed.emit()
 	
 func heal_max_health():
 	heal(max_health)
