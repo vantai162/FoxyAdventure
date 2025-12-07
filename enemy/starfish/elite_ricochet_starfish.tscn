@@ -1,7 +1,7 @@
 [gd_scene load_steps=29 format=3 uid="uid://bj35soojaj5hs"]
 
 [ext_resource type="Script" uid="uid://chjigae24mwx6" path="res://enemy/starfish/elite_ricochet_starfish.gd" id="1_elite"]
-[ext_resource type="Script" uid="uid://naenc7pdtvr0" path="res://enemy/elite_eye_trail.gd" id="2_eye"]
+[ext_resource type="PackedScene" path="res://enemy/elite_eye_trail.tscn" id="2_eye"]
 [ext_resource type="Shader" uid="uid://q33y13b56v1g" path="res://enemy/elite_enemy.gdshader" id="2_shader"]
 [ext_resource type="Texture2D" uid="uid://div7ykrnkcmbm" path="res://assets/monsters/starfish/starfish_atk_01.png" id="3_atk"]
 [ext_resource type="Texture2D" uid="uid://b7fyajqfeium5" path="res://assets/monsters/starfish/starfish_atk_02.png" id="4_atk"]
@@ -113,8 +113,7 @@ script = ExtResource("1_elite")
 
 [node name="Direction" type="Node2D" parent="."]
 
-[node name="EliteEyeTrail" type="Node2D" parent="Direction"]
-script = ExtResource("2_eye")
+[node name="EliteEyeTrail" parent="Direction" instance=ExtResource("2_eye")]
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="Direction"]
 material = SubResource("ShaderMaterial_elite")

@@ -152,8 +152,8 @@ animation = &"attack"
 frame_progress = 0.862752
 
 [node name="FrontRayCast2D" type="RayCast2D" parent="Direction"]
-position = Vector2(-17, 13)
-target_position = Vector2(30, 0)
+position = Vector2(0, 16)
+target_position = Vector2(32, 0)
 
 [node name="DownRayCast2D" type="RayCast2D" parent="Direction"]
 position = Vector2(15, 0)
@@ -164,7 +164,7 @@ position = Vector2(30, -20)
 
 [node name="DetectPlayerRayCast2D" type="RayCast2D" parent="Direction"]
 position = Vector2(0, 16)
-target_position = Vector2(400, 15)
+target_position = Vector2(400, 0)
 collision_mask = 2
 
 [node name="DetectPlayerRayCast2D1" type="RayCast2D" parent="Direction"]

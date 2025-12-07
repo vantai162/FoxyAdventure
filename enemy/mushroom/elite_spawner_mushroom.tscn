@@ -1,7 +1,7 @@
 [gd_scene load_steps=20 format=3 uid="uid://bt2icn1rxyolq"]
 
 [ext_resource type="Script" uid="uid://b8l6drbjyn3rl" path="res://enemy/mushroom/elite_spawner_mushroom.gd" id="1_elite"]
-[ext_resource type="Script" uid="uid://naenc7pdtvr0" path="res://enemy/elite_eye_trail.gd" id="2_eye"]
+[ext_resource type="PackedScene" path="res://enemy/elite_eye_trail.tscn" id="2_eye"]
 [ext_resource type="Shader" uid="uid://q33y13b56v1g" path="res://enemy/elite_enemy.gdshader" id="2_shader"]
 [ext_resource type="PackedScene" path="res://enemy/mushroom/mini_mushroom.tscn" id="3_mini"]
 [ext_resource type="Texture2D" uid="uid://dnlagy1ygfmpg" path="res://assets/monsters/mushroom/mushroom_hurt_03.png" id="4_hurt"]
@@ -74,9 +74,8 @@ shape = SubResource("RectangleShape2D_body")
 
 [node name="Direction" type="Node2D" parent="."]
 
-[node name="EliteEyeTrail" type="Node2D" parent="Direction"]
+[node name="EliteEyeTrail" parent="Direction" instance=ExtResource("2_eye")]
 position = Vector2(1, 7)
-script = ExtResource("2_eye")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="Direction"]
 material = SubResource("ShaderMaterial_elite")

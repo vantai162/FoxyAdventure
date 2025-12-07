@@ -49,6 +49,15 @@ class_name water
 @export var splash_droplet_gravity: float = 400.0
 @export var splash_color: Color = Color(0.8, 0.95, 1.0, 0.9)  ## Light blue-white
 
+@export_group("Glow Light (Optional)")
+@export var emit_light: bool = false  ## Water glows (bioluminescent/magical for dark caves)
+@export var light_color: Color = Color(0.3, 0.8, 1.0, 0.8)  ## Soft cyan glow
+@export var light_energy: float = 0.6  ## Subtle illumination
+@export var light_sample_points: int = 4  ## Distributed light sources (1-8)
+@export var light_pulse_enabled: bool = true  ## Gentle pulsing
+@export var light_pulse_speed: float = 1.5  ## Slower than lava (calm water)
+@export var light_pulse_amount: float = 0.2  ## Subtle variation
+
 @export_group("Debug")
 @export var enable_debug_diagnostics: bool = false  ## Enable water stability monitoring (prints every second)
 
@@ -85,6 +94,10 @@ var _ambient_wave_time: float = 0.0
 
 ## Splash particles
 var _splash_droplets: Array[Node2D] = []
+
+## Optional lighting
+var _water_lights: Array[PointLight2D] = []  ## Multi-point distributed glow
+var _light_pulse_time: float = 0.0
 
 var surface_line: Line2D
 var fill_polygon: Polygon2D
@@ -148,6 +161,10 @@ func _process(delta:float)->void:
 	if emit_splash_particles:
 		_update_splash_droplets(delta)
 	
+	# Update optional lighting (bioluminescent glow)
+	if emit_light and _water_lights.size() > 0:
+		_update_water_lights(delta)
+	
 	update_physics(delta)
 	update_visuals()
 	_update_collision_shape()  # Update collision shape to match water level
@@ -205,6 +222,10 @@ func _initiate_water() -> void:
 	new_collisionshape.position = water_size / 2.0 + Vector2(0, surface_pos_y / 2.0)
 	new_area.add_child(new_collisionshape)
 	water_collision_shape = new_collisionshape  # Store reference
+	
+	# Optional lighting setup (bioluminescent/magical water)
+	if emit_light and not Engine.is_editor_hint():
+		_setup_water_lights()
 
 
 func update_physics(delta: float) -> void:
@@ -882,3 +903,116 @@ func _update_splash_droplets(delta: float) -> void:
 		_splash_droplets.erase(droplet)
 		if is_instance_valid(droplet):
 			droplet.queue_free()
+
+## ============================================================================
+## WATER LIGHTING SYSTEM (OPTIONAL - BIOLUMINESCENT/MAGICAL GLOW)
+## Multi-point lighting learned from lava, distributed across surface
+## Disabled by default for backward compatibility with existing levels
+## ============================================================================
+
+func _setup_water_lights() -> void:
+	## Create distributed lights along water surface (1-8 configurable)
+	## Each light tracks local segment heights for realistic wave illumination
+	
+	# Validate light count (1-8 for performance)
+	var clamped_points = clampi(light_sample_points, 1, 8)
+	if clamped_points != light_sample_points:
+		push_warning("Water: light_sample_points clamped from %d to %d (valid range 1-8)" % [light_sample_points, clamped_points])
+		light_sample_points = clamped_points
+	
+	# Share texture reference to save memory (all lights use same texture)
+	var shared_texture: Texture2D = null
+	
+	# Create lights distributed evenly across surface width
+	for i in range(light_sample_points):
+		var light := PointLight2D.new()
+		light.enabled = true
+		light.energy = light_energy
+		light.color = light_color
+		light.blend_mode = Light2D.BLEND_MODE_ADD
+		light.range_z_min = -100
+		light.range_z_max = 100
+		light.shadow_enabled = false  # Water doesn't cast shadows
+		
+		# First light creates texture, others share it
+		if i == 0:
+			light.texture = _create_water_light_gradient()
+			shared_texture = light.texture
+		else:
+			light.texture = shared_texture
+		
+		# Position along surface width
+		var x_ratio = float(i) / float(max(1, light_sample_points - 1))
+		light.position.x = x_ratio * water_size.x
+		light.position.y = surface_pos_y  # Start at surface
+		
+		add_child(light)
+		_water_lights.append(light)
+	
+	print("🌊 Water lighting initialized: %d distributed points, color=%s, energy=%.2f" % 
+		[light_sample_points, light_color, light_energy])
+
+func _create_water_light_gradient() -> GradientTexture2D:
+	## Creates soft radial gradient for water glow (shared by all lights)
+	var gradient := Gradient.new()
+	
+	# Center bright, fade to transparent edges
+	gradient.set_color(0, light_color)
+	gradient.set_color(1, Color(light_color.r, light_color.g, light_color.b, 0.0))
+	
+	var gradient_tex := GradientTexture2D.new()
+	gradient_tex.gradient = gradient
+	gradient_tex.width = 256
+	gradient_tex.height = 256
+	gradient_tex.fill_from = Vector2(0.5, 0.5)  # Center
+	gradient_tex.fill_to = Vector2(0.0, 0.5)   # Radial outward
+	gradient_tex.fill = GradientTexture2D.FILL_RADIAL
+	
+	return gradient_tex
+
+func _update_water_lights(delta: float) -> void:
+	## Update light positions to track surface waves + optional pulsing
+	
+	# Update pulse animation if enabled
+	if light_pulse_enabled:
+		_light_pulse_time += delta * light_pulse_speed
+		var pulse_factor = 1.0 + sin(_light_pulse_time) * light_pulse_amount
+		
+		# Apply pulse to all lights
+		for light in _water_lights:
+			if is_instance_valid(light):
+				light.energy = light_energy * pulse_factor
+	
+	# Track each light to local segment heights (realistic wave illumination)
+	var segment_width: float = water_size.x / (segment_count - 1)
+	
+	for i in range(_water_lights.size()):
+		if not is_instance_valid(_water_lights[i]):
+			continue
+		
+		var light := _water_lights[i]
+		
+		# Find segment indices around this light's X position
+		var center_segment_float := (light.position.x / segment_width)
+		var seg_left := int(floor(center_segment_float))
+		var seg_right := int(ceil(center_segment_float))
+		
+		# Clamp to valid range
+		seg_left = clampi(seg_left, 0, segment_count - 1)
+		seg_right = clampi(seg_right, 0, segment_count - 1)
+		
+		# Interpolate between neighboring segment heights
+		var t := center_segment_float - float(seg_left)
+		var left_height: float = segment_data[seg_left]["height"] if seg_left < segment_data.size() else surface_pos_y
+		var right_height: float = segment_data[seg_right]["height"] if seg_right < segment_data.size() else surface_pos_y
+		
+		# Apply boat depressions to light tracking
+		if seg_left < _boat_depression_offsets.size():
+			left_height += _boat_depression_offsets[seg_left]
+		if seg_right < _boat_depression_offsets.size():
+			right_height += _boat_depression_offsets[seg_right]
+		
+		var tracked_height: float = lerp(left_height, right_height, t)
+		
+		# Smooth light movement (avoids jitter)
+		light.position.y = lerp(light.position.y, tracked_height, 0.3)

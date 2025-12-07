@@ -1,7 +1,7 @@
 [gd_scene load_steps=40 format=3 uid="uid://cvq5vx1o24fpg"]
 
 [ext_resource type="Script" uid="uid://b6h2aoddd6yyw" path="res://enemy/aggressive_tribe/elite_bombardier.gd" id="1_elite_bomb"]
-[ext_resource type="Script" uid="uid://naenc7pdtvr0" path="res://enemy/elite_eye_trail.gd" id="2_eye_trail"]
+[ext_resource type="PackedScene" path="res://enemy/elite_eye_trail.tscn" id="2_eye_trail"]
 [ext_resource type="Shader" uid="uid://q33y13b56v1g" path="res://enemy/elite_enemy.gdshader" id="2_shader"]
 [ext_resource type="PackedScene" uid="uid://ct1tqxgwkuvbe" path="res://scripts/hurt_area_2d.tscn" id="3_hurt_area"]
 [ext_resource type="PackedScene" uid="uid://d1h2w3e4r5t6y" path="res://projectiles/coconut.tscn" id="4_coconut"]
@@ -158,13 +158,11 @@ shape = SubResource("CircleShape2D_body")
 
 [node name="Direction" type="Node2D" parent="."]
 
-[node name="EliteEyeTrail" type="Node2D" parent="Direction"]
+[node name="EliteEyeTrail" parent="Direction" instance=ExtResource("2_eye_trail")]
 position = Vector2(15.2941, -3.52941)
-script = ExtResource("2_eye_trail")
 
-[node name="EliteEyeTrail2" type="Node2D" parent="Direction"]
+[node name="EliteEyeTrail2" parent="Direction" instance=ExtResource("2_eye_trail")]
 position = Vector2(3.52941, -3.52941)
-script = ExtResource("2_eye_trail")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="Direction"]
 material = SubResource("ShaderMaterial_elite")

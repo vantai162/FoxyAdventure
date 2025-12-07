@@ -1,7 +1,7 @@
 [gd_scene load_steps=27 format=3 uid="uid://dumayxma7am7b"]
 
 [ext_resource type="Script" uid="uid://doc61op57jxqn" path="res://enemy/turtle/elite_spiny_turtle.gd" id="1_elite_turtle"]
-[ext_resource type="Script" uid="uid://naenc7pdtvr0" path="res://enemy/elite_eye_trail.gd" id="2_eye_trail"]
+[ext_resource type="PackedScene" path="res://enemy/elite_eye_trail.tscn" id="2_eye_trail"]
 [ext_resource type="Shader" uid="uid://q33y13b56v1g" path="res://enemy/elite_enemy.gdshader" id="2_shader"]
 [ext_resource type="PackedScene" path="res://projectiles/spike_projectile.tscn" id="3_spike"]
 [ext_resource type="Texture2D" uid="uid://8usoreyem8l6" path="res://assets/foxy/smoke/jump_smoke_1.png" id="4_livia"]
@@ -103,13 +103,11 @@ shape = SubResource("RectangleShape2D_livia")
 
 [node name="Direction" type="Node2D" parent="."]
 
-[node name="EliteEyeTrail" type="Node2D" parent="Direction"]
+[node name="EliteEyeTrail" parent="Direction" instance=ExtResource("2_eye_trail")]
 position = Vector2(9, 10)
-script = ExtResource("2_eye_trail")
 
-[node name="EliteEyeTrail2" type="Node2D" parent="Direction"]
+[node name="EliteEyeTrail2" parent="Direction" instance=ExtResource("2_eye_trail")]
 position = Vector2(5, 10)
-script = ExtResource("2_eye_trail")
 
 [node name="FrontRayCast2D" type="RayCast2D" parent="Direction"]
 position = Vector2(0, 13)
