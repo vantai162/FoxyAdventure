@@ -7,6 +7,7 @@ extends Node
 const SAVE_FILE = "user://checkpoint_save.dat"
 const SETTING_FILE="user://setting.dat"
 const SKIN_FILE="user://skin.dat"
+const SHOP_FILE="user://shop.dat"
 const KILL_DATA_FILE = "user://kill_count.dat"
 
 # Save checkpoint data to file
@@ -120,6 +121,38 @@ func load_skin_data():
 			return {}
 	else:
 		printerr("LỖI: Không thể mở file để tải: ", SKIN_FILE)
+		return {}
+		
+func save_shop_data(data:Dictionary):
+	var file = FileAccess.open(SHOP_FILE, FileAccess.WRITE)
+	
+	if file:
+		# Dùng store_var để lưu Dictionary (hỗ trợ cả Vector2, v.v.)
+		file.store_var(data)
+		file.close() # Đừng quên đóng file
+	else:
+		printerr("LỖI: Không thể mở file để lưu: ", SHOP_FILE)
+	
+func load_shop_data():
+	if not has_save_file(SHOP_FILE):
+		return {} # Trả về Dictionary rỗng nếu không có file save
+
+	# Mở file để đọc
+	var file = FileAccess.open(SHOP_FILE, FileAccess.READ)
+	
+	if file:
+		# Dùng get_var để đọc lại Dictionary
+		var data = file.get_var()
+		file.close()
+		
+		# Kiểm tra xem dữ liệu có phải là Dictionary không
+		if data is Dictionary:
+			return data
+		else:
+			printerr("LỖI: File save bị hỏng, dữ liệu không phải Dictionary.")
+			return {}
+	else:
+		printerr("LỖI: Không thể mở file để tải: ", SHOP_FILE)
 		return {}
 		
 # Lưu trực tiếp số nguyên
