@@ -12,6 +12,7 @@ class_name GlowingCrystal
 @export var pulse_speed: float = 2.0  ## Pulse frequency (higher = faster)
 
 @export_group("Crystal Appearance")
+@export var crystal_texture: Texture2D = null  ## Assign sprite texture for GPU rendering (drawn upright ♦, no rotation)
 @export var crystal_scale: float = 1.0  ## Overall size multiplier
 @export_enum("Small:0", "Medium:1", "Large:2", "Cluster:3") var crystal_type: int = 1
 
@@ -62,7 +63,12 @@ func _ready() -> void:
 		if light.texture == null:
 			_setup_light_texture()
 	
-	_create_diamond_crystal()
+	# GPU-rendered sprite or CPU fallback
+	if crystal_texture:
+		_create_sprite_crystal()
+	else:
+		push_warning("GlowingCrystal: No crystal_texture assigned - using CPU-rendered procedural fallback (assign Texture2D for production)")
+		_create_diamond_crystal()
 	
 	if enable_sparkles:
 		_setup_sparkles_gpu()
@@ -174,6 +180,28 @@ func _setup_light_texture() -> void:
 	gradient.width = 256
 	gradient.height = 256
 	light.texture = gradient
+
+func _create_sprite_crystal() -> void:
+	## GPU-rendered sprite crystal (production ready)
+	var sprite = Sprite2D.new()
+	sprite.name = "CrystalSprite"
+	sprite.texture = crystal_texture
+	sprite.modulate = crystal_color
+	
+	# Apply scale based on crystal type
+	var size = crystal_scale
+	match crystal_type:
+		0:  # Small
+			size *= 0.6
+		1:  # Medium
+			size *= 1.0
+		2:  # Large
+			size *= 1.5
+		3:  # Cluster
+			size *= 1.2  # Cluster uses single large sprite
+	
+	sprite.scale = Vector2(size, size)
+	add_child(sprite)
 
 func _create_diamond_crystal() -> void:
 	var size = crystal_scale

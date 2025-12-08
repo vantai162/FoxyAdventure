@@ -30,6 +30,7 @@ enum TriggerMode {
 @export var respawn_time: float = 5.0  ## 0 = no respawn
 
 @export_group("Visual")
+@export var stalactite_texture: Texture2D = null  ## Assign sprite texture for GPU rendering (drawn pointing DOWN ↓)
 @export var warning_particles: bool = true  ## Dust before falling
 @export var stalactite_scale: float = 1.0  ## Size multiplier
 
@@ -49,9 +50,13 @@ func _ready() -> void:
 	original_position = global_position
 	original_x = position.x
 	
-	# Generate procedural sprite if no texture
-	if sprite and sprite.texture == null:
-		_create_procedural_stalactite()
+	# Generate procedural sprite if no texture, or use GPU sprite if texture assigned
+	if sprite:
+		if stalactite_texture:
+			_setup_sprite_texture()
+		elif sprite.texture == null:
+			push_warning("Stalactite: No stalactite_texture assigned - using CPU-rendered procedural fallback (assign Texture2D for production)")
+			_create_procedural_stalactite()
 	
 	# Setup based on trigger mode
 	match trigger_mode:
@@ -191,6 +196,16 @@ func trigger_fall() -> void:
 ## Reset to idle state
 func reset() -> void:
 	_respawn()
+
+## Setup GPU sprite rendering (production mode)
+func _setup_sprite_texture() -> void:
+	if not sprite or not stalactite_texture:
+		return
+	
+	sprite.texture = stalactite_texture
+	sprite.scale = Vector2(stalactite_scale, stalactite_scale)
+	sprite.visible = true
+	# No rotation needed - sprite is drawn pointing DOWN ↓
 
 ## Create a simple procedural stalactite shape when no sprite is assigned
 func _create_procedural_stalactite() -> void:
