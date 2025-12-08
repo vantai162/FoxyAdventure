@@ -8,7 +8,6 @@ func _enter():
 	timer = obj.hurt_stun_duration
 	#obj.invincible_timer=obj.max_invincible chuyen invible sang ham takedam chuyen sang dung invicible sang dang effect
 
-
 func _update( delta: float):
 	if update_timer(delta):
 		change_state(fsm.states.idle)
