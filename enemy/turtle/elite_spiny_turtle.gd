@@ -32,20 +32,3 @@ func _on_player_not_in_sight() -> void:
 	# Return to patrol when player lost
 	if fsm.current_state == fsm.states.aggressivepursue:
 		fsm.change_state(fsm.states.run)
-
-# Override hurt transition to use defensive_hide
-func _on_hurt_area_2d_hurt(_direction: Vector2, _damage: float) -> void:
-	if _direction.x != 0:
-		var attacker_side = -sign(_direction.x)
-		if attacker_side != direction:
-			change_direction(attacker_side)
-	
-	take_damage(_damage)
-	
-	# Transition to defensive_hide instead of normal hide
-	if fsm and fsm.current_state and fsm.states.has("defensive_hide"):
-		fsm.change_state(fsm.states.defensivehide)
-	elif fsm and fsm.current_state and fsm.states.has("hide"):
-		fsm.change_state(fsm.states.hide)  # Fallback to normal hide
-	else:
-		push_warning("EliteSpinyTurtle: No hide or defensive_hide state found!")

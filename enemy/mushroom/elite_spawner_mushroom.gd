@@ -48,18 +48,6 @@ func _on_player_not_in_sight() -> void:
 	# Lost player → return to sleep (handled by pursuit state)
 	pass
 
-func _on_hurt_area_2d_hurt(direction: Vector2, damage: float) -> void:
-	if direction.x != 0:
-		var attacker_side = -sign(direction.x)
-		if attacker_side != self.direction:
-			change_direction(attacker_side)
-	
-	take_damage(damage)
-	
-	# Transition to hurt (no panic spawn)
-	if fsm and fsm.current_state and fsm.states.has("hurt"):
-		fsm.change_state(fsm.states.hurt)
-
 func _spawn_mini_wave() -> void:
 	## Spawn wave of minis (2 per wave for saturation artillery)
 	## Spawns FROM ELITE'S FRONT with STAGGERED timing to avoid visual merge
