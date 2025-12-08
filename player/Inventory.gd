@@ -2,7 +2,8 @@ class_name Inventory
 
 @export var AmountItem={
 	"Coin":0,
-	"Key":0
+	"Key":0,
+	"Blade":0
 }
 signal item_amount_changed(item_name, new_amount)
 
@@ -57,6 +58,19 @@ func use_coin(amount:int):
 			print("Not enough coins to use")
 	else:
 		print("Coin item not found")
+		
+func use_blade(amount:int):
+	if AmountItem.has("Blade"):
+		if AmountItem["Blade"] >= amount:
+			AmountItem["Blade"] -= amount
+			item_amount_changed.emit("Blade", AmountItem["Blade"])
+		else:
+			print("Not enough blades to use")
+	else:
+		print("Blade item not found")
 
 func get_coin():
 	return AmountItem["Coin"]
+	
+func get_amount(item_name: String) -> int:
+	return AmountItem.get(item_name, 0)

@@ -62,6 +62,7 @@ var wall_jump_restriction_timer: float = -1.0  ## -1 = not active, >=0 = active 
 var current_water: Node2D = null  ## Reference to current water body player is in
 signal health_changed
 signal coin_changed
+signal blade_changed
 signal oxy_changed
 signal died
 signal max_health_changed

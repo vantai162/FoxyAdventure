@@ -42,12 +42,10 @@ func _process(delta):
 		target_intensity = HP1_INTENSITY
 		target_radius = HP1_RADIUS
 		target_speed = HP1_SPEED
-		print("-> Đang kích hoạt Level 1 (Nguy kịch)") # Debug logic
 	elif hp == 2:
 		target_intensity = HP2_INTENSITY
 		target_radius = HP2_RADIUS
 		target_speed = HP2_SPEED
-		print("-> Đang kích hoạt Level 2 (Cảnh báo)") # Debug logic
 
 	else:
 		# Máu đầy hoặc > 2 thì tắt
@@ -55,8 +53,6 @@ func _process(delta):
 		target_radius = 1.0 # Đẩy viền ra khỏi màn hình
 		target_speed = 0.0
 
-	# --- 2. CHUYỂN ĐỔI MƯỢT MÀ (LERP) ---
-	# Dùng lerp để thông số không bị "giật" khi chuyển từ 2 máu xuống 1 máu
 	current_intensity_base = lerp(current_intensity_base, target_intensity, delta * 3)
 	current_radius_base = lerp(current_radius_base, target_radius, delta * 3)
 	current_speed = lerp(current_speed, target_speed, delta * 2)

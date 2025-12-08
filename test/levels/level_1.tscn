@@ -1,4 +1,4 @@
-[gd_scene load_steps=78 format=4 uid="uid://30po03m850f6"]
+[gd_scene load_steps=80 format=4 uid="uid://30po03m850f6"]
 
 [ext_resource type="Script" uid="uid://bl4jqlw4aef0m" path="res://test/stage.gd" id="1_7qv11"]
 [ext_resource type="PackedScene" uid="uid://dm741hii7d5nv" path="res://scenes/game_screen/health_bar.tscn" id="2_l7nct"]
@@ -13,6 +13,7 @@
 [ext_resource type="Texture2D" uid="uid://danqmrply2lgh" path="res://assets/GandalfHardcore FREE Platformer Assets/GandalfHardcore FREE Platformer Assets/GandalfHardcore Background layers/Normal BG/GandalfHardcore Background layers_layer 3.png" id="5_v26dd"]
 [ext_resource type="Texture2D" uid="uid://bk77qlt12fa3j" path="res://assets/GandalfHardcore FREE Platformer Assets/GandalfHardcore FREE Platformer Assets/GandalfHardcore Background layers/Normal BG/GandalfHardcore Background layers_layer 2.png" id="6_ek11w"]
 [ext_resource type="PackedScene" uid="uid://ydwm5fvrvrmr" path="res://scenes/game_screen/damage_over_lay.tscn" id="6_n82ni"]
+[ext_resource type="PackedScene" uid="uid://8koby8md4sgg" path="res://scenes/game_screen/blade_ui.tscn" id="6_rkiin"]
 [ext_resource type="Texture2D" uid="uid://byx63r517naeu" path="res://assets/GandalfHardcore FREE Platformer Assets/GandalfHardcore FREE Platformer Assets/Tree1.png" id="6_y8tn8"]
 [ext_resource type="Texture2D" uid="uid://bptbd831rvqdf" path="res://assets/GandalfHardcore FREE Platformer Assets/GandalfHardcore FREE Platformer Assets/GandalfHardcore Background layers/Normal BG/GandalfHardcore Background layers_layer 1.png" id="7_e1q3p"]
 [ext_resource type="PackedScene" uid="uid://6anvnhaq553w" path="res://environment/water/water.tscn" id="7_ek11w"]
@@ -5514,6 +5515,10 @@ anchor_left = 0.015
 anchor_top = 0.155
 mouse_filter = 2
 
+[node name="BladeUI" parent="CanvasLayer" instance=ExtResource("6_rkiin")]
+offset_left = 19.0
+offset_top = 151.0
+
 [node name="DamageOverLay" parent="CanvasLayer" instance=ExtResource("6_n82ni")]
 
 [node name="CanvasLayer2" type="CanvasLayer" parent="."]
@@ -5810,19 +5815,19 @@ position = Vector2(153, 240)
 position = Vector2(7452, 216)
 
 [connection signal="area_entered" from="Layer1/Coin" to="Layer1/Coin" method="_on_area_entered"]
-[connection signal="area_entered" from="Layer1/@Area2D@53711" to="Layer1/@Area2D@53711" method="_on_area_entered"]
-[connection signal="area_entered" from="Layer1/@Area2D@53712" to="Layer1/@Area2D@53712" method="_on_area_entered"]
-[connection signal="area_entered" from="Layer1/@Area2D@53713" to="Layer1/@Area2D@53713" method="_on_area_entered"]
-[connection signal="area_entered" from="Layer1/@Area2D@53714" to="Layer1/@Area2D@53714" method="_on_area_entered"]
-[connection signal="area_entered" from="Layer1/@Area2D@53715" to="Layer1/@Area2D@53715" method="_on_area_entered"]
-[connection signal="area_entered" from="Layer1/@Area2D@53716" to="Layer1/@Area2D@53716" method="_on_area_entered"]
-[connection signal="area_entered" from="Layer1/@Area2D@53717" to="Layer1/@Area2D@53717" method="_on_area_entered"]
-[connection signal="area_entered" from="Layer1/@Area2D@53718" to="Layer1/@Area2D@53718" method="_on_area_entered"]
-[connection signal="area_entered" from="Layer1/@Area2D@53719" to="Layer1/@Area2D@53719" method="_on_area_entered"]
-[connection signal="area_entered" from="Layer1/@Area2D@53720" to="Layer1/@Area2D@53720" method="_on_area_entered"]
-[connection signal="area_entered" from="Layer1/@Area2D@53721" to="Layer1/@Area2D@53721" method="_on_area_entered"]
-[connection signal="area_entered" from="Layer1/@Area2D@53722" to="Layer1/@Area2D@53722" method="_on_area_entered"]
-[connection signal="area_entered" from="Layer1/@Area2D@53723" to="Layer1/@Area2D@53723" method="_on_area_entered"]
+[connection signal="area_entered" from="Layer1/@Area2D@80760" to="Layer1/@Area2D@80760" method="_on_area_entered"]
+[connection signal="area_entered" from="Layer1/@Area2D@80761" to="Layer1/@Area2D@80761" method="_on_area_entered"]
+[connection signal="area_entered" from="Layer1/@Area2D@80762" to="Layer1/@Area2D@80762" method="_on_area_entered"]
+[connection signal="area_entered" from="Layer1/@Area2D@80763" to="Layer1/@Area2D@80763" method="_on_area_entered"]
+[connection signal="area_entered" from="Layer1/@Area2D@80764" to="Layer1/@Area2D@80764" method="_on_area_entered"]
+[connection signal="area_entered" from="Layer1/@Area2D@80765" to="Layer1/@Area2D@80765" method="_on_area_entered"]
+[connection signal="area_entered" from="Layer1/@Area2D@80766" to="Layer1/@Area2D@80766" method="_on_area_entered"]
+[connection signal="area_entered" from="Layer1/@Area2D@80767" to="Layer1/@Area2D@80767" method="_on_area_entered"]
+[connection signal="area_entered" from="Layer1/@Area2D@80768" to="Layer1/@Area2D@80768" method="_on_area_entered"]
+[connection signal="area_entered" from="Layer1/@Area2D@80769" to="Layer1/@Area2D@80769" method="_on_area_entered"]
+[connection signal="area_entered" from="Layer1/@Area2D@80770" to="Layer1/@Area2D@80770" method="_on_area_entered"]
+[connection signal="area_entered" from="Layer1/@Area2D@80771" to="Layer1/@Area2D@80771" method="_on_area_entered"]
+[connection signal="area_entered" from="Layer1/@Area2D@80772" to="Layer1/@Area2D@80772" method="_on_area_entered"]
 [connection signal="area_entered" from="Layer1/Key" to="Layer1/Key" method="_on_area_entered"]
 [connection signal="body_entered" from="Objects/Lever" to="Objects/Gate" method="open_gate"]
 [connection signal="body_exited" from="Objects/Lever" to="Objects/Gate" method="close_gate"]
