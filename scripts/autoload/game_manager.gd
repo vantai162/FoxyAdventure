@@ -19,6 +19,8 @@ var player_spawn_requested: bool = false
 var player_spawn_data: Dictionary = {}
 var paused=false
 var skin_manager:SkinManager=SkinManager.new()
+var kill_count: int = 0
+
 func _ready() -> void:
 	load_checkpoint_data()
 	key_manager.load_key()
@@ -230,3 +232,24 @@ func show_story_popup(title: String, text: String) -> void:
 	
 	# Gọi hàm open() mà bạn đã viết trong script StoryPopup.gd
 	story_popup.open(title, text)
+
+# Hàm tăng kill
+func add_kill():
+	kill_count += 1
+	print("Kill Count: ", kill_count)
+	
+	# Lấy số int hiện tại
+	var data_to_save = get_save_data() 
+	
+	# Gửi thẳng số int sang SaveSystem
+	SaveSystem.save_kill_data(data_to_save)
+
+# --- CÁC HÀM BẠN YÊU CẦU SỬA ---
+
+# Hàm lấy dữ liệu (Trả về int thay vì Dictionary)
+func get_save_data() -> int:
+	return kill_count
+
+# Hàm nạp dữ liệu (Nhận vào int thay vì Dictionary)
+func load_save_data(data: int):
+	kill_count = data
