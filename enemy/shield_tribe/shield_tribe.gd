@@ -41,7 +41,7 @@ func _ready() -> void:
 
 func _on_hurt_area_2d_hurt(attack_direction: Vector2, damage: float) -> void:
 	# Allow blocking in Idle, Defend, and Attack states (but not Hurt or Dead)
-	if fsm.current_state.name != "hurt" and fsm.current_state.name != "dead":
+	if fsm and fsm.current_state and fsm.current_state.name != "hurt" and fsm.current_state.name != "dead":
 		# attack_direction points in the direction the projectile is TRAVELING
 		# Shield blocks when attack travels in OPPOSITE direction from where we face
 		# Example: Face left (direction=-1), attack travels left (attack_direction.x=-1) = from behind
@@ -53,7 +53,7 @@ func _on_hurt_area_2d_hurt(attack_direction: Vector2, damage: float) -> void:
 		# Block if attack travels in opposite direction from our facing
 		if attack_side != direction:
 			# Optional: If blocked while idle, wake up to defend
-			if fsm.current_state.name == "idle":
+			if fsm and fsm.current_state and fsm.current_state.name == "idle":
 				fsm.change_state(fsm.states.defend)
 			return
 	
@@ -65,20 +65,21 @@ func _on_hurt_area_2d_hurt(attack_direction: Vector2, damage: float) -> void:
 			change_direction(attacker_position_side)
 	
 	take_damage(damage)
-	fsm.change_state(fsm.states.hurt)
+	if fsm and fsm.current_state:
+		fsm.change_state(fsm.states.hurt)
 
 func _on_player_in_sight(_player_pos: Vector2) -> void:
-	if fsm.current_state.name != "defend" and fsm.current_state.name != "attack":
+	if fsm and fsm.current_state and fsm.current_state.name != "defend" and fsm.current_state.name != "attack":
 		fsm.change_state(fsm.states.defend)
 
 func _on_player_not_in_sight() -> void:
-	if fsm.current_state.name == "defend" or fsm.current_state.name == "attack":
+	if fsm and fsm.current_state and (fsm.current_state.name == "defend" or fsm.current_state.name == "attack"):
 		attack_timer.stop()
 		fsm.change_state(fsm.states.idle)
 
 func face_player() -> void:
 	# Don't turn during attack - too difficult for player
-	if fsm.current_state.name == "attack":
+	if fsm and fsm.current_state and fsm.current_state.name == "attack":
 		return
 		
 	if found_player:

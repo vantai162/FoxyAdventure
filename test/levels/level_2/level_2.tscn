@@ -24,7 +24,7 @@
 [ext_resource type="PackedScene" uid="uid://dav8b7a6d5e4f" path="res://enemy/shield_tribe/shield_tribe.tscn" id="20_5x4la"]
 [ext_resource type="PackedScene" uid="uid://bmic0j4cnluey" path="res://objects/checkpoint/checkpoint.tscn" id="20_x03np"]
 [ext_resource type="PackedScene" uid="uid://bxfs4fsx7ot6m" path="res://enemy/starfish/starfish.tscn" id="21_h7na1"]
-[ext_resource type="PackedScene" uid="uid://bdkss15p4gbma" path="res://enemy/seahorse/seahorse.tscn" id="22_1xjcy"]
+[ext_resource type="PackedScene" uid="uid://bdkss15p4gbma" path="res://enemy/barrel/barrel.tscn" id="22_1xjcy"]
 [ext_resource type="PackedScene" uid="uid://bg3bfewcihuv0" path="res://objects/sign/sign.tscn" id="22_huoje"]
 [ext_resource type="PackedScene" uid="uid://ddcloveonpfdf" path="res://environment/staircase/stair_case.tscn" id="24_ykuqp"]
 [ext_resource type="PackedScene" uid="uid://b336fup0h7gp5" path="res://objects/collapsable_wall/collapsable_wall.tscn" id="26_rqkkq"]

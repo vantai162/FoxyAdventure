@@ -19,7 +19,7 @@
 [ext_resource type="PackedScene" uid="uid://coqrny0yf5swy" path="res://objects/wind/WindArea.tscn" id="7_k62hf"]
 [ext_resource type="PackedScene" uid="uid://dnqfetueosx76" path="res://objects/poll/poll.tscn" id="8_dxkj1"]
 [ext_resource type="PackedScene" uid="uid://bxfs4fsx7ot6m" path="res://enemy/starfish/starfish.tscn" id="9_7t748"]
-[ext_resource type="PackedScene" uid="uid://bdkss15p4gbma" path="res://enemy/seahorse/seahorse.tscn" id="9_av6r5"]
+[ext_resource type="PackedScene" uid="uid://bdkss15p4gbma" path="res://enemy/barrel/barrel.tscn" id="9_av6r5"]
 [ext_resource type="PackedScene" uid="uid://cn3lm5txngxlq" path="res://objects/spike/spike_static/spike.tscn" id="9_symkc"]
 [ext_resource type="Texture2D" uid="uid://cttoen8qgbfty" path="res://assets/GandalfHardcore FREE Platformer Assets/GandalfHardcore FREE Platformer Assets/Birch1.png" id="10_b7xqp"]
 [ext_resource type="PackedScene" uid="uid://buygo1gficx5m" path="res://objects/platform/horizontal_moving_platform.tscn" id="10_chpo4"]

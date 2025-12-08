@@ -1,4 +1,4 @@
-[gd_scene load_steps=22 format=3 uid="uid://bmgv5cgan4yt"]
+[gd_scene load_steps=23 format=3 uid="uid://bmgv5cgan4yt"]
 
 [ext_resource type="Script" uid="uid://bmwcsascradew" path="res://enemy/mushroom/mushroom.gd" id="1_jlpow"]
 [ext_resource type="Texture2D" uid="uid://dnlagy1ygfmpg" path="res://assets/monsters/mushroom/mushroom_hurt_03.png" id="2_lprww"]
@@ -12,6 +12,7 @@
 [ext_resource type="Texture2D" uid="uid://b251p3vy88f5o" path="res://assets/monsters/mushroom/sleep.png" id="8_wkm5k"]
 [ext_resource type="Texture2D" uid="uid://bgnbj6qy3a2ow" path="res://assets/monsters/tribe_temporary/problem.png" id="9_of5h1"]
 [ext_resource type="Script" uid="uid://csu2b21cwchqw" path="res://scripts/hurt_area_2d.gd" id="10_7hsqw"]
+[ext_resource type="Script" uid="uid://ifyit1vg4ktq" path="res://scripts/node2d_factory.gd" id="10_factory"]
 [ext_resource type="PackedScene" uid="uid://nr5uby15sfha" path="res://enemy/mushroom/toxic gas.tscn" id="11_wkm5k"]
 [ext_resource type="Script" uid="uid://cavpnqu3khnvu" path="res://enemy/mushroom/sleep.gd" id="12_nf052"]
 [ext_resource type="Script" uid="uid://6d2q0k0lymd6" path="res://enemy/mushroom/surprise.gd" id="14_vwwmg"]
@@ -115,7 +116,7 @@ position = Vector2(8, 9)
 target_position = Vector2(14, 0)
 collision_mask = 1
 
-[node name="RayCast2D2" type="RayCast2D" parent="Direction"]
+[node name="DownRayCast2D" type="RayCast2D" parent="Direction"]
 position = Vector2(14, -4)
 target_position = Vector2(0, 40)
 
@@ -149,6 +150,11 @@ collision_mask = 2
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Direction/DetectPlayerArea2D"]
 position = Vector2(0, -0.5)
 shape = SubResource("RectangleShape2D_dcy5h")
+
+[node name="ToxicGasFactory" type="Marker2D" parent="Direction"]
+script = ExtResource("10_factory")
+product_packed_scene = ExtResource("11_wkm5k")
+target_container_name = &"Enemies"
 
 [node name="HurtArea2D" type="Area2D" parent="Direction"]
 script = ExtResource("10_7hsqw")

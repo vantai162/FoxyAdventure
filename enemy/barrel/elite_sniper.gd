@@ -39,4 +39,5 @@ func _on_hurt_area_2d_hurt(direction: Vector2, damage: float) -> void:
 			change_direction(attacker_side)
 	
 	take_damage(damage)
-	fsm.change_state(fsm.states.hurt)
+	if fsm and fsm.current_state:
+		fsm.change_state(fsm.states.hurt)

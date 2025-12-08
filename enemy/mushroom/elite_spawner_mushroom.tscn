@@ -1,8 +1,9 @@
-[gd_scene load_steps=20 format=3 uid="uid://bt2icn1rxyolq"]
+[gd_scene load_steps=26 format=3 uid="uid://bt2icn1rxyolq"]
 
 [ext_resource type="Script" uid="uid://b8l6drbjyn3rl" path="res://enemy/mushroom/elite_spawner_mushroom.gd" id="1_elite"]
 [ext_resource type="PackedScene" path="res://enemy/elite_eye_trail.tscn" id="2_eye"]
 [ext_resource type="Shader" uid="uid://q33y13b56v1g" path="res://enemy/elite_enemy.gdshader" id="2_shader"]
+[ext_resource type="Script" uid="uid://ifyit1vg4ktq" path="res://scripts/node2d_factory.gd" id="3_factory"]
 [ext_resource type="PackedScene" path="res://enemy/mushroom/mini_mushroom.tscn" id="3_mini"]
 [ext_resource type="Texture2D" uid="uid://dnlagy1ygfmpg" path="res://assets/monsters/mushroom/mushroom_hurt_03.png" id="4_hurt"]
 [ext_resource type="Texture2D" uid="uid://dx008fsd6muo7" path="res://assets/monsters/mushroom/mushroom_hurt_02.png" id="5_hurt"]
@@ -10,10 +11,15 @@
 [ext_resource type="Texture2D" uid="uid://3618lytb7nnv" path="res://assets/monsters/mushroom/mushroom_01.png" id="7_run"]
 [ext_resource type="Texture2D" uid="uid://bqgmklofxv0qi" path="res://assets/monsters/mushroom/mushroom_02.png" id="8_run"]
 [ext_resource type="Texture2D" uid="uid://cghgcxg1pvwd6" path="res://assets/monsters/mushroom/mushroom_03.png" id="9_run"]
-[ext_resource type="Script" uid="uid://bo1a48e0epjyf" path="res://enemy/mushroom/states/elite_run.gd" id="10_run_state"]
+[ext_resource type="Script" uid="uid://bwyq2dkjmdroh" path="res://enemy/mushroom/states/elite_run.gd" id="10_run_state"]
 [ext_resource type="Script" uid="uid://cc4ghrdhj3db3" path="res://enemy/mushroom/states/spawner_pursue.gd" id="11_pursue"]
 [ext_resource type="Script" uid="uid://csu2b21cwchqw" path="res://scripts/hurt_area_2d.gd" id="12_hurt_area"]
 [ext_resource type="Script" uid="uid://b2wcyut44xh4d" path="res://enemy/mushroom/states/elite_hurt.gd" id="13_hurt_state"]
+[ext_resource type="Script" uid="uid://283ax64n6vmn" path="res://enemy/mushroom/states/elite_sleep.gd" id="14_sleep_state"]
+[ext_resource type="Script" uid="uid://b5gjg1q75gppj" path="res://enemy/mushroom/states/elite_dead.gd" id="15_dead_state"]
+[ext_resource type="Script" uid="uid://b3uac5bm6x2hn" path="res://enemy/mushroom/states/elite_surprise.gd" id="16_surprise_state"]
+[ext_resource type="Texture2D" uid="uid://b251p3vy88f5o" path="res://assets/monsters/mushroom/sleep.png" id="17_sleep_icon"]
+[ext_resource type="Texture2D" uid="uid://bgnbj6qy3a2ow" path="res://assets/monsters/tribe_temporary/problem.png" id="18_alert_icon"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_body"]
 size = Vector2(27, 24)
@@ -58,7 +64,7 @@ animations = [{
 }]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_detect"]
-size = Vector2(400, 150)
+size = Vector2(400, 120)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_hurt"]
 size = Vector2(27, 24)
@@ -80,13 +86,13 @@ position = Vector2(1, 7)
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="Direction"]
 material = SubResource("ShaderMaterial_elite")
 sprite_frames = SubResource("SpriteFrames_spawner")
-animation = &"run"
+animation = &"hurt"
 
 [node name="FrontRayCast2D" type="RayCast2D" parent="Direction"]
 position = Vector2(8, 9)
 target_position = Vector2(14, 0)
 
-[node name="RayCast2D2" type="RayCast2D" parent="Direction"]
+[node name="DownRayCast2D" type="RayCast2D" parent="Direction"]
 position = Vector2(14, -4)
 target_position = Vector2(0, 40)
 
@@ -98,6 +104,12 @@ collision_mask = 2
 position = Vector2(0, -0.5)
 shape = SubResource("RectangleShape2D_detect")
 
+[node name="MiniMushroomFactory" type="Marker2D" parent="Direction"]
+position = Vector2(0, -10)
+script = ExtResource("3_factory")
+product_packed_scene = ExtResource("3_mini")
+target_container_name = &"Enemies"
+
 [node name="HurtArea2D" type="Area2D" parent="Direction"]
 collision_layer = 16
 collision_mask = 0
@@ -106,7 +118,28 @@ script = ExtResource("12_hurt_area")
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Direction/HurtArea2D"]
 shape = SubResource("RectangleShape2D_hurt")
 
+[node name="SleepIcon" type="Node2D" parent="Direction"]
+
+[node name="Sprite2D" type="Sprite2D" parent="Direction/SleepIcon"]
+position = Vector2(19, -17)
+scale = Vector2(0.0285644, 0.0283203)
+texture = ExtResource("17_sleep_icon")
+
+[node name="AlertIcon" type="Node2D" parent="Direction"]
+visible = false
+
+[node name="Sprite2D" type="Sprite2D" parent="Direction/AlertIcon"]
+position = Vector2(18.25, -9.75)
+scale = Vector2(0.0263672, 0.0263672)
+texture = ExtResource("18_alert_icon")
+
 [node name="States" type="Node" parent="."]
+
+[node name="Sleep" type="Node" parent="States"]
+script = ExtResource("14_sleep_state")
+
+[node name="Surprise" type="Node" parent="States"]
+script = ExtResource("16_surprise_state")
 
 [node name="Run" type="Node" parent="States"]
 script = ExtResource("10_run_state")
@@ -116,5 +149,8 @@ script = ExtResource("11_pursue")
 
 [node name="Hurt" type="Node" parent="States"]
 script = ExtResource("13_hurt_state")
+
+[node name="Dead" type="Node" parent="States"]
+script = ExtResource("15_dead_state")
 
 [connection signal="hurt" from="Direction/HurtArea2D" to="." method="_on_hurt_area_2d_hurt"]

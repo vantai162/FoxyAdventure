@@ -3,7 +3,7 @@
 [ext_resource type="Script" uid="uid://cblkjof8tqn71" path="res://test/levels/level_3/stage_3_1.gd" id="1_stage_script"]
 [ext_resource type="TileSet" uid="uid://0yf5cmwk6u1i" path="res://assets/island/terrain/ice_tile_set.tres" id="2_a6ecy"]
 [ext_resource type="PackedScene" uid="uid://cqjqdbyd7mqfr" path="res://environment/cave/glowing_crystal.tscn" id="4_fak2n"]
-[ext_resource type="PackedScene" uid="uid://bdkss15p4gbma" path="res://enemy/seahorse/seahorse.tscn" id="5_elwe5"]
+[ext_resource type="PackedScene" uid="uid://bdkss15p4gbma" path="res://enemy/barrel/barrel.tscn" id="5_elwe5"]
 [ext_resource type="PackedScene" uid="uid://bs816w0pr8all" path="res://player/foxy.tscn" id="6_foxy"]
 [ext_resource type="PackedScene" uid="uid://bxfs4fsx7ot6m" path="res://enemy/starfish/starfish.tscn" id="6_hxdbc"]
 [ext_resource type="PackedScene" uid="uid://ufmc2gkfnv58" path="res://enemy/crab/crab.tscn" id="7_crab"]
@@ -15,8 +15,8 @@
 [ext_resource type="PackedScene" uid="uid://demnh2f4ooy6n" path="res://objects/platform/floating_boat_platform.tscn" id="14_dyh06"]
 [ext_resource type="PackedScene" uid="uid://giogr7michck" path="res://objects/water/water.tscn" id="14_water"]
 [ext_resource type="PackedScene" uid="uid://c5m8vno0qh3xy" path="res://objects/whirlpool/whirlpool.tscn" id="15_erfut"]
-[ext_resource type="PackedScene" uid="uid://bt2icn1rxyolq" path="res://enemy/mushroom/elite_spawner_mushroom.tscn" id="17_erfut"]
 [ext_resource type="PackedScene" uid="uid://clavapool001" path="res://environment/lava/lava_pool.tscn" id="18_a6ecy"]
+[ext_resource type="PackedScene" uid="uid://bodccm7jppcjv" path="res://enemy/barrel/elite_sniper.tscn" id="18_is5y3"]
 [ext_resource type="PackedScene" uid="uid://dqdstpxycbomj" path="res://effect_Item/BladeItem/blade.tscn" id="18_y62kb"]
 
 [node name="Level_3_1" type="Node2D"]
@@ -312,8 +312,8 @@ z_index = 1
 position = Vector2(1159, 1705)
 lava_size = Vector2(400, 300)
 
-[node name="EliteSpawnerMushroom" parent="." instance=ExtResource("17_erfut")]
-position = Vector2(378, 194)
-
 [node name="Blade" parent="." instance=ExtResource("18_y62kb")]
 position = Vector2(173, 204)
+
+[node name="EliteSniperSeahorse" parent="." instance=ExtResource("18_is5y3")]
+position = Vector2(535, 106)

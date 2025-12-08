@@ -43,9 +43,9 @@ func _on_hurt_area_2d_hurt(_direction: Vector2, _damage: float) -> void:
 	take_damage(_damage)
 	
 	# Transition to defensive_hide instead of normal hide
-	if fsm.states.has("defensive_hide"):
+	if fsm and fsm.current_state and fsm.states.has("defensive_hide"):
 		fsm.change_state(fsm.states.defensivehide)
-	elif fsm.states.has("hide"):
+	elif fsm and fsm.current_state and fsm.states.has("hide"):
 		fsm.change_state(fsm.states.hide)  # Fallback to normal hide
 	else:
 		push_warning("EliteSpinyTurtle: No hide or defensive_hide state found!")

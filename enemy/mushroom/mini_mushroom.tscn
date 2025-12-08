@@ -1,4 +1,4 @@
-[gd_scene load_steps=16 format=3 uid="uid://mini_mushroom_elite_001"]
+[gd_scene load_steps=17 format=3 uid="uid://mini_mushroom_elite_001"]
 
 [ext_resource type="Script" path="res://enemy/mushroom/mini_mushroom.gd" id="1_mini"]
 [ext_resource type="Texture2D" uid="uid://dnlagy1ygfmpg" path="res://assets/monsters/mushroom/mushroom_hurt_03.png" id="2_hurt"]
@@ -9,6 +9,7 @@
 [ext_resource type="Texture2D" uid="uid://cghgcxg1pvwd6" path="res://assets/monsters/mushroom/mushroom_03.png" id="7_run"]
 [ext_resource type="Script" path="res://enemy/mushroom/states/mini_run.gd" id="8_run_state"]
 [ext_resource type="Script" path="res://enemy/mushroom/states/mini_explode.gd" id="9_explode"]
+[ext_resource type="Script" uid="uid://ifyit1vg4ktq" path="res://scripts/node2d_factory.gd" id="9_factory"]
 [ext_resource type="PackedScene" uid="uid://nr5uby15sfha" path="res://enemy/mushroom/toxic gas.tscn" id="10_gas"]
 [ext_resource type="Script" uid="uid://csu2b21cwchqw" path="res://scripts/hurt_area_2d.gd" id="11_hurt_area"]
 [ext_resource type="Script" uid="uid://bu8pu40bboyoc" path="res://enemy/mushroom/hurt.gd" id="12_hurt_state"]
@@ -73,11 +74,11 @@ animations = [{
 "speed": 6.0
 }]
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_explode"]
-size = Vector2(60, 55)
-
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_hurt"]
 size = Vector2(18, 16)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_explode"]
+size = Vector2(56, 48)
 
 [node name="MiniMushroom" type="CharacterBody2D"]
 scale = Vector2(0.7, 0.7)
@@ -97,22 +98,10 @@ sprite_frames = SubResource("SpriteFrames_mini")
 animation = &"run"
 speed_scale = 1.3
 
-[node name="FrontRayCast2D" type="RayCast2D" parent="Direction"]
-position = Vector2(8, 9)
-target_position = Vector2(14, 0)
-collision_mask = 1
-
-[node name="RayCast2D2" type="RayCast2D" parent="Direction"]
-position = Vector2(14, -4)
-target_position = Vector2(0, 40)
-
-[node name="ExplodeArea2D" type="Area2D" parent="Direction"]
-collision_layer = 0
-collision_mask = 2
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Direction/ExplodeArea2D"]
-position = Vector2(0, 2)
-shape = SubResource("RectangleShape2D_explode")
+[node name="ToxicGasFactory" type="Marker2D" parent="Direction"]
+script = ExtResource("9_factory")
+product_packed_scene = ExtResource("10_gas")
+target_container_name = &"Enemies"
 
 [node name="HurtArea2D" type="Area2D" parent="Direction"]
 collision_layer = 16
@@ -122,6 +111,14 @@ script = ExtResource("11_hurt_area")
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Direction/HurtArea2D"]
 position = Vector2(0, 1)
 shape = SubResource("RectangleShape2D_hurt")
+
+[node name="ExplodeArea2D" type="Area2D" parent="Direction"]
+collision_layer = 0
+collision_mask = 2
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Direction/ExplodeArea2D"]
+position = Vector2(0, 1)
+shape = SubResource("RectangleShape2D_explode")
 
 [node name="States" type="Node" parent="."]
 
@@ -135,5 +132,4 @@ toxic_gas_scene = ExtResource("10_gas")
 [node name="Hurt" type="Node" parent="States"]
 script = ExtResource("12_hurt_state")
 
-[connection signal="body_entered" from="Direction/ExplodeArea2D" to="." method="_on_detect_player_area_body_entered"]
-[connection signal="hurt" from="Direction/HurtArea2D" to="." method="_on_hurt_area_2d_hurt"]
+[connection signal="body_entered" from="Direction/ExplodeArea2D" to="." method="_on_explode_area_body_entered"]

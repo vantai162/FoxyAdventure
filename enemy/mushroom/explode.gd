@@ -1,7 +1,8 @@
 extends EnemyState
 
-@export var toxic_gas_scene: PackedScene
+@export var toxic_gas_scene: PackedScene  ## DEPRECATED: Use ToxicGasFactory instead
 @export var gas_speed: float = 60.0
+
 func _enter() -> void:
 	obj.change_animation("explode")
 	obj.velocity.x = 0
@@ -11,6 +12,19 @@ func _enter() -> void:
 	obj.queue_free()
 
 func _spawn_toxic_gas():
+	var gas_factory = obj.get_node_or_null("Direction/ToxicGasFactory")
+	if not gas_factory:
+		push_warning("OG Mushroom: ToxicGasFactory not found, falling back to manual spawn!")
+		_spawn_toxic_gas_manual()
+		return
+	
+	# Spawn 2 gas clouds (left and right) using factory
+	for dir in [-1, 1]:
+		var gas = gas_factory.create()
+		gas.velocity = Vector2(gas_speed * dir, randf_range(-20, 20))
+
+func _spawn_toxic_gas_manual():
+	## DEPRECATED fallback for scenes not yet updated with factory
 	if toxic_gas_scene == null:
 		push_warning("toxic_gas_scene chưa được gán!")
 		return  

@@ -1,7 +1,6 @@
 extends EnemyState
 ## Elite Spawner Mushroom Hurt State
-## Base mushroom uses: change_state(fsm.states.explode)
-## Elite spawner must use: change_state(fsm.states.run)
+## Brief pause, then return to pursuit (or die)
 
 func _enter():
 	obj.change_animation("hurt")
@@ -15,7 +14,8 @@ func _update(delta: float):
 			else:
 				obj.queue_free()
 		else:
-			# Base mushroom: change_state(fsm.states.explode)
-			# Elite spawner: return to run or spawner_pursue
-			if fsm.states.has("run"):
+			# Return to pursuit
+			if fsm.states.has("spawnerpursue"):
+				change_state(fsm.states.spawnerpursue)
+			elif fsm.states.has("run"):
 				change_state(fsm.states.run)

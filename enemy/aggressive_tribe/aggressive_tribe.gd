@@ -63,11 +63,11 @@ func _on_attack_timer_timeout() -> void:
 	fsm.change_state(fsm.states.windup)
 
 func _on_throw_timer_timeout() -> void:
-	if fsm.current_state.has_method("_on_throw_timer_timeout"):
+	if fsm and fsm.current_state and fsm.current_state.has_method("_on_throw_timer_timeout"):
 		fsm.current_state._on_throw_timer_timeout()
 
 func _on_windup_timer_timeout() -> void:
-	if fsm.current_state.has_method("_on_windup_timer_timeout"):
+	if fsm and fsm.current_state and fsm.current_state.has_method("_on_windup_timer_timeout"):
 		fsm.current_state._on_windup_timer_timeout()
 
 # Helper method for states to use

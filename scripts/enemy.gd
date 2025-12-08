@@ -143,6 +143,9 @@ func _take_damage_from_dir(_damage_dir: Vector2, _damage: float):
 	# Can't take damage if FSM isn't initialized yet (lazy-loaded enemies)
 	if fsm == null:
 		return
+	# Can't take damage if current_state is null (during transitions or after death)
+	if fsm.current_state == null:
+		return
 	if not invincible:
 		fsm.current_state.take_damage(_damage_dir, _damage)
 	

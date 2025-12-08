@@ -5,11 +5,11 @@ func _ready() -> void:
 	super._ready()
 	
 func _on_player_in_sight(_player_pos: Vector2) -> void:
-	if fsm.current_state.name != "surprise" and fsm.current_state.name != "flee":
+	if fsm and fsm.current_state and fsm.current_state.name != "surprise" and fsm.current_state.name != "flee":
 		fsm.change_state(fsm.states.surprise)
 
 func _on_player_not_in_sight() -> void:
-	if fsm.current_state.name == "flee" or fsm.current_state.name == "surprise":
+	if fsm and fsm.current_state and (fsm.current_state.name == "flee" or fsm.current_state.name == "surprise"):
 		fsm.change_state(fsm.states.run)
 		
 func _on_hurt_area_2d_hurt(direction: Vector2, damage: float) -> void:
@@ -21,4 +21,5 @@ func _on_hurt_area_2d_hurt(direction: Vector2, damage: float) -> void:
 			change_direction(attacker_side)
 	
 	_take_damage_from_dir(direction, damage)
-	fsm.change_state(fsm.states.hurt)
+	if fsm and fsm.current_state:
+		fsm.change_state(fsm.states.hurt)

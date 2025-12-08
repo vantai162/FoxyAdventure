@@ -11,7 +11,7 @@
 [ext_resource type="PackedScene" uid="uid://cqjqdbyd7mqfr" path="res://environment/cave/glowing_crystal.tscn" id="10_ob2gj"]
 [ext_resource type="PackedScene" uid="uid://b3cbk6lmh2cc3" path="res://effect_Item/heal_potion/health_potion.tscn" id="11_heal_potion"]
 [ext_resource type="PackedScene" uid="uid://b1a2s3d4f5g6h" path="res://enemy/aggressive_tribe/aggressive_tribe.tscn" id="12_aggressive_tribe"]
-[ext_resource type="PackedScene" uid="uid://bdkss15p4gbma" path="res://enemy/seahorse/seahorse.tscn" id="13_seahorse"]
+[ext_resource type="PackedScene" uid="uid://bdkss15p4gbma" path="res://enemy/barrel/barrel.tscn" id="13_seahorse"]
 [ext_resource type="PackedScene" uid="uid://chfe3xrvw4004" path="res://objects/camp_fire/camp_fire.tscn" id="14_campfire"]
 [ext_resource type="PackedScene" path="res://environment/cave/stalactite.tscn" id="16_stalactite"]
 [ext_resource type="PackedScene" uid="uid://ctr1b8p1h6p8y" path="res://objects/gate/gate.tscn" id="17_gate"]
@@ -85,13 +85,6 @@ player_splash_mutiplier = 0.12
 swim_disturbance_interval = 0.15
 swim_disturbance_strength = 0.3
 boat_depression_depth = 3.0
-emit_light = false
-light_color = Color(0.3, 0.8, 1, 0.8)
-light_energy = 0.6
-light_sample_points = 4
-light_pulse_enabled = true
-light_pulse_speed = 1.5
-light_pulse_amount = 0.2
 
 [node name="Hazards" type="Node2D" parent="."]
 

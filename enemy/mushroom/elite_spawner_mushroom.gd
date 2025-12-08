@@ -1,63 +1,53 @@
 extends EnemyCharacter
 class_name EliteSpawnerMushroom
-## Elite Mushroom: "The Spawner"
-## Army builder: Pursues player, spawns mini kamikaze mushrooms
-## NO self-destruct - elite survives and creates army over time
-## Visual: Inverted colors + red glowing eye trail
+## Elite Mushroom: "Aggressive Spawner Artillery"
+## Aggressive pursuit, burst spawns on detection, continuous spawn pressure
+## Death spawns 3 final minis + fade (no explosion)
 
-@export var mini_mushroom_scene: PackedScene  ## Assign mini_mushroom.tscn
-@export var spawn_interval: float = 4.0  ## Time between spawns
-@export var max_active_minions: int = 5  ## Limit to avoid spam
-@export var panic_spawn_count: int = 2  ## Burst spawn when hurt
+@export var mini_mushroom_scene: PackedScene
+@export var spawn_interval: float = 2.5  ## Time between spawns (FAST - constant pressure!)
+@export var minis_per_wave: int = 2  ## Spawn 2 minis each wave (saturation attack)
 
 var spawn_timer: float = 0.0
-var active_minions: Array[Node] = []
+var has_burst_spawned: bool = false  ## Track if initial burst done
+
+@onready var mini_factory = $Direction/MiniMushroomFactory
 
 func _ready() -> void:
-	# Start in run state (no sleep - active threat)
-	fsm = FSM.new(self, $States, $States/Run)
+	# Start in sleep state
+	fsm = FSM.new(self, $States, $States/Sleep)
 	super._ready()
 	
-	# Enable player detection for pursuit
-	enable_check_player_in_sight()
+	# Override jump_speed for strategic artillery (lower than default 320)
+	jump_speed = 250.0  ## Moderate jump height - not aggressive melee
 	
-	# Initialize spawn timer (first spawn after 2s)
-	spawn_timer = 2.0
+	enable_check_player_in_sight()
+	spawn_timer = spawn_interval  ## Ready to spawn on first detection
 
 func _physics_process(delta: float) -> void:
 	super._physics_process(delta)
 	
-	# Clean up dead minions from tracking array
-	_cleanup_dead_minions()
-	
-	# Spawn timer countdown
-	if spawn_timer > 0.0:
+	# ONLY decrement spawn timer if player detected
+	if found_player != null and spawn_timer > 0.0:
 		spawn_timer -= delta
-		if spawn_timer <= 0.0 and active_minions.size() < max_active_minions:
-			_spawn_mini_mushroom()
+		if spawn_timer <= 0.0:
+			_spawn_mini_wave()  ## Spawn full wave (2 minis)
 			spawn_timer = spawn_interval
 
-# Override player detection for pursuit behavior
 func _on_player_in_sight(_player_pos: Vector2) -> void:
-	if found_player:
-		# Face player
-		if found_player.global_position.x > global_position.x:
-			change_direction(1)
-		else:
-			change_direction(-1)
-	
-	# Pursuit state (menacing approach)
-	if fsm.current_state == fsm.states.run:
-		if fsm.states.has("spawnerpursue"):
-			fsm.change_state(fsm.states.spawnerpursue)
+	# Transition from sleep to surprise (alert reaction)
+	if fsm and fsm.current_state and fsm.current_state.name.to_lower() == "sleep":
+		if fsm.states.has("surprise"):
+			fsm.change_state(fsm.states.surprise)
+		# BURST SPAWN: Immediately spawn 2 minis on first detection
+		if not has_burst_spawned:
+			has_burst_spawned = true
+			_spawn_mini_wave()  ## Instant threat!
 
 func _on_player_not_in_sight() -> void:
-	# Return to patrol when player lost
-	if fsm.current_state.name.to_lower() == "spawnerpursue":
-		if fsm.states.has("run"):
-			fsm.change_state(fsm.states.run)
+	# Lost player → return to sleep (handled by pursuit state)
+	pass
 
-# Override hurt to trigger panic spawn
 func _on_hurt_area_2d_hurt(direction: Vector2, damage: float) -> void:
 	if direction.x != 0:
 		var attacker_side = -sign(direction.x)
@@ -66,55 +56,42 @@ func _on_hurt_area_2d_hurt(direction: Vector2, damage: float) -> void:
 	
 	take_damage(damage)
 	
-	# Panic spawn: Burst 2 mushrooms immediately
-	_panic_spawn()
-	
-	# Then transition to hurt state
-	if fsm.states.has("hurt"):
+	# Transition to hurt (no panic spawn)
+	if fsm and fsm.current_state and fsm.states.has("hurt"):
 		fsm.change_state(fsm.states.hurt)
 
-func _spawn_mini_mushroom() -> void:
-	## Spawn single mini mushroom at current position
-	if not mini_mushroom_scene:
-		push_warning("EliteSpawnerMushroom: mini_mushroom_scene not assigned!")
+func _spawn_mini_wave() -> void:
+	## Spawn wave of minis (2 per wave for saturation artillery)
+	## Spawns FROM ELITE'S FRONT with STAGGERED timing to avoid visual merge
+	if not mini_factory:
+		push_warning("EliteSpawnerMushroom: MiniMushroomFactory not found!")
 		return
 	
-	if active_minions.size() >= max_active_minions:
-		return  # At capacity
+	var original_pos = mini_factory.global_position
 	
-	var mini = mini_mushroom_scene.instantiate()
-	mini.global_position = global_position + Vector2(0, -10)  # Spawn slightly above
-	get_parent().add_child(mini)
+	# Spawn positions: in front of elite + slight horizontal spread
+	var front_offset = direction * 15  ## 15px in front of elite
+	var horizontal_offsets = [0, direction * 8]  ## Second mini slightly ahead
 	
-	# Track minion
-	active_minions.append(mini)
-	
-	# Visual feedback: Small spawn puff
-	_spawn_effect()
-
-func _panic_spawn() -> void:
-	## Emergency spawn burst when hurt
-	for i in range(panic_spawn_count):
-		if active_minions.size() >= max_active_minions:
-			break
+	for i in range(minis_per_wave):
+		# Spawn from elite's FRONT with slight offset
+		mini_factory.global_position.x = original_pos.x + front_offset + horizontal_offsets[i]
+		mini_factory.global_position.y = original_pos.y
 		
-		var mini = mini_mushroom_scene.instantiate()
-		# Offset spawns left/right
-		var offset = Vector2((i - 1) * 20, -10)
-		mini.global_position = global_position + offset
-		get_parent().add_child(mini)
-		active_minions.append(mini)
+		var mini = mini_factory.create()
+		mini.initial_direction = direction
+		
+		# Stagger second mini spawn by 0.15s to avoid visual merge
+		if i < minis_per_wave - 1:
+			await get_tree().create_timer(0.15).timeout
 	
+	# Restore factory position
+	mini_factory.global_position = original_pos
 	_spawn_effect()
-
-func _cleanup_dead_minions() -> void:
-	## Remove dead/freed minions from tracking array
-	for i in range(active_minions.size() - 1, -1, -1):
-		if not is_instance_valid(active_minions[i]):
-			active_minions.remove_at(i)
 
 func _spawn_effect() -> void:
-	## Visual feedback: Brief scale pulse on spawner
+	## Brief scale pulse feedback
+	var sprite = get_node("Direction/AnimatedSprite2D")
 	var tween = create_tween()
-	tween.tween_property($Direction/AnimatedSprite2D, "scale", Vector2(1.2, 1.2), 0.1)
-	tween.tween_property($Direction/AnimatedSprite2D, "scale", Vector2(1.0, 1.0), 0.2)
+	tween.tween_property(sprite, "scale", Vector2(1.15, 1.15), 0.1)
+	tween.tween_property(sprite, "scale", Vector2(1.0, 1.0), 0.15)
