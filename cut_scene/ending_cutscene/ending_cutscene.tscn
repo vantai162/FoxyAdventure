@@ -109,7 +109,7 @@
 [ext_resource type="Texture2D" uid="uid://cr8a68nw3dww1" path="res://assets/foxy/fox_hat_blade/fox_run_2.png" id="96_h4fqd"]
 [ext_resource type="Texture2D" uid="uid://d0jfmp24jrfcy" path="res://assets/foxy/fox_hat_blade/fox_run_3.png" id="97_orjpr"]
 [ext_resource type="Texture2D" uid="uid://ce35c6mn7dcok" path="res://assets/foxy/fox_hat_blade/fox_run_4.png" id="98_qxy4f"]
-[ext_resource type="Texture2D" uid="uid://byguxw4n71jhf" path="res://assets/ELR-WindyLeafs/ELR-WindyLeafs/ELR_SpringlLeaf.png" id="113_dufmh"]
+[ext_resource type="Texture2D" uid="uid://76my1qehspe3" path="res://assets/ELR-WindyLeafs/ELR-WindyLeafs/ELR_SpringlLeaf.png" id="113_dufmh"]
 [ext_resource type="Texture2D" uid="uid://cf5pogdpweixe" path="res://assets/warlord_turle/war_lord_turtle1.png" id="114_l0651"]
 [ext_resource type="Texture2D" uid="uid://cbi3asc12djd8" path="res://assets/warlord_turle/war_lord_turtle7.png" id="115_1lv12"]
 [ext_resource type="Texture2D" uid="uid://c0716dlo8gxar" path="res://assets/warlord_turle/war_lord_turtle8.png" id="116_o2sti"]
