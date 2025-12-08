@@ -130,9 +130,11 @@ position = Vector2(1410, 760)
 [node name="SeahorseR" parent="Enemies" instance=ExtResource("6_seahorse")]
 position = Vector2(1360, 568)
 scale = Vector2(-1, 1)
+script = null
 
 [node name="SeahorseL" parent="Enemies" instance=ExtResource("6_seahorse")]
 position = Vector2(640, 548)
+script = null
 
 [node name="CrossfireMushroom" parent="Enemies" instance=ExtResource("8_mushroom")]
 position = Vector2(700, 688)

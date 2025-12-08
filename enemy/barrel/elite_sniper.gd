@@ -8,20 +8,20 @@ class_name EliteSniperSeahorse
 @onready var bullet_factory := $Direction/BulletFactory
 
 func _ready() -> void:
-	# NOTE: Scene must have States/SniperShoot node
+	# NOTE: Scene must have States/Shoot node (elite sniper variant)
 	fsm = FSM.new(self, $States, $States/Idle)
-	change_direction(-1)
 	super._ready()
+	# Direction is set by editor via @export var direction in BaseCharacter
+	# Bullet factory will respect current direction when firing
 
-# Player detection triggers sniper mode
-func _on_player_detection_area_body_entered(body: Node2D) -> void:
+# Override base detection to trigger sniper mode
+func _on_body_entered(body: Node2D) -> void:
 	if body.is_in_group("player"):
 		found_player = body
 		if fsm and fsm.current_state and fsm.current_state == fsm.states.idle:
-			if fsm.states.has("snipershoot"):  # Elite has sniper state
-				fsm.change_state(fsm.states.snipershoot)
+			fsm.change_state(fsm.states.shoot)
 
-func _on_player_detection_area_body_exited(body: Node2D) -> void:
+func _on_body_exited(body: Node2D) -> void:
 	if body.is_in_group("player"):
 		found_player = null
-		# Sniper state will handle returning to idle when burst complete
+		# Sniper shoot state checks found_player and aborts burst if player escapes

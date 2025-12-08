@@ -1,4 +1,4 @@
-[gd_scene load_steps=19 format=4 uid="uid://cownslw7ms6s4"]
+[gd_scene load_steps=20 format=4 uid="uid://cownslw7ms6s4"]
 
 [ext_resource type="Script" uid="uid://cblkjof8tqn71" path="res://test/levels/level_3/stage_3_1.gd" id="1_stage_script"]
 [ext_resource type="TileSet" uid="uid://0yf5cmwk6u1i" path="res://assets/island/terrain/ice_tile_set.tres" id="2_a6ecy"]
@@ -10,6 +10,7 @@
 [ext_resource type="PackedScene" uid="uid://dav8b7a6d5e4f" path="res://enemy/shield_tribe/shield_tribe.tscn" id="8_lk4v0"]
 [ext_resource type="PackedScene" uid="uid://c1bijw8i8erx5" path="res://enemy/turtle/turtle.tscn" id="8_turtle"]
 [ext_resource type="PackedScene" uid="uid://bmgv5cgan4yt" path="res://enemy/mushroom/mushroom.tscn" id="9_mushroom"]
+[ext_resource type="Script" uid="uid://s4xx82espxdt" path="res://scripts/enemy.gd" id="9_y62kb"]
 [ext_resource type="PackedScene" uid="uid://b1a2s3d4f5g6h" path="res://enemy/aggressive_tribe/aggressive_tribe.tscn" id="10_q6m5u"]
 [ext_resource type="PackedScene" uid="uid://duryp3ufmd0be" path="res://enemy/tribe/friendly_tribe.tscn" id="10_tribe"]
 [ext_resource type="PackedScene" uid="uid://demnh2f4ooy6n" path="res://objects/platform/floating_boat_platform.tscn" id="14_dyh06"]
@@ -80,6 +81,7 @@ position = Vector2(1020, 258)
 
 [node name="Seahorse" parent="Enemies" instance=ExtResource("5_elwe5")]
 position = Vector2(1462, 105)
+script = ExtResource("9_y62kb")
 direction = -1
 
 [node name="Starfish" parent="Enemies" instance=ExtResource("6_hxdbc")]
@@ -112,11 +114,11 @@ position = Vector2(624, 1102)
 
 [node name="Seahorse3" parent="Enemies" instance=ExtResource("5_elwe5")]
 position = Vector2(481, 1210)
-direction = -1
+script = null
 
 [node name="Seahorse4" parent="Enemies" instance=ExtResource("5_elwe5")]
 position = Vector2(437, 1226)
-direction = -1
+script = null
 
 [node name="Turtle" parent="Enemies" instance=ExtResource("8_turtle")]
 position = Vector2(1046, 1536)
@@ -317,3 +319,4 @@ position = Vector2(173, 204)
 
 [node name="EliteSniperSeahorse" parent="." instance=ExtResource("18_is5y3")]
 position = Vector2(535, 106)
+direction = -1

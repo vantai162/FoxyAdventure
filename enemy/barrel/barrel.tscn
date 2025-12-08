@@ -41,7 +41,7 @@ animations = [{
 "duration": 1.0,
 "texture": ExtResource("5_jkhqg")
 }],
-"loop": true,
+"loop": false,
 "name": &"dead",
 "speed": 5.0
 }, {
@@ -52,7 +52,7 @@ animations = [{
 "duration": 1.0,
 "texture": ExtResource("3_r4ccg")
 }],
-"loop": true,
+"loop": false,
 "name": &"hurt",
 "speed": 5.0
 }, {
@@ -65,7 +65,7 @@ animations = [{
 }],
 "loop": true,
 "name": &"idle",
-"speed": 7.0
+"speed": 5.0
 }, {
 "frames": [{
 "duration": 0.8,
@@ -83,12 +83,12 @@ animations = [{
 "duration": 1.0,
 "texture": ExtResource("10_mev0i")
 }],
-"loop": true,
+"loop": false,
 "name": &"shoot",
-"speed": 6.7
+"speed": 5.0
 }]
 
-[node name="Seahorse" type="CharacterBody2D"]
+[node name="Barrel" type="CharacterBody2D"]
 collision_layer = 8
 script = ExtResource("1_ao4iv")
 metadata/_custom_type_script = "uid://s4xx82espxdt"
@@ -102,7 +102,7 @@ shape = SubResource("RectangleShape2D_pdnpt")
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="Direction"]
 position = Vector2(0, 6)
 sprite_frames = SubResource("SpriteFrames_vpg65")
-animation = &"idle"
+animation = &"shoot"
 
 [node name="BulletFactory" type="Marker2D" parent="Direction"]
 position = Vector2(10, 16)
@@ -131,5 +131,3 @@ script = ExtResource("15_5djrk")
 
 [node name="Dead" type="Node" parent="States"]
 script = ExtResource("17_nles5")
-
-[connection signal="hurt" from="Direction/HurtArea2D" to="." method="_on_hurt_area_2d_hurt"]

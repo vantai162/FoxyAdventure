@@ -151,6 +151,7 @@ position = Vector2(520, 720)
 
 [node name="GrottoSeahorse" parent="Enemies" instance=ExtResource("13_seahorse")]
 position = Vector2(1280, 420)
+script = null
 
 [node name="FleeingTribe" parent="Enemies" instance=ExtResource("19_tribe")]
 position = Vector2(920, 650)

@@ -6,6 +6,6 @@ extends EnemyCharacter
 
 func _ready() -> void:
 	fsm = FSM.new(self, $States, $States/Idle)
-	change_direction(-1)
 	super._ready()
-
+	# Direction is set by editor via @export var direction in BaseCharacter
+	# Bullet factory will respect current direction when firing

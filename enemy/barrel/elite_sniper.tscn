@@ -51,7 +51,7 @@ animations = [{
 "duration": 1.0,
 "texture": ExtResource("10_jkhqg")
 }],
-"loop": true,
+"loop": false,
 "name": &"dead",
 "speed": 5.0
 }, {
@@ -62,7 +62,7 @@ animations = [{
 "duration": 1.0,
 "texture": ExtResource("6_r4ccg")
 }],
-"loop": true,
+"loop": false,
 "name": &"hurt",
 "speed": 5.0
 }, {
@@ -75,7 +75,7 @@ animations = [{
 }],
 "loop": true,
 "name": &"idle",
-"speed": 7.0
+"speed": 5.0
 }, {
 "frames": [{
 "duration": 0.8,
@@ -93,15 +93,15 @@ animations = [{
 "duration": 1.0,
 "texture": ExtResource("15_mev0i")
 }],
-"loop": true,
+"loop": false,
 "name": &"shoot",
-"speed": 6.7
+"speed": 5.0
 }]
 
-[sub_resource type="CircleShape2D" id="CircleShape2D_detect"]
-radius = 600.0
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_detect"]
+size = Vector2(600, 200)
 
-[node name="EliteSniperSeahorse" type="CharacterBody2D"]
+[node name="EliteSniperBarrel" type="CharacterBody2D"]
 collision_layer = 8
 script = ExtResource("1_elite_sniper")
 
@@ -137,19 +137,20 @@ collision_mask = 0
 position = Vector2(0, 6)
 shape = SubResource("RectangleShape2D_pdnpt")
 
-[node name="PlayerDetectionArea" type="Area2D" parent="."]
+[node name="DetectPlayerArea2D" type="Area2D" parent="Direction"]
 collision_layer = 0
 collision_mask = 2
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="PlayerDetectionArea"]
-shape = SubResource("CircleShape2D_detect")
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Direction/DetectPlayerArea2D"]
+position = Vector2(300, 0)
+shape = SubResource("RectangleShape2D_detect")
 
 [node name="States" type="Node" parent="."]
 
 [node name="Idle" type="Node" parent="States"]
 script = ExtResource("18_gmpqy")
 
-[node name="SniperShoot" type="Node" parent="States"]
+[node name="Shoot" type="Node" parent="States"]
 script = ExtResource("20_sniper")
 
 [node name="Hurt" type="Node" parent="States"]
@@ -157,7 +158,3 @@ script = ExtResource("21_5djrk")
 
 [node name="Dead" type="Node" parent="States"]
 script = ExtResource("22_nles5")
-
-[connection signal="hurt" from="Direction/HurtArea2D" to="." method="_on_hurt_area_2d_hurt"]
-[connection signal="body_entered" from="PlayerDetectionArea" to="." method="_on_player_detection_area_body_entered"]
-[connection signal="body_exited" from="PlayerDetectionArea" to="." method="_on_player_detection_area_body_exited"]
