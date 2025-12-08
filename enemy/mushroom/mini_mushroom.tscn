@@ -7,7 +7,7 @@
 [ext_resource type="Texture2D" uid="uid://3618lytb7nnv" path="res://assets/monsters/mushroom/mushroom_01.png" id="5_run"]
 [ext_resource type="Texture2D" uid="uid://bqgmklofxv0qi" path="res://assets/monsters/mushroom/mushroom_02.png" id="6_run"]
 [ext_resource type="Texture2D" uid="uid://cghgcxg1pvwd6" path="res://assets/monsters/mushroom/mushroom_03.png" id="7_run"]
-[ext_resource type="Script" uid="uid://tyxyrjlixj58" path="res://enemy/mushroom/run.gd" id="8_run_state"]
+[ext_resource type="Script" path="res://enemy/mushroom/states/mini_run.gd" id="8_run_state"]
 [ext_resource type="Script" path="res://enemy/mushroom/states/mini_explode.gd" id="9_explode"]
 [ext_resource type="PackedScene" uid="uid://nr5uby15sfha" path="res://enemy/mushroom/toxic gas.tscn" id="10_gas"]
 [ext_resource type="Script" uid="uid://csu2b21cwchqw" path="res://scripts/hurt_area_2d.gd" id="11_hurt_area"]

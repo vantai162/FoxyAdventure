@@ -14,4 +14,5 @@ func _update(delta):
 	obj.velocity.x = 0
 	timer2 -= delta
 	if timer2 <= 0:
-		change_state(fsm.states.run)
+		if fsm.states.has("run"):
+			change_state(fsm.states.run)

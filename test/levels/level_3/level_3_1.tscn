@@ -1,4 +1,4 @@
-[gd_scene load_steps=18 format=4 uid="uid://cownslw7ms6s4"]
+[gd_scene load_steps=19 format=4 uid="uid://cownslw7ms6s4"]
 
 [ext_resource type="Script" uid="uid://cblkjof8tqn71" path="res://test/levels/level_3/stage_3_1.gd" id="1_stage_script"]
 [ext_resource type="TileSet" uid="uid://0yf5cmwk6u1i" path="res://assets/island/terrain/ice_tile_set.tres" id="2_a6ecy"]
@@ -15,13 +15,15 @@
 [ext_resource type="PackedScene" uid="uid://demnh2f4ooy6n" path="res://objects/platform/floating_boat_platform.tscn" id="14_dyh06"]
 [ext_resource type="PackedScene" uid="uid://giogr7michck" path="res://objects/water/water.tscn" id="14_water"]
 [ext_resource type="PackedScene" uid="uid://c5m8vno0qh3xy" path="res://objects/whirlpool/whirlpool.tscn" id="15_erfut"]
-[ext_resource type="PackedScene" uid="uid://jm5jjtt5tfsj" path="res://enemy/crab/elite_hunter_crab.tscn" id="16_erfut"]
+[ext_resource type="PackedScene" uid="uid://bt2icn1rxyolq" path="res://enemy/mushroom/elite_spawner_mushroom.tscn" id="17_erfut"]
 [ext_resource type="PackedScene" uid="uid://clavapool001" path="res://environment/lava/lava_pool.tscn" id="18_a6ecy"]
+[ext_resource type="PackedScene" uid="uid://dqdstpxycbomj" path="res://effect_Item/BladeItem/blade.tscn" id="18_y62kb"]
 
 [node name="Level_3_1" type="Node2D"]
 script = ExtResource("1_stage_script")
 
 [node name="CanvasModulate" type="CanvasModulate" parent="."]
+visible = false
 color = Color(0.0558769, 0.0395219, 0.0722072, 1)
 
 [node name="PlayerSpawn" type="Marker2D" parent="."]
@@ -53,13 +55,6 @@ tile_set = ExtResource("2_a6ecy")
 z_index = 1
 position = Vector2(176, 2115)
 water_size = Vector2(1113, 220)
-emit_light = false
-light_color = Color(0.3, 0.8, 1, 0.8)
-light_energy = 0.6
-light_sample_points = 4
-light_pulse_enabled = true
-light_pulse_speed = 1.5
-light_pulse_amount = 0.2
 
 [node name="FloatingBoatPlatform" parent="WaterZones" instance=ExtResource("14_dyh06")]
 position = Vector2(448, 2113)
@@ -312,13 +307,13 @@ position = Vector2(1500, 2140)
 [node name="Foxy" parent="." instance=ExtResource("6_foxy")]
 position = Vector2(136, 194)
 
-[node name="EliteHunterCrab" parent="." instance=ExtResource("16_erfut")]
-position = Vector2(1010, 419)
-
-[node name="EliteHunterCrab2" parent="." instance=ExtResource("16_erfut")]
-position = Vector2(588, 226)
-
 [node name="LavaPool" parent="." instance=ExtResource("18_a6ecy")]
 z_index = 1
 position = Vector2(1159, 1705)
 lava_size = Vector2(400, 300)
+
+[node name="EliteSpawnerMushroom" parent="." instance=ExtResource("17_erfut")]
+position = Vector2(378, 194)
+
+[node name="Blade" parent="." instance=ExtResource("18_y62kb")]
+position = Vector2(173, 204)

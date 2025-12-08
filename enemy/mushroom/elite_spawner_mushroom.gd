@@ -48,13 +48,14 @@ func _on_player_in_sight(_player_pos: Vector2) -> void:
 	
 	# Pursuit state (menacing approach)
 	if fsm.current_state == fsm.states.run:
-		if fsm.states.has("spawner_pursue"):
+		if fsm.states.has("spawnerpursue"):
 			fsm.change_state(fsm.states.spawnerpursue)
 
 func _on_player_not_in_sight() -> void:
 	# Return to patrol when player lost
-	if fsm.current_state.name == "spawner_pursue":
-		fsm.change_state(fsm.states.run)
+	if fsm.current_state.name.to_lower() == "spawnerpursue":
+		if fsm.states.has("run"):
+			fsm.change_state(fsm.states.run)
 
 # Override hurt to trigger panic spawn
 func _on_hurt_area_2d_hurt(direction: Vector2, damage: float) -> void:

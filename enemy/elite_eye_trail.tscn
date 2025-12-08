@@ -76,13 +76,3 @@ lifetime = 0.35
 randomness = 0.01
 local_coords = false
 
-[node name="TrailParticles" type="GPUParticles2D" parent="."]
-z_index = 99
-material = SubResource("CanvasItemMaterial_unshaded_add")
-amount = 52
-process_material = SubResource("ParticleProcessMaterial_trail")
-texture = SubResource("GradientTexture2D_particle")
-lifetime = 0.35
-randomness = 0.01
-local_coords = false
-

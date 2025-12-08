@@ -14,6 +14,7 @@ func _update(delta):
 		# Elite spawner: change to spawner_pursue or stay in run
 		if fsm.states.has("spawnerpursue"):
 			change_state(fsm.states.spawnerpursue)
+		# Else: stay in run state (no crash)
 		return
 
 	var player_pos = obj.found_player.global_position
