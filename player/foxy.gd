@@ -136,13 +136,13 @@ func consume_blade() -> void:
 		blade_count -= 1
 		
 		# 2. [THÊM DÒNG NÀY] Trừ trong Inventory để UI biết mà nhảy số
-		inventory.use_blade(1) 
+		inventory.use_blade(1)
 		# Hoặc: inventory.adjust_amount_item("Blade", -1)
 
 func return_blade() -> void:
 	if blade_count < max_blade_capacity:
 		blade_count += 1
-		
+		inventory.adjust_amount_item("Blade", 1) 
 		# Switch back to blade sprite when getting a blade back
 		if has_unlocked_blade and blade_count > 0:
 			set_animated_sprite($Direction/BladeAnimatedSprite2D)
@@ -250,15 +250,54 @@ func _process(delta: float) -> void:
 	
 		
 
-func _collect_blade() -> void:
+# is_upgrade_item = true: Dành cho vật phẩm đặt trên map (Tăng giới hạn/Mở khóa)
+# is_upgrade_item = false (mặc định): Dành cho dao ném ra nhặt lại (Chỉ hồi đạn)
+func _collect_blade(is_upgrade_item: bool = false) -> void:
+	
+	# --- TRƯỜNG HỢP 1: CHƯA MỞ KHÓA KỸ NĂNG ---
 	if not has_unlocked_blade:
-		# First blade: unlock ability and give one blade
+		print("Player: Mở khóa Blade lần đầu!")
 		has_unlocked_blade = true
 		blade_count = 1
+		
+		# Set sprite
 		set_animated_sprite($Direction/BladeAnimatedSprite2D)
+		
+		# Đồng bộ Inventory & UI
+		inventory.adjust_amount_item("Blade", 1)
+		blade_changed.emit(blade_count)
+		return
+
+	# --- TRƯỜNG HỢP 2: ĐÃ CÓ KỸ NĂNG ---
+	
+	# Nếu là Item trên map -> Tăng giới hạn túi đồ (Max Capacity)
+	if is_upgrade_item:
+		max_blade_capacity = min(max_blade_capacity + 1, 3) # Ví dụ max là 3
+		print("Player: Đã nâng cấp túi đạn lên ", max_blade_capacity)
+		# Tăng giới hạn xong thì hồi đầy đạn luôn (hoặc +1 tùy bạn)
+		blade_count = max_blade_capacity
+		# Lưu ý: Cần xử lý logic cộng inventory tương ứng để khớp số
+		# (Đoạn này hơi phức tạp nếu inventory không có biến max, 
+		# nhưng tạm thời ta cứ cho là cộng thêm blade cho đầy túi)
+		var needed = max_blade_capacity - inventory.get_amount("Blade")
+		if needed > 0:
+			inventory.adjust_amount_item("Blade", needed)
+			
+	# Nếu là Dao ném ra -> Chỉ hồi đạn (+1)
 	else:
-		# Additional blades: increase capacity
-		increase_blade_capacity()
+		if blade_count < max_blade_capacity:
+			blade_count += 1
+			inventory.adjust_amount_item("Blade", 1)
+		else:
+			return # Đầy rồi thì thôi không nhặt, không cộng
+
+	# --- CẬP NHẬT CUỐI CÙNG ---
+	# Đảm bảo hiển thị đúng sprite nếu có đạn
+	if blade_count > 0:
+		set_animated_sprite($Direction/BladeAnimatedSprite2D)
+		
+	# Báo cho UI biết
+	blade_changed.emit(blade_count)
 
 func _applyeffect(name: String, time: float) -> void:
 	Effect[name] = time
@@ -341,7 +380,8 @@ func load_state(data: Dictionary) -> void:
 		global_position = Vector2(pos_array[0], pos_array[1])
 	
 	if data.has("blade_count"):
-		blade_count = data["blade_count"]
+		blade_count = inventory.get_amount("Blade")
+		#blade_count = data["blade_count"]
 	if data.has("max_blade_capacity"):
 		max_blade_capacity = data["max_blade_capacity"]
 	if data.has("has_unlocked_blade"):

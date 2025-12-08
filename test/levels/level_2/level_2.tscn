@@ -1,4 +1,4 @@
-[gd_scene load_steps=40 format=4 uid="uid://bxknbajfocd87"]
+[gd_scene load_steps=41 format=4 uid="uid://bxknbajfocd87"]
 
 [ext_resource type="Script" uid="uid://b6xvcjrh55sd6" path="res://test/levels/level_2/level_2.gd" id="1_5l4f7"]
 [ext_resource type="PackedScene" uid="uid://dm741hii7d5nv" path="res://scenes/game_screen/health_bar.tscn" id="1_x7kuf"]
@@ -7,6 +7,7 @@
 [ext_resource type="Material" uid="uid://djub48p1bim43" path="res://test/levels/sublime.tres" id="4_8tmu8"]
 [ext_resource type="PackedScene" uid="uid://tpuba3bux4at" path="res://scenes/game_screen/warlord_health_bar.tscn" id="5_chxal"]
 [ext_resource type="Texture2D" uid="uid://hlp52x3tx5we" path="res://assets/GandalfHardcore FREE Platformer Assets/GandalfHardcore FREE Platformer Assets/GandalfHardcore Background layers/Normal BG/GandalfHardcore Background layers_layer 5.png" id="5_gapm4"]
+[ext_resource type="PackedScene" uid="uid://8koby8md4sgg" path="res://scenes/game_screen/blade_ui.tscn" id="5_q2kgt"]
 [ext_resource type="PackedScene" uid="uid://cxynm52qga6k5" path="res://scenes/game_screen/warlord_phase2_health_bar.tscn" id="6_ajdfl"]
 [ext_resource type="Texture2D" uid="uid://dmxq75c4jh82u" path="res://assets/GandalfHardcore FREE Platformer Assets/GandalfHardcore FREE Platformer Assets/GandalfHardcore Background layers/Normal BG/GandalfHardcore Background layers_layer 4.png" id="6_f2a7s"]
 [ext_resource type="Texture2D" uid="uid://danqmrply2lgh" path="res://assets/GandalfHardcore FREE Platformer Assets/GandalfHardcore FREE Platformer Assets/GandalfHardcore Background layers/Normal BG/GandalfHardcore Background layers_layer 3.png" id="7_3noe3"]
@@ -66,6 +67,12 @@ anchors_preset = -1
 anchor_left = 0.015
 anchor_top = 0.155
 mouse_filter = 2
+
+[node name="BladeUI" parent="CanvasLayer" instance=ExtResource("5_q2kgt")]
+offset_left = 19.0
+offset_top = 163.0
+offset_right = 19.0
+offset_bottom = 163.0
 
 [node name="WarlordHealthBar" parent="CanvasLayer" instance=ExtResource("5_chxal")]
 visible = false
