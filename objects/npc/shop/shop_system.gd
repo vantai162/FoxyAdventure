@@ -4,9 +4,13 @@ enum itemType{skins,Skill}
 enum TransactionResult{Successful,NotUnlockedYet,AlreadyBought,NotEnoughMoney,OutofStock,UnknowError}
 @export var shop_name:String
 @export var Stock = {
+	"power_up": 5,
+	"hp_up": 5
 }
 
 @export var Linker={
+	"hp_up": preload("res://objects/npc/shop/shop_item/hp_up.tscn"),
+	"power_up": preload("res://objects/npc/shop/shop_item/power_up.tscn")
 }#link name to PackedScene
 var objLinker={}
 func BuyItem(money:int,type:itemType,key:String)->TransactionResult:
