@@ -18,7 +18,7 @@
 [ext_resource type="PackedScene" uid="uid://c5m8vno0qh3xy" path="res://objects/whirlpool/whirlpool.tscn" id="15_erfut"]
 [ext_resource type="PackedScene" uid="uid://clavapool001" path="res://environment/lava/lava_pool.tscn" id="18_a6ecy"]
 [ext_resource type="PackedScene" uid="uid://dqdstpxycbomj" path="res://effect_Item/BladeItem/blade.tscn" id="18_y62kb"]
-[ext_resource type="PackedScene" uid="uid://dumayxma7am7b" path="res://enemy/turtle/elite_spiny_turtle.tscn" id="19_y62kb"]
+[ext_resource type="PackedScene" uid="uid://d02ffhwahuggg" path="res://enemy/shield_tribe/elite_warden.tscn" id="19_y62kb"]
 
 [node name="Level_3_1" type="Node2D"]
 script = ExtResource("1_stage_script")
@@ -314,5 +314,5 @@ lava_size = Vector2(400, 300)
 [node name="Blade" parent="." instance=ExtResource("18_y62kb")]
 position = Vector2(173, 204)
 
-[node name="EliteSpinyTurtle" parent="." instance=ExtResource("19_y62kb")]
-position = Vector2(320, 191)
+[node name="EliteWarden" parent="." instance=ExtResource("19_y62kb")]
+position = Vector2(356, 99)

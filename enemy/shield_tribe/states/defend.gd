@@ -8,9 +8,12 @@ func _enter() -> void:
 	obj.change_animation("defend")
 	obj.show_shield()
 	
-	# Only set wait_time if not already configured in editor
-	if obj.attack_timer.wait_time == 0:
-		obj.attack_timer.wait_time = obj.attack_interval
+	# Set attack timer - check for ambush bonus if elite
+	var attack_interval = obj.attack_interval
+	if obj.has_method("get_ambush_attack_interval"):
+		attack_interval = obj.get_ambush_attack_interval()
+	
+	obj.attack_timer.wait_time = attack_interval
 	obj.attack_timer.start()
 	
 	can_jump = true
@@ -30,7 +33,7 @@ func _update(_delta: float) -> void:
 
 func _perform_block_jump():
 	can_jump = false
-	obj.jump(obj.jump_speed)
+	obj.jump(obj.block_jump_speed)  # Use custom higher jump for blocking
 	get_tree().create_timer(obj.jump_cooldown).timeout.connect(func(): can_jump = true)
 
 func _exit() -> void:
