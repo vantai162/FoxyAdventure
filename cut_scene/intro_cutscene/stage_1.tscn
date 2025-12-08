@@ -1,4 +1,4 @@
-[gd_scene load_steps=40 format=4 uid="uid://pocb84fubgy"]
+[gd_scene load_steps=40 format=4 uid="uid://bmt5hb2emmqux"]
 
 [ext_resource type="TileSet" uid="uid://bmuxyu21ya31y" path="res://assets/tileset.tres" id="1_rklvk"]
 [ext_resource type="PackedScene" uid="uid://bs816w0pr8all" path="res://player/foxy.tscn" id="2_8ahgw"]
@@ -145,13 +145,13 @@ motion_scale = Vector2(0.001, 0.8)
 motion_mirroring = Vector2(1100, 0)
 
 [node name="SkySprite2D" type="Sprite2D" parent="ParallaxBackground/ParallaxLayer"]
-position = Vector2(1196, 199.615)
-scale = Vector2(74.8125, 33.6944)
+position = Vector2(1313.5, 146.695)
+scale = Vector2(82.1563, 37.0019)
 texture = ExtResource("3_lb3ni")
 
 [node name="SeaSkySprite2D" type="Sprite2D" parent="ParallaxBackground/ParallaxLayer"]
-position = Vector2(0, 50)
-scale = Vector2(6.36198, 4.07031)
+position = Vector2(0, 9)
+scale = Vector2(6.86263, 4.39062)
 texture = ExtResource("4_a11u7")
 centered = false
 

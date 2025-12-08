@@ -5,7 +5,7 @@ extends EnemyState
 func _enter():
 	obj.change_animation("dead")
 	timer = 1.0
-
+	GameManager.add_kill()
 	obj.velocity.x = 0
 	obj.get_node("Direction/HurtArea2D/CollisionShape2D").disabled = true
 	obj.get_node("Direction/HitArea2D/CollisionShape2D").disabled = true

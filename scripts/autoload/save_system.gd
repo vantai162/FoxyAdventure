@@ -7,6 +7,8 @@ extends Node
 const SAVE_FILE = "user://checkpoint_save.dat"
 const SETTING_FILE="user://setting.dat"
 const SKIN_FILE="user://skin.dat"
+const KILL_DATA_FILE = "user://kill_count.dat"
+
 # Save checkpoint data to file
 func save_checkpoint_data(data: Dictionary) -> void:
 	# Mở file để ghi
@@ -120,3 +122,24 @@ func load_skin_data():
 		printerr("LỖI: Không thể mở file để tải: ", SKIN_FILE)
 		return {}
 		
+# Lưu trực tiếp số nguyên
+static func save_kill_data(count: int) -> void:
+	var file = FileAccess.open(KILL_DATA_FILE, FileAccess.WRITE)
+	if file:
+		# Biến số thành chuỗi để lưu (Ví dụ: 10 -> "10")
+		file.store_string(str(count))
+		# print("SaveSystem: Đã lưu Kill Count: ", count)
+	else:
+		printerr("SaveSystem Lỗi: Không thể lưu file.")
+
+# Đọc trực tiếp số nguyên
+static func load_kill_data() -> int:
+	if not FileAccess.file_exists(KILL_DATA_FILE):
+		return 0 # Chưa có file thì trả về 0
+	
+	var file = FileAccess.open(KILL_DATA_FILE, FileAccess.READ)
+	if file:
+		var content = file.get_as_text()
+		# Biến chuỗi đọc được thành số nguyên (Ví dụ: "10" -> 10)
+		return content.to_int()
+	return 0
