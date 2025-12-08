@@ -129,9 +129,15 @@ func start_attack_cooldown() -> void:
 func can_throw_blade() -> bool:
 	return blade_count > 0 and Effect["Stun"] <= 0
 
+#Hàm này được gọi ngay khi ném (trong throw_blade_projectile)
 func consume_blade() -> void:
 	if blade_count > 0:
+		# 1. Trừ biến nội bộ (để chặn không cho ném tiếp)
 		blade_count -= 1
+		
+		# 2. [THÊM DÒNG NÀY] Trừ trong Inventory để UI biết mà nhảy số
+		inventory.use_blade(1) 
+		# Hoặc: inventory.adjust_amount_item("Blade", -1)
 
 func return_blade() -> void:
 	if blade_count < max_blade_capacity:
