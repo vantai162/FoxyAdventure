@@ -22,8 +22,14 @@ func _update(_delta: float) -> void:
 		else:
 			obj.turn_left()
 		
-		# Use ricochetdash instead of attack (FSM normalizes to lowercase)
+		# Only trigger ricochetdash if NOT in sequence and cooldown expired
+		# This prevents elite_run from competing with the signal-based trigger
 		if fsm.states.has("ricochetdash"):
+			# Check parent's sequence flag to prevent mid-sequence re-trigger
+			if "is_in_sequence" in obj and obj.is_in_sequence:
+				return  # Sequence in progress, don't interrupt
+			if "attack_cooldown_timer" in obj and obj.attack_cooldown_timer > 0.0:
+				return  # Cooldown active, don't trigger yet
 			change_state(fsm.states.ricochetdash)
 
 func _should_turn_around() -> bool:

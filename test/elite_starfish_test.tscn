@@ -1,0 +1,45 @@
+[gd_scene load_steps=4 format=3 uid="uid://test_elite_starfish"]
+
+[ext_resource type="PackedScene" uid="uid://bs816w0pr8all" path="res://player/foxy.tscn" id="1"]
+[ext_resource type="PackedScene" path="res://enemy/starfish/elite_ricochet_starfish.tscn" id="2"]
+[ext_resource type="PackedScene" uid="uid://bn3w2ymt5pkh7" path="res://objects/platform/wall.tscn" id="3"]
+
+[node name="EliteStarfishTest" type="Node2D"]
+
+[node name="Camera2D" type="Camera2D" parent="."]
+position = Vector2(576, 324)
+zoom = Vector2(1.5, 1.5)
+
+[node name="Foxy" parent="." instance=ExtResource("1")]
+position = Vector2(300, 500)
+
+[node name="Floor" parent="." instance=ExtResource("3")]
+position = Vector2(576, 650)
+scale = Vector2(10, 0.5)
+
+[node name="LeftWall" parent="." instance=ExtResource("3")]
+position = Vector2(50, 400)
+scale = Vector2(0.5, 8)
+
+[node name="RightWall" parent="." instance=ExtResource("3")]
+position = Vector2(1100, 400)
+scale = Vector2(0.5, 8)
+
+[node name="Ceiling" parent="." instance=ExtResource("3")]
+position = Vector2(576, 50)
+scale = Vector2(10, 0.5)
+
+[node name="EliteStarfish1" parent="." instance=ExtResource("2")]
+position = Vector2(850, 500)
+
+[node name="Label" type="Label" parent="."]
+offset_left = 20.0
+offset_top = 20.0
+offset_right = 500.0
+offset_bottom = 120.0
+theme_override_font_sizes/font_size = 16
+text = "ELITE STARFISH TEST
+- Get close to trigger ricochet dash (3 dashes)
+- After sequence, 1.5s cooldown before re-trigger
+- Each dash recalculates toward your current position
+- Move during sequence to test tracking"

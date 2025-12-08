@@ -1,30 +1,31 @@
 extends EnemyState
 ## Elite Starfish "Ricochet Dash" state
-## Master Yi style: 3 sequential dashes toward player, each ~100px
-## Wall collision triggers next dash early, otherwise distance/time based
+## X-PATTERN: 3 sequential diagonal dashes in fixed 45° angles (↗️ ↘️ ↖️ ↙️)
+## First dash ALWAYS goes UP to avoid ground-kissing (anti-gravity launch)
+## Collision triggers next dash early, otherwise distance/time based
 
-@export var dash_speed: float = 350.0  ## Fast dash speed
+@export var dash_speed: float = 450.0  ## Fast dash speed
 @export var max_dashes: int = 3  ## Triple dash sequence
-@export var dash_distance: float = 100.0  ## Target distance per dash
+@export var dash_distance: float = 150.0  ## Target distance per dash
 @export var prepare_time: float = 0.15  ## Brief windup before first dash
-@export var dash_pause: float = 0.1  ## Pause between dashes
+@export var dash_pause: float = 0.15  ## Pause between dashes
 
-var current_dash: int = 0  ## Which dash in sequence (0-2)
-var dash_timer: float = 0.0
-var prepare_timer: float = 0.0
-var pause_timer: float = 0.0
-var is_preparing: bool = true
-var is_pausing: bool = false
-var dash_direction: Vector2  ## Direction of current dash
-var dash_start_position: Vector2  ## Start position of current dash segment
+## Note: Sequence state now lives in parent (obj) for persistence across frames
 
 func _enter() -> void:
 	obj.change_animation("attack")
-	is_preparing = true
-	is_pausing = false
-	prepare_timer = prepare_time
-	current_dash = 0
-	dash_timer = 0.0
+	
+	# Initialize sequence state in parent (persists across frames)
+	obj.is_preparing = true
+	obj.is_pausing = false
+	obj.prepare_timer = prepare_time
+	obj.current_dash = 0
+	obj.dash_timer = 0.0
+	obj.is_in_sequence = true
+	obj.attack_cooldown_timer = obj.attack_cooldown
+	obj.last_collision_normal = Vector2.ZERO  # Track collision for smart direction changes
+	
+	print("RicochetDash ENTER - starting sequence")
 	
 	# Calculate dash direction toward player (or facing direction if no player)
 	_calculate_dash_direction()
@@ -40,80 +41,96 @@ func _exit() -> void:
 	_enable_hit_area(false)
 	obj.velocity = Vector2.ZERO
 	
-	# Re-enable detection after sequence completes
-	if obj.has_method("enable_check_player_in_sight"):
-		obj.enable_check_player_in_sight()
+	# Notify parent that sequence is complete (parent manages cooldown/detection)
+	if obj.has_method("on_sequence_complete"):
+		obj.on_sequence_complete()
+	# DON'T re-enable detection here - parent handles it after cooldown expires
 
 func _update(delta: float) -> void:
-	dash_timer += delta
+	obj.dash_timer += delta
 	
 	# Phase 1: Prepare (brief windup before first dash)
-	if is_preparing:
-		prepare_timer -= delta
+	if obj.is_preparing:
+		obj.prepare_timer -= delta
 		obj.velocity = Vector2.ZERO  # Stay still during prepare
-		if prepare_timer <= 0.0:
-			is_preparing = false
+		if obj.prepare_timer <= 0.0:
+			obj.is_preparing = false
 			_start_dash()
 		return
 	
 	# Phase 2: Pause between dashes
-	if is_pausing:
-		pause_timer -= delta
+	if obj.is_pausing:
+		obj.pause_timer -= delta
 		obj.velocity = Vector2.ZERO  # Stay still during pause
-		if pause_timer <= 0.0:
-			is_pausing = false
+		if obj.pause_timer <= 0.0:
+			obj.is_pausing = false
 			_start_dash()
 		return
 	
 	# Phase 3: Active dash
-	# Suppress gravity during dash by applying counter-force
-	obj.velocity.y = min(obj.velocity.y, 0)  # Prevent falling, allow upward dash
-	
-	# Move in dash direction
-	obj.velocity = dash_direction * dash_speed
+	# Apply dash velocity (overwrites gravity)
+	obj.velocity = obj.dash_direction * dash_speed
 	
 	# Check termination conditions for current dash:
-	# 1. Hit wall/terrain (collision)
+	# 1. COLLISION with terrain - triggers next dash EARLY (your actual intent!)
 	if obj.get_slide_collision_count() > 0:
-		_end_current_dash()
-		return
+		for i in range(obj.get_slide_collision_count()):
+			var collision = obj.get_slide_collision(i)
+			var normal = collision.get_normal()
+			# Hit a solid surface (wall, floor, ceiling)
+			if abs(normal.x) > 0.3 or abs(normal.y) > 0.3:
+				print("Collision detected! Ending dash ", obj.current_dash, " early")
+				# Store collision info for smart direction change
+				obj.last_collision_normal = normal
+				_end_current_dash()
+				return
 	
-	# 2. Traveled target distance
-	var distance_traveled = obj.global_position.distance_to(dash_start_position)
+	# 2. Traveled target distance (fallback if no collision)
+	var distance_traveled = obj.global_position.distance_to(obj.dash_start_position)
 	if distance_traveled >= dash_distance:
+		print("Distance threshold reached for dash ", obj.current_dash)
 		_end_current_dash()
 		return
 	
 	# 3. Timeout failsafe (3 seconds total for entire sequence)
-	if dash_timer >= 3.0:
+	if obj.dash_timer >= 3.0:
+		print("Timeout - ending sequence")
 		change_state(fsm.states.run)
 		return
 
 func _start_dash() -> void:
 	## Start a new dash segment
-	dash_start_position = obj.global_position
+	obj.dash_start_position = obj.global_position
 	
-	# Recalculate direction toward player for this dash
+	# CRITICAL: Recalculate direction toward player for THIS dash
+	# This prevents wall-kissing by always aiming at current player position
 	_calculate_dash_direction()
 	
 	# Apply dash velocity
-	obj.velocity = dash_direction * dash_speed
+	obj.velocity = obj.dash_direction * dash_speed
+	
+	print("Starting dash ", obj.current_dash, " from ", obj.global_position, " in direction ", obj.dash_direction)
 
 func _end_current_dash() -> void:
 	## End current dash and start next one (or return to run)
-	current_dash += 1
+	obj.current_dash += 1
+	print("Dash ", obj.current_dash - 1, " complete. Total dashes: ", obj.current_dash, "/", max_dashes)
 	
-	if current_dash >= max_dashes:
+	if obj.current_dash >= max_dashes:
 		# All dashes complete - return to patrol
+		print("All dashes complete, returning to run")
 		change_state(fsm.states.run)
 	else:
 		# Start pause before next dash
-		is_pausing = true
-		pause_timer = dash_pause
+		obj.is_pausing = true
+		obj.pause_timer = dash_pause
 
 func _calculate_dash_direction() -> void:
-	## Calculate diagonal/chaotic dash direction (not directly toward player)
-	## Mix facing direction with vertical component for unpredictability
+	## X-PATTERN DIAGONAL MOVEMENT (4 fixed directions, not pixel-perfect tracking)
+	## Design: Starfish picks one of 4 diagonals based on player quadrant
+	## First dash ALWAYS goes UP-diagonal (anti-gravity launch from ground)
+	## SMART: If we hit a wall, flip direction to avoid repeating into same obstacle
+	
 	if obj.found_player and is_instance_valid(obj.found_player):
 		var to_player = obj.found_player.global_position - obj.global_position
 		
@@ -123,13 +140,66 @@ func _calculate_dash_direction() -> void:
 		elif to_player.x < 0:
 			obj.change_direction(-1)
 		
-		# Create diagonal dash: use facing direction + vertical component toward player
-		# This creates chaotic diagonal movement instead of direct tracking
-		var vertical_component = sign(to_player.y)  # -1 (up) or +1 (down)
-		dash_direction = Vector2(obj.direction, vertical_component).normalized()
+		# FIRST DASH: Always launch UP-diagonal toward player's horizontal side
+		if obj.current_dash == 0:
+			# Launch up-left or up-right based on where player is horizontally
+			if to_player.x >= 0:
+				obj.dash_direction = Vector2(1, -1).normalized()  # Up-right ↗️
+				print("First dash: UP-RIGHT (launch from ground)")
+			else:
+				obj.dash_direction = Vector2(-1, -1).normalized()  # Up-left ↖️
+				print("First dash: UP-LEFT (launch from ground)")
+		else:
+			# SUBSEQUENT DASHES: Pick diagonal based on player's quadrant
+			# BUT if we just hit a collision, use the collision normal to bounce away smartly
+			if obj.last_collision_normal.length() > 0.1:
+				# We hit something! Reflect our last direction off the collision normal
+				var reflected = obj.dash_direction.bounce(obj.last_collision_normal)
+				
+				# Snap to nearest diagonal (maintain X-pattern)
+				var horizontal = 1 if reflected.x >= 0 else -1
+				var vertical = -1 if reflected.y < 0 else 1
+				obj.dash_direction = Vector2(horizontal, vertical).normalized()
+				
+				print("Dash ", obj.current_dash, ": Bouncing off collision → ", _direction_name(horizontal, vertical))
+				obj.last_collision_normal = Vector2.ZERO  # Clear collision memory
+			else:
+				# No recent collision, use player quadrant
+				var horizontal = 1 if to_player.x >= 0 else -1  # Right or left?
+				var vertical = -1 if to_player.y < 0 else 1      # Up or down?
+				
+				obj.dash_direction = Vector2(horizontal, vertical).normalized()
+				print("Dash ", obj.current_dash, ": ", _direction_name(horizontal, vertical), " toward player")
 	else:
-		# No player: dash diagonally in facing direction (fixed 45-degree down)
-		dash_direction = Vector2(obj.direction, 1.0).normalized()
+		# No player: Use smart fallback
+		if obj.current_dash == 0:
+			# First dash always up
+			obj.dash_direction = Vector2(obj.direction, -1).normalized()
+			print("No player found, dashing UP-", "RIGHT" if obj.direction > 0 else "LEFT")
+		else:
+			# Subsequent dashes: if we hit something, bounce away; otherwise keep going
+			if obj.last_collision_normal.length() > 0.1:
+				var reflected = obj.dash_direction.bounce(obj.last_collision_normal)
+				var horizontal = 1 if reflected.x >= 0 else -1
+				var vertical = -1 if reflected.y < 0 else 1
+				obj.dash_direction = Vector2(horizontal, vertical).normalized()
+				print("No player, bouncing off collision → ", _direction_name(horizontal, vertical))
+				obj.last_collision_normal = Vector2.ZERO
+			else:
+				# No collision, no player—just flip vertical to create X-pattern
+				var new_vertical = -obj.dash_direction.y  # Flip up/down
+				obj.dash_direction = Vector2(obj.dash_direction.x, new_vertical).normalized()
+				print("No player, alternating pattern → ", _direction_name(int(obj.dash_direction.x), int(obj.dash_direction.y)))
+
+func _direction_name(h: int, v: int) -> String:
+	if h > 0 and v < 0:
+		return "UP-RIGHT ↗️"
+	elif h < 0 and v < 0:
+		return "UP-LEFT ↖️"
+	elif h > 0 and v > 0:
+		return "DOWN-RIGHT ↘️"
+	else:
+		return "DOWN-LEFT ↙️"
 
 func _enable_hit_area(enabled: bool) -> void:
 	## Toggle HitArea collision (active during entire dash sequence)

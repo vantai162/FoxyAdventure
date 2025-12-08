@@ -23,6 +23,7 @@
 script = ExtResource("1_stage_script")
 
 [node name="CanvasModulate" type="CanvasModulate" parent="."]
+visible = false
 color = Color(0.0558769, 0.0395219, 0.0722072, 1)
 
 [node name="PlayerSpawn" type="Marker2D" parent="."]
@@ -54,7 +55,13 @@ tile_set = ExtResource("2_a6ecy")
 z_index = 1
 position = Vector2(176, 2115)
 water_size = Vector2(1113, 220)
-enable_debug_diagnostics = true
+emit_light = false
+light_color = Color(0.3, 0.8, 1, 0.8)
+light_energy = 0.6
+light_sample_points = 4
+light_pulse_enabled = true
+light_pulse_speed = 1.5
+light_pulse_amount = 0.2
 
 [node name="FloatingBoatPlatform" parent="WaterZones" instance=ExtResource("14_dyh06")]
 position = Vector2(448, 2113)
