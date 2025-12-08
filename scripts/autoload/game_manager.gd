@@ -29,6 +29,13 @@ func _ready() -> void:
 	current_checkpoint_id = ""
 	skin_manager._load_skin_data_from_save()
 	checkpoint_data.clear()
+	
+	#Dùng cho sau này có tính đến đoạn continue hay new game
+	# Load số int trực tiếp từ SaveSystem
+	#var saved_count = SaveSystem.load_kill_data()
+	
+	# Gọi hàm load với số int vừa lấy được
+	#load_save_data(saved_count)
 	pass
 
 #change stage by path and target portal name
