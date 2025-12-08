@@ -298,9 +298,8 @@ func take_damage(damage: int) -> void:
 	if Effect["Invicibility"] <= 0:
 		if has_node("Camera2D"):
 			$Camera2D.shake(8.0)
-		#health_changed.emit()
 		super.take_damage(damage)
-		_applyeffect("Invicibility",2.0)
+		_applyeffect("Invicibility",0.2)
 		fsm.change_state(fsm.states.hurt)
 
 func _updatecooldown(delta: float) -> void:
