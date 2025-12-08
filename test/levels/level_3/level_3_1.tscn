@@ -1,4 +1,4 @@
-[gd_scene load_steps=20 format=4 uid="uid://cownslw7ms6s4"]
+[gd_scene load_steps=21 format=4 uid="uid://cownslw7ms6s4"]
 
 [ext_resource type="Script" uid="uid://cblkjof8tqn71" path="res://test/levels/level_3/stage_3_1.gd" id="1_stage_script"]
 [ext_resource type="TileSet" uid="uid://0yf5cmwk6u1i" path="res://assets/island/terrain/ice_tile_set.tres" id="2_a6ecy"]
@@ -19,6 +19,7 @@
 [ext_resource type="PackedScene" uid="uid://clavapool001" path="res://environment/lava/lava_pool.tscn" id="18_a6ecy"]
 [ext_resource type="PackedScene" uid="uid://bodccm7jppcjv" path="res://enemy/barrel/elite_sniper.tscn" id="18_is5y3"]
 [ext_resource type="PackedScene" uid="uid://dqdstpxycbomj" path="res://effect_Item/BladeItem/blade.tscn" id="18_y62kb"]
+[ext_resource type="PackedScene" uid="uid://cvq5vx1o24fpg" path="res://enemy/aggressive_tribe/elite_bombardier.tscn" id="20_is5y3"]
 
 [node name="Level_3_1" type="Node2D"]
 script = ExtResource("1_stage_script")
@@ -72,9 +73,6 @@ lifetime = 0.0
 auto_despawn = false
 
 [node name="Enemies" type="Node2D" parent="."]
-
-[node name="Crab" parent="Enemies" instance=ExtResource("7_crab")]
-position = Vector2(704, 227)
 
 [node name="Mushroom" parent="Enemies" instance=ExtResource("9_mushroom")]
 position = Vector2(1020, 258)
@@ -318,5 +316,9 @@ lava_size = Vector2(400, 300)
 position = Vector2(173, 204)
 
 [node name="EliteSniperSeahorse" parent="." instance=ExtResource("18_is5y3")]
-position = Vector2(535, 106)
+position = Vector2(532, 110)
+direction = -1
+
+[node name="EliteBombardier" parent="." instance=ExtResource("20_is5y3")]
+position = Vector2(594, 216)
 direction = -1

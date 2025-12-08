@@ -25,7 +25,7 @@
 [ext_resource type="Script" uid="uid://ceivkbcn2nfiw" path="res://enemy/barrel/dead.gd" id="22_nles5"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_pdnpt"]
-size = Vector2(20, 22)
+size = Vector2(24, 24)
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_elite"]
 shader = ExtResource("2_shader")
@@ -112,19 +112,18 @@ shape = SubResource("RectangleShape2D_pdnpt")
 [node name="Direction" type="Node2D" parent="."]
 
 [node name="EliteEyeTrail" parent="Direction" instance=ExtResource("2_eye_trail")]
-position = Vector2(3, 10)
+position = Vector2(3, 4)
 
 [node name="EliteEyeTrail2" parent="Direction" instance=ExtResource("2_eye_trail")]
-position = Vector2(-2, 10)
+position = Vector2(-2, 4)
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="Direction"]
 material = SubResource("ShaderMaterial_elite")
-position = Vector2(0, 6)
 sprite_frames = SubResource("SpriteFrames_vpg65")
 animation = &"idle"
 
 [node name="BulletFactory" type="Marker2D" parent="Direction"]
-position = Vector2(10, 16)
+position = Vector2(10, 3)
 script = ExtResource("16_jkhqg")
 product_packed_scene = ExtResource("17_sk3dx")
 target_container_name = &"Bullets"

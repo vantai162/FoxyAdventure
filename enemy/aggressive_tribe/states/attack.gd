@@ -11,15 +11,13 @@ func _enter() -> void:
 func _update(_delta: float) -> void:
 	obj.velocity.x = 0
 	
-	# Face player while attacking
-	if obj.found_player:
-		if obj.found_player.global_position.x > obj.global_position.x:
-			obj.change_direction(1)
-		else:
-			obj.change_direction(-1)
+	# Continue facing stored direction (committed attack)
+	# Don't change direction mid-burst
 
 func _exit() -> void:
 	obj.throw_timer.stop()
+	# Clear commitment flag when attack ends
+	obj.is_committed_to_attack = false
 
 func _on_throw_timer_timeout() -> void:
 	if fsm.current_state == self:
@@ -28,7 +26,8 @@ func _on_throw_timer_timeout() -> void:
 func _throw_next_coconut() -> void:
 	throw_count += 1
 	
-	var coconut_scene = obj.special_coconut_scene if throw_count == 3 else obj.normal_coconut_scene
+	# Coconut pattern: normal, SLOW, normal (unpredictable middle threat)
+	var coconut_scene = obj.special_coconut_scene if throw_count == 2 else obj.normal_coconut_scene
 	if not coconut_scene:
 		return
 	
@@ -49,14 +48,22 @@ func _calculate_ballistic_throw() -> Vector2:
 	## Proper ballistic physics: quadratic formula for launch angle
 	## Includes player velocity prediction and height compensation
 	
-	if not obj.found_player:
-		# No target: throw forward with default arc
-		return Vector2(obj.throw_force * obj.direction, -obj.throw_arc)
+	# Use found_player if available, else use last known position (commitment)
+	var target_pos: Vector2
+	var target_velocity: Vector2 = Vector2.ZERO
 	
-	# Get target position with velocity leading (50% prediction)
-	var target_pos = obj.found_player.global_position
+	if obj.found_player:
+		target_pos = obj.found_player.global_position
+		target_velocity = obj.found_player.velocity
+	else:
+		# Player escaped - use last known position (attack commitment)
+		target_pos = obj.last_known_player_pos
+		# No velocity prediction for escaped target
+	
+	# Apply velocity leading if player still detected (50% prediction)
 	var flight_time = 0.5  # Rough estimate for leading calculation
-	target_pos.x += obj.found_player.velocity.x * flight_time * 0.5
+	if obj.found_player:
+		target_pos.x += target_velocity.x * flight_time * 0.5
 	
 	var dx = target_pos.x - obj.throw_origin.global_position.x
 	var dy = target_pos.y - obj.throw_origin.global_position.y

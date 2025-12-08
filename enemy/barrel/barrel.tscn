@@ -23,7 +23,7 @@
 [ext_resource type="Script" uid="uid://ceivkbcn2nfiw" path="res://enemy/barrel/dead.gd" id="17_nles5"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_pdnpt"]
-size = Vector2(20, 22)
+size = Vector2(24, 24)
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_vpg65"]
 resource_local_to_scene = true
@@ -100,12 +100,11 @@ shape = SubResource("RectangleShape2D_pdnpt")
 [node name="Direction" type="Node2D" parent="."]
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="Direction"]
-position = Vector2(0, 6)
 sprite_frames = SubResource("SpriteFrames_vpg65")
 animation = &"shoot"
 
 [node name="BulletFactory" type="Marker2D" parent="Direction"]
-position = Vector2(10, 16)
+position = Vector2(10, 3)
 script = ExtResource("11_jkhqg")
 product_packed_scene = ExtResource("12_sk3dx")
 target_container_name = &"Bullets"

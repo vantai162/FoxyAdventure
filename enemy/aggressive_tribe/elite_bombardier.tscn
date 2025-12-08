@@ -1,17 +1,16 @@
-[gd_scene load_steps=40 format=3 uid="uid://cvq5vx1o24fpg"]
+[gd_scene load_steps=39 format=3 uid="uid://cvq5vx1o24fpg"]
 
 [ext_resource type="Script" uid="uid://b6h2aoddd6yyw" path="res://enemy/aggressive_tribe/elite_bombardier.gd" id="1_elite_bomb"]
 [ext_resource type="PackedScene" path="res://enemy/elite_eye_trail.tscn" id="2_eye_trail"]
 [ext_resource type="Shader" uid="uid://q33y13b56v1g" path="res://enemy/elite_enemy.gdshader" id="2_shader"]
 [ext_resource type="PackedScene" uid="uid://ct1tqxgwkuvbe" path="res://scripts/hurt_area_2d.tscn" id="3_hurt_area"]
-[ext_resource type="PackedScene" uid="uid://d1h2w3e4r5t6y" path="res://projectiles/coconut.tscn" id="4_coconut"]
 [ext_resource type="PackedScene" uid="uid://d2e3f4g5h6i7j" path="res://projectiles/slowing_coconut.tscn" id="5_slow_coconut"]
 [ext_resource type="Script" uid="uid://dpcf5xwvvbw55" path="res://enemy/aggressive_tribe/states/run.gd" id="6_run_state"]
 [ext_resource type="Script" uid="uid://bdusfvg6xexhk" path="res://enemy/aggressive_tribe/states/pursue.gd" id="7_pursue"]
 [ext_resource type="Texture2D" uid="uid://d1frd1dt6px31" path="res://assets/monsters/tribe_temporary/Sprites/1-Player-Bomb Guy/8-Dead Hit/1.png" id="8_8f4c1"]
 [ext_resource type="Texture2D" uid="uid://d2syn8r5epgy2" path="res://assets/monsters/tribe_temporary/Sprites/1-Player-Bomb Guy/3-Jump Anticipation/1.png" id="9_cxdv3"]
 [ext_resource type="Script" uid="uid://dqhrxd17cn0qw" path="res://enemy/aggressive_tribe/states/windup.gd" id="10_windup"]
-[ext_resource type="Script" uid="uid://f5yc4eeboe8t" path="res://enemy/aggressive_tribe/states/attack.gd" id="11_attack"]
+[ext_resource type="Script" uid="uid://btdxfgci0j3qs" path="res://enemy/aggressive_tribe/states/elite_attack.gd" id="11_elite_attack"]
 [ext_resource type="Texture2D" uid="uid://c3xk4m7g6goy4" path="res://assets/monsters/tribe_temporary/Sprites/1-Player-Bomb Guy/4-Jump/2.png" id="12_n74tb"]
 [ext_resource type="Texture2D" uid="uid://coxty7mf2eel1" path="res://assets/monsters/tribe_temporary/Sprites/1-Player-Bomb Guy/8-Dead Hit/2.png" id="13_rs4e5"]
 [ext_resource type="Texture2D" uid="uid://bqmwe1vx13f5g" path="res://assets/monsters/tribe_temporary/Sprites/1-Player-Bomb Guy/8-Dead Hit/3.png" id="14_icnh4"]
@@ -36,8 +35,8 @@
 [ext_resource type="Texture2D" uid="uid://b5q70uwnsck3q" path="res://assets/monsters/tribe_temporary/Sprites/1-Player-Bomb Guy/2-Run/7.png" id="33_jkol0"]
 [ext_resource type="Texture2D" uid="uid://bhtccs3mcxp26" path="res://assets/monsters/tribe_temporary/Sprites/1-Player-Bomb Guy/2-Run/8.png" id="34_u568o"]
 
-[sub_resource type="CircleShape2D" id="CircleShape2D_body"]
-radius = 29.0
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_pl8m2"]
+size = Vector2(55, 55)
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_elite"]
 shader = ExtResource("2_shader")
@@ -139,22 +138,18 @@ animations = [{
 "speed": 8.0
 }]
 
-[sub_resource type="CircleShape2D" id="CircleShape2D_e5pm8"]
-radius = 32.0
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_bn5aq"]
+size = Vector2(60, 60)
 
 [node name="EliteBombardier" type="CharacterBody2D"]
 scale = Vector2(0.85, 0.85)
 collision_layer = 8
 script = ExtResource("1_elite_bomb")
-throw_force = 380.0
-burst_cooldown = 1.8
-burst_throw_interval = 0.2
-normal_coconut_scene = ExtResource("4_coconut")
 special_coconut_scene = ExtResource("5_slow_coconut")
 movement_speed = 100.0
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-shape = SubResource("CircleShape2D_body")
+shape = SubResource("RectangleShape2D_pl8m2")
 
 [node name="Direction" type="Node2D" parent="."]
 
@@ -182,17 +177,22 @@ position = Vector2(30, -20)
 
 [node name="DetectPlayerRayCast2D" type="RayCast2D" parent="Direction"]
 position = Vector2(0, 16)
-target_position = Vector2(400, 0)
+target_position = Vector2(500, 0)
 collision_mask = 2
 
 [node name="DetectPlayerRayCast2D1" type="RayCast2D" parent="Direction"]
 position = Vector2(0, 16)
-target_position = Vector2(400, -60)
+target_position = Vector2(500, -60)
 collision_mask = 2
 
 [node name="DetectPlayerRayCast2D2" type="RayCast2D" parent="Direction"]
 position = Vector2(0, 16)
-target_position = Vector2(400, 20)
+target_position = Vector2(500, 20)
+collision_mask = 2
+
+[node name="DetectPlayerRayCast2D3" type="RayCast2D" parent="Direction"]
+position = Vector2(0, 16)
+target_position = Vector2(-200, 0)
 collision_mask = 2
 
 [node name="HurtArea2D" parent="Direction" instance=ExtResource("3_hurt_area")]
@@ -201,17 +201,17 @@ collision_layer = 16
 collision_mask = 0
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Direction/HurtArea2D"]
-shape = SubResource("CircleShape2D_e5pm8")
+shape = SubResource("RectangleShape2D_bn5aq")
+
+[node name="AttackTimer" type="Timer" parent="."]
+one_shot = true
 
 [node name="ThrowTimer" type="Timer" parent="."]
 wait_time = 0.2
 one_shot = true
 
-[node name="AttackTimer" type="Timer" parent="."]
-wait_time = 1.8
-one_shot = true
-
 [node name="WindupTimer" type="Timer" parent="."]
+wait_time = 0.3
 one_shot = true
 
 [node name="States" type="Node" parent="."]
@@ -226,7 +226,7 @@ script = ExtResource("7_pursue")
 script = ExtResource("10_windup")
 
 [node name="Attack" type="Node" parent="States"]
-script = ExtResource("11_attack")
+script = ExtResource("11_elite_attack")
 
 [node name="Hurt" type="Node" parent="States"]
 script = ExtResource("27_73cdu")
