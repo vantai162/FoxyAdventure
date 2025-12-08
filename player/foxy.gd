@@ -320,7 +320,8 @@ func save_state() -> Dictionary:
 		"max_blade_capacity": max_blade_capacity,
 		"has_unlocked_blade": has_unlocked_blade,
 		"health": health,
-		"Inventory":inventory._save_inventory()
+		"Inventory":inventory._save_inventory(),
+		"max_health": max_health
 	}
 
 func load_state(data: Dictionary) -> void:
@@ -343,6 +344,8 @@ func load_state(data: Dictionary) -> void:
 		print("DEBUG load_state health missing, current:", health)
 	if data.has("Inventory"):
 		inventory._load_inventory(data["Inventory"])
+	if data.has("max_health"):
+		max_health = data["max_health"]
 	# Đã loại bỏ logic: if data.has("has_blade") and data["has_blade"] == true:
 	
 

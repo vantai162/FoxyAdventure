@@ -23,10 +23,12 @@ func conduct_effect() -> void:
 
 	# Heal current health up to new max (tùy ý)
 	if "health" in gm.player:
-		gm.player.health = min(gm.player.health, gm.player.max_health)
+		gm.player.health = max(gm.player.health, gm.player.max_health)
 	elif gm.player.has_method("set_health") and gm.player.has_method("get_health"):
 		var cur_h = gm.player.get_health()
-		gm.player.set_health(min(cur_h, gm.player.get_max_health()))
+		gm.player.set_health(max(cur_h, gm.player.get_max_health()))
+	gm.player.health_changed.emit()
+	AudioManager.play_sound("heal",20.0)
 
 	# Optional: ghi log
 	print("HPUp applied: +", value, " to player.max_health -> ", gm.player.max_health)

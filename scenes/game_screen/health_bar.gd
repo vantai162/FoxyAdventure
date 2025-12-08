@@ -5,7 +5,7 @@ func _ready():
 	call_deferred("setup")
 	
 func setup():
-	player = get_tree().get_first_node_in_group("player")
+	player = GameManager.player
 
 	if player:
 		player.health_changed.connect(update)
