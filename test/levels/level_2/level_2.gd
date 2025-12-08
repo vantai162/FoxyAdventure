@@ -137,6 +137,18 @@ func _on_dialogic_signal_event(argument: String):
 	var player = GameManager.player
 	endgame = true
 	boss_phase2_healthbar.visible = false
+	# --- GỌI HÀM RESET NƯỚC CÓ SẴN CỦA BẠN ---
+		# 1. Tìm node nước (Thay "WaterArea" bằng tên thật của node nước trong Scene của bạn)
+	var water_node = find_child("water", true, false) 
+		
+		# 2. Gọi hàm reset (Thay "ten_ham_reset_cua_ban" bằng tên hàm thật bạn đã viết)
+	if water_node:
+		if water_node.has_method("lower_water"): # Ví dụ tên hàm là reset_water
+			water_node.lower_water(0.5, 2)
+			print("Đã cho nước rúttt")
+		else:
+			print("Lỗi: Tìm thấy node nước nhưng không thấy hàm reset!")
+			
 	if argument == "kill_warlord":
 		boss.die()
 	if argument == "spare_warlord":
