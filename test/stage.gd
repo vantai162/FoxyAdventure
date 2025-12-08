@@ -1,7 +1,7 @@
 extends Node2D
 
 
-@onready var wake_up_cinematic_scn = preload("res://cut_scene/wake_up_cutscene.tscn")
+@onready var wake_up_cinematic_scn = preload("res://cut_scene/wakeup_cutscene/wake_up_cutscene.tscn")
 @export var music_id: String = "level_1_music" # ID music in AudioDatabase
 @onready var settings_ui = preload("res://scenes/game_screen/settings_popup.tscn")
 @export var wakeup_timeline: String = "wake_up_timeline"
