@@ -1,4 +1,8 @@
 extends EnemyState
+## Base Turtle Hide State
+## Invulnerable shell retreat - used reactively (when hurt) and proactively (periodic)
+
+@export var hide_duration: float = 3.0  ## Base: Longer than elite (3.0s vs 2.5s)
 
 var hide_timer := 0.0
 
@@ -13,7 +17,7 @@ func _enter():
 		
 func _update(delta: float) -> void:
 	hide_timer += delta
-	if hide_timer >= 3.0:
+	if hide_timer >= hide_duration:
 		change_state(fsm.default_state)
 
 func _exit() -> void:

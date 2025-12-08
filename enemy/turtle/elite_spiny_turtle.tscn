@@ -1,9 +1,9 @@
-[gd_scene load_steps=27 format=3 uid="uid://dumayxma7am7b"]
+[gd_scene load_steps=29 format=3 uid="uid://dumayxma7am7b"]
 
 [ext_resource type="Script" uid="uid://doc61op57jxqn" path="res://enemy/turtle/elite_spiny_turtle.gd" id="1_elite_turtle"]
 [ext_resource type="PackedScene" path="res://enemy/elite_eye_trail.tscn" id="2_eye_trail"]
 [ext_resource type="Shader" uid="uid://q33y13b56v1g" path="res://enemy/elite_enemy.gdshader" id="2_shader"]
-[ext_resource type="PackedScene" path="res://projectiles/spike_projectile.tscn" id="3_spike"]
+[ext_resource type="PackedScene" uid="uid://bkj05j8tlh2ii" path="res://projectiles/spike_projectile.tscn" id="3_spike"]
 [ext_resource type="Texture2D" uid="uid://8usoreyem8l6" path="res://assets/foxy/smoke/jump_smoke_1.png" id="4_livia"]
 [ext_resource type="Texture2D" uid="uid://c4cikv5rwcywi" path="res://assets/turtle/turtle_blue_05.png" id="5_p2yqw"]
 [ext_resource type="Texture2D" uid="uid://jtpy308mqnwi" path="res://assets/foxy/smoke/jump_smoke_2.png" id="6_e4l57"]
@@ -17,7 +17,8 @@
 [ext_resource type="Texture2D" uid="uid://d2uo75yv7f5bl" path="res://assets/turtle/turtle_blue_01.png" id="14_jolqy"]
 [ext_resource type="Texture2D" uid="uid://dm32dj4ri3uc8" path="res://assets/turtle/turtle_blue_02.png" id="15_eo1cv"]
 [ext_resource type="Script" uid="uid://b1c4gy1qtdl5l" path="res://enemy/turtle/aggressive_pursue.gd" id="16_pursue"]
-[ext_resource type="Script" uid="uid://l1xuywwvsedu" path="res://enemy/turtle/defensive_hide.gd" id="17_def_hide"]
+[ext_resource type="Script" uid="uid://l1xuywwvsedu" path="res://enemy/turtle/offensive_hide.gd" id="17_def_hide"]
+[ext_resource type="Script" uid="uid://c3vt7rpl6ep63" path="res://enemy/turtle/hide.gd" id="17_hide"]
 [ext_resource type="Script" uid="uid://bhiga40ocqjpx" path="res://enemy/turtle/states/elite_hurt.gd" id="18_0ekdt"]
 [ext_resource type="Texture2D" uid="uid://bq7nxdv5i1ha5" path="res://assets/turtle/turtle_blue_walk_01.png" id="19_livia"]
 [ext_resource type="Texture2D" uid="uid://cgt4s4vn5nfar" path="res://assets/turtle/turtle_blue_walk_02.png" id="20_e4l57"]
@@ -25,6 +26,9 @@
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_livia"]
 size = Vector2(20, 26)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_detect"]
+size = Vector2(400, 180)
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_elite"]
 shader = ExtResource("2_shader")
@@ -117,6 +121,14 @@ target_position = Vector2(14, 0)
 position = Vector2(10, 0)
 target_position = Vector2(0, 29)
 
+[node name="DetectPlayerArea2D" type="Area2D" parent="Direction"]
+collision_layer = 0
+collision_mask = 2
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Direction/DetectPlayerArea2D"]
+position = Vector2(1, 0)
+shape = SubResource("RectangleShape2D_detect")
+
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="Direction"]
 material = SubResource("ShaderMaterial_elite")
 sprite_frames = SubResource("SpriteFrames_v3mmh")
@@ -144,7 +156,10 @@ script = ExtResource("13_ehiyd")
 [node name="AggressivePursue" type="Node" parent="States"]
 script = ExtResource("16_pursue")
 
-[node name="DefensiveHide" type="Node" parent="States"]
+[node name="Hide" type="Node" parent="States"]
+script = ExtResource("17_hide")
+
+[node name="OffensiveHide" type="Node" parent="States"]
 script = ExtResource("17_def_hide")
 
 [node name="Hurt" type="Node" parent="States"]
@@ -153,4 +168,6 @@ script = ExtResource("18_0ekdt")
 [node name="Dead" type="Node" parent="States"]
 script = ExtResource("21_n3t07")
 
+[connection signal="body_entered" from="Direction/DetectPlayerArea2D" to="." method="_on_body_entered"]
+[connection signal="body_exited" from="Direction/DetectPlayerArea2D" to="." method="_on_body_exited"]
 [connection signal="hurt" from="Direction/HurtArea2D" to="." method="_on_hurt_area_2d_hurt"]

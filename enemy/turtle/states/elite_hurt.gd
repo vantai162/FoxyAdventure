@@ -1,7 +1,7 @@
 extends EnemyState
 ## Elite Spiny Turtle Hurt State
-## Base turtle uses: change_state(fsm.states.hide)
-## Elite spiny turtle must use: change_state(fsm.states.defensivehide)
+## Counterattack: Spike burst if cooldown ready, otherwise HIDE (defensive instinct)
+## Elite is still a turtle - hiding is intrinsic, not tied to attack cooldown
 
 func _enter() -> void:
 	timer = 0.3
@@ -14,9 +14,12 @@ func _update(delta: float) -> void:
 			else:
 				obj.queue_free()
 		else:
-			# Base turtle: change_state(fsm.states.hide)
-			# Elite spiny turtle: change_state(fsm.states.defensivehide)
-			if fsm.states.has("defensivehide"):
-				change_state(fsm.states.defensivehide)
+			# ATTACK-HIDE: If cooldown ready, counter with spike burst + hide
+			if obj.can_burst() and fsm.states.has("offensivehide"):
+				change_state(fsm.states.offensivehide)
+			# DEFENSIVE-HIDE: If cooldown active, still hide (no spikes, pure defense)
 			elif fsm.states.has("hide"):
-				change_state(fsm.states.hide)  # Fallback
+				change_state(fsm.states.hide)
+			else:
+				# Fallback: return to default state if no hide available
+				change_state(fsm.default_state)

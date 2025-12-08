@@ -1,6 +1,6 @@
-[gd_scene load_steps=2 format=3 uid="uid://spike_proj_elite_001"]
+[gd_scene load_steps=2 format=3 uid="uid://bkj05j8tlh2ii"]
 
-[ext_resource type="Script" path="res://projectiles/spike_projectile.gd" id="1_spike"]
+[ext_resource type="Script" uid="uid://dc33ux2b1sacu" path="res://projectiles/spike_projectile.gd" id="1_spike"]
 
 [node name="SpikeProjectile" type="Area2D"]
 collision_layer = 16
