@@ -1,4 +1,4 @@
-[gd_scene load_steps=77 format=4 uid="uid://30po03m850f6"]
+[gd_scene load_steps=78 format=4 uid="uid://30po03m850f6"]
 
 [ext_resource type="Script" uid="uid://bl4jqlw4aef0m" path="res://test/stage.gd" id="1_7qv11"]
 [ext_resource type="PackedScene" uid="uid://dm741hii7d5nv" path="res://scenes/game_screen/health_bar.tscn" id="2_l7nct"]
@@ -53,6 +53,7 @@
 [ext_resource type="PackedScene" uid="uid://ckaw6wc7acih8" path="res://environment/death_zone/death_zone.tscn" id="50_nv8qq"]
 [ext_resource type="PackedScene" uid="uid://m0ec1cyfshdq" path="res://objects/scroll/scroll.tscn" id="51_h4ytb"]
 [ext_resource type="PackedScene" uid="uid://dubb5b1vjmsxd" path="res://objects/door/door.tscn" id="52_lhgvo"]
+[ext_resource type="PackedScene" uid="uid://fwuimc71t468" path="res://objects/npc/shop/shop_item/shop_vendor.tscn" id="54_n82ni"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_yiwfi"]
 texture = ExtResource("10_b7xqp")
@@ -5802,6 +5803,24 @@ position = Vector2(4412, 326)
 [node name="Foxy" parent="." instance=ExtResource("2_xeh7v")]
 position = Vector2(153, 240)
 
+[node name="ShopVendor" parent="." instance=ExtResource("54_n82ni")]
+position = Vector2(7452, 216)
+
+[connection signal="area_entered" from="Layer1/Coin" to="Layer1/Coin" method="_on_area_entered"]
+[connection signal="area_entered" from="Layer1/@Area2D@53711" to="Layer1/@Area2D@53711" method="_on_area_entered"]
+[connection signal="area_entered" from="Layer1/@Area2D@53712" to="Layer1/@Area2D@53712" method="_on_area_entered"]
+[connection signal="area_entered" from="Layer1/@Area2D@53713" to="Layer1/@Area2D@53713" method="_on_area_entered"]
+[connection signal="area_entered" from="Layer1/@Area2D@53714" to="Layer1/@Area2D@53714" method="_on_area_entered"]
+[connection signal="area_entered" from="Layer1/@Area2D@53715" to="Layer1/@Area2D@53715" method="_on_area_entered"]
+[connection signal="area_entered" from="Layer1/@Area2D@53716" to="Layer1/@Area2D@53716" method="_on_area_entered"]
+[connection signal="area_entered" from="Layer1/@Area2D@53717" to="Layer1/@Area2D@53717" method="_on_area_entered"]
+[connection signal="area_entered" from="Layer1/@Area2D@53718" to="Layer1/@Area2D@53718" method="_on_area_entered"]
+[connection signal="area_entered" from="Layer1/@Area2D@53719" to="Layer1/@Area2D@53719" method="_on_area_entered"]
+[connection signal="area_entered" from="Layer1/@Area2D@53720" to="Layer1/@Area2D@53720" method="_on_area_entered"]
+[connection signal="area_entered" from="Layer1/@Area2D@53721" to="Layer1/@Area2D@53721" method="_on_area_entered"]
+[connection signal="area_entered" from="Layer1/@Area2D@53722" to="Layer1/@Area2D@53722" method="_on_area_entered"]
+[connection signal="area_entered" from="Layer1/@Area2D@53723" to="Layer1/@Area2D@53723" method="_on_area_entered"]
+[connection signal="area_entered" from="Layer1/Key" to="Layer1/Key" method="_on_area_entered"]
 [connection signal="body_entered" from="Objects/Lever" to="Objects/Gate" method="open_gate"]
 [connection signal="body_exited" from="Objects/Lever" to="Objects/Gate" method="close_gate"]
 [connection signal="lever_activated" from="Objects/Lever" to="Objects/Gate" method="open_gate"]
