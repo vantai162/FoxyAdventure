@@ -85,13 +85,13 @@ player_splash_mutiplier = 0.12
 swim_disturbance_interval = 0.15
 swim_disturbance_strength = 0.3
 boat_depression_depth = 3.0
-emit_light = null
-light_color = null
-light_energy = null
-light_sample_points = null
-light_pulse_enabled = null
-light_pulse_speed = null
-light_pulse_amount = null
+emit_light = false
+light_color = Color(0.3, 0.8, 1, 0.8)
+light_energy = 0.6
+light_sample_points = 4
+light_pulse_enabled = true
+light_pulse_speed = 1.5
+light_pulse_amount = 0.2
 
 [node name="Hazards" type="Node2D" parent="."]
 

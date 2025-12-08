@@ -84,24 +84,8 @@ func _on_gate_trigger_entered(body: Node2D) -> void:
 		lock_arena()
 
 
-func _on_stage_ready() -> void:
-	print("[Level 3-5] THE HEART - Boss Arena loaded")
-	print("  Size: 1400 x 700 pixels (HORIZONTAL ENTRY!)")
-	print("  Boss: WARLORD TURTLE (at far right)")
-	print("  ")
-	print("  ═══════════════════════════════════════════")
-	print("  WARLORD TURTLE ATTACKS:")
-	print("  ═══════════════════════════════════════════")
-	print("  • Dive Attack - JUMP to dodge")
-	print("  • Coconut Throw - USE PILLARS for cover")
-	print("  • Claw Swipe - BACK AWAY")
-	print("  • Roll Attack - Full arena width!")
-	print("  ═══════════════════════════════════════════")
-	print("  ")
-	print("  Arena features (ASYMMETRIC!):")
-	print("  - 3 pillars + rock for cover")
-	print("  - Water pit on RIGHT (don't get pushed!)")
-	print("  - Gate closes behind you - NO ESCAPE")
+func _print_arena_info() -> void:
+	pass  # Debug output removed
 
 
 ## Called when player enters arena (gate closes behind)

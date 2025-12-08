@@ -2,7 +2,6 @@ extends EnemyState
 
 
 func _enter() -> void:
-	print("run")
 	obj.change_animation("run")
 
 

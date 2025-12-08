@@ -25,8 +25,6 @@ func _enter() -> void:
 	obj.attack_cooldown_timer = obj.attack_cooldown
 	obj.last_collision_normal = Vector2.ZERO  # Track collision for smart direction changes
 	
-	print("RicochetDash ENTER - starting sequence")
-	
 	# Calculate dash direction toward player (or facing direction if no player)
 	_calculate_dash_direction()
 	
@@ -79,7 +77,6 @@ func _update(delta: float) -> void:
 			var normal = collision.get_normal()
 			# Hit a solid surface (wall, floor, ceiling)
 			if abs(normal.x) > 0.3 or abs(normal.y) > 0.3:
-				print("Collision detected! Ending dash ", obj.current_dash, " early")
 				# Store collision info for smart direction change
 				obj.last_collision_normal = normal
 				_end_current_dash()
@@ -88,13 +85,11 @@ func _update(delta: float) -> void:
 	# 2. Traveled target distance (fallback if no collision)
 	var distance_traveled = obj.global_position.distance_to(obj.dash_start_position)
 	if distance_traveled >= dash_distance:
-		print("Distance threshold reached for dash ", obj.current_dash)
 		_end_current_dash()
 		return
 	
 	# 3. Timeout failsafe (3 seconds total for entire sequence)
 	if obj.dash_timer >= 3.0:
-		print("Timeout - ending sequence")
 		change_state(fsm.states.run)
 		return
 
@@ -108,17 +103,13 @@ func _start_dash() -> void:
 	
 	# Apply dash velocity
 	obj.velocity = obj.dash_direction * dash_speed
-	
-	print("Starting dash ", obj.current_dash, " from ", obj.global_position, " in direction ", obj.dash_direction)
 
 func _end_current_dash() -> void:
 	## End current dash and start next one (or return to run)
 	obj.current_dash += 1
-	print("Dash ", obj.current_dash - 1, " complete. Total dashes: ", obj.current_dash, "/", max_dashes)
 	
 	if obj.current_dash >= max_dashes:
 		# All dashes complete - return to patrol
-		print("All dashes complete, returning to run")
 		change_state(fsm.states.run)
 	else:
 		# Start pause before next dash
@@ -145,10 +136,8 @@ func _calculate_dash_direction() -> void:
 			# Launch up-left or up-right based on where player is horizontally
 			if to_player.x >= 0:
 				obj.dash_direction = Vector2(1, -1).normalized()  # Up-right ↗️
-				print("First dash: UP-RIGHT (launch from ground)")
 			else:
 				obj.dash_direction = Vector2(-1, -1).normalized()  # Up-left ↖️
-				print("First dash: UP-LEFT (launch from ground)")
 		else:
 			# SUBSEQUENT DASHES: Pick diagonal based on player's quadrant
 			# BUT if we just hit a collision, use the collision normal to bounce away smartly
@@ -160,22 +149,17 @@ func _calculate_dash_direction() -> void:
 				var horizontal = 1 if reflected.x >= 0 else -1
 				var vertical = -1 if reflected.y < 0 else 1
 				obj.dash_direction = Vector2(horizontal, vertical).normalized()
-				
-				print("Dash ", obj.current_dash, ": Bouncing off collision → ", _direction_name(horizontal, vertical))
 				obj.last_collision_normal = Vector2.ZERO  # Clear collision memory
 			else:
 				# No recent collision, use player quadrant
 				var horizontal = 1 if to_player.x >= 0 else -1  # Right or left?
 				var vertical = -1 if to_player.y < 0 else 1      # Up or down?
-				
 				obj.dash_direction = Vector2(horizontal, vertical).normalized()
-				print("Dash ", obj.current_dash, ": ", _direction_name(horizontal, vertical), " toward player")
 	else:
 		# No player: Use smart fallback
 		if obj.current_dash == 0:
 			# First dash always up
 			obj.dash_direction = Vector2(obj.direction, -1).normalized()
-			print("No player found, dashing UP-", "RIGHT" if obj.direction > 0 else "LEFT")
 		else:
 			# Subsequent dashes: if we hit something, bounce away; otherwise keep going
 			if obj.last_collision_normal.length() > 0.1:
@@ -183,13 +167,11 @@ func _calculate_dash_direction() -> void:
 				var horizontal = 1 if reflected.x >= 0 else -1
 				var vertical = -1 if reflected.y < 0 else 1
 				obj.dash_direction = Vector2(horizontal, vertical).normalized()
-				print("No player, bouncing off collision → ", _direction_name(horizontal, vertical))
 				obj.last_collision_normal = Vector2.ZERO
 			else:
 				# No collision, no player—just flip vertical to create X-pattern
 				var new_vertical = -obj.dash_direction.y  # Flip up/down
 				obj.dash_direction = Vector2(obj.dash_direction.x, new_vertical).normalized()
-				print("No player, alternating pattern → ", _direction_name(int(obj.dash_direction.x), int(obj.dash_direction.y)))
 
 func _direction_name(h: int, v: int) -> String:
 	if h > 0 and v < 0:

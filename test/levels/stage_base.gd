@@ -88,7 +88,6 @@ func _setup_camera_bounds() -> void:
 		return
 	
 	camera.set_level_bounds(camera_left, camera_right, camera_top, camera_bottom)
-	print("[%s] Camera bounds: L=%d R=%d T=%d B=%d" % [name, camera_left, camera_right, camera_top, camera_bottom])
 
 
 func _open_pause_menu() -> void:

@@ -35,17 +35,12 @@ func _ready() -> void:
 func _on_lever_activated() -> void:
 	if gate:
 		gate.open_gate()
-		print("[Level 3-1] Treasure gate opened!")
 
 
 func _on_lever_deactivated() -> void:
 	if gate:
 		gate.close_gate()
-		print("[Level 3-1] Treasure gate closed!")
 
 
 func _on_stage_ready() -> void:
-	print("[Level 3-1] The Twilight Descent loaded")
-	print("  Size: 1600 x 2400 pixels")
-	print("  Enemies: 9 (2 crabs, 4 mushrooms, 1 turtle, 1 tribe, 2 lake crabs)")
-	print("  Puzzle: Lever → Gate → Gold Chest")
+	pass  # Stage loaded

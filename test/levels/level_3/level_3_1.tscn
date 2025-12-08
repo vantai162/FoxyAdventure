@@ -1,4 +1,4 @@
-[gd_scene load_steps=19 format=4 uid="uid://cownslw7ms6s4"]
+[gd_scene load_steps=18 format=4 uid="uid://cownslw7ms6s4"]
 
 [ext_resource type="Script" uid="uid://cblkjof8tqn71" path="res://test/levels/level_3/stage_3_1.gd" id="1_stage_script"]
 [ext_resource type="TileSet" uid="uid://0yf5cmwk6u1i" path="res://assets/island/terrain/ice_tile_set.tres" id="2_a6ecy"]
@@ -16,14 +16,12 @@
 [ext_resource type="PackedScene" uid="uid://giogr7michck" path="res://objects/water/water.tscn" id="14_water"]
 [ext_resource type="PackedScene" uid="uid://c5m8vno0qh3xy" path="res://objects/whirlpool/whirlpool.tscn" id="15_erfut"]
 [ext_resource type="PackedScene" uid="uid://jm5jjtt5tfsj" path="res://enemy/crab/elite_hunter_crab.tscn" id="16_erfut"]
-[ext_resource type="PackedScene" uid="uid://bj35soojaj5hs" path="res://enemy/starfish/elite_ricochet_starfish.tscn" id="17_a6ecy"]
 [ext_resource type="PackedScene" uid="uid://clavapool001" path="res://environment/lava/lava_pool.tscn" id="18_a6ecy"]
 
 [node name="Level_3_1" type="Node2D"]
 script = ExtResource("1_stage_script")
 
 [node name="CanvasModulate" type="CanvasModulate" parent="."]
-visible = false
 color = Color(0.0558769, 0.0395219, 0.0722072, 1)
 
 [node name="PlayerSpawn" type="Marker2D" parent="."]
@@ -316,9 +314,6 @@ position = Vector2(136, 194)
 
 [node name="EliteHunterCrab" parent="." instance=ExtResource("16_erfut")]
 position = Vector2(1010, 419)
-
-[node name="EliteRicochetStarfish" parent="." instance=ExtResource("17_a6ecy")]
-position = Vector2(423, 193)
 
 [node name="EliteHunterCrab2" parent="." instance=ExtResource("16_erfut")]
 position = Vector2(588, 226)
