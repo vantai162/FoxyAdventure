@@ -1,7 +1,8 @@
-[gd_scene load_steps=4 format=4 uid="uid://dgcydxjhodm3a"]
+[gd_scene load_steps=5 format=4 uid="uid://dk8wc2s582aoq"]
 
 [ext_resource type="Script" uid="uid://bdma0gw32yfke" path="res://test/levels/level_3/stage_3_2.gd" id="1_stage_script"]
 [ext_resource type="TileSet" uid="uid://0yf5cmwk6u1i" path="res://assets/island/terrain/ice_tile_set.tres" id="2_ob2gj"]
+[ext_resource type="PackedScene" uid="uid://cqjqdbyd7mqfr" path="res://environment/cave/glowing_crystal.tscn" id="4_crystal"]
 [ext_resource type="PackedScene" uid="uid://bs816w0pr8all" path="res://player/foxy.tscn" id="5_foxy"]
 
 [node name="Level_3_2" type="Node2D"]
@@ -42,6 +43,58 @@ tile_set = ExtResource("2_ob2gj")
 [node name="Collectibles" type="Node2D" parent="."]
 
 [node name="LightSources" type="Node2D" parent="."]
+
+[node name="Crystal_Spawn1" parent="LightSources" instance=ExtResource("4_crystal")]
+position = Vector2(120, 450)
+color_preset = 5
+
+[node name="Crystal_Upper1" parent="LightSources" instance=ExtResource("4_crystal")]
+position = Vector2(550, 280)
+crystal_type = 2
+color_preset = 1
+
+[node name="Crystal_Junction1" parent="LightSources" instance=ExtResource("4_crystal")]
+position = Vector2(400, 550)
+crystal_type = 2
+color_preset = 3
+
+[node name="Crystal_Grotto1" parent="LightSources" instance=ExtResource("4_crystal")]
+position = Vector2(950, 350)
+crystal_type = 3
+color_preset = 1
+
+[node name="Crystal_UpperRight" parent="LightSources" instance=ExtResource("4_crystal")]
+position = Vector2(1700, 280)
+color_preset = 5
+
+[node name="Crystal_Lower1" parent="LightSources" instance=ExtResource("4_crystal")]
+position = Vector2(850, 650)
+crystal_type = 2
+color_preset = 3
+
+[node name="Crystal_Camp1" parent="LightSources" instance=ExtResource("4_crystal")]
+position = Vector2(1600, 900)
+crystal_type = 3
+color_preset = 4
+
+[node name="Crystal_Deep1" parent="LightSources" instance=ExtResource("4_crystal")]
+position = Vector2(200, 950)
+crystal_type = 0
+color_preset = 1
+
+[node name="Crystal_Deep2" parent="LightSources" instance=ExtResource("4_crystal")]
+position = Vector2(800, 1100)
+crystal_type = 0
+color_preset = 3
+
+[node name="Crystal_Deep3" parent="LightSources" instance=ExtResource("4_crystal")]
+position = Vector2(1150, 980)
+color_preset = 1
+
+[node name="Crystal_Exit1" parent="LightSources" instance=ExtResource("4_crystal")]
+position = Vector2(1750, 1100)
+crystal_type = 2
+color_preset = 4
 
 [node name="Objects" type="Node2D" parent="."]
 
