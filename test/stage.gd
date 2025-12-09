@@ -7,6 +7,7 @@ extends Node2D
 @export var wakeup_timeline: String = "wake_up_timeline"
 var can_pause: bool = false
 var cursetting=null
+var wake_up_scn_played: bool = false
 
 func _enter_tree() -> void:
 	GameManager.current_stage = self
@@ -23,7 +24,7 @@ func _ready() -> void:
 		GameManager.request_player_spawn()
 		
 	# --- BẮT ĐẦU CINEMATIC ---
-	if GameManager.player:
+	if GameManager.player and not wake_up_scn_played:
 		play_intro_cinematic()
 	
 	
@@ -55,8 +56,9 @@ func play_intro_cinematic():
 	
 	# 3. Chờ tín hiệu "finished" từ nó
 	await cinematic.finished
+	wake_up_scn_played = true
 	cinematic.queue_free()
-
+	
 # Khôi phục camera của Player
 	#if GameManager.player and GameManager.player.has_node("Camera2D"):
 		#GameManager.player.get_node("Camera2D").current = true
@@ -65,6 +67,7 @@ func play_intro_cinematic():
 	Dialogic.start(wakeup_timeline) # Hiện hội thoại tự hỏi
 	await Dialogic.timeline_ended
 	can_pause = true
+	
 	AudioManager.play_music(music_id,8.0,0.5)
 	
 func create_and_open_setting_pop_up():

@@ -8,6 +8,7 @@ extends Node2D
 @export var timeline_name_2: String = "warlord_2"
 @onready var music_id = "warlord_theme"
 @onready var stage_music_id = "level_1_music"
+var cursetting=null
 var timeline2_triggered = false
 var is_clean_up = false
 var endgame = false
@@ -77,14 +78,22 @@ func _process(delta: float) -> void:
 			AudioManager.stop_music(0.5)
 			
 			
-	if Input.is_action_just_pressed("pause"):
-		if not can_pause:
-			return
-		if GameManager.paused:
-			return
-		var settings = settings_ui.instantiate()
-		$CanvasLayer.add_child(settings)
+	if Input.is_action_just_pressed("pause") and can_pause:
+		if(GameManager.paused):
+			hide_pop_up()
+		else:
+			create_and_open_setting_pop_up()
 
+func create_and_open_setting_pop_up():
+	if(cursetting==null):
+		cursetting=settings_ui.instantiate()
+		$CanvasLayer.add_child(cursetting)
+		GameManager.pause_game()
+	
+func hide_pop_up():
+	if(cursetting!=null):
+		cursetting.hide_popup()
+		cursetting.queue_free()	
 
 func _on_meet_boss_area_2d_body_entered(body: Node2D) -> void:
 	if body.is_in_group("player") and warlord_spawned == false:
