@@ -315,7 +315,20 @@ func _applyeffect(name: String, time: float) -> void:
 			sprite.visible = not sprite.visible
 		)
 		blink_timer.start()
-		await get_tree().create_timer(time).timeout
+		
+		# Guard: tree may become null if player dies during blink
+		var tree = get_tree()
+		if tree == null:
+			blink_timer.stop()
+			blink_timer.queue_free()
+			return
+		
+		await tree.create_timer(time).timeout
+		
+		# Guard: player may have been freed during await
+		if not is_instance_valid(self) or not is_instance_valid(blink_timer):
+			return
+		
 		blink_timer.stop()
 		blink_timer.queue_free()
 		sprite.visible = true

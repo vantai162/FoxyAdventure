@@ -202,7 +202,13 @@ func spring():
 func drop_down_platform():
 	var PLATFORM_LAYER = 1
 	set_collision_mask_value(PLATFORM_LAYER, false)
-	await get_tree().create_timer(0.25).timeout
+	var tree = get_tree()
+	if tree == null:
+		return
+	await tree.create_timer(0.25).timeout
+	# Guard: character may have been freed during await
+	if not is_instance_valid(self):
+		return
 	set_collision_mask_value(PLATFORM_LAYER, true)
 	
 # Hàm chung để phát âm thanh
