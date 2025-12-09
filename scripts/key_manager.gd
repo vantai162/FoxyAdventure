@@ -66,13 +66,13 @@ func listening_and_set(scene_tree:SceneTree,action:String)->int:#only call this 
 	return keycode
 	
 func disableinput(exception:Array):
-	#GameManager.player.velocity=Vector2.ZERO
+	if GameManager.player:
+		GameManager.player.velocity=Vector2.ZERO
 	for key in InputMap.get_actions():
 		Input.action_release(key)
 	for key in KeyDict.keys():
 		if(key!="pause"&&!(key in exception)):
 			InputMap.action_erase_events(key)
-	#GameManager.player.velocity=Vector2.ZERO
 	for key in InputMap.get_actions():
 		Input.action_release(key)
 
