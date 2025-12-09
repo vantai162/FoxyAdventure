@@ -28,10 +28,15 @@ var attack_animation_duration: float:
 @export_group("Teleportation")
 @export var teleport_cooldown: float = 2.8  ## Balanced: Escapable but maintains pressure
 @export var teleport_range_min: float = 80.0  ## Don't teleport if already very close
-@export var teleport_range_max: float = 280.0  ## Won't teleport beyond this distance
+@export var teleport_range_max: float = 560.0  ## Won't teleport beyond this distance (doubled)
 @export var intercept_distance: float = 64.0  ## Distance ahead/behind player (2 tiles)
-@export var teleport_detection_radius: float = 211.0  ## Double base detection (105.72 * 2)
+@export var teleport_detection_radius: float = 422.0  ## 4x base detection (105 * 4) for wide-area teleport threat
 @export var attack_detection_radius: float = 105.0  ## Same as base Shield Tribe for attack
+
+# CRITICAL: Player collision adds ~10-15px to actual trigger distance
+# Area2D body_entered fires when collision shapes START touching (edge-to-edge)
+# So we need to add player collision buffer to distance checks
+const PLAYER_COLLISION_BUFFER: float = 15.0
 
 @export_group("Enhanced Stats")
 @export var first_attack_interval: float = 0.5  ## Ambush bonus after teleport
@@ -185,15 +190,15 @@ func _on_player_in_sight(_player_pos: Vector2) -> void:
 	
 	var distance_to_player = global_position.distance_to(found_player.global_position)
 	
-	# PRIORITY 1: Close range (≤105px) - Always defend/attack (like base behavior)
-	if distance_to_player <= attack_detection_radius:
+	# PRIORITY 1: Close range (≤105px + buffer) - Always defend/attack (like base behavior)
+	if distance_to_player <= (attack_detection_radius + PLAYER_COLLISION_BUFFER):
 		# Within attack range - transition to defend state (Shield Tribe base behavior)
 		if fsm and fsm.current_state and fsm.current_state.name != "defend" and fsm.current_state.name != "attack":
 			fsm.change_state(fsm.states.defend)
 		return
 	
-	# PRIORITY 2: Mid-range (105-211px) - Try teleport to close distance
-	if distance_to_player <= teleport_detection_radius:
+	# PRIORITY 2: Mid-range (105-422px + buffer) - Try teleport to close distance
+	if distance_to_player <= (teleport_detection_radius + PLAYER_COLLISION_BUFFER):
 		# Outside attack range but within teleport detection
 		# Try to teleport closer (if cooldown ready and conditions met)
 		if should_trigger_teleport() and fsm.states.has("teleport"):
@@ -204,7 +209,7 @@ func _on_player_in_sight(_player_pos: Vector2) -> void:
 			# This allows warden to wait patiently at distance
 			pass
 	
-	# Beyond 211px shouldn't happen (Area2D won't detect), but just in case: do nothing
+	# Beyond 422px shouldn't happen (Area2D won't detect), but just in case: do nothing
 
 func _on_player_not_in_sight() -> void:
 	# Return to idle when player leaves range

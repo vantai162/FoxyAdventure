@@ -35,6 +35,7 @@ var _pending_direction: int = 0
 func _ready() -> void:
 	fsm = FSM.new(self, $States, $States/Idle)
 	super._ready()
+	enable_check_player_in_sight()  # Enable detection collision (matches other enemies)
 	shield.hide()
 	shield.get_node("CollisionShape2D").disabled = true
 	spear.hide()

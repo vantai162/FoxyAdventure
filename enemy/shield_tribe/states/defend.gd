@@ -21,6 +21,20 @@ func _enter() -> void:
 
 func _update(_delta: float) -> void:
 	obj.face_player()
+	obj.velocity.x = 0  # Stationary guard - reset horizontal movement
+	
+	# Elite Warden: Continuously check if should teleport (mid-range positioning)
+	if obj.has_method("should_trigger_teleport") and obj.found_player:
+		var dist = obj.global_position.distance_to(obj.found_player.global_position)
+		var buffer = obj.PLAYER_COLLISION_BUFFER if "PLAYER_COLLISION_BUFFER" in obj else 15.0
+		var attack_range = obj.attack_detection_radius if "attack_detection_radius" in obj else 105.0
+		var teleport_range = obj.teleport_detection_radius if "teleport_detection_radius" in obj else 422.0
+		
+		# If player moved to mid-range (outside attack, inside teleport range), try teleport
+		if dist > (attack_range + buffer) and dist <= (teleport_range + buffer):
+			if obj.should_trigger_teleport() and fsm.states.has("teleport"):
+				change_state(fsm.states.teleport)
+				return
 	
 	if obj.found_player and can_jump:
 		var dist = abs(obj.found_player.global_position.x - obj.global_position.x)

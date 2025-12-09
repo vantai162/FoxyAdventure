@@ -1,18 +1,9 @@
-[gd_scene load_steps=20 format=4 uid="uid://cownslw7ms6s4"]
+[gd_scene load_steps=11 format=4 uid="uid://cownslw7ms6s4"]
 
 [ext_resource type="Script" uid="uid://cblkjof8tqn71" path="res://test/levels/level_3/stage_3_1.gd" id="1_stage_script"]
 [ext_resource type="TileSet" uid="uid://0yf5cmwk6u1i" path="res://assets/island/terrain/ice_tile_set.tres" id="2_a6ecy"]
 [ext_resource type="PackedScene" uid="uid://cqjqdbyd7mqfr" path="res://environment/cave/glowing_crystal.tscn" id="4_fak2n"]
-[ext_resource type="PackedScene" uid="uid://bdkss15p4gbma" path="res://enemy/barrel/barrel.tscn" id="5_elwe5"]
 [ext_resource type="PackedScene" uid="uid://bs816w0pr8all" path="res://player/foxy.tscn" id="6_foxy"]
-[ext_resource type="PackedScene" uid="uid://bxfs4fsx7ot6m" path="res://enemy/starfish/starfish.tscn" id="6_hxdbc"]
-[ext_resource type="PackedScene" uid="uid://ufmc2gkfnv58" path="res://enemy/crab/crab.tscn" id="7_crab"]
-[ext_resource type="PackedScene" uid="uid://dav8b7a6d5e4f" path="res://enemy/shield_tribe/shield_tribe.tscn" id="8_lk4v0"]
-[ext_resource type="PackedScene" uid="uid://c1bijw8i8erx5" path="res://enemy/turtle/turtle.tscn" id="8_turtle"]
-[ext_resource type="PackedScene" uid="uid://bmgv5cgan4yt" path="res://enemy/mushroom/mushroom.tscn" id="9_mushroom"]
-[ext_resource type="Script" uid="uid://s4xx82espxdt" path="res://scripts/enemy.gd" id="9_y62kb"]
-[ext_resource type="PackedScene" uid="uid://b1a2s3d4f5g6h" path="res://enemy/aggressive_tribe/aggressive_tribe.tscn" id="10_q6m5u"]
-[ext_resource type="PackedScene" uid="uid://duryp3ufmd0be" path="res://enemy/tribe/friendly_tribe.tscn" id="10_tribe"]
 [ext_resource type="PackedScene" uid="uid://demnh2f4ooy6n" path="res://objects/platform/floating_boat_platform.tscn" id="14_dyh06"]
 [ext_resource type="PackedScene" uid="uid://giogr7michck" path="res://objects/water/water.tscn" id="14_water"]
 [ext_resource type="PackedScene" uid="uid://c5m8vno0qh3xy" path="res://objects/whirlpool/whirlpool.tscn" id="15_erfut"]
@@ -72,64 +63,6 @@ lifetime = 0.0
 auto_despawn = false
 
 [node name="Enemies" type="Node2D" parent="."]
-
-[node name="Mushroom" parent="Enemies" instance=ExtResource("9_mushroom")]
-position = Vector2(1020, 258)
-
-[node name="Seahorse" parent="Enemies" instance=ExtResource("5_elwe5")]
-position = Vector2(1462, 105)
-script = ExtResource("9_y62kb")
-direction = -1
-
-[node name="Starfish" parent="Enemies" instance=ExtResource("6_hxdbc")]
-position = Vector2(789, 1825)
-
-[node name="Mushroom2" parent="Enemies" instance=ExtResource("9_mushroom")]
-position = Vector2(1468, 322)
-
-[node name="ShieldTribe" parent="Enemies" instance=ExtResource("8_lk4v0")]
-position = Vector2(1300, 435)
-direction = -1
-
-[node name="FriendlyTribe" parent="Enemies" instance=ExtResource("10_tribe")]
-position = Vector2(450, 806)
-
-[node name="AggressiveTribe" parent="Enemies" instance=ExtResource("10_q6m5u")]
-position = Vector2(1003, 823)
-
-[node name="Mushroom3" parent="Enemies" instance=ExtResource("9_mushroom")]
-position = Vector2(451, 497)
-
-[node name="Mushroom4" parent="Enemies" instance=ExtResource("9_mushroom")]
-position = Vector2(731, 466)
-
-[node name="Crab2" parent="Enemies" instance=ExtResource("7_crab")]
-position = Vector2(502, 1104)
-
-[node name="Crab3" parent="Enemies" instance=ExtResource("7_crab")]
-position = Vector2(624, 1102)
-
-[node name="Seahorse3" parent="Enemies" instance=ExtResource("5_elwe5")]
-position = Vector2(481, 1210)
-script = null
-
-[node name="Seahorse4" parent="Enemies" instance=ExtResource("5_elwe5")]
-position = Vector2(437, 1226)
-script = null
-
-[node name="Turtle" parent="Enemies" instance=ExtResource("8_turtle")]
-position = Vector2(1046, 1536)
-
-[node name="Turtle3" parent="Enemies" instance=ExtResource("8_turtle")]
-position = Vector2(1038, 1727)
-
-[node name="ShieldTribe2" parent="Enemies" instance=ExtResource("8_lk4v0")]
-position = Vector2(299, 1922)
-direction = -1
-
-[node name="ShieldTribe3" parent="Enemies" instance=ExtResource("8_lk4v0")]
-position = Vector2(129, 1923)
-direction = -1
 
 [node name="Collectibles" type="Node2D" parent="."]
 
@@ -315,4 +248,4 @@ lava_size = Vector2(400, 300)
 position = Vector2(173, 204)
 
 [node name="EliteWarden" parent="." instance=ExtResource("19_y62kb")]
-position = Vector2(356, 99)
+position = Vector2(333, 100)
