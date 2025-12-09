@@ -1,4 +1,4 @@
-[gd_scene load_steps=12 format=4 uid="uid://dk8wc2s582aoq"]
+[gd_scene load_steps=21 format=4 uid="uid://dk8wc2s582aoq"]
 
 [ext_resource type="Script" uid="uid://bdma0gw32yfke" path="res://test/levels/level_3/stage_3_2.gd" id="1_stage_script"]
 [ext_resource type="TileSet" uid="uid://0yf5cmwk6u1i" path="res://assets/island/terrain/ice_tile_set.tres" id="2_ob2gj"]
@@ -11,6 +11,13 @@
 [ext_resource type="PackedScene" uid="uid://bs816w0pr8all" path="res://player/foxy.tscn" id="10_foxy"]
 [ext_resource type="PackedScene" uid="uid://bt2icn1rxyolq" path="res://enemy/mushroom/elite_spawner_mushroom.tscn" id="11_elite_mushroom"]
 [ext_resource type="PackedScene" uid="uid://bj35soojaj5hs" path="res://enemy/starfish/elite_ricochet_starfish.tscn" id="12_elite_starfish"]
+[ext_resource type="PackedScene" uid="uid://lrdkn2gv1v1m" path="res://effect_Item/coin/coin.tscn" id="13_coin"]
+[ext_resource type="PackedScene" uid="uid://b3cbk6lmh2cc3" path="res://effect_Item/heal_potion/health_potion.tscn" id="14_health_potion"]
+[ext_resource type="PackedScene" uid="uid://cd4x3xoe8plsn" path="res://effect_Item/chest/chest.tscn" id="15_chest"]
+[ext_resource type="PackedScene" uid="uid://b3rfttffyg1qj" path="res://effect_Item/key/key.tscn" id="16_key"]
+[ext_resource type="PackedScene" uid="uid://dy2go6q81lmqg" path="res://effect_Item/TrapCoin/trap_coin.tscn" id="17_trap_coin"]
+[ext_resource type="PackedScene" uid="uid://dqdstpxycbomj" path="res://effect_Item/BladeItem/blade.tscn" id="18_blade"]
+[ext_resource type="PackedScene" uid="uid://trap_chest_trickster" path="res://effect_Item/chest/trap_chest.tscn" id="19_trap_chest"]
 
 [node name="Level_3_2" type="Node2D"]
 script = ExtResource("1_stage_script")
@@ -76,6 +83,164 @@ position = Vector2(1100, 388)
 position = Vector2(1600, 881)
 
 [node name="Collectibles" type="Node2D" parent="."]
+
+; === SPAWN: RIGHT ARROW → (5 coins) - "Go right!" ===
+[node name="Arrow_Spawn_1" parent="Collectibles" instance=ExtResource("13_coin")]
+position = Vector2(120, 460)
+
+[node name="Arrow_Spawn_2" parent="Collectibles" instance=ExtResource("13_coin")]
+position = Vector2(120, 492)
+
+[node name="Arrow_Spawn_3" parent="Collectibles" instance=ExtResource("13_coin")]
+position = Vector2(152, 476)
+
+[node name="Arrow_Spawn_4" parent="Collectibles" instance=ExtResource("13_coin")]
+position = Vector2(184, 476)
+
+[node name="Arrow_Spawn_5" parent="Collectibles" instance=ExtResource("13_coin")]
+position = Vector2(216, 476)
+
+; === UPPER PATH: HORIZONTAL LINE (6 coins) - Upper route ===
+[node name="Line_Upper_1" parent="Collectibles" instance=ExtResource("13_coin")]
+position = Vector2(350, 280)
+
+[node name="Line_Upper_2" parent="Collectibles" instance=ExtResource("13_coin")]
+position = Vector2(400, 280)
+
+[node name="Line_Upper_3" parent="Collectibles" instance=ExtResource("13_coin")]
+position = Vector2(450, 280)
+
+[node name="Line_Upper_4" parent="Collectibles" instance=ExtResource("13_coin")]
+position = Vector2(500, 280)
+
+[node name="Line_Upper_5" parent="Collectibles" instance=ExtResource("13_coin")]
+position = Vector2(550, 280)
+
+[node name="Line_Upper_6" parent="Collectibles" instance=ExtResource("13_coin")]
+position = Vector2(600, 280)
+
+; === JUNCTION: TRIANGLE △ (3 coins) - Choice point ===
+[node name="Triangle_Junction_1" parent="Collectibles" instance=ExtResource("13_coin")]
+position = Vector2(450, 520)
+
+[node name="Triangle_Junction_2" parent="Collectibles" instance=ExtResource("13_coin")]
+position = Vector2(420, 560)
+
+[node name="Triangle_Junction_3" parent="Collectibles" instance=ExtResource("13_coin")]
+position = Vector2(480, 560)
+
+; === HEALTH POTION 1 (after junction) ===
+[node name="HealthPotion1" parent="Collectibles" instance=ExtResource("14_health_potion")]
+position = Vector2(320, 550)
+
+; === GROTTO: ARC (6 coins) - Jump arc path ===
+[node name="Arc_Grotto_1" parent="Collectibles" instance=ExtResource("13_coin")]
+position = Vector2(900, 380)
+
+[node name="Arc_Grotto_2" parent="Collectibles" instance=ExtResource("13_coin")]
+position = Vector2(950, 350)
+
+[node name="Arc_Grotto_3" parent="Collectibles" instance=ExtResource("13_coin")]
+position = Vector2(1000, 340)
+
+[node name="Arc_Grotto_4" parent="Collectibles" instance=ExtResource("13_coin")]
+position = Vector2(1050, 340)
+
+[node name="Arc_Grotto_5" parent="Collectibles" instance=ExtResource("13_coin")]
+position = Vector2(1100, 350)
+
+[node name="Arc_Grotto_6" parent="Collectibles" instance=ExtResource("13_coin")]
+position = Vector2(1150, 380)
+
+; === BLADES (ranged ammo rewards) ===
+[node name="Blade1" parent="Collectibles" instance=ExtResource("18_blade")]
+position = Vector2(850, 380)
+
+[node name="Blade2" parent="Collectibles" instance=ExtResource("18_blade")]
+position = Vector2(1200, 600)
+
+; === TRAP COIN (looks tempting but hurts!) ===
+[node name="TrapCoin" parent="Collectibles" instance=ExtResource("17_trap_coin")]
+position = Vector2(1000, 300)
+
+; === TRAP CHEST (side grotto bait - slows the greedy!) ===
+[node name="TrapChest" parent="Collectibles" instance=ExtResource("19_trap_chest")]
+position = Vector2(1600, 550)
+trap_effect = "Slow"
+effect_duration = 3.0
+
+; === LOWER PATH: DIAGONAL LINE ↘ (5 coins) - Descent ===
+[node name="Diag_Lower_1" parent="Collectibles" instance=ExtResource("13_coin")]
+position = Vector2(700, 680)
+
+[node name="Diag_Lower_2" parent="Collectibles" instance=ExtResource("13_coin")]
+position = Vector2(750, 720)
+
+[node name="Diag_Lower_3" parent="Collectibles" instance=ExtResource("13_coin")]
+position = Vector2(800, 760)
+
+[node name="Diag_Lower_4" parent="Collectibles" instance=ExtResource("13_coin")]
+position = Vector2(850, 800)
+
+[node name="Diag_Lower_5" parent="Collectibles" instance=ExtResource("13_coin")]
+position = Vector2(900, 840)
+
+; === CAMP AREA: SQUARE □ (4 coins) - Rest marker ===
+[node name="Square_Camp_1" parent="Collectibles" instance=ExtResource("13_coin")]
+position = Vector2(1420, 850)
+
+[node name="Square_Camp_2" parent="Collectibles" instance=ExtResource("13_coin")]
+position = Vector2(1420, 910)
+
+[node name="Square_Camp_3" parent="Collectibles" instance=ExtResource("13_coin")]
+position = Vector2(1480, 850)
+
+[node name="Square_Camp_4" parent="Collectibles" instance=ExtResource("13_coin")]
+position = Vector2(1480, 910)
+
+; === HEALTH POTION 2 (in camp area) ===
+[node name="HealthPotion2" parent="Collectibles" instance=ExtResource("14_health_potion")]
+position = Vector2(1550, 880)
+
+; === DEEP CAVE: DIAMOND ◇ (4 coins) - Key area marker ===
+[node name="Diamond_Deep_1" parent="Collectibles" instance=ExtResource("13_coin")]
+position = Vector2(200, 980)
+
+[node name="Diamond_Deep_2" parent="Collectibles" instance=ExtResource("13_coin")]
+position = Vector2(170, 1010)
+
+[node name="Diamond_Deep_3" parent="Collectibles" instance=ExtResource("13_coin")]
+position = Vector2(230, 1010)
+
+[node name="Diamond_Deep_4" parent="Collectibles" instance=ExtResource("13_coin")]
+position = Vector2(200, 1040)
+
+; === KEY (in deep cave diamond area) ===
+[node name="Key" parent="Collectibles" instance=ExtResource("16_key")]
+position = Vector2(200, 1010)
+
+; === EXIT PATH: RIGHT ARROW → (6 coins) - "Exit this way!" ===
+[node name="Arrow_Exit_1" parent="Collectibles" instance=ExtResource("13_coin")]
+position = Vector2(1750, 1050)
+
+[node name="Arrow_Exit_2" parent="Collectibles" instance=ExtResource("13_coin")]
+position = Vector2(1750, 1082)
+
+[node name="Arrow_Exit_3" parent="Collectibles" instance=ExtResource("13_coin")]
+position = Vector2(1782, 1066)
+
+[node name="Arrow_Exit_4" parent="Collectibles" instance=ExtResource("13_coin")]
+position = Vector2(1814, 1066)
+
+[node name="Arrow_Exit_5" parent="Collectibles" instance=ExtResource("13_coin")]
+position = Vector2(1846, 1066)
+
+[node name="Arrow_Exit_6" parent="Collectibles" instance=ExtResource("13_coin")]
+position = Vector2(1878, 1066)
+
+; === CHEST (end reward, requires key) ===
+[node name="Chest" parent="Collectibles" instance=ExtResource("15_chest")]
+position = Vector2(1100, 1100)
 
 [node name="LightSources" type="Node2D" parent="."]
 

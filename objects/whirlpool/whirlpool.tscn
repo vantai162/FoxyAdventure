@@ -17,7 +17,6 @@ emission_shape = 3
 emission_box_extents = Vector3(8, 45, 0)
 angle_min = -20.0
 angle_max = 20.0
-direction = Vector3(1, 0, 0)
 spread = 180.0
 initial_velocity_min = 25.0
 initial_velocity_max = 60.0
@@ -46,13 +45,13 @@ debug_color = Color(0.941176, 0.196078, 0.509804, 0.0901961)
 
 [node name="WaterParticles" type="GPUParticles2D" parent="."]
 amount = 64
-process_material = SubResource("ParticleProcessMaterial_lba4k")
 lifetime = 3.0
 randomness = 0.4
 local_coords = true
+process_material = SubResource("ParticleProcessMaterial_lba4k")
 
 [node name="VortexVisual" type="Line2D" parent="."]
-points = PackedVector2Array(0, -50, -15, -25, -25, 0, -15, 25, 0, 50, 15, 25, 25, 0, 15, -25, 0, -50)
+points = PackedVector2Array(-25, 0, -15, 25, 0, 50, 15, 25, 25, 0)
 width = 3.0
 default_color = Color(0.4, 0.7, 1, 0.6)
 texture_mode = 1
@@ -61,7 +60,7 @@ end_cap_mode = 2
 antialiased = true
 
 [node name="InnerVortex" type="Line2D" parent="."]
-points = PackedVector2Array(0, -35, -10, -17, -15, 0, -10, 17, 0, 35, 10, 17, 15, 0, 10, -17, 0, -35)
+points = PackedVector2Array(-15, 0, -10, 17, 0, 35, 10, 17, 15, 0)
 width = 2.0
 default_color = Color(0.6, 0.85, 1, 0.8)
 texture_mode = 1
