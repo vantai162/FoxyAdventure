@@ -1,6 +1,8 @@
+class_name Shop
 extends Node2D
 enum itemType{skins,Skill}
 enum TransactionResult{Successful,NotUnlockedYet,AlreadyBought,NotEnoughMoney,OutofStock,UnknowError}
+@export var shop_name:String
 @export var Stock = {
 	"power_up": 5,
 	"hp_up": 5
@@ -37,7 +39,11 @@ func BuyItem(money:int,type:itemType,key:String)->TransactionResult:
 
 func _ready() -> void:
 	for key in Linker:
-		objLinker[key]=Linker[key].instantiate()
+		if !objLinker.has(key):
+			objLinker[key]=Linker[key].instantiate()
 		
+func _save_shop_stock_data():
+	SaveSystem.save_shop_data(Stock)
 
-	
+func _load_shop_stock_data():
+	Stock=SaveSystem.load_shop_data()

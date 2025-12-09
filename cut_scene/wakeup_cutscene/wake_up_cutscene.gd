@@ -27,9 +27,7 @@ func start_sequence():
 		player.change_animation("dead")
 	
 	# Lấy camera để làm hiệu ứng chóng mặt
-	if player.has_node("Camera2D"):
-		player_cam = player.get_node("Camera2D")
-		player_cam.zoom = Vector2(1.4, 1.4) # Zoom sát mặt ngay từ đầu
+	
 	
 	visible = true
 	black_fade.color.a = 1.0

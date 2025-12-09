@@ -5,7 +5,7 @@ extends EnemyState
 func _enter():
 
 	obj.change_animation("dead")
-
+	GameManager.add_kill()
 	timer = 1.0
 
 	obj.velocity.x = 0

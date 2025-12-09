@@ -15,8 +15,9 @@
 [ext_resource type="Texture2D" uid="uid://bptbd831rvqdf" path="res://assets/GandalfHardcore FREE Platformer Assets/GandalfHardcore FREE Platformer Assets/GandalfHardcore Background layers/Normal BG/GandalfHardcore Background layers_layer 1.png" id="16_8n78o"]
 [ext_resource type="Texture2D" uid="uid://bw70fwjf0c3y2" path="res://assets/GandalfHardcore FREE Platformer Assets/GandalfHardcore FREE Platformer Assets/cloud3.png" id="17_kuu5a"]
 [ext_resource type="PackedScene" uid="uid://bg3bfewcihuv0" path="res://objects/sign/sign.tscn" id="17_p1j52"]
-[ext_resource type="PackedScene" uid="uid://c5m8vno0qh3xy" path="res://objects/whirlpool/whirlpool.tscn" id="17_rups3"]
-[ext_resource type="Script" path="res://environment/lava/lava_pool.gd" id="18_rups3"]
+[ext_resource type="PackedScene" uid="uid://dl6sw76ff5y3a" path="res://spawner/turtle_spawner.tscn" id="18_rups3"]
+[ext_resource type="PackedScene" uid="uid://um44lmp2s6eq" path="res://spawner/healthpotion_spawner.tscn" id="19_lk4yk"]
+[ext_resource type="PackedScene" uid="uid://dy2go6q81lmqg" path="res://effect_Item/TrapCoin/trap_coin.tscn" id="19_tku26"]
 
 [node name="WhirlpoolTest" type="Node2D"]
 
@@ -42,7 +43,7 @@ tile_map_data = PackedByteArray("AADu/wQAAAAAAAEAAADv/wQAAAABAAEAAADw/wQAAAAGAAE
 tile_set = ExtResource("1_18vte")
 
 [node name="Foxy" parent="." instance=ExtResource("4_player")]
-position = Vector2(27, -431)
+position = Vector2(27, 100)
 attack_damage = 3
 max_health = 30
 
@@ -122,12 +123,8 @@ autoplay = true
 [node name="Node2D" type="Node2D" parent="." groups=["coconut_tree"]]
 position = Vector2(-59, -104)
 
-[node name="Whirlpool" parent="." instance=ExtResource("17_rups3")]
-position = Vector2(-341, 23)
-lifetime = 0.0
-auto_despawn = false
+[node name="KingCrab" parent="." instance=ExtResource("19_tku26")]
+position = Vector2(-205, 124)
 
-[node name="LavaPool" type="Node2D" parent="."]
-position = Vector2(-600, 0)
-script = ExtResource("18_rups3")
-lava_size = Vector2(1200, 400)
+[node name="TrapCoin" parent="." instance=ExtResource("19_tku26")]
+position = Vector2(138, 103)

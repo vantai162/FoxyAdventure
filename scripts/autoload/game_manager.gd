@@ -19,6 +19,8 @@ var player_spawn_requested: bool = false
 var player_spawn_data: Dictionary = {}
 var paused=false
 var skin_manager:SkinManager=SkinManager.new()
+var kill_count: int = 0
+
 func _ready() -> void:
 	load_checkpoint_data()
 	key_manager.load_key()
@@ -27,6 +29,13 @@ func _ready() -> void:
 	current_checkpoint_id = ""
 	skin_manager._load_skin_data_from_save()
 	checkpoint_data.clear()
+	
+	#Dùng cho sau này có tính đến đoạn continue hay new game
+	# Load số int trực tiếp từ SaveSystem
+	#var saved_count = SaveSystem.load_kill_data()
+	
+	# Gọi hàm load với số int vừa lấy được
+	#load_save_data(saved_count)
 	pass
 
 #change stage by path and target portal name
@@ -186,7 +195,6 @@ func spawn_player(spawn_data: Dictionary) -> Player:
 		new_player.fsm.change_state(new_player.fsm.states.idle)
 	else:
 		printerr("Player FSM not initialized!")
-	
 	player = new_player
 	return new_player
 
@@ -231,3 +239,24 @@ func show_story_popup(title: String, text: String) -> void:
 	
 	# Gọi hàm open() mà bạn đã viết trong script StoryPopup.gd
 	story_popup.open(title, text)
+
+# Hàm tăng kill
+func add_kill():
+	kill_count += 1
+	print("Kill Count: ", kill_count)
+	
+	# Lấy số int hiện tại
+	var data_to_save = get_save_data() 
+	
+	# Gửi thẳng số int sang SaveSystem
+	SaveSystem.save_kill_data(data_to_save)
+
+# --- CÁC HÀM BẠN YÊU CẦU SỬA ---
+
+# Hàm lấy dữ liệu (Trả về int thay vì Dictionary)
+func get_save_data() -> int:
+	return kill_count
+
+# Hàm nạp dữ liệu (Nhận vào int thay vì Dictionary)
+func load_save_data(data: int):
+	kill_count = data

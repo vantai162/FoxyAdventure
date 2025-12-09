@@ -1,0 +1,31 @@
+[gd_scene load_steps=4 format=3 uid="uid://8koby8md4sgg"]
+
+[ext_resource type="Script" uid="uid://1fsbitesh4k" path="res://scenes/game_screen/blade_ui.gd" id="1_proae"]
+[ext_resource type="Texture2D" uid="uid://d0s8rm2fj4wef" path="res://assets/foxy/blade/blade_anim_1.png" id="2_proae"]
+[ext_resource type="FontFile" uid="uid://dmn322frb0n8t" path="res://assets/fonts/pixel_operator/PixelOperator.ttf" id="3_laiu8"]
+
+[node name="BladeUI" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_proae")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+position = Vector2(1.5, 11.5)
+rotation = -0.6353
+scale = Vector2(1.1875, 1.1875)
+texture = ExtResource("2_proae")
+
+[node name="Label" type="Label" parent="."]
+layout_mode = 0
+offset_left = 17.0
+offset_top = -3.0
+offset_right = 42.0
+offset_bottom = 29.0
+scale = Vector2(0.859829, 0.80711)
+theme_override_fonts/font = ExtResource("3_laiu8")
+theme_override_font_sizes/font_size = 32
+text = "0"

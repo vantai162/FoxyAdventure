@@ -34,8 +34,10 @@ directories/dch_directory={
 }
 directories/dtl_directory={
 "albert_timeline": "res://dialog/timelines/albert_timeline.dtl",
+"bad_ending_timeline": "res://dialog/timelines/bad_ending_timeline.dtl",
 "captain_timeline": "res://dialog/timelines/captain_timeline.dtl",
 "cat_timeline": "res://dialog/timelines/cat_timeline.dtl",
+"good_ending_timeline": "res://dialog/timelines/good_ending_timeline.dtl",
 "jack_timeline": "res://dialog/timelines/jack_timeline.dtl",
 "timeline": "res://dialog/timelines/timeline.dtl",
 "wake_up_timeline": "res://dialog/timelines/wake_up_timeline.dtl",

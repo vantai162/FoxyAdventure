@@ -7,6 +7,9 @@ extends Node
 const SAVE_FILE = "user://checkpoint_save.dat"
 const SETTING_FILE="user://setting.dat"
 const SKIN_FILE="user://skin.dat"
+const SHOP_FILE="user://shop.dat"
+const KILL_DATA_FILE = "user://kill_count.dat"
+
 # Save checkpoint data to file
 func save_checkpoint_data(data: Dictionary) -> void:
 	# Mở file để ghi
@@ -120,3 +123,56 @@ func load_skin_data():
 		printerr("LỖI: Không thể mở file để tải: ", SKIN_FILE)
 		return {}
 		
+func save_shop_data(data:Dictionary):
+	var file = FileAccess.open(SHOP_FILE, FileAccess.WRITE)
+	
+	if file:
+		# Dùng store_var để lưu Dictionary (hỗ trợ cả Vector2, v.v.)
+		file.store_var(data)
+		file.close() # Đừng quên đóng file
+	else:
+		printerr("LỖI: Không thể mở file để lưu: ", SHOP_FILE)
+	
+func load_shop_data():
+	if not has_save_file(SHOP_FILE):
+		return {} # Trả về Dictionary rỗng nếu không có file save
+
+	# Mở file để đọc
+	var file = FileAccess.open(SHOP_FILE, FileAccess.READ)
+	
+	if file:
+		# Dùng get_var để đọc lại Dictionary
+		var data = file.get_var()
+		file.close()
+		
+		# Kiểm tra xem dữ liệu có phải là Dictionary không
+		if data is Dictionary:
+			return data
+		else:
+			printerr("LỖI: File save bị hỏng, dữ liệu không phải Dictionary.")
+			return {}
+	else:
+		printerr("LỖI: Không thể mở file để tải: ", SHOP_FILE)
+		return {}
+		
+# Lưu trực tiếp số nguyên
+static func save_kill_data(count: int) -> void:
+	var file = FileAccess.open(KILL_DATA_FILE, FileAccess.WRITE)
+	if file:
+		# Biến số thành chuỗi để lưu (Ví dụ: 10 -> "10")
+		file.store_string(str(count))
+		# print("SaveSystem: Đã lưu Kill Count: ", count)
+	else:
+		printerr("SaveSystem Lỗi: Không thể lưu file.")
+
+# Đọc trực tiếp số nguyên
+static func load_kill_data() -> int:
+	if not FileAccess.file_exists(KILL_DATA_FILE):
+		return 0 # Chưa có file thì trả về 0
+	
+	var file = FileAccess.open(KILL_DATA_FILE, FileAccess.READ)
+	if file:
+		var content = file.get_as_text()
+		# Biến chuỗi đọc được thành số nguyên (Ví dụ: "10" -> 10)
+		return content.to_int()
+	return 0

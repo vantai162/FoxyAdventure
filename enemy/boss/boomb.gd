@@ -11,6 +11,7 @@ extends RigidBody2D
 @export var max_buoyancy_velocity: float = 300.0  ## Cap on upward speed in water
 
 
+var roll_dir =1
 var direction := 1
 var exploded: = false
 var current_water: water = null
@@ -28,6 +29,7 @@ func _ready() -> void:
 	explosion.visible = false
 	explosion_hitbox.set_deferred("disabled", true)
 	explosion_area.monitoring = false
+	apply_impulse(Vector2(direction*speed,lift_force))
 	explosion_timer.start()
 	
 	# Start checking for water
@@ -57,7 +59,7 @@ func _integrate_forces(state: PhysicsDirectBodyState2D) -> void:
 	if abs(vel.y) > 1.0:
 		return
 	
-	vel.x = direction * roll_speed
+	vel.x = roll_dir * roll_speed
 	linear_velocity = vel
 
 func _detect_water() -> void:
