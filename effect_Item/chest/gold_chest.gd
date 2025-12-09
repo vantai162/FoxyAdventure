@@ -17,17 +17,17 @@ func _ready():
 func attempt_open_chest():
 	if is_opened:
 		return
-	if GameManager.inventory.has_key():
+	if GameManager.player.inventory.has_key():
 		open_chest()
 
 func open_chest():
 	if is_opened:
 		return
 	is_opened = true
-	GameManager.inventory.use_key(key_requirement)
+	GameManager.player.inventory.use_key(key_requirement)
 	animated_sprite.play("open")
 	await animated_sprite.animation_finished
-	GameManager.inventory.adjust_amount_item("Coin",coin_reward)
+	GameManager.player.inventory.adjust_amount_item("Coin",coin_reward)
 	print("Chest opened! You received ", coin_reward, " coin!")
 
 

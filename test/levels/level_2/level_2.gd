@@ -94,7 +94,7 @@ func _on_meet_boss_area_2d_body_entered(body: Node2D) -> void:
 		warlord_spawned = true
 		
 		var spawner = turtle_spawn.instantiate()
-		spawner.position = Vector2(839, 36)
+		spawner.position = Vector2(850, 36)
 		get_node("Spawner").add_child(spawner)
 		turtle_spawner_spawned = true
 		
