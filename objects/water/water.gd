@@ -512,56 +512,6 @@ func _on_body_exited(body: Node2D) -> void:
 			body.current_water = null
 			emit_signal("player_exited_water", body)
 
-func _check_bodies_still_in_water() -> void:
-	## FIX: Godot Area2D doesn't auto-emit body_exited when collision shape shrinks.
-	## This function manually checks if tracked bodies are still within water bounds.
-	## Called after _update_collision_shape() during water level changes.
-	
-	if _bodies_in_water.is_empty():
-		return
-	
-	# Calculate current water bounds in global space
-	var water_surface_global_y = global_position.y + surface_pos_y
-	var water_bottom_global_y = global_position.y + water_size.y
-	var water_left_global_x = global_position.x
-	var water_right_global_x = global_position.x + water_size.x
-	
-	# Check each tracked body (iterate in reverse to safely remove)
-	var bodies_to_exit: Array = []
-	for body in _bodies_in_water:
-		if not is_instance_valid(body):
-			bodies_to_exit.append(body)
-			continue
-		
-		var body_pos = body.global_position
-		
-		# Check if body is outside water bounds
-		var is_above_surface = body_pos.y < water_surface_global_y
-		var is_below_bottom = body_pos.y > water_bottom_global_y
-		var is_outside_horizontal = body_pos.x < water_left_global_x or body_pos.x > water_right_global_x
-		
-		if is_above_surface or is_below_bottom or is_outside_horizontal:
-			bodies_to_exit.append(body)
-	
-	# Manually trigger exit for bodies no longer in water
-	for body in bodies_to_exit:
-		if is_instance_valid(body):
-			# Don't splash for water-level-change exits (they didn't actually move)
-			_bodies_in_water.erase(body)
-			_swim_disturbance_timers.erase(body)
-			if _boats_in_water.has(body):
-				_boats_in_water.erase(body)
-				_boat_last_positions.erase(body)
-				_boats_moved = true
-			
-			if body.is_in_group("player"):
-				body.current_water = null
-				emit_signal("player_exited_water", body)
-		else:
-			# Clean up invalid references
-			_bodies_in_water.erase(body)
-			_swim_disturbance_timers.erase(body)
-
 func get_water_surface_global_y() -> float:
 	return global_position.y + surface_pos_y
 
@@ -593,10 +543,6 @@ func _update_collision_shape() -> void:
 	
 	var center_y = surface_pos_y + new_height / 2.0
 	water_collision_shape.position = Vector2(water_size.x / 2.0, center_y)
-	
-	# FIX: Godot Area2D doesn't emit body_exited when collision shape shrinks/moves.
-	# Manually check if tracked bodies are still within water bounds.
-	_check_bodies_still_in_water()
 
 ## Water level control for boss fights and scripted events
 func raise_water(target_height: float, duration: float = 2.0) -> void:
