@@ -1,4 +1,4 @@
-[gd_scene load_steps=80 format=4 uid="uid://30po03m850f6"]
+[gd_scene load_steps=79 format=4 uid="uid://30po03m850f6"]
 
 [ext_resource type="Script" uid="uid://bl4jqlw4aef0m" path="res://test/stage.gd" id="1_7qv11"]
 [ext_resource type="PackedScene" uid="uid://dm741hii7d5nv" path="res://scenes/game_screen/health_bar.tscn" id="2_l7nct"]
@@ -55,7 +55,6 @@
 [ext_resource type="PackedScene" uid="uid://ckaw6wc7acih8" path="res://environment/death_zone/death_zone.tscn" id="50_nv8qq"]
 [ext_resource type="PackedScene" uid="uid://m0ec1cyfshdq" path="res://objects/scroll/scroll.tscn" id="51_h4ytb"]
 [ext_resource type="PackedScene" uid="uid://dubb5b1vjmsxd" path="res://objects/door/door.tscn" id="52_lhgvo"]
-[ext_resource type="PackedScene" uid="uid://fwuimc71t468" path="res://objects/npc/shop/shop_item/shop_vendor.tscn" id="54_n82ni"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_yiwfi"]
 texture = ExtResource("10_b7xqp")
@@ -5713,7 +5712,7 @@ change_direction_time = 8.0
 
 [node name="Spike" parent="Objects" instance=ExtResource("9_symkc")]
 use_parent_material = true
-position = Vector2(2590, 113)
+position = Vector2(2589, 112)
 rotation = -1.5708
 
 [node name="Spike2" parent="Objects" instance=ExtResource("9_symkc")]
@@ -5731,14 +5730,9 @@ use_parent_material = true
 position = Vector2(2493, -59)
 rotation = 1.5708
 
-[node name="Spike5" parent="Objects" instance=ExtResource("9_symkc")]
-use_parent_material = true
-position = Vector2(2494, 60)
-rotation = 1.5708
-
 [node name="Spike6" parent="Objects" instance=ExtResource("9_symkc")]
 use_parent_material = true
-position = Vector2(2494, 167)
+position = Vector2(2494, 173)
 rotation = 1.5708
 
 [node name="Spike_Retractable" parent="Objects" instance=ExtResource("12_av6r5")]
@@ -5809,11 +5803,28 @@ target_stage = "uid://bxknbajfocd87"
 position = Vector2(4412, 326)
 
 [node name="Foxy" parent="." instance=ExtResource("2_xeh7v")]
-position = Vector2(4240, 336)
+position = Vector2(37, 237)
 
-[node name="ShopVendor" parent="." instance=ExtResource("54_n82ni")]
-position = Vector2(7452, 216)
+[node name="Sign6" parent="." instance=ExtResource("5_symkc")]
+use_parent_material = true
+position = Vector2(210, 233)
+instruction_text = "Bấm [Q] để tương tác"
 
+[connection signal="area_entered" from="Layer1/Coin" to="Layer1/Coin" method="_on_area_entered"]
+[connection signal="area_entered" from="Layer1/@Area2D@49132" to="Layer1/@Area2D@49132" method="_on_area_entered"]
+[connection signal="area_entered" from="Layer1/@Area2D@49133" to="Layer1/@Area2D@49133" method="_on_area_entered"]
+[connection signal="area_entered" from="Layer1/@Area2D@49134" to="Layer1/@Area2D@49134" method="_on_area_entered"]
+[connection signal="area_entered" from="Layer1/@Area2D@49135" to="Layer1/@Area2D@49135" method="_on_area_entered"]
+[connection signal="area_entered" from="Layer1/@Area2D@49136" to="Layer1/@Area2D@49136" method="_on_area_entered"]
+[connection signal="area_entered" from="Layer1/@Area2D@49137" to="Layer1/@Area2D@49137" method="_on_area_entered"]
+[connection signal="area_entered" from="Layer1/@Area2D@49138" to="Layer1/@Area2D@49138" method="_on_area_entered"]
+[connection signal="area_entered" from="Layer1/@Area2D@49139" to="Layer1/@Area2D@49139" method="_on_area_entered"]
+[connection signal="area_entered" from="Layer1/@Area2D@49140" to="Layer1/@Area2D@49140" method="_on_area_entered"]
+[connection signal="area_entered" from="Layer1/@Area2D@49141" to="Layer1/@Area2D@49141" method="_on_area_entered"]
+[connection signal="area_entered" from="Layer1/@Area2D@49142" to="Layer1/@Area2D@49142" method="_on_area_entered"]
+[connection signal="area_entered" from="Layer1/@Area2D@49143" to="Layer1/@Area2D@49143" method="_on_area_entered"]
+[connection signal="area_entered" from="Layer1/@Area2D@49144" to="Layer1/@Area2D@49144" method="_on_area_entered"]
+[connection signal="area_entered" from="Layer1/Key" to="Layer1/Key" method="_on_area_entered"]
 [connection signal="body_entered" from="Objects/Lever" to="Objects/Gate" method="open_gate"]
 [connection signal="body_exited" from="Objects/Lever" to="Objects/Gate" method="close_gate"]
 [connection signal="lever_activated" from="Objects/Lever" to="Objects/Gate" method="open_gate"]
