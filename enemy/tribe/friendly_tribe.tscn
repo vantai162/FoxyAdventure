@@ -175,9 +175,9 @@ sprite_frames = SubResource("SpriteFrames_icd28")
 animation = &"dead"
 
 [node name="FrontRayCast2D" type="RayCast2D" parent="Direction"]
-position = Vector2(23.4375, 0)
+position = Vector2(23.4375, 22)
 target_position = Vector2(21.875, 0)
-collision_mask = 9
+collision_mask = 1
 
 [node name="DownRayCast2D" type="RayCast2D" parent="Direction"]
 position = Vector2(23.4375, 1.47059)

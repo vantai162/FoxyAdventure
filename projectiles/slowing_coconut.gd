@@ -1,5 +1,7 @@
 extends CoconutProjectile
 class_name SlowingCoconut
+## Coconut that spawns a slowing puddle on ground impact
+## Puddles naturally decay after lifetime - no manual tracking needed
 
 @export var slow_puddle_scene: PackedScene
 

@@ -8,9 +8,12 @@ func _enter() -> void:
 	obj.change_animation("defend")
 	obj.show_shield()
 	
-	# Only set wait_time if not already configured in editor
-	if obj.attack_timer.wait_time == 0:
-		obj.attack_timer.wait_time = obj.attack_interval
+	# Set attack timer - check for ambush bonus if elite
+	var attack_interval = obj.attack_interval
+	if obj.has_method("get_ambush_attack_interval"):
+		attack_interval = obj.get_ambush_attack_interval()
+	
+	obj.attack_timer.wait_time = attack_interval
 	obj.attack_timer.start()
 	
 	can_jump = true
@@ -18,6 +21,20 @@ func _enter() -> void:
 
 func _update(_delta: float) -> void:
 	obj.face_player()
+	obj.velocity.x = 0  # Stationary guard - reset horizontal movement
+	
+	# Elite Warden: Continuously check if should teleport (mid-range positioning)
+	if obj.has_method("should_trigger_teleport") and obj.found_player:
+		var dist = obj.global_position.distance_to(obj.found_player.global_position)
+		var buffer = obj.PLAYER_COLLISION_BUFFER if "PLAYER_COLLISION_BUFFER" in obj else 15.0
+		var attack_range = obj.attack_detection_radius if "attack_detection_radius" in obj else 105.0
+		var teleport_range = obj.teleport_detection_radius if "teleport_detection_radius" in obj else 422.0
+		
+		# If player moved to mid-range (outside attack, inside teleport range), try teleport
+		if dist > (attack_range + buffer) and dist <= (teleport_range + buffer):
+			if obj.should_trigger_teleport() and fsm.states.has("teleport"):
+				change_state(fsm.states.teleport)
+				return
 	
 	if obj.found_player and can_jump:
 		var dist = abs(obj.found_player.global_position.x - obj.global_position.x)
@@ -30,7 +47,7 @@ func _update(_delta: float) -> void:
 
 func _perform_block_jump():
 	can_jump = false
-	obj.jump(obj.jump_speed)
+	obj.jump(obj.block_jump_speed)  # Use custom higher jump for blocking
 	get_tree().create_timer(obj.jump_cooldown).timeout.connect(func(): can_jump = true)
 
 func _exit() -> void:

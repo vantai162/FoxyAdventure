@@ -1,8 +1,8 @@
 extends EnemyState
-
+## Base Turtle Hurt State
+## Brief invulnerability frames, then hide in shell
 
 func _enter() -> void:
-	
 	timer = 0.3
 
 func _update(delta: float) -> void:
@@ -13,4 +13,8 @@ func _update(delta: float) -> void:
 			else:
 				obj.queue_free()
 		else:
-			change_state(fsm.states.hide)
+			# Base turtle always has hide state, but check defensively
+			if fsm.states.has("hide"):
+				change_state(fsm.states.hide)
+			else:
+				change_state(fsm.default_state)

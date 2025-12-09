@@ -1,0 +1,135 @@
+[gd_scene load_steps=17 format=3 uid="uid://mini_mushroom_elite_001"]
+
+[ext_resource type="Script" path="res://enemy/mushroom/mini_mushroom.gd" id="1_mini"]
+[ext_resource type="Texture2D" uid="uid://dnlagy1ygfmpg" path="res://assets/monsters/mushroom/mushroom_hurt_03.png" id="2_hurt"]
+[ext_resource type="Texture2D" uid="uid://dx008fsd6muo7" path="res://assets/monsters/mushroom/mushroom_hurt_02.png" id="3_hurt"]
+[ext_resource type="Texture2D" uid="uid://cnffiueq84mw3" path="res://assets/monsters/mushroom/mushroom_hurt_01.png" id="4_hurt"]
+[ext_resource type="Texture2D" uid="uid://3618lytb7nnv" path="res://assets/monsters/mushroom/mushroom_01.png" id="5_run"]
+[ext_resource type="Texture2D" uid="uid://bqgmklofxv0qi" path="res://assets/monsters/mushroom/mushroom_02.png" id="6_run"]
+[ext_resource type="Texture2D" uid="uid://cghgcxg1pvwd6" path="res://assets/monsters/mushroom/mushroom_03.png" id="7_run"]
+[ext_resource type="Script" path="res://enemy/mushroom/states/mini_run.gd" id="8_run_state"]
+[ext_resource type="Script" path="res://enemy/mushroom/states/mini_explode.gd" id="9_explode"]
+[ext_resource type="Script" uid="uid://ifyit1vg4ktq" path="res://scripts/node2d_factory.gd" id="9_factory"]
+[ext_resource type="PackedScene" uid="uid://nr5uby15sfha" path="res://enemy/mushroom/toxic gas.tscn" id="10_gas"]
+[ext_resource type="Script" uid="uid://csu2b21cwchqw" path="res://scripts/hurt_area_2d.gd" id="11_hurt_area"]
+[ext_resource type="Script" uid="uid://bu8pu40bboyoc" path="res://enemy/mushroom/hurt.gd" id="12_hurt_state"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_body"]
+size = Vector2(18, 16)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_mini"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("2_hurt")
+}, {
+"duration": 1.0,
+"texture": ExtResource("3_hurt")
+}, {
+"duration": 1.0,
+"texture": ExtResource("4_hurt")
+}, {
+"duration": 1.0,
+"texture": ExtResource("3_hurt")
+}, {
+"duration": 1.0,
+"texture": ExtResource("4_hurt")
+}, {
+"duration": 1.0,
+"texture": ExtResource("3_hurt")
+}, {
+"duration": 1.0,
+"texture": ExtResource("4_hurt")
+}],
+"loop": false,
+"name": &"explode",
+"speed": 12.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("4_hurt")
+}, {
+"duration": 1.0,
+"texture": ExtResource("3_hurt")
+}, {
+"duration": 1.0,
+"texture": ExtResource("2_hurt")
+}],
+"loop": true,
+"name": &"hurt",
+"speed": 4.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("5_run")
+}, {
+"duration": 1.0,
+"texture": ExtResource("6_run")
+}, {
+"duration": 1.0,
+"texture": ExtResource("7_run")
+}],
+"loop": true,
+"name": &"run",
+"speed": 6.0
+}]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_hurt"]
+size = Vector2(18, 16)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_explode"]
+size = Vector2(56, 48)
+
+[node name="MiniMushroom" type="CharacterBody2D"]
+scale = Vector2(0.7, 0.7)
+collision_layer = 8
+collision_mask = 1
+script = ExtResource("1_mini")
+max_health = 1
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(0, 1)
+shape = SubResource("RectangleShape2D_body")
+
+[node name="Direction" type="Node2D" parent="."]
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="Direction"]
+sprite_frames = SubResource("SpriteFrames_mini")
+animation = &"run"
+speed_scale = 1.3
+
+[node name="ToxicGasFactory" type="Marker2D" parent="Direction"]
+script = ExtResource("9_factory")
+product_packed_scene = ExtResource("10_gas")
+target_container_name = &"Enemies"
+
+[node name="HurtArea2D" type="Area2D" parent="Direction"]
+collision_layer = 16
+collision_mask = 0
+script = ExtResource("11_hurt_area")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Direction/HurtArea2D"]
+position = Vector2(0, 1)
+shape = SubResource("RectangleShape2D_hurt")
+
+[node name="ExplodeArea2D" type="Area2D" parent="Direction"]
+collision_layer = 0
+collision_mask = 2
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Direction/ExplodeArea2D"]
+position = Vector2(0, 1)
+shape = SubResource("RectangleShape2D_explode")
+
+[node name="States" type="Node" parent="."]
+
+[node name="Run" type="Node" parent="States"]
+script = ExtResource("8_run_state")
+
+[node name="MiniExplode" type="Node" parent="States"]
+script = ExtResource("9_explode")
+toxic_gas_scene = ExtResource("10_gas")
+
+[node name="Hurt" type="Node" parent="States"]
+script = ExtResource("12_hurt_state")
+
+[connection signal="body_entered" from="Direction/ExplodeArea2D" to="." method="_on_explode_area_body_entered"]

@@ -33,8 +33,8 @@
 [ext_resource type="Texture2D" uid="uid://b5q70uwnsck3q" path="res://assets/monsters/tribe_temporary/Sprites/1-Player-Bomb Guy/2-Run/7.png" id="22_jkol0"]
 [ext_resource type="Texture2D" uid="uid://bhtccs3mcxp26" path="res://assets/monsters/tribe_temporary/Sprites/1-Player-Bomb Guy/2-Run/8.png" id="23_u568o"]
 
-[sub_resource type="CircleShape2D" id="CircleShape2D_body"]
-radius = 29.0
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_cxdv3"]
+size = Vector2(55, 55)
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_tribe_run"]
 animations = [{
@@ -128,33 +128,30 @@ animations = [{
 "speed": 8.0
 }]
 
-[sub_resource type="CircleShape2D" id="CircleShape2D_e5pm8"]
-radius = 32.0
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_n74tb"]
+size = Vector2(60, 60)
 
 [node name="AggressiveTribe" type="CharacterBody2D"]
 scale = Vector2(0.85, 0.85)
 collision_layer = 8
 script = ExtResource("1_tribe_gd")
-windup_time = 1.0
 normal_coconut_scene = ExtResource("2_o5hof")
 special_coconut_scene = ExtResource("3_aecud")
 movement_speed = 100.0
 metadata/_custom_type_script = "uid://s4xx82espxdt"
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-shape = SubResource("CircleShape2D_body")
+shape = SubResource("RectangleShape2D_cxdv3")
 
 [node name="Direction" type="Node2D" parent="."]
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="Direction"]
 sprite_frames = SubResource("SpriteFrames_tribe_run")
-animation = &"attack"
-frame_progress = 0.862752
+animation = &"run"
 
 [node name="FrontRayCast2D" type="RayCast2D" parent="Direction"]
-position = Vector2(15, 16)
-target_position = Vector2(30, 0)
-collision_mask = 9
+position = Vector2(0, 16)
+target_position = Vector2(32, 0)
 
 [node name="DownRayCast2D" type="RayCast2D" parent="Direction"]
 position = Vector2(15, 0)
@@ -165,7 +162,7 @@ position = Vector2(30, -20)
 
 [node name="DetectPlayerRayCast2D" type="RayCast2D" parent="Direction"]
 position = Vector2(0, 16)
-target_position = Vector2(400, 15)
+target_position = Vector2(400, 0)
 collision_mask = 2
 
 [node name="DetectPlayerRayCast2D1" type="RayCast2D" parent="Direction"]
@@ -178,20 +175,25 @@ position = Vector2(0, 16)
 target_position = Vector2(400, 20)
 collision_mask = 2
 
+[node name="DetectPlayerRayCast2D3" type="RayCast2D" parent="Direction"]
+position = Vector2(0, 16)
+target_position = Vector2(-100, 0)
+collision_mask = 2
+
 [node name="HurtArea2D" parent="Direction" instance=ExtResource("2_hurt_area")]
 position = Vector2(0, 3)
 collision_layer = 16
 collision_mask = 0
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Direction/HurtArea2D"]
-shape = SubResource("CircleShape2D_e5pm8")
+shape = SubResource("RectangleShape2D_n74tb")
+
+[node name="AttackTimer" type="Timer" parent="."]
+wait_time = 1.5
+one_shot = true
 
 [node name="ThrowTimer" type="Timer" parent="."]
 wait_time = 0.3
-one_shot = true
-
-[node name="AttackTimer" type="Timer" parent="."]
-wait_time = 3.0
 one_shot = true
 
 [node name="WindupTimer" type="Timer" parent="."]
@@ -214,3 +216,5 @@ script = ExtResource("17_73cdu")
 
 [node name="Dead" type="Node" parent="States"]
 script = ExtResource("20_aecud")
+
+[connection signal="hurt" from="Direction/HurtArea2D" to="." method="_on_hurt_area_2d_hurt"]
