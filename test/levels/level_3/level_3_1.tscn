@@ -1,14 +1,21 @@
-[gd_scene load_steps=5 format=4 uid="uid://cownslw7ms6s4"]
+[gd_scene load_steps=11 format=4 uid="uid://cownslw7ms6s4"]
 
 [ext_resource type="Script" uid="uid://cblkjof8tqn71" path="res://test/levels/level_3/stage_3_1.gd" id="1_stage_script"]
 [ext_resource type="TileSet" uid="uid://0yf5cmwk6u1i" path="res://assets/island/terrain/ice_tile_set.tres" id="2_a6ecy"]
 [ext_resource type="PackedScene" uid="uid://cqjqdbyd7mqfr" path="res://environment/cave/glowing_crystal.tscn" id="4_crystal"]
-[ext_resource type="PackedScene" uid="uid://bs816w0pr8all" path="res://player/foxy.tscn" id="6_foxy"]
+[ext_resource type="PackedScene" uid="uid://c1bijw8i8erx5" path="res://enemy/turtle/turtle.tscn" id="5_turtle"]
+[ext_resource type="PackedScene" uid="uid://bmgv5cgan4yt" path="res://enemy/mushroom/mushroom.tscn" id="6_mushroom"]
+[ext_resource type="PackedScene" uid="uid://ufmc2gkfnv58" path="res://enemy/crab/crab.tscn" id="7_crab"]
+[ext_resource type="PackedScene" uid="uid://bxfs4fsx7ot6m" path="res://enemy/starfish/starfish.tscn" id="8_starfish"]
+[ext_resource type="PackedScene" uid="uid://bs816w0pr8all" path="res://player/foxy.tscn" id="9_foxy"]
+[ext_resource type="PackedScene" uid="uid://jm5jjtt5tfsj" path="res://enemy/crab/elite_hunter_crab.tscn" id="10_elite_crab"]
+[ext_resource type="PackedScene" uid="uid://dumayxma7am7b" path="res://enemy/turtle/elite_spiny_turtle.tscn" id="11_elite_turtle"]
 
 [node name="Level_3_1" type="Node2D"]
 script = ExtResource("1_stage_script")
 
 [node name="CanvasModulate" type="CanvasModulate" parent="."]
+visible = false
 color = Color(0.0558769, 0.0395219, 0.0722072, 1)
 
 [node name="PlayerSpawn" type="Marker2D" parent="."]
@@ -39,6 +46,30 @@ tile_set = ExtResource("2_a6ecy")
 [node name="Puzzle" type="Node2D" parent="."]
 
 [node name="Enemies" type="Node2D" parent="."]
+
+[node name="Turtle1" parent="Enemies" instance=ExtResource("5_turtle")]
+position = Vector2(600, 464)
+
+[node name="Mushroom1" parent="Enemies" instance=ExtResource("6_mushroom")]
+position = Vector2(350, 819)
+
+[node name="Crab1" parent="Enemies" instance=ExtResource("7_crab")]
+position = Vector2(1100, 1219)
+
+[node name="Turtle2" parent="Enemies" instance=ExtResource("5_turtle")]
+position = Vector2(400, 1232)
+
+[node name="Mushroom2" parent="Enemies" instance=ExtResource("6_mushroom")]
+position = Vector2(900, 1828)
+
+[node name="Starfish1" parent="Enemies" instance=ExtResource("8_starfish")]
+position = Vector2(600, 2226)
+
+[node name="EliteHunterCrab" parent="Enemies" instance=ExtResource("10_elite_crab")]
+position = Vector2(1200, 1219)
+
+[node name="EliteSpinyTurtle" parent="Enemies" instance=ExtResource("11_elite_turtle")]
+position = Vector2(700, 1264)
 
 [node name="Collectibles" type="Node2D" parent="."]
 
@@ -109,5 +140,5 @@ color_preset = 4
 
 [node name="ExitZone" type="Node2D" parent="."]
 
-[node name="Foxy" parent="." instance=ExtResource("6_foxy")]
+[node name="Foxy" parent="." instance=ExtResource("9_foxy")]
 position = Vector2(140, 180)
