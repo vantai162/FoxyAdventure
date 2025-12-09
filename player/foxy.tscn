@@ -403,11 +403,11 @@ shape = SubResource("RectangleShape2D_u75vx")
 target_position = Vector2(-1, 19)
 
 [node name="PlayerTorch" type="PointLight2D" parent="."]
-script = ExtResource("52_torch")
 position = Vector2(0, -8)
 color = Color(1, 0.95, 0.85, 1)
 energy = 0.8
 shadow_enabled = true
 texture_scale = 0.5
+script = ExtResource("52_torch")
 
 [connection signal="hurt" from="Direction/HurtArea2d" to="." method="_on_hurt_area_2d_hurt"]

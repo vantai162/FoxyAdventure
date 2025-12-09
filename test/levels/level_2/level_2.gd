@@ -17,7 +17,7 @@ var healpotion_spawner_spawned = false
 var boss_phase1_healthbar: TextureProgressBar
 var boss_phase2_healthbar: TextureProgressBar
 var boss
-var can_pause = false
+var can_pause = true
 
 func _enter_tree() -> void:
 	GameManager.current_stage = self
@@ -94,7 +94,7 @@ func _on_meet_boss_area_2d_body_entered(body: Node2D) -> void:
 		warlord_spawned = true
 		
 		var spawner = turtle_spawn.instantiate()
-		spawner.position = Vector2(839, 36)
+		spawner.position = Vector2(850, 36)
 		get_node("Spawner").add_child(spawner)
 		turtle_spawner_spawned = true
 		

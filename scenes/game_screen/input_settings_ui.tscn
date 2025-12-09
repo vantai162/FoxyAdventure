@@ -1,0 +1,35 @@
+[gd_scene load_steps=3 format=3 uid="uid://qmg6d3g0lnsx"]
+
+[ext_resource type="Script" uid="uid://dlyrvo5etq8pv" path="res://scenes/game_screen/input_settings_ui.gd" id="1_p3fly"]
+
+[sub_resource type="Theme" id="Theme_p3fly"]
+
+[node name="InputSettingsUi" type="MarginContainer"]
+custom_minimum_size = Vector2(600, 400)
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+grow_horizontal = 2
+grow_vertical = 2
+theme = SubResource("Theme_p3fly")
+script = ExtResource("1_p3fly")
+
+[node name="OverlayColorRect" type="ColorRect" parent="."]
+layout_mode = 2
+mouse_filter = 2
+color = Color(0.340339, 0.340339, 0.340339, 1)
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+
+[node name="Button" type="Button" parent="."]
+layout_mode = 2
+size_flags_horizontal = 8
+size_flags_vertical = 0
+text = "X"
+
+[connection signal="pressed" from="Button" to="." method="_on_button_pressed"]
