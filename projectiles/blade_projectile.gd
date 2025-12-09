@@ -62,6 +62,7 @@ var bounced_time: float = 0.0  # Time spent in BOUNCED state
 @onready var hit_area: Area2D = $HitArea2D
 @onready var spinning_sprite: Sprite2D = $Sprite2D
 @onready var landed_sprite: Sprite2D = $Sprite2D2
+@onready var grounded_light: PointLight2D = $GroundedGlow if has_node("GroundedGlow") else null
 
 func _ready() -> void:
 	body_entered.connect(_on_body_entered)
@@ -224,13 +225,20 @@ func _update_grounded_visual(delta: float) -> void:
 	
 	# Sharp square wave blink (50% on, 50% off)
 	var brightness: float
+	var light_energy: float
 	if blink_cycle < 0.5:
 		brightness = glow_on_brightness  # BRIGHT
+		light_energy = 1.2
 	else:
 		brightness = glow_off_brightness  # Normal
+		light_energy = 0.3
 	
 	# Apply glow color with blinking brightness
 	landed_sprite.modulate = grounded_glow_color * brightness
+	
+	# GPU light glow
+	if grounded_light:
+		grounded_light.energy = light_energy
 
 func _transition_to_arc_down() -> void:
 	current_state = State.BOUNCED
@@ -260,6 +268,10 @@ func _transition_to_grounded() -> void:
 	spinning_sprite.visible = false
 	landed_sprite.visible = true
 	glow_time = 0.0  # Reset glow animation
+	
+	# Enable grounded glow light
+	if grounded_light:
+		grounded_light.visible = true
 
 func _on_body_entered(body: Node) -> void:
 	# Pickup by player

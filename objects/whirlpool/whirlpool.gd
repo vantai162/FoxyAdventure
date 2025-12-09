@@ -48,6 +48,8 @@ var depression_applied: bool = false
 
 ## GPU Particle reference
 var water_particles: GPUParticles2D = null
+var vortex_visual: Line2D = null
+var inner_vortex: Line2D = null
 
 func _ready() -> void:
 	center_x = global_position.x
@@ -71,14 +73,25 @@ func _ready() -> void:
 	body_entered.connect(_on_body_entered)
 	body_exited.connect(_on_body_exited)
 	
-	# Setup GPU particles
+	# Setup GPU particles for V-shaped midsection view
 	if enable_visuals:
 		water_particles = get_node_or_null("WaterParticles") as GPUParticles2D
 		if water_particles:
+			_configure_vortex_particles()
 			water_particles.emitting = true
+		
+		# Get visual lines for rotation animation
+		vortex_visual = get_node_or_null("VortexVisual") as Line2D
+		inner_vortex = get_node_or_null("InnerVortex") as Line2D
 
 func _physics_process(delta: float) -> void:
 	oscillation_phase += delta * OSCILLATION_FREQUENCY * TAU
+	
+	# Animate vortex visual lines rotation
+	if vortex_visual:
+		vortex_visual.rotation += delta * 1.5  # Slower outer rotation
+	if inner_vortex:
+		inner_vortex.rotation -= delta * 2.5  # Faster counter-rotation
 	
 	if damage_cooldown_timer > 0:
 		damage_cooldown_timer -= delta
@@ -332,6 +345,46 @@ func _apply_water_depression() -> void:
 	depression_applied = true
 	water_node.recently_splashed = true
 	water_node.set_process(true)
+
+func _configure_vortex_particles() -> void:
+	## Configure particles for vertical V-shaped vortex (midsection view)
+	if not water_particles or not water_particles.process_material:
+		return
+	
+	var mat = water_particles.process_material as ParticleProcessMaterial
+	if not mat:
+		return
+	
+	# CRITICAL: Vertical line emission for midsection V-shape, not horizontal circle
+	# Particles spawn along center vertical line and spiral outward
+	mat.emission_shape = ParticleProcessMaterial.EMISSION_SHAPE_BOX
+	mat.emission_box_extents = Vector3(8, depression_depth * 0.7, 0)  # Narrow X, tall Y for vertical line
+	
+	# Horizontal spread (left/right from center line)
+	mat.direction = Vector3(1, 0, 0)  # Primarily horizontal spread
+	mat.spread = 180.0  # Full horizontal spread
+	
+	# Add upward drift for foam floating up from vortex
+	mat.gravity = Vector3(0, -30, 0)  # Slight upward float
+	
+	# Circular motion around center
+	mat.angular_velocity_min = -180.0
+	mat.angular_velocity_max = 180.0
+	
+	# Turbulent motion
+	mat.initial_velocity_min = 25.0
+	mat.initial_velocity_max = 60.0
+	mat.linear_accel_min = -20.0
+	mat.linear_accel_max = 20.0
+	
+	# Visual - white foam swirls
+	mat.color = Color(0.95, 0.98, 1.0, 0.9)
+	
+	# Scale and fade
+	mat.scale_min = 1.5
+	mat.scale_max = 3.5
+	mat.damping_min = 1.5
+	mat.damping_max = 3.0
 
 func _find_water_node() -> void:
 	var water_nodes = get_tree().get_nodes_in_group("water")

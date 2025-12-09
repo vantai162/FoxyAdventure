@@ -1,4 +1,4 @@
-[gd_scene load_steps=7 format=3 uid="uid://vifaaniwbdnv"]
+[gd_scene load_steps=10 format=3 uid="uid://vifaaniwbdnv"]
 
 [ext_resource type="Script" uid="uid://cimqxeik4xdhh" path="res://projectiles/blade_projectile.gd" id="1"]
 [ext_resource type="Texture2D" uid="uid://bng34woae2g8q" path="res://assets/foxy/blade/blade_throw_1.png" id="2_kj2ao"]
@@ -10,6 +10,16 @@ radius = 8.0
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_45h00"]
 radius = 13.0
+
+[sub_resource type="Gradient" id="Gradient_blade_glow"]
+colors = PackedColorArray(1, 0.9, 0.4, 1, 1, 0.8, 0.2, 0)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_glow"]
+gradient = SubResource("Gradient_blade_glow")
+width = 64
+height = 64
+fill = 1
+fill_from = Vector2(0.5, 0.5)
 
 [node name="BladeProjectile" type="Area2D" groups=["player_attack"]]
 collision_layer = 0
@@ -35,6 +45,14 @@ texture = ExtResource("2_kj2ao")
 visible = false
 rotation = 1.5708
 texture = ExtResource("3_1qqcv")
+
+[node name="GroundedGlow" type="PointLight2D" parent="."]
+visible = false
+color = Color(1, 0.9, 0.4, 1)
+energy = 0.0
+blend_mode = 1
+texture = SubResource("GradientTexture2D_glow")
+texture_scale = 0.6
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 shape = SubResource("CircleShape2D_1qqcv")

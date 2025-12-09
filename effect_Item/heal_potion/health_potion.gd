@@ -1,7 +1,7 @@
 extends Area2D
 class_name HealthPotion
 ## Health pickup - Restores player health when collected
-## Designer-friendly with visual and audio feedback
+## Features: float, GPU glow, bubble particles, shimmer effect
 
 @export_group("Healing")
 @export var heal_amount: int = 1  ## How much health to restore
@@ -10,7 +10,8 @@ class_name HealthPotion
 @export var float_animation: bool = true
 @export var float_amplitude: float = 3.0
 @export var float_speed: float = 1.5
-@export var glow_effect: bool = true
+@export var glow_enabled: bool = true
+@export var bubbles_enabled: bool = true
 
 @export_group("Audio")
 @export var pickup_sound: AudioStream  ## Override default sound
@@ -18,6 +19,8 @@ class_name HealthPotion
 var _original_y: float
 var _time: float = 0.0
 var _collected: bool = false
+var _glow: PointLight2D = null
+var _bubbles: GPUParticles2D = null
 
 @onready var audio: AudioStreamPlayer = $AudioStreamPlayer if has_node("AudioStreamPlayer") else null
 @onready var sprite: Sprite2D = $Sprite2D if has_node("Sprite2D") else null
@@ -26,18 +29,97 @@ func _ready() -> void:
 	_original_y = position.y
 	_time = randf() * TAU
 	
-	if glow_effect and sprite:
-		# Add subtle glow tween
-		var tween = create_tween().set_loops()
-		tween.tween_property(sprite, "modulate:a", 0.8, 0.5)
-		tween.tween_property(sprite, "modulate:a", 1.0, 0.5)
+	if glow_enabled:
+		_setup_glow()
+	
+	if bubbles_enabled:
+		_setup_bubbles()
 
 func _process(delta: float) -> void:
-	if not float_animation or _collected:
+	if _collected:
 		return
 	
 	_time += delta * float_speed
-	position.y = _original_y + sin(_time) * float_amplitude
+	
+	# Float animation
+	if float_animation:
+		position.y = _original_y + sin(_time) * float_amplitude
+	
+	# Pulsing glow
+	if _glow:
+		_glow.energy = 0.5 + sin(_time * 1.8) * 0.25
+	
+	# Shimmer on sprite
+	if sprite:
+		var shimmer = 0.9 + sin(_time * 3.0) * 0.1
+		sprite.modulate = Color(shimmer, shimmer, shimmer, 1.0)
+
+func _setup_glow() -> void:
+	_glow = get_node_or_null("PotionGlow")
+	if _glow:
+		return
+	
+	_glow = PointLight2D.new()
+	_glow.name = "PotionGlow"
+	_glow.color = Color(1.0, 0.3, 0.4)  # Healing red/pink
+	_glow.energy = 0.6
+	_glow.texture_scale = 0.5
+	_glow.blend_mode = Light2D.BLEND_MODE_ADD
+	
+	var gradient = Gradient.new()
+	gradient.set_color(0, Color(1, 1, 1, 1))
+	gradient.set_color(1, Color(1, 1, 1, 0))
+	
+	var tex = GradientTexture2D.new()
+	tex.gradient = gradient
+	tex.fill = GradientTexture2D.FILL_RADIAL
+	tex.fill_from = Vector2(0.5, 0.5)
+	tex.fill_to = Vector2(0.5, 0.0)
+	tex.width = 64
+	tex.height = 64
+	_glow.texture = tex
+	
+	add_child(_glow)
+
+func _setup_bubbles() -> void:
+	_bubbles = get_node_or_null("Bubbles")
+	if _bubbles:
+		return
+	
+	_bubbles = GPUParticles2D.new()
+	_bubbles.name = "Bubbles"
+	_bubbles.amount = 3
+	_bubbles.lifetime = 1.0
+	_bubbles.preprocess = 0.5
+	
+	var mat = ParticleProcessMaterial.new()
+	mat.emission_shape = ParticleProcessMaterial.EMISSION_SHAPE_BOX
+	mat.emission_box_extents = Vector3(3, 1, 0)
+	mat.direction = Vector3(0, -1, 0)
+	mat.spread = 20.0
+	mat.initial_velocity_min = 8.0
+	mat.initial_velocity_max = 15.0
+	mat.gravity = Vector3(0, -5, 0)  # Float up
+	mat.scale_min = 0.2
+	mat.scale_max = 0.5
+	mat.color = Color(1.0, 0.5, 0.6, 0.7)
+	_bubbles.process_material = mat
+	
+	# Bubble texture
+	var grad = Gradient.new()
+	grad.set_color(0, Color(1, 0.8, 0.85, 0.8))
+	grad.set_color(1, Color(1, 0.6, 0.7, 0))
+	var tex = GradientTexture2D.new()
+	tex.gradient = grad
+	tex.fill = GradientTexture2D.FILL_RADIAL
+	tex.fill_from = Vector2(0.5, 0.5)
+	tex.width = 8
+	tex.height = 8
+	_bubbles.texture = tex
+	
+	# Position bubbles at liquid area
+	_bubbles.position = Vector2(0, -2)
+	add_child(_bubbles)
 
 func _on_area_entered(area: Area2D) -> void:
 	if _collected:
@@ -52,6 +134,12 @@ func _on_area_entered(area: Area2D) -> void:
 		return
 	
 	_collected = true
+	
+	# Burst effect
+	if _glow:
+		var tween = create_tween()
+		tween.tween_property(_glow, "energy", 2.0, 0.15)
+		tween.tween_property(_glow, "energy", 0.0, 0.15)
 	
 	# Hide immediately
 	hide()

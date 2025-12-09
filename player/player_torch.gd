@@ -26,6 +26,7 @@ class_name PlayerTorch
 
 var _spark_particles: GPUParticles2D
 var _flicker_tween: Tween
+var _animated_sprite: AnimatedSprite2D
 
 func _ready() -> void:
 	texture_scale = base_radius / 512.0
@@ -37,6 +38,17 @@ func _ready() -> void:
 	if texture == null:
 		_create_light_texture()
 	
+	# Setup animated sprite for torch visual
+	_animated_sprite = get_node_or_null("AnimatedSprite2D")
+	if _animated_sprite:
+		if is_lit:
+			_animated_sprite.play("burn")
+		else:
+			_animated_sprite.play("unlit")
+	else:
+		# Create AnimatedSprite2D node if missing
+		_create_torch_sprite()
+	
 	# Setup GPU particles
 	if emit_sparks:
 		_setup_spark_particles()
@@ -44,6 +56,57 @@ func _ready() -> void:
 	# Start flicker animation
 	if flicker_enabled and is_lit:
 		_start_flicker()
+
+func _create_torch_sprite() -> void:
+	## Create procedural torch sprite as fallback if no AnimatedSprite2D in scene
+	_animated_sprite = AnimatedSprite2D.new()
+	add_child(_animated_sprite)
+	
+	# Create SpriteFrames with procedural torch texture
+	var frames = SpriteFrames.new()
+	
+	# Create simple torch texture (gradient circle for flame)
+	var img = Image.create(32, 32, false, Image.FORMAT_RGBA8)
+	for y in range(32):
+		for x in range(32):
+			var dx = x - 16
+			var dy = y - 20  # Offset up for flame shape
+			var dist = sqrt(dx * dx + dy * dy)
+			var flame_shape = 1.0 - clamp(dist / 12.0, 0.0, 1.0)
+			# Elongate upward
+			if dy < 0:
+				flame_shape *= 1.0 + abs(dy) * 0.05
+			var alpha = flame_shape * 0.9
+			var color = Color(1.0, 0.7 + flame_shape * 0.3, 0.3, alpha)
+			img.set_pixel(x, y, color)
+	
+	var texture = ImageTexture.create_from_image(img)
+	
+	# Add burn animation (single frame for now, artist can replace)
+	frames.add_animation("burn")
+	frames.add_frame("burn", texture, 1.0)
+	frames.set_animation_loop("burn", true)
+	
+	# Add unlit animation (dark)
+	var dark_img = Image.create(32, 32, false, Image.FORMAT_RGBA8)
+	for y in range(32):
+		for x in range(32):
+			var dx = x - 16
+			var dy = y - 20
+			var dist = sqrt(dx * dx + dy * dy)
+			if dist < 8:
+				dark_img.set_pixel(x, y, Color(0.3, 0.2, 0.1, 0.6))
+	var unlit_tex = ImageTexture.create_from_image(dark_img)
+	frames.add_animation("unlit")
+	frames.add_frame("unlit", unlit_tex, 1.0)
+	frames.set_animation_loop("unlit", true)
+	
+	_animated_sprite.sprite_frames = frames
+	_animated_sprite.position = Vector2(0, -4)
+	if is_lit:
+		_animated_sprite.play("burn")
+	else:
+		_animated_sprite.play("unlit")
 
 func _create_light_texture() -> void:
 	## Smooth gradient for light glow - particles are the sharp bits!
@@ -134,6 +197,9 @@ func light_torch() -> void:
 	is_lit = true
 	enabled = true
 	
+	if _animated_sprite:
+		_animated_sprite.play("burn")
+	
 	if _spark_particles:
 		_spark_particles.emitting = true
 	
@@ -147,6 +213,9 @@ func light_torch() -> void:
 
 func extinguish_torch() -> void:
 	is_lit = false
+	
+	if _animated_sprite:
+		_animated_sprite.play("unlit")
 	
 	if _spark_particles:
 		_spark_particles.emitting = false
