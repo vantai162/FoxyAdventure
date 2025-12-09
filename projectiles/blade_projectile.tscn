@@ -16,8 +16,8 @@ colors = PackedColorArray(1, 0.9, 0.4, 1, 1, 0.8, 0.2, 0)
 
 [sub_resource type="GradientTexture2D" id="GradientTexture2D_glow"]
 gradient = SubResource("Gradient_blade_glow")
-width = 64
-height = 64
+width = 16
+height = 16
 fill = 1
 fill_from = Vector2(0.5, 0.5)
 
@@ -52,7 +52,7 @@ color = Color(1, 0.9, 0.4, 1)
 energy = 0.0
 blend_mode = 1
 texture = SubResource("GradientTexture2D_glow")
-texture_scale = 0.6
+texture_scale = 0.8
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 shape = SubResource("CircleShape2D_1qqcv")

@@ -45,9 +45,9 @@ func _process(delta: float) -> void:
 	if float_animation:
 		position.y = _original_y + sin(_time) * float_amplitude
 	
-	# Pulsing glow
+	# Pulsing glow - gentle heartbeat, not strobe
 	if _glow:
-		_glow.energy = 0.5 + sin(_time * 1.8) * 0.25
+		_glow.energy = 0.25 + sin(_time * 1.8) * 0.1  # Was 0.5 ± 0.25, now 0.25 ± 0.1
 	
 	# Shimmer on sprite
 	if sprite:
@@ -55,15 +55,18 @@ func _process(delta: float) -> void:
 		sprite.modulate = Color(shimmer, shimmer, shimmer, 1.0)
 
 func _setup_glow() -> void:
+	## Potion is ~22×28 px (scaled 2×). Glow should be a warm aura.
+	## Target: ~24px diameter glow (16px × 1.5 = 24px, snug around potion)
+	## Also fixing color: healing should be GREEN, not red/pink.
 	_glow = get_node_or_null("PotionGlow")
 	if _glow:
 		return
 	
 	_glow = PointLight2D.new()
 	_glow.name = "PotionGlow"
-	_glow.color = Color(1.0, 0.3, 0.4)  # Healing red/pink
-	_glow.energy = 0.6
-	_glow.texture_scale = 0.5
+	_glow.color = Color(0.3, 0.9, 0.4)  # Was (1.0, 0.3, 0.4) red/pink - now healing green
+	_glow.energy = 0.3  # Was 0.6 - halved
+	_glow.texture_scale = 0.6  # Was 0.5 - with 16px texture = 9.6px radius = ~20px diameter
 	_glow.blend_mode = Light2D.BLEND_MODE_ADD
 	
 	var gradient = Gradient.new()
@@ -75,46 +78,48 @@ func _setup_glow() -> void:
 	tex.fill = GradientTexture2D.FILL_RADIAL
 	tex.fill_from = Vector2(0.5, 0.5)
 	tex.fill_to = Vector2(0.5, 0.0)
-	tex.width = 64
-	tex.height = 64
+	tex.width = 16  # Was 64 - proper pixel scale
+	tex.height = 16
 	_glow.texture = tex
 	
 	add_child(_glow)
 
 func _setup_bubbles() -> void:
+	## Bubbles should be tiny (2-4px) and sparse, rising from potion.
+	## Color should match healing theme (soft green/white, not pink).
 	_bubbles = get_node_or_null("Bubbles")
 	if _bubbles:
 		return
 	
 	_bubbles = GPUParticles2D.new()
 	_bubbles.name = "Bubbles"
-	_bubbles.amount = 3
-	_bubbles.lifetime = 1.0
-	_bubbles.preprocess = 0.5
+	_bubbles.amount = 2  # Was 3 - sparser for small item
+	_bubbles.lifetime = 0.8  # Was 1.0 - quicker rise
+	_bubbles.preprocess = 0.3  # Was 0.5
 	
 	var mat = ParticleProcessMaterial.new()
 	mat.emission_shape = ParticleProcessMaterial.EMISSION_SHAPE_BOX
-	mat.emission_box_extents = Vector3(3, 1, 0)
+	mat.emission_box_extents = Vector3(2, 1, 0)  # Was 3 - tighter
 	mat.direction = Vector3(0, -1, 0)
-	mat.spread = 20.0
-	mat.initial_velocity_min = 8.0
-	mat.initial_velocity_max = 15.0
-	mat.gravity = Vector3(0, -5, 0)  # Float up
-	mat.scale_min = 0.2
-	mat.scale_max = 0.5
-	mat.color = Color(1.0, 0.5, 0.6, 0.7)
+	mat.spread = 15.0  # Was 20 - more vertical
+	mat.initial_velocity_min = 6.0  # Was 8 - gentler
+	mat.initial_velocity_max = 12.0  # Was 15
+	mat.gravity = Vector3(0, -4, 0)  # Was -5 - gentler float
+	mat.scale_min = 0.3  # Was 0.2
+	mat.scale_max = 0.6  # Was 0.5 - with 4px texture = 1.2-2.4px bubbles
+	mat.color = Color(0.7, 1.0, 0.8, 0.6)  # Was (1.0, 0.5, 0.6) pink - now soft green/white
 	_bubbles.process_material = mat
 	
-	# Bubble texture
+	# Tiny bubble texture
 	var grad = Gradient.new()
-	grad.set_color(0, Color(1, 0.8, 0.85, 0.8))
-	grad.set_color(1, Color(1, 0.6, 0.7, 0))
+	grad.set_color(0, Color(0.85, 1.0, 0.9, 0.7))  # Was (1, 0.8, 0.85) pink
+	grad.set_color(1, Color(0.7, 1.0, 0.8, 0))  # Was (1, 0.6, 0.7) pink
 	var tex = GradientTexture2D.new()
 	tex.gradient = grad
 	tex.fill = GradientTexture2D.FILL_RADIAL
 	tex.fill_from = Vector2(0.5, 0.5)
-	tex.width = 8
-	tex.height = 8
+	tex.width = 4  # Was 8 - tiny pixel bubbles
+	tex.height = 4
 	_bubbles.texture = tex
 	
 	# Position bubbles at liquid area

@@ -33,10 +33,10 @@ var damage: int = 1
 
 @export_group("Grounded")
 @export var pickup_delay_seconds: float = 6.5
-@export var grounded_glow_color: Color = Color(1.5, 1.3, 0.5, 1.0)  ## Highlight color for grounded blade (bright yellow)
-@export var glow_blink_speed: float = 4.0  ## Speed of blink effect
+@export var grounded_glow_color: Color = Color(1.2, 1.1, 0.7, 1.0)  ## Subtle warm highlight (was 1.5, 1.3, 0.5 - too saturated)
+@export var glow_blink_speed: float = 3.0  ## Speed of blink effect (was 4.0)
 @export var glow_off_brightness: float = 1.0  ## Brightness when "off" (normal sprite)
-@export var glow_on_brightness: float = 2.5  ## Brightness when "on" (super bright)
+@export var glow_on_brightness: float = 1.3  ## Brightness when "on" (was 2.5 - flashbang territory)
 
 @export_group("Safety")
 @export var void_y_threshold: float = 2000.0  ## Return blade if it falls below this Y position
@@ -216,6 +216,8 @@ func _apply_magnetism(delta: float, pull_range: float, pull_strength: float) -> 
 		velocity += pull_force * 60.0  # Scale up for velocity-based movement
 
 func _update_grounded_visual(delta: float) -> void:
+	## Blade is ~16px. Glow should be a subtle "pick me up" hint, not a beacon.
+	## Using 16px texture at 0.8 scale = 12.8px glow, energy 0.15-0.4.
 	if not landed_sprite.visible:
 		return
 	
@@ -227,11 +229,11 @@ func _update_grounded_visual(delta: float) -> void:
 	var brightness: float
 	var light_energy: float
 	if blink_cycle < 0.5:
-		brightness = glow_on_brightness  # BRIGHT
-		light_energy = 1.2
+		brightness = glow_on_brightness  # Slightly bright
+		light_energy = 0.4  # Was 1.2 - way too bright
 	else:
 		brightness = glow_off_brightness  # Normal
-		light_energy = 0.3
+		light_energy = 0.15  # Was 0.3 - still visible but subtle
 	
 	# Apply glow color with blinking brightness
 	landed_sprite.modulate = grounded_glow_color * brightness

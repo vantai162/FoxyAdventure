@@ -47,11 +47,16 @@ func _process(delta: float) -> void:
 	if float_animation:
 		position.y = _original_y + sin(_time) * float_amplitude
 	
-	# Pulsing glow
+	# Pulsing glow - subtle breathing, not disco ball
 	if _glow:
-		_glow.energy = 0.4 + sin(_time * 2.0) * 0.2
+		_glow.energy = 0.2 + sin(_time * 2.0) * 0.08  # Was 0.4 ± 0.2, now 0.2 ± 0.08
 
 func _setup_glow() -> void:
+	## Coin is 11×11 px. Glow should be a subtle halo, not a blob.
+	## Target: ~14px diameter glow (just slightly larger than coin)
+	## Using 16px texture at 0.15 scale = 2.4px visible radius = ~5px diameter
+	## But we want ~14px, so 16px texture at 0.4 scale = 6.4px, energy low
+	## Actually: 16×0.9 = 14.4px. Perfect.
 	_glow = get_node_or_null("CoinGlow")
 	if _glow:
 		return
@@ -59,8 +64,8 @@ func _setup_glow() -> void:
 	_glow = PointLight2D.new()
 	_glow.name = "CoinGlow"
 	_glow.color = Color(1.0, 0.85, 0.2)  # Gold
-	_glow.energy = 0.5
-	_glow.texture_scale = 0.4
+	_glow.energy = 0.25  # Was 0.5 - halved for subtlety
+	_glow.texture_scale = 0.2  # Was 0.4 - 16px × 0.2 = 3.2px radius = 6.4px diameter (tight halo)
 	_glow.blend_mode = Light2D.BLEND_MODE_ADD
 	
 	var gradient = Gradient.new()
@@ -72,47 +77,49 @@ func _setup_glow() -> void:
 	tex.fill = GradientTexture2D.FILL_RADIAL
 	tex.fill_from = Vector2(0.5, 0.5)
 	tex.fill_to = Vector2(0.5, 0.0)
-	tex.width = 64
-	tex.height = 64
+	tex.width = 16  # Was 64 - reduced to match pixel scale
+	tex.height = 16
 	_glow.texture = tex
 	
 	add_child(_glow)
 
 func _setup_sparkles() -> void:
+	## Coin is 11×11 px. Sparkles should be tiny glints, 1-2px visual.
+	## NOT a shower of gradient orbs.
+	## Target: 2-3 particles, 4px texture at small scale, point emission.
 	_sparkle_particles = get_node_or_null("Sparkles")
 	if _sparkle_particles:
 		return
 	
 	_sparkle_particles = GPUParticles2D.new()
 	_sparkle_particles.name = "Sparkles"
-	_sparkle_particles.amount = 4
-	_sparkle_particles.lifetime = 0.6
-	_sparkle_particles.explosiveness = 0.8
-	_sparkle_particles.randomness = 0.5
+	_sparkle_particles.amount = 2  # Was 4 - coins don't need particle showers
+	_sparkle_particles.lifetime = 0.4  # Was 0.6 - snappier
+	_sparkle_particles.explosiveness = 0.9  # Was 0.8 - more burst-like
+	_sparkle_particles.randomness = 0.3  # Was 0.5 - tighter pattern
 	
 	var mat = ParticleProcessMaterial.new()
-	mat.emission_shape = ParticleProcessMaterial.EMISSION_SHAPE_SPHERE
-	mat.emission_sphere_radius = 6.0
+	mat.emission_shape = ParticleProcessMaterial.EMISSION_SHAPE_POINT  # Was SPHERE 6.0 - now point emission from center
 	mat.direction = Vector3(0, -1, 0)
-	mat.spread = 180.0
-	mat.initial_velocity_min = 15.0
-	mat.initial_velocity_max = 30.0
-	mat.gravity = Vector3(0, 20, 0)
-	mat.scale_min = 0.3
-	mat.scale_max = 0.6
-	mat.color = Color(1.0, 0.95, 0.5, 1.0)
+	mat.spread = 90.0  # Was 180 - tighter spread upward
+	mat.initial_velocity_min = 8.0  # Was 15 - slower, more elegant
+	mat.initial_velocity_max = 16.0  # Was 30 - controlled
+	mat.gravity = Vector3(0, 15, 0)  # Was 20 - slight fall
+	mat.scale_min = 0.5  # Was 0.3 - will be tiny with 4px texture
+	mat.scale_max = 1.0  # Was 0.6 - max 4px sparkle
+	mat.color = Color(1.0, 0.95, 0.6, 1.0)  # Slightly brighter gold
 	_sparkle_particles.process_material = mat
 	
-	# Small sparkle texture
+	# Tiny sparkle texture - 4px is enough for a glint
 	var grad = Gradient.new()
-	grad.set_color(0, Color(1, 1, 0.8, 1))
+	grad.set_color(0, Color(1, 1, 0.9, 1))
 	grad.set_color(1, Color(1, 1, 0.8, 0))
 	var tex = GradientTexture2D.new()
 	tex.gradient = grad
 	tex.fill = GradientTexture2D.FILL_RADIAL
 	tex.fill_from = Vector2(0.5, 0.5)
-	tex.width = 16
-	tex.height = 16
+	tex.width = 4  # Was 16 - now properly tiny
+	tex.height = 4
 	_sparkle_particles.texture = tex
 	
 	add_child(_sparkle_particles)
@@ -134,10 +141,10 @@ func _on_area_entered(area: Area2D) -> void:
 		# Play sound using AudioManager
 		AudioManager.play_sound("coin_collected", 15.0)
 		
-		# Collection burst effect
+		# Collection burst effect - subtle, not a firework
 		if _sparkle_particles:
 			_sparkle_particles.explosiveness = 1.0
-			_sparkle_particles.amount = 12
+			_sparkle_particles.amount = 5  # Was 12 - modest burst for 11px coin
 			_sparkle_particles.one_shot = true
 			_sparkle_particles.restart()
 		

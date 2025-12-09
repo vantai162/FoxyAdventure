@@ -11,8 +11,8 @@ colors = PackedColorArray(0.6, 0.8, 1, 1, 0.4, 0.6, 1, 0)
 
 [sub_resource type="GradientTexture2D" id="GradientTexture2D_blade"]
 gradient = SubResource("Gradient_blade")
-width = 64
-height = 64
+width = 16
+height = 16
 fill = 1
 fill_from = Vector2(0.5, 0.5)
 
@@ -26,10 +26,10 @@ script = ExtResource("1_tcnf6")
 
 [node name="BladeGlow" type="PointLight2D" parent="."]
 color = Color(0.6, 0.85, 1, 1)
-energy = 0.6
+energy = 0.3
 blend_mode = 1
 texture = SubResource("GradientTexture2D_blade")
-texture_scale = 0.5
+texture_scale = 0.8
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 material = SubResource("CanvasItemMaterial_blade")

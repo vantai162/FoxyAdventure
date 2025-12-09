@@ -43,11 +43,14 @@ func _process(delta: float) -> void:
 	if float_animation:
 		position.y = _start_y + sin(_time) * float_amplitude
 	
-	# Pulsing glow matching key color
+	# Pulsing glow matching key color - subtle, not strobe
 	if _glow:
-		_glow.energy = 0.5 + sin(_time * 1.5) * 0.25
+		_glow.energy = 0.25 + sin(_time * 1.5) * 0.1  # Was 0.5 ± 0.25, now 0.25 ± 0.1
 
 func _setup_glow() -> void:
+	## Key is 20×24 px. Glow should be a subtle colored aura matching key_color.
+	## Target: ~24px diameter glow (16px × 1.0 = 16px radius... but we want ~24px)
+	## So 16px × 1.5 = 24px diameter - snug around key.
 	_glow = get_node_or_null("KeyGlow")
 	if _glow:
 		_glow.color = key_color
@@ -56,8 +59,8 @@ func _setup_glow() -> void:
 	_glow = PointLight2D.new()
 	_glow.name = "KeyGlow"
 	_glow.color = key_color
-	_glow.energy = 0.6
-	_glow.texture_scale = 0.5
+	_glow.energy = 0.3  # Was 0.6 - halved
+	_glow.texture_scale = 0.8  # Was 0.5 - with 16px texture = 12.8px, slightly larger than key
 	_glow.blend_mode = Light2D.BLEND_MODE_ADD
 	
 	var gradient = Gradient.new()
@@ -69,8 +72,8 @@ func _setup_glow() -> void:
 	tex.fill = GradientTexture2D.FILL_RADIAL
 	tex.fill_from = Vector2(0.5, 0.5)
 	tex.fill_to = Vector2(0.5, 0.0)
-	tex.width = 64
-	tex.height = 64
+	tex.width = 16  # Was 64 - proper pixel scale
+	tex.height = 16
 	_glow.texture = tex
 	
 	add_child(_glow)

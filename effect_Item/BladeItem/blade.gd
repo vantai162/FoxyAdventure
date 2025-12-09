@@ -39,17 +39,19 @@ func _process(delta: float) -> void:
 	if _sprite:
 		_sprite.rotation_degrees += spin_speed * delta
 	
-	# Pulsing glow
+	# Pulsing glow - subtle breathing, not pulsating orb
 	if _glow:
-		_glow.energy = 0.5 + sin(_float_time * 1.5) * 0.25
+		_glow.energy = 0.25 + sin(_float_time * 1.5) * 0.1  # Was 0.5 ± 0.25, now 0.25 ± 0.1
 
 func _create_glow() -> void:
-	## Create GPU-based glow light
+	## Blade pickup is 13×10 px. Glow should be a subtle metallic shimmer.
+	## Target: ~16px diameter glow (16px texture × 1.0 scale = 16px)
+	## But we want tighter, so 16px × 0.8 = 12.8px glow around 13px blade.
 	_glow = PointLight2D.new()
 	_glow.name = "BladeGlow"
 	_glow.color = Color(0.6, 0.8, 1.0)  # Cool blue metallic
-	_glow.energy = 0.6
-	_glow.texture_scale = 0.4
+	_glow.energy = 0.3  # Was 0.6 - halved
+	_glow.texture_scale = 0.8  # Was 0.4 - with 16px texture = 12.8px glow
 	_glow.blend_mode = Light2D.BLEND_MODE_ADD
 	
 	# Create radial gradient texture
@@ -62,8 +64,8 @@ func _create_glow() -> void:
 	tex.fill = GradientTexture2D.FILL_RADIAL
 	tex.fill_from = Vector2(0.5, 0.5)
 	tex.fill_to = Vector2(0.5, 0.0)
-	tex.width = 64
-	tex.height = 64
+	tex.width = 16  # Was 64 - proper pixel scale
+	tex.height = 16
 	_glow.texture = tex
 	
 	add_child(_glow)
@@ -83,7 +85,7 @@ func _on_area_entered(area: Area2D) -> void:
 			tween.tween_property(_sprite, "rotation_degrees", _sprite.rotation_degrees + 360, 0.2)
 			tween.tween_property(_sprite, "scale", Vector2.ZERO, 0.2)
 		if _glow:
-			tween.tween_property(_glow, "energy", 2.0, 0.1)
+			tween.tween_property(_glow, "energy", 0.6, 0.1)  # Was 2.0 - too bright
 			tween.chain().tween_property(_glow, "energy", 0.0, 0.1)
 		
 		# Give blade to player
