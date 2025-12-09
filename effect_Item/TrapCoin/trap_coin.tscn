@@ -34,7 +34,7 @@ collision_layer = 512
 collision_mask = 258
 script = ExtResource("1_fje8i")
 effect_name = "Stun"
-duration = 2.0
+duration = 4.0
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 position = Vector2(0.5, 1)

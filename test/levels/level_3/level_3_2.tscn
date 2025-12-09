@@ -167,7 +167,6 @@ position = Vector2(1000, 300)
 [node name="TrapChest" parent="Collectibles" instance=ExtResource("19_trap_chest")]
 position = Vector2(1600, 550)
 trap_effect = "Slow"
-effect_duration = 3.0
 
 ; === LOWER PATH: DIAGONAL LINE ↘ (5 coins) - Descent ===
 [node name="Diag_Lower_1" parent="Collectibles" instance=ExtResource("13_coin")]

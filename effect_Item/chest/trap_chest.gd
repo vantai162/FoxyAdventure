@@ -13,7 +13,7 @@ class_name TrapChest
 
 @export_group("Trap Effect")
 @export_enum("Stun", "Slow") var trap_effect: String = "Stun"  ## Effect to apply (matches Foxy's Effect dict)
-@export var effect_duration: float = 1.5  ## How long trap effect lasts
+@export var effect_duration: float = 4.5  ## How long trap effect lasts (was 1.5 - tripled to make traps PUNISHING)
 @export var trap_delay: float = 0.3  ## Delay after opening before trap springs
 
 @export_group("Disguise")
@@ -82,9 +82,11 @@ func _spring_trap() -> void:
 
 
 func _do_screen_shake() -> void:
+	## Camera shake API only takes intensity (amount), not duration.
+	## Duration is controlled by shake_decay in camera_2d.gd.
 	var camera := get_viewport().get_camera_2d()
 	if camera and camera.has_method("shake"):
-		camera.shake(screen_shake_intensity, screen_shake_duration)
+		camera.shake(screen_shake_intensity)  # Only 1 argument - intensity
 	elif camera:
 		# Fallback: manual shake via offset
 		var original_offset := camera.offset

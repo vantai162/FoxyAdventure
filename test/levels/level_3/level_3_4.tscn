@@ -115,8 +115,6 @@ position = Vector2(580, 320)
 ; === TRAP CHEST (after spike corridor - "safe haven" bait!) ===
 [node name="TrapChest" parent="Collectibles" instance=ExtResource("17_trap_chest")]
 position = Vector2(350, 450)
-trap_effect = "Stun"
-effect_duration = 2.0
 
 ; === CROSSFIRE ROOM: X PATTERN (5 coins) - Danger warning! ===
 [node name="X_Cross_1" parent="Collectibles" instance=ExtResource("12_coin")]

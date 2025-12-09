@@ -151,8 +151,6 @@ position = Vector2(950, 1300)
 ; === TRAP CHEST (left water ruins - too easy to reach!) ===
 [node name="TrapChest" parent="Collectibles" instance=ExtResource("19_trap_chest")]
 position = Vector2(250, 850)
-trap_effect = "Stun"
-effect_duration = 1.5
 
 ; === RIGHT KEY AREA: TRIANGLE △ (3 coins) - Key marker ===
 [node name="Triangle_Key_1" parent="Collectibles" instance=ExtResource("13_coin")]
