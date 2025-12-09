@@ -22,6 +22,7 @@ func _set_key(action:String,key:int):
 	if KeyDict.size()==0:
 		print("Oops!You dont have the KeyDictYet ")
 	if key>0:
+		Input.action_release(action)
 		var cur_input=InputEventKey.new()
 		cur_input.physical_keycode=KeyDict[action]
 		InputMap.action_erase_event(action,cur_input)

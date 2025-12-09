@@ -198,7 +198,7 @@ func start_dramatic_ending():
 	print("Act 3: SÓNG THẦN")
 	
 	# TRIPLE FLASH (White -> Blue -> Black)
-	$"../Thunder".play()
+	AudioManager.play_sound("thunder",20.0)
 	for i in range(3):
 		overlay.color = Color(5, 5, 5, 1) # Trắng chói
 		await get_tree().create_timer(0.08).timeout
@@ -278,4 +278,4 @@ func start_dramatic_ending():
 	water_canvas.queue_free()
 	sky_modulate.queue_free()
 	
-	get_tree().change_scene_to_file("res://scenes/game_screen/main_menu.tscn")
+	get_tree().change_scene_to_file("res://test/levels/level_1.tscn")
