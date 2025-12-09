@@ -1,9 +1,29 @@
-extends ShieldTribe
+extends EnemyCharacter
 class_name EliteWarden
 ## Elite Shield Tribe: "The Warden"
 ## Shadow-stepping sentinel that teleports to intercept player
 ## Alternates between frontal blocking and rear flanking positions
 ## Cannot walk - only teleports (respects stationary nature)
+
+@export_group("Combat - Shield Tribe Base")
+@export var spear_damage: int = 2  ## Elite deals more damage
+@export var attack_interval: float = 0.8  ## Fast threat response
+@export var spear_thrust_distance: float = 96.0  ## Elite has longer reach
+@export var spear_thrust_out_time: float = 0.6  ## Time to thrust out (synced with scene)
+@export var spear_hold_time: float = 0.6  ## Time to hold extended
+
+# Calculated total attack duration (read-only)
+var attack_animation_duration: float:
+	get:
+		return spear_thrust_out_time + spear_hold_time
+
+@export_group("Defense - Shield Tribe Base")
+@export var jump_react_range: float = 60.0
+@export var jump_react_velocity_threshold: float = -100.0
+@export var jump_cooldown: float = 1.0
+@export var block_jump_speed: float = 480.0  ## Elite jumps higher
+@export var sight_range: float = 85.0
+@export var turn_delay: float = 0.25  ## Elite turns faster
 
 @export_group("Teleportation")
 @export var teleport_cooldown: float = 2.8  ## Balanced: Escapable but maintains pressure
@@ -14,7 +34,18 @@ class_name EliteWarden
 @export var attack_detection_radius: float = 105.0  ## Same as base Shield Tribe for attack
 
 @export_group("Enhanced Stats")
-@export var first_attack_interval: float = 0.5  ## Ambush bonus after teleport (faster than normal 0.8s)
+@export var first_attack_interval: float = 0.5  ## Ambush bonus after teleport
+
+## Shield Tribe nodes
+@onready var shield: StaticBody2D = $Direction/Shield
+@onready var spear: Node2D = $Direction/Spear
+@onready var spear_sprite: AnimatedSprite2D = $Direction/Spear/AnimatedSprite2D
+@onready var spear_hit_area: Area2D = $Direction/Spear/SpearHitArea
+@onready var attack_timer: Timer = $AttackTimer
+
+## Shield Tribe state
+var _is_turning: bool = false
+var _pending_direction: int = 0
 
 ## Teleport state tracking
 var last_teleport_time: float = -999.0  ## Can teleport immediately on spawn
@@ -22,11 +53,17 @@ var teleport_to_front: bool = true  ## Alternates: true=block, false=flank (star
 var has_teleported_once: bool = false  ## Track if first teleport happened (for ambush bonus)
 
 func _ready() -> void:
-	# Initialize FSM with teleport state
+	# Initialize FSM with teleport state (BEFORE super._ready)
 	fsm = FSM.new(self, $States, $States/Idle)
 	super._ready()
 	
-	# Override detection to use wider radius (set in scene's DetectPlayerArea2D)
+	# Initialize shield/spear
+	shield.hide()
+	shield.get_node("CollisionShape2D").disabled = true
+	spear.hide()
+	spear_hit_area.monitoring = false
+	
+	# Enable player detection
 	enable_check_player_in_sight()
 
 func can_teleport() -> bool:
@@ -148,21 +185,26 @@ func _on_player_in_sight(_player_pos: Vector2) -> void:
 	
 	var distance_to_player = global_position.distance_to(found_player.global_position)
 	
-	# Outer ring: Teleport detection (double base range)
+	# PRIORITY 1: Close range (≤105px) - Always defend/attack (like base behavior)
+	if distance_to_player <= attack_detection_radius:
+		# Within attack range - transition to defend state (Shield Tribe base behavior)
+		if fsm and fsm.current_state and fsm.current_state.name != "defend" and fsm.current_state.name != "attack":
+			fsm.change_state(fsm.states.defend)
+		return
+	
+	# PRIORITY 2: Mid-range (105-211px) - Try teleport to close distance
 	if distance_to_player <= teleport_detection_radius:
-		# Can teleport, prefer teleporting over defending
+		# Outside attack range but within teleport detection
+		# Try to teleport closer (if cooldown ready and conditions met)
 		if should_trigger_teleport() and fsm.states.has("teleport"):
 			fsm.change_state(fsm.states.teleport)
 			return
+		else:
+			# Can't teleport (cooldown or conditions not met) - just stay in current state
+			# This allows warden to wait patiently at distance
+			pass
 	
-	# Inner ring: Attack detection (base range, same as normal Shield Tribe)
-	if distance_to_player <= attack_detection_radius:
-		# Close enough for standard defend behavior
-		super._on_player_in_sight(_player_pos)
-		return
-	
-	# In between rings: Detected but out of attack range, just track player
-	# Don't trigger anything, just stay aware
+	# Beyond 211px shouldn't happen (Area2D won't detect), but just in case: do nothing
 
 func _on_player_not_in_sight() -> void:
 	# Return to idle when player leaves range
@@ -171,3 +213,86 @@ func _on_player_not_in_sight() -> void:
 		if state_name == "defend" or state_name == "attack":
 			attack_timer.stop()
 			fsm.change_state(fsm.states.idle)
+
+# === SHIELD TRIBE FUNCTIONALITY (copied from base, not inherited) ===
+
+func _on_hurt_area_2d_hurt(attack_direction: Vector2, damage: float) -> void:
+	# BLOCKING LOGIC - Shield blocks attacks from front
+	if fsm and fsm.current_state and fsm.current_state.name != "hurt" and fsm.current_state.name != "dead":
+		var attack_side = sign(attack_direction.x)
+		if attack_side == 0:
+			attack_side = 1
+		
+		# Block if attack travels in opposite direction from our facing
+		if attack_side != direction:
+			# Wake up to defend if idle
+			if fsm and fsm.current_state and fsm.current_state.name == "idle":
+				fsm.change_state(fsm.states.defend)
+			return  # BLOCKED - no damage
+	
+	# Not blocked → take damage
+	_take_damage_from_dir(attack_direction, damage)
+
+func face_player() -> void:
+	# Don't turn during attack
+	if fsm and fsm.current_state and fsm.current_state.name == "attack":
+		return
+		
+	if found_player:
+		var desired: int = 1 if found_player.global_position.x > global_position.x else -1
+
+		if desired == direction:
+			return
+
+		if _is_turning:
+			_pending_direction = desired
+			return
+
+		_is_turning = true
+		_pending_direction = desired
+		var t = get_tree().create_timer(turn_delay)
+		t.timeout.connect(Callable(self, "_on_turn_timeout"))
+
+func _on_turn_timeout() -> void:
+	# Don't turn during attack
+	if fsm.current_state.name == "attack":
+		_pending_direction = 0
+		_is_turning = false
+		return
+	
+	if _pending_direction != 0:
+		change_direction(_pending_direction)
+	_pending_direction = 0
+	_is_turning = false
+
+func perform_spear_attack() -> void:
+	spear.show()
+	spear_sprite.play("attack")
+	
+	var spear_start_pos = spear.position
+	spear_hit_area.monitoring = true
+	
+	var tween = create_tween()
+	tween.tween_property(spear, "position", spear_start_pos + Vector2(spear_thrust_distance, 0), spear_thrust_out_time)
+	tween.tween_interval(spear_hold_time)
+	tween.tween_callback(func(): 
+		spear_hit_area.monitoring = false
+		spear.hide()
+		spear.position = spear_start_pos
+	)
+
+func show_shield() -> void:
+	shield.show()
+	shield.get_node("CollisionShape2D").disabled = false
+
+func hide_shield() -> void:
+	shield.hide()
+	shield.get_node("CollisionShape2D").disabled = true
+
+func darken_shield() -> void:
+	# Shield visual is baked into AnimatedSprite2D - no separate sprite to darken
+	pass
+
+func restore_shield_color() -> void:
+	# Shield visual is baked into AnimatedSprite2D - no separate sprite to restore
+	pass

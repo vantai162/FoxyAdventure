@@ -131,11 +131,9 @@ func hide_shield() -> void:
 	shield.get_node("CollisionShape2D").disabled = true
 
 func darken_shield() -> void:
-	for child in shield.get_children():
-		if child is Sprite2D:
-			child.modulate = Color(0.3, 0.3, 0.3, 1)
+	# Shield visual is baked into AnimatedSprite2D - no separate sprite to darken
+	pass
 
 func restore_shield_color() -> void:
-	for child in shield.get_children():
-		if child is Sprite2D:
-			child.modulate = Color(1, 1, 1, 1)
+	# Shield visual is baked into AnimatedSprite2D - no separate sprite to restore
+	pass

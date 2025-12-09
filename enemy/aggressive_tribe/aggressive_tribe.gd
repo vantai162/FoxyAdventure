@@ -2,7 +2,7 @@ extends EnemyCharacter
 class_name AggressiveTribe
 
 @export_group("Throwing Behavior")
-@export var throw_force: float = 350.0  ## Horizontal throw speed
+@export var throw_force: float = 440.0  ## Horizontal throw speed (increased from 350 to reduce ceiling hits)
 @export var throw_arc: float = 400.0  ## Vertical component of throw velocity
 
 @export_group("Distance Scaling")

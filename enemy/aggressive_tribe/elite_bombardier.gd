@@ -6,8 +6,8 @@ class_name EliteBombardier
 ## ACTIVELY PURSUES player - maintains optimal throw range
 
 @export_group("Throwing Behavior")
-@export var throw_force: float = 420.0  ## 20% more range than base (350)
-@export var throw_arc: float = 400.0  ## Vertical component of throw velocity
+@export var throw_force: float = 550.0  ## Faster, straighter trajectory (reduced arc hitting ceilings)
+@export var throw_arc: float = 400.0  ## Vertical component of throw velocity (unused in ballistic calc)
 
 @export_group("Distance Scaling")
 @export var distance_scale_factor: float = 250.0  ## Distance to normalize throw strength
