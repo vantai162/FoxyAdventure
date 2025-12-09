@@ -1,6 +1,6 @@
 [gd_resource type="ShaderMaterial" load_steps=2 format=3 uid="uid://djub48p1bim43"]
 
-[ext_resource type="Shader" uid="uid://da7vc0xdkis03" path="res://test/levels/sublime.gdshader" id="1_cqj30"]
+[ext_resource type="Shader" path="res://test/levels/level_1.gdshader" id="1_cqj30"]
 
 [resource]
 shader = ExtResource("1_cqj30")

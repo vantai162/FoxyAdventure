@@ -38,3 +38,7 @@ func _remap_action(action: String, button: Button):
 		button.text = get_key_name(action)
 	else:
 		button.text = get_key_name(action)
+
+
+func _on_button_pressed() -> void:
+	queue_free()

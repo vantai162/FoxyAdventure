@@ -17,7 +17,7 @@ var healpotion_spawner_spawned = false
 var boss_phase1_healthbar: TextureProgressBar
 var boss_phase2_healthbar: TextureProgressBar
 var boss
-var can_pause = false
+var can_pause = true
 
 func _enter_tree() -> void:
 	GameManager.current_stage = self
