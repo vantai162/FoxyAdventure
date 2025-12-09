@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://clavapool001"]
+
+[ext_resource type="Script" uid="uid://lavapool_script" path="res://environment/lava/lava_pool.gd" id="1_lava"]
+
+[node name="LavaPool" type="Node2D" groups=["hazard", "lava"]]
+script = ExtResource("1_lava")

@@ -1,13 +1,14 @@
 extends StaticBody2D
 class_name BreakableWall
+## Destructible wall that breaks when attacked
+## Useful for secrets and shortcuts
 
 const DUST_EFFECT_SCENE = preload("res://objects/collapsable_wall/dust_effect.tscn")
 
-@onready var sprite: Sprite2D = $Sprite2D
-@onready var collision_shape: CollisionShape2D = $CollisionShape2D
-@onready var hitbox: Area2D = $HitBox
-@onready var break_sound: AudioStreamPlayer2D = $BreakSound
-@onready var animated_sprite: AnimatedSprite2D = $AnimatedSprite2D
+@onready var sprite: Sprite2D = $Sprite2D if has_node("Sprite2D") else null
+@onready var collision_shape: CollisionShape2D = $CollisionShape2D if has_node("CollisionShape2D") else null
+@onready var hitbox: Area2D = $HitBox if has_node("HitBox") else null
+@onready var break_sound: AudioStreamPlayer2D = $BreakSound if has_node("BreakSound") else null
 
 var is_broken: bool = false
 

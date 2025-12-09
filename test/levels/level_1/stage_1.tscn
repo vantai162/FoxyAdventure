@@ -11,7 +11,7 @@
 [ext_resource type="PackedScene" uid="uid://ufmc2gkfnv58" path="res://enemy/crab/crab.tscn" id="9_4x5ew"]
 [ext_resource type="PackedScene" uid="uid://b1a2s3d4f5g6h" path="res://enemy/aggressive_tribe/aggressive_tribe.tscn" id="10_lq01q"]
 [ext_resource type="PackedScene" uid="uid://dqdstpxycbomj" path="res://effect_Item/BladeItem/blade.tscn" id="11_1603u"]
-[ext_resource type="PackedScene" uid="uid://bdkss15p4gbma" path="res://enemy/seahorse/seahorse.tscn" id="11_sdmob"]
+[ext_resource type="PackedScene" uid="uid://bdkss15p4gbma" path="res://enemy/barrel/barrel.tscn" id="11_sdmob"]
 [ext_resource type="PackedScene" uid="uid://qdde77yqam1l" path="res://objects/platform/breakable_platform.tscn" id="13_o8rrw"]
 [ext_resource type="PackedScene" uid="uid://xjj18m8if4v5" path="res://objects/platform/breakable_platform_slow.tscn" id="14_37uqy"]
 [ext_resource type="PackedScene" uid="uid://buygo1gficx5m" path="res://objects/platform/horizontal_moving_platform.tscn" id="15_1p8jb"]

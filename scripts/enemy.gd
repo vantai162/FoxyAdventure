@@ -45,10 +45,13 @@ func _init_ray_cast():
 func _init_detect_player_area():
 	if has_node("Direction/DetectPlayerArea2D"):
 		detect_player_area = $Direction/DetectPlayerArea2D
-		print("detect_player_area 1")
 		detect_player_area.body_entered.connect(_on_body_entered)
-		print("detect_player_area 2")
 		detect_player_area.body_exited.connect(_on_body_exited)
+		
+		# CRITICAL: Check for initial overlaps (player spawned inside detection radius)
+		# Area2D signals only fire on state CHANGES, not initial overlaps
+		# Must be deferred because collision detection isn't ready in _ready()
+		call_deferred("_check_initial_overlap")
 		
 
 func _physics_process(delta: float) -> void:
@@ -73,13 +76,6 @@ func is_touch_wall() -> bool:
 				return false
 			else:
 				return true
-	return false
-
-# check if touching another enemy (for stacking prevention)
-func is_touching_enemy() -> bool:
-	if front_ray_cast != null and front_ray_cast.is_colliding():
-		var collider = front_ray_cast.get_collider()
-		return collider is EnemyCharacter
 	return false
 
 # check can fall
@@ -122,6 +118,20 @@ func _on_body_exited(_body: CharacterBody2D) -> void:
 	found_player = null
 	_on_player_not_in_sight()
 
+func _check_initial_overlap() -> void:
+	## Check if player is already inside detection area on spawn
+	## Fixes bug where player spawning inside Area2D doesn't trigger body_entered signal
+	if detect_player_area == null:
+		return
+	
+	var overlapping_bodies = detect_player_area.get_overlapping_bodies()
+	for body in overlapping_bodies:
+		if body is Player:
+			# Manually trigger detection as if body_entered fired
+			found_player = body
+			_on_player_in_sight(body.global_position)
+			break
+
 func _on_hurt_area_2d_hurt(_direction: Vector2, _damage: float) -> void:
 	# Face the attacker if hit from behind
 	# Direction points FROM attacker TO us, so we need to face the OPPOSITE direction
@@ -151,6 +161,9 @@ func _on_player_not_in_sight():
 func _take_damage_from_dir(_damage_dir: Vector2, _damage: float):
 	# Can't take damage if FSM isn't initialized yet (lazy-loaded enemies)
 	if fsm == null:
+		return
+	# Can't take damage if current_state is null (during transitions or after death)
+	if fsm.current_state == null:
 		return
 	if not invincible:
 		fsm.current_state.take_damage(_damage_dir, _damage)

@@ -1,4 +1,4 @@
-[gd_scene load_steps=68 format=3 uid="uid://bs816w0pr8all"]
+[gd_scene load_steps=69 format=3 uid="uid://bs816w0pr8all"]
 
 [ext_resource type="Script" uid="uid://brl5yy4w7wich" path="res://player/foxy.gd" id="1_wod02"]
 [ext_resource type="Texture2D" uid="uid://m4di78taixns" path="res://assets/foxy/fox_hat/fox_defeat_1.png" id="2_70n8a"]
@@ -59,6 +59,7 @@
 [ext_resource type="Script" uid="uid://b4hwjgs0cti2b" path="res://player/swim.gd" id="49_2mww5"]
 [ext_resource type="AudioStream" uid="uid://c0fqro5ktfg8n" path="res://assets/sounds/zapsplat_warfare_sword_medieval_heavy_draw_scabbard_005_12092.mp3" id="50_eelxt"]
 [ext_resource type="AudioStream" uid="uid://b8tju1hs1dwa8" path="res://assets/sounds/jump.wav" id="51_a4g31"]
+[ext_resource type="Script" uid="uid://dd38qhsyjdjtb" path="res://player/player_torch.gd" id="52_torch"]
 [ext_resource type="Script" uid="uid://itto4t514erb" path="res://player/stun.gd" id="56_dkaj1"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_8r8n2"]
@@ -400,5 +401,13 @@ shape = SubResource("RectangleShape2D_u75vx")
 
 [node name="FloorRayCast2D" type="RayCast2D" parent="."]
 target_position = Vector2(-1, 19)
+
+[node name="PlayerTorch" type="PointLight2D" parent="."]
+script = ExtResource("52_torch")
+position = Vector2(0, -8)
+color = Color(1, 0.95, 0.85, 1)
+energy = 0.8
+shadow_enabled = true
+texture_scale = 0.5
 
 [connection signal="hurt" from="Direction/HurtArea2d" to="." method="_on_hurt_area_2d_hurt"]

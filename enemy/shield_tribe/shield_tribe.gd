@@ -5,7 +5,7 @@ class_name ShieldTribe
 
 @export_group("Combat")
 @export var spear_damage: int = 1
-@export var attack_interval: float = 2.0
+@export var attack_interval: float = 0.8  ## Fast threat response - attacks quickly when player enters range
 @export var spear_thrust_distance: float = 30.0  ## How far the spear extends
 @export var spear_thrust_out_time: float = 0.2  ## Time to thrust out
 @export var spear_hold_time: float = 0.6  ## Time to hold extended (hit detection active)
@@ -19,6 +19,7 @@ var attack_animation_duration: float:
 @export var jump_react_range: float = 60.0
 @export var jump_react_velocity_threshold: float = -100.0  ## Minimum upward velocity to trigger block jump
 @export var jump_cooldown: float = 1.0
+@export var block_jump_speed: float = 420.0  ## Higher than default for taller jump blocks (default 320)
 @export var sight_range: float = 85.0
 @export var turn_delay: float = 0.35
 
@@ -34,14 +35,16 @@ var _pending_direction: int = 0
 func _ready() -> void:
 	fsm = FSM.new(self, $States, $States/Idle)
 	super._ready()
+	enable_check_player_in_sight()  # Enable detection collision (matches other enemies)
 	shield.hide()
 	shield.get_node("CollisionShape2D").disabled = true
 	spear.hide()
 	spear_hit_area.monitoring = false
 
 func _on_hurt_area_2d_hurt(attack_direction: Vector2, damage: float) -> void:
+	# BLOCKING LOGIC (custom behavior)
 	# Allow blocking in Idle, Defend, and Attack states (but not Hurt or Dead)
-	if fsm.current_state.name != "hurt" and fsm.current_state.name != "dead":
+	if fsm and fsm.current_state and fsm.current_state.name != "hurt" and fsm.current_state.name != "dead":
 		# attack_direction points in the direction the projectile is TRAVELING
 		# Shield blocks when attack travels in OPPOSITE direction from where we face
 		# Example: Face left (direction=-1), attack travels left (attack_direction.x=-1) = from behind
@@ -53,32 +56,25 @@ func _on_hurt_area_2d_hurt(attack_direction: Vector2, damage: float) -> void:
 		# Block if attack travels in opposite direction from our facing
 		if attack_side != direction:
 			# Optional: If blocked while idle, wake up to defend
-			if fsm.current_state.name == "idle":
+			if fsm and fsm.current_state and fsm.current_state.name == "idle":
 				fsm.change_state(fsm.states.defend)
-			return
+			return  # BLOCKED - no damage
 	
-	# Turn to face attacker if hit from behind (immediately, before knockback)
-	# attack_direction shows direction of attack travel, so reverse it to face attacker
-	if attack_direction.x != 0:
-		var attacker_position_side = -sign(attack_direction.x)
-		if attacker_position_side != direction:
-			change_direction(attacker_position_side)
-	
-	take_damage(damage)
-	fsm.change_state(fsm.states.hurt)
+	# Not blocked → base handles face-attacker, damage, and hurt transition
+	_take_damage_from_dir(attack_direction, damage)
 
 func _on_player_in_sight(_player_pos: Vector2) -> void:
-	if fsm.current_state.name != "defend" and fsm.current_state.name != "attack":
+	if fsm and fsm.current_state and fsm.current_state.name != "defend" and fsm.current_state.name != "attack":
 		fsm.change_state(fsm.states.defend)
 
 func _on_player_not_in_sight() -> void:
-	if fsm.current_state.name == "defend" or fsm.current_state.name == "attack":
+	if fsm and fsm.current_state and (fsm.current_state.name == "defend" or fsm.current_state.name == "attack"):
 		attack_timer.stop()
 		fsm.change_state(fsm.states.idle)
 
 func face_player() -> void:
 	# Don't turn during attack - too difficult for player
-	if fsm.current_state.name == "attack":
+	if fsm and fsm.current_state and fsm.current_state.name == "attack":
 		return
 		
 	if found_player:
@@ -136,11 +132,9 @@ func hide_shield() -> void:
 	shield.get_node("CollisionShape2D").disabled = true
 
 func darken_shield() -> void:
-	for child in shield.get_children():
-		if child is Sprite2D:
-			child.modulate = Color(0.3, 0.3, 0.3, 1)
+	# Shield visual is baked into AnimatedSprite2D - no separate sprite to darken
+	pass
 
 func restore_shield_color() -> void:
-	for child in shield.get_children():
-		if child is Sprite2D:
-			child.modulate = Color(1, 1, 1, 1)
+	# Shield visual is baked into AnimatedSprite2D - no separate sprite to restore
+	pass

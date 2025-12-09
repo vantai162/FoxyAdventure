@@ -160,15 +160,13 @@ animations = [{
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_ang66"]
 size = Vector2(67, 18)
 
-[sub_resource type="CircleShape2D" id="CircleShape2D_body"]
-radius = 10.0499
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_a258x"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_iqs6i"]
 size = Vector2(18, 36)
 
 [node name="ShieldTribe" type="CharacterBody2D"]
 collision_layer = 8
-collision_mask = 1
 script = ExtResource("1_shield_gd")
 spear_thrust_distance = 72.0
 spear_thrust_out_time = 0.6
@@ -180,9 +178,7 @@ metadata/_custom_type_script = "uid://s4xx82espxdt"
 position = Vector2(3, 6.5)
 scale = Vector2(1.09375, 1.20313)
 sprite_frames = SubResource("SpriteFrames_tribe")
-animation = &"dead"
-frame = 3
-frame_progress = 1.0
+animation = &"idle"
 
 [node name="DetectPlayerArea2D" type="Area2D" parent="Direction"]
 collision_layer = 0
@@ -221,13 +217,13 @@ script = ExtResource("7_hit_area_gd")
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Direction/Spear/SpearHitArea"]
 shape = SubResource("RectangleShape2D_ang66")
 
-[node name="HurtArea2d" parent="Direction" instance=ExtResource("22_p7fv1")]
+[node name="HurtArea2D" parent="Direction" instance=ExtResource("22_p7fv1")]
 collision_layer = 16
 collision_mask = 0
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Direction/HurtArea2d"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Direction/HurtArea2D"]
 position = Vector2(-1, 2)
-shape = SubResource("CircleShape2D_body")
+shape = SubResource("CapsuleShape2D_a258x")
 
 [node name="AttackTimer" type="Timer" parent="."]
 wait_time = 2.0
@@ -254,5 +250,5 @@ script = ExtResource("30_a258x")
 position = Vector2(0, 10)
 shape = SubResource("RectangleShape2D_iqs6i")
 
-[connection signal="hurt" from="Direction/HurtArea2d" to="." method="_on_hurt_area_2d_hurt"]
+[connection signal="hurt" from="Direction/HurtArea2D" to="." method="_on_hurt_area_2d_hurt"]
 [connection signal="timeout" from="AttackTimer" to="States/Defend" method="_on_attack_timer_timeout"]

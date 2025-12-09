@@ -14,8 +14,8 @@ func _update(delta):
 	if sign(player_pos.x - obj.global_position.x) == obj.direction:
 		obj.turn_around()
 	
-	# If touching another enemy or wall while fleeing, stop
-	if obj.is_touching_enemy() or obj.is_touch_wall():
+	# If touching wall while fleeing, stop
+	if obj.is_touch_wall():
 		obj.velocity.x = 0
 		return
 	

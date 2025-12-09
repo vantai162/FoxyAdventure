@@ -2,8 +2,8 @@
 
 [ext_resource type="Texture2D" uid="uid://t3cktfmhcitn" path="res://assets/island/terrain/ice level demo.png" id="1_lvvyk"]
 
-[sub_resource type="PhysicsMaterial" id="PhysicsMaterial_lvvyk"]
-friction = 0.18
+[sub_resource type="OccluderPolygon2D" id="OccluderPolygon2D_lvvyk"]
+polygon = PackedVector2Array(-8, -8, 8, -8, 8, 8, -8, 8)
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_ws4v0"]
 texture = ExtResource("1_lvvyk")
@@ -97,9 +97,7 @@ texture = ExtResource("1_lvvyk")
 2:5/0 = 0
 3:5/0 = 0
 8:5/0 = 0
-8:5/0/physics_layer_0/polygon_0/points = PackedVector2Array(8, -1.07915, 8, 8, -8, 8, -8, -8, 8, -8)
 9:5/0 = 0
-9:5/0/physics_layer_0/polygon_0/points = PackedVector2Array(8, -1.07915, 8, 8, -8, 8, -8, -8, 8, -8)
 10:5/0 = 0
 11:5/0 = 0
 12:5/0 = 0
@@ -113,11 +111,12 @@ texture = ExtResource("1_lvvyk")
 29:5/0 = 0
 1:6/0 = 0
 2:6/0 = 0
+2:6/0/occlusion_layer_0/polygon_0/polygon = SubResource("OccluderPolygon2D_lvvyk")
+2:6/0/physics_layer_0/polygon_0/points = PackedVector2Array(-8, -8, 8, -8, 8, 8, -8, 8)
 3:6/0 = 0
 5:6/0 = 0
 6:6/0 = 0
 8:6/0 = 0
-8:6/0/physics_layer_0/polygon_0/points = PackedVector2Array(8, -1.07915, 8, 8, -8, 8, -8, -8, 8, -8)
 9:6/0 = 0
 10:6/0 = 0
 11:6/0 = 0
@@ -291,6 +290,6 @@ texture = ExtResource("1_lvvyk")
 29:15/0 = 0
 
 [resource]
+occlusion_layer_0/light_mask = 1
 physics_layer_0/collision_layer = 1
-physics_layer_0/physics_material = SubResource("PhysicsMaterial_lvvyk")
 sources/0 = SubResource("TileSetAtlasSource_ws4v0")

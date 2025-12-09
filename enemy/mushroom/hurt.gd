@@ -19,4 +19,5 @@ func _update( delta: float):
 			else:
 				obj.queue_free()
 		else:
-			change_state(fsm.states.explode)
+			if fsm.states.has("explode"):
+				change_state(fsm.states.explode)

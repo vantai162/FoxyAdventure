@@ -1,14 +1,26 @@
+@tool  ## Enable script to run in editor for direction preview
 class_name BaseCharacter
 extends CharacterBody2D
 
 ## Base character class that provides common functionality for all characters
+##
+## DESIGNER NOTE: The 'direction' property now previews in the editor!
+## - Set direction = 1 for facing right (sprite flips immediately)
+## - Set direction = -1 for facing left (sprite flips immediately)
+## No need to run the game to see which way an enemy faces!
 
 ## SFX
 @onready var sfx_player: AudioStreamPlayer = $SFXPlayer
 
 @export var movement_speed: float = 200.0
 @export var gravity: float = 700.0
-@export var direction: int = 1
+
+## Direction the character faces: 1 = right, -1 = left
+## Changes apply immediately in editor for easy placement!
+@export var direction: int = 1:
+	set(value):
+		direction = value
+		_update_direction_visual()
 var wind_velocity: Vector2 = Vector2.ZERO
 var current_speed
 @export var attack_damage: int = 1
@@ -44,14 +56,29 @@ var _next_animation = null
 var _next_direction: int = 1
 var _next_animated_sprite: AnimatedSprite2D = null
 
+## Update Direction node visual flip based on direction value
+## Works in editor (when designer changes export) AND runtime
+func _update_direction_visual() -> void:
+	# Check if Direction node exists (may not during initial scene setup)
+	if has_node("Direction"):
+		$Direction.scale.x = direction
+
 func _ready() -> void:
+	# Skip runtime initialization in editor
+	if Engine.is_editor_hint():
+		return
+	
 	health = max_health
 	current_speed = movement_speed
 	_next_direction = direction
-	$Direction.scale.x = direction
+	_update_direction_visual()  # Apply initial direction flip
 	set_animated_sprite($Direction/AnimatedSprite2D)
 	
 func _physics_process(delta: float) -> void:
+	# Skip game logic in editor
+	if Engine.is_editor_hint():
+		return
+		
 	# Animation
 	_check_changed_animation()
 	if invincible_timer>0:

@@ -2,7 +2,6 @@ extends EnemyState
 
 
 func _enter() -> void:
-	print("run")
 	obj.change_animation("run")
 
 
@@ -23,12 +22,8 @@ func _update(_delta):
 
 
 func _should_turn_around() -> bool:
-	if obj.is_touching_enemy():
-		return true
 	if obj.is_touch_wall():
-		# Only turn for walls/ground, not other enemies
-		if not obj.is_touching_enemy():
-			return true
+		return true
 	if obj.is_on_floor() and obj.is_can_fall():
 		return true
 	return false
