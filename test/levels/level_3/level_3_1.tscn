@@ -1,15 +1,8 @@
-[gd_scene load_steps=11 format=4 uid="uid://cownslw7ms6s4"]
+[gd_scene load_steps=4 format=4 uid="uid://haa1mlfxyb4r"]
 
 [ext_resource type="Script" uid="uid://cblkjof8tqn71" path="res://test/levels/level_3/stage_3_1.gd" id="1_stage_script"]
 [ext_resource type="TileSet" uid="uid://0yf5cmwk6u1i" path="res://assets/island/terrain/ice_tile_set.tres" id="2_a6ecy"]
-[ext_resource type="PackedScene" uid="uid://cqjqdbyd7mqfr" path="res://environment/cave/glowing_crystal.tscn" id="4_fak2n"]
 [ext_resource type="PackedScene" uid="uid://bs816w0pr8all" path="res://player/foxy.tscn" id="6_foxy"]
-[ext_resource type="PackedScene" uid="uid://demnh2f4ooy6n" path="res://objects/platform/floating_boat_platform.tscn" id="14_dyh06"]
-[ext_resource type="PackedScene" uid="uid://giogr7michck" path="res://objects/water/water.tscn" id="14_water"]
-[ext_resource type="PackedScene" uid="uid://c5m8vno0qh3xy" path="res://objects/whirlpool/whirlpool.tscn" id="15_erfut"]
-[ext_resource type="PackedScene" uid="uid://clavapool001" path="res://environment/lava/lava_pool.tscn" id="18_a6ecy"]
-[ext_resource type="PackedScene" uid="uid://dqdstpxycbomj" path="res://effect_Item/BladeItem/blade.tscn" id="18_y62kb"]
-[ext_resource type="PackedScene" uid="uid://d02ffhwahuggg" path="res://enemy/shield_tribe/elite_warden.tscn" id="19_y62kb"]
 
 [node name="Level_3_1" type="Node2D"]
 script = ExtResource("1_stage_script")
@@ -43,209 +36,17 @@ tile_set = ExtResource("2_a6ecy")
 
 [node name="WaterZones" type="Node2D" parent="."]
 
-[node name="water" parent="WaterZones" instance=ExtResource("14_water")]
-z_index = 1
-position = Vector2(176, 2115)
-water_size = Vector2(1113, 220)
-
-[node name="FloatingBoatPlatform" parent="WaterZones" instance=ExtResource("14_dyh06")]
-position = Vector2(448, 2113)
-
-[node name="FloatingBoatPlatform3" parent="WaterZones" instance=ExtResource("14_dyh06")]
-position = Vector2(936, 2113)
-
-[node name="FloatingBoatPlatform2" parent="WaterZones" instance=ExtResource("14_dyh06")]
-position = Vector2(713, 2109)
-
-[node name="Whirlpool" parent="WaterZones" instance=ExtResource("15_erfut")]
-position = Vector2(839, 2216)
-lifetime = 0.0
-auto_despawn = false
+[node name="Puzzle" type="Node2D" parent="."]
 
 [node name="Enemies" type="Node2D" parent="."]
 
 [node name="Collectibles" type="Node2D" parent="."]
 
-[node name="Puzzle" type="Node2D" parent="."]
+[node name="LightSources" type="Node2D" parent="."]
 
 [node name="Objects" type="Node2D" parent="."]
-visible = false
-
-[node name="GlowingCrystal" parent="Objects" instance=ExtResource("4_fak2n")]
-position = Vector2(129, 127)
-pulse_amount = 0.36
-pulse_speed = 0.36
-crystal_scale = 0.36
-crystal_type = 3
-color_preset = 4
-sparkle_intensity = 3.0
-
-[node name="GlowingCrystal2" parent="Objects" instance=ExtResource("4_fak2n")]
-position = Vector2(564, 187)
-pulse_amount = 0.36
-pulse_speed = 0.36
-crystal_scale = 0.36
-crystal_type = 3
-color_preset = 4
-sparkle_intensity = 3.0
-
-[node name="GlowingCrystal3" parent="Objects" instance=ExtResource("4_fak2n")]
-position = Vector2(956, 203)
-pulse_amount = 0.36
-pulse_speed = 0.36
-crystal_scale = 0.36
-crystal_type = 3
-color_preset = 4
-sparkle_intensity = 3.0
-
-[node name="GlowingCrystal4" parent="Objects" instance=ExtResource("4_fak2n")]
-position = Vector2(1450, 185)
-pulse_amount = 0.36
-pulse_speed = 0.36
-crystal_scale = 0.36
-crystal_type = 3
-color_preset = 4
-sparkle_intensity = 3.0
-
-[node name="GlowingCrystal5" parent="Objects" instance=ExtResource("4_fak2n")]
-position = Vector2(1249, 387)
-pulse_amount = 0.36
-pulse_speed = 0.36
-crystal_scale = 0.36
-crystal_type = 3
-color_preset = 4
-sparkle_intensity = 3.0
-
-[node name="GlowingCrystal6" parent="Objects" instance=ExtResource("4_fak2n")]
-position = Vector2(1360, 554)
-pulse_amount = 0.36
-pulse_speed = 0.36
-crystal_scale = 0.36
-crystal_type = 3
-color_preset = 4
-sparkle_intensity = 3.0
-
-[node name="GlowingCrystal7" parent="Objects" instance=ExtResource("4_fak2n")]
-position = Vector2(888, 618)
-pulse_amount = 0.36
-pulse_speed = 0.36
-crystal_scale = 0.36
-crystal_type = 3
-color_preset = 4
-sparkle_intensity = 3.0
-
-[node name="GlowingCrystal8" parent="Objects" instance=ExtResource("4_fak2n")]
-position = Vector2(405, 639)
-pulse_amount = 0.36
-pulse_speed = 0.36
-crystal_scale = 0.36
-crystal_type = 3
-color_preset = 4
-sparkle_intensity = 3.0
-
-[node name="GlowingCrystal9" parent="Objects" instance=ExtResource("4_fak2n")]
-position = Vector2(592, 749)
-pulse_amount = 0.36
-pulse_speed = 0.36
-crystal_scale = 0.36
-crystal_type = 3
-color_preset = 4
-sparkle_intensity = 3.0
-
-[node name="GlowingCrystal10" parent="Objects" instance=ExtResource("4_fak2n")]
-position = Vector2(991, 784)
-pulse_amount = 0.36
-pulse_speed = 0.36
-crystal_scale = 0.36
-crystal_type = 3
-color_preset = 4
-sparkle_intensity = 3.0
-
-[node name="GlowingCrystal11" parent="Objects" instance=ExtResource("4_fak2n")]
-position = Vector2(506, 997)
-pulse_amount = 0.36
-pulse_speed = 0.36
-crystal_scale = 0.36
-crystal_type = 3
-color_preset = 4
-sparkle_intensity = 3.0
-
-[node name="GlowingCrystal12" parent="Objects" instance=ExtResource("4_fak2n")]
-position = Vector2(1073, 1119)
-pulse_amount = 0.36
-pulse_speed = 0.36
-crystal_scale = 0.36
-crystal_type = 3
-color_preset = 4
-sparkle_intensity = 3.0
-
-[node name="GlowingCrystal13" parent="Objects" instance=ExtResource("4_fak2n")]
-position = Vector2(396, 1200)
-pulse_amount = 0.36
-pulse_speed = 0.36
-crystal_scale = 0.36
-crystal_type = 3
-color_preset = 4
-sparkle_intensity = 3.0
-
-[node name="GlowingCrystal14" parent="Objects" instance=ExtResource("4_fak2n")]
-position = Vector2(1368, 1693)
-pulse_amount = 0.36
-pulse_speed = 0.36
-crystal_scale = 0.36
-crystal_type = 3
-color_preset = 4
-sparkle_intensity = 3.0
-
-[node name="GlowingCrystal15" parent="Objects" instance=ExtResource("4_fak2n")]
-position = Vector2(843, 1590)
-pulse_amount = 0.36
-pulse_speed = 0.36
-crystal_scale = 0.36
-crystal_type = 3
-color_preset = 4
-sparkle_intensity = 3.0
-
-[node name="GlowingCrystal16" parent="Objects" instance=ExtResource("4_fak2n")]
-position = Vector2(228, 1755)
-pulse_amount = 0.36
-pulse_speed = 0.36
-crystal_scale = 0.36
-crystal_type = 3
-color_preset = 4
-sparkle_intensity = 3.0
-
-[node name="GlowingCrystal17" parent="Objects" instance=ExtResource("4_fak2n")]
-position = Vector2(708, 1959)
-pulse_amount = 0.36
-pulse_speed = 0.36
-crystal_scale = 0.36
-crystal_type = 3
-color_preset = 4
-sparkle_intensity = 3.0
-
-[node name="GlowingCrystal18" parent="Objects" instance=ExtResource("4_fak2n")]
-position = Vector2(1181, 2104)
-pulse_amount = 0.36
-pulse_speed = 0.36
-crystal_scale = 0.36
-crystal_type = 3
-color_preset = 4
-sparkle_intensity = 3.0
 
 [node name="ExitZone" type="Node2D" parent="."]
-position = Vector2(1500, 2140)
 
 [node name="Foxy" parent="." instance=ExtResource("6_foxy")]
-position = Vector2(136, 194)
-
-[node name="LavaPool" parent="." instance=ExtResource("18_a6ecy")]
-z_index = 1
-position = Vector2(1159, 1705)
-lava_size = Vector2(400, 300)
-
-[node name="Blade" parent="." instance=ExtResource("18_y62kb")]
-position = Vector2(173, 204)
-
-[node name="EliteWarden" parent="." instance=ExtResource("19_y62kb")]
-position = Vector2(333, 100)
+position = Vector2(140, 180)

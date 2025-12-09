@@ -1,22 +1,8 @@
-[gd_scene load_steps=16 format=4 uid="uid://baiqhcrd0wqes"]
+[gd_scene load_steps=4 format=4 uid="uid://dx6bl8p11w5cm"]
 
 [ext_resource type="Script" uid="uid://dmw85c2q8phxb" path="res://test/levels/level_3/stage_3_3.gd" id="1_stage_script"]
-[ext_resource type="PackedScene" uid="uid://bmic0j4cnluey" path="res://objects/checkpoint/checkpoint.tscn" id="2_checkpoint"]
 [ext_resource type="TileSet" uid="uid://0yf5cmwk6u1i" path="res://assets/island/terrain/ice_tile_set.tres" id="3_l86yd"]
-[ext_resource type="PackedScene" uid="uid://mikmney07ycb" path="res://objects/platform/one_way_platform.tscn" id="3_oneway"]
 [ext_resource type="PackedScene" uid="uid://bs816w0pr8all" path="res://player/foxy.tscn" id="5_foxy"]
-[ext_resource type="PackedScene" uid="uid://dav8b7a6d5e4f" path="res://enemy/shield_tribe/shield_tribe.tscn" id="6_shield_tribe"]
-[ext_resource type="PackedScene" uid="uid://duryp3ufmd0be" path="res://enemy/tribe/friendly_tribe.tscn" id="7_tribe"]
-[ext_resource type="PackedScene" uid="uid://ca1f6r665b1nr" path="res://objects/lever/lever.tscn" id="8_lever"]
-[ext_resource type="PackedScene" uid="uid://giogr7michck" path="res://objects/water/water.tscn" id="10_water"]
-[ext_resource type="PackedScene" uid="uid://ctr1b8p1h6p8y" path="res://objects/gate/gate.tscn" id="11_gate"]
-[ext_resource type="PackedScene" uid="uid://lrdkn2gv1v1m" path="res://effect_Item/coin/coin.tscn" id="13_coin"]
-[ext_resource type="PackedScene" uid="uid://b3cbk6lmh2cc3" path="res://effect_Item/heal_potion/health_potion.tscn" id="14_heal_potion"]
-[ext_resource type="PackedScene" uid="uid://cn3lm5txngxlq" path="res://objects/spike/spike_static/spike.tscn" id="15_spike"]
-[ext_resource type="PackedScene" uid="uid://bmgv5cgan4yt" path="res://enemy/mushroom/mushroom.tscn" id="16_mushroom_enemy"]
-
-[sub_resource type="RectangleShape2D" id="exit_shape"]
-size = Vector2(64, 96)
 
 [node name="Level_3_3" type="Node2D"]
 script = ExtResource("1_stage_script")
@@ -35,177 +21,21 @@ tile_set = ExtResource("3_l86yd")
 
 [node name="Platforms" type="Node2D" parent="."]
 
-[node name="LeftOneway1" parent="Platforms" instance=ExtResource("3_oneway")]
-position = Vector2(260, 1040)
-
-[node name="LeftOneway2" parent="Platforms" instance=ExtResource("3_oneway")]
-position = Vector2(240, 870)
-
-[node name="LeftOneway3" parent="Platforms" instance=ExtResource("3_oneway")]
-position = Vector2(280, 680)
-
-[node name="RightOneway1" parent="Platforms" instance=ExtResource("3_oneway")]
-position = Vector2(1120, 1140)
-
-[node name="RightOneway2" parent="Platforms" instance=ExtResource("3_oneway")]
-position = Vector2(1150, 850)
-
-[node name="TopOneway1" parent="Platforms" instance=ExtResource("3_oneway")]
-position = Vector2(580, 320)
-
-[node name="TopOneway2" parent="Platforms" instance=ExtResource("3_oneway")]
-position = Vector2(820, 320)
-
-[node name="Puzzles" type="Node2D" parent="."]
-
-[node name="ExitGate" parent="Puzzles" instance=ExtResource("11_gate")]
-position = Vector2(700, 220)
-
-[node name="ExitLever" parent="Puzzles" instance=ExtResource("8_lever")]
-position = Vector2(700, 250)
+[node name="Hazards" type="Node2D" parent="."]
 
 [node name="WaterZones" type="Node2D" parent="."]
 
-[node name="LeftPool" parent="WaterZones" instance=ExtResource("10_water")]
-position = Vector2(100, 1040)
-water_size = Vector2(350, 60)
-surface_line_thickness = 1.0
-ambient_wave_amplitude = 1.5
-ambient_wave_speed = 1.2
-ambient_wave_length = 0.3
-player_splash_mutiplier = 0.12
-swim_disturbance_interval = 0.15
-swim_disturbance_strength = 0.3
-boat_depression_depth = 3.0
-
-[node name="Hazards" type="Node2D" parent="."]
-
-[node name="WaterSpike1" parent="Hazards" instance=ExtResource("15_spike")]
-position = Vector2(180, 1100)
-
-[node name="WaterSpike2" parent="Hazards" instance=ExtResource("15_spike")]
-position = Vector2(220, 1100)
-
-[node name="WaterSpike3" parent="Hazards" instance=ExtResource("15_spike")]
-position = Vector2(320, 1100)
-
-[node name="ArenaSpike1" parent="Hazards" instance=ExtResource("15_spike")]
-position = Vector2(1020, 1050)
-
-[node name="ArenaSpike2" parent="Hazards" instance=ExtResource("15_spike")]
-position = Vector2(1060, 1050)
-
-[node name="Atmosphere" type="Node2D" parent="."]
+[node name="Puzzle" type="Node2D" parent="."]
 
 [node name="Enemies" type="Node2D" parent="."]
 
-[node name="LeftMushroom1" parent="Enemies" instance=ExtResource("16_mushroom_enemy")]
-position = Vector2(250, 1000)
-
-[node name="LeftMushroom2" parent="Enemies" instance=ExtResource("16_mushroom_enemy")]
-position = Vector2(180, 790)
-
-[node name="ShieldTribe" parent="Enemies" instance=ExtResource("6_shield_tribe")]
-position = Vector2(1150, 1050)
-
-[node name="FleeingTribe" parent="Enemies" instance=ExtResource("7_tribe")]
-position = Vector2(1250, 1300)
-
-[node name="TopMushroom" parent="Enemies" instance=ExtResource("16_mushroom_enemy")]
-position = Vector2(750, 350)
-
 [node name="Collectibles" type="Node2D" parent="."]
 
-[node name="Hub1" parent="Collectibles" instance=ExtResource("13_coin")]
-position = Vector2(620, 1490)
-
-[node name="Hub2" parent="Collectibles" instance=ExtResource("13_coin")]
-position = Vector2(780, 1490)
-
-[node name="Left1" parent="Collectibles" instance=ExtResource("13_coin")]
-position = Vector2(160, 1250)
-
-[node name="Left2" parent="Collectibles" instance=ExtResource("13_coin")]
-position = Vector2(320, 1150)
-
-[node name="Left3" parent="Collectibles" instance=ExtResource("13_coin")]
-position = Vector2(180, 970)
-
-[node name="Left4" parent="Collectibles" instance=ExtResource("13_coin")]
-position = Vector2(300, 690)
-
-[node name="Left5" parent="Collectibles" instance=ExtResource("13_coin")]
-position = Vector2(180, 590)
-
-[node name="Left6" parent="Collectibles" instance=ExtResource("13_coin")]
-position = Vector2(340, 490)
-
-[node name="Right1" parent="Collectibles" instance=ExtResource("13_coin")]
-position = Vector2(1180, 1270)
-
-[node name="Right2" parent="Collectibles" instance=ExtResource("13_coin")]
-position = Vector2(1080, 1170)
-
-[node name="Right3" parent="Collectibles" instance=ExtResource("13_coin")]
-position = Vector2(1200, 1020)
-
-[node name="Right4" parent="Collectibles" instance=ExtResource("13_coin")]
-position = Vector2(1060, 870)
-
-[node name="Right5" parent="Collectibles" instance=ExtResource("13_coin")]
-position = Vector2(1180, 750)
-
-[node name="Right6" parent="Collectibles" instance=ExtResource("13_coin")]
-position = Vector2(1100, 620)
-
-[node name="Top1" parent="Collectibles" instance=ExtResource("13_coin")]
-position = Vector2(480, 320)
-
-[node name="Top2" parent="Collectibles" instance=ExtResource("13_coin")]
-position = Vector2(920, 350)
-
-[node name="Top3" parent="Collectibles" instance=ExtResource("13_coin")]
-position = Vector2(700, 250)
-
-[node name="LeftHeal" parent="Collectibles" instance=ExtResource("14_heal_potion")]
-position = Vector2(200, 390)
-
-[node name="RightHeal" parent="Collectibles" instance=ExtResource("14_heal_potion")]
-position = Vector2(1200, 520)
-
-[node name="TopHeal" parent="Collectibles" instance=ExtResource("14_heal_potion")]
-position = Vector2(700, 120)
+[node name="LightSources" type="Node2D" parent="."]
 
 [node name="Objects" type="Node2D" parent="."]
 
-[node name="Checkpoint1" parent="Objects" instance=ExtResource("2_checkpoint")]
-position = Vector2(450, 1472)
-
-[node name="Checkpoint2" parent="Objects" instance=ExtResource("2_checkpoint")]
-position = Vector2(200, 790)
-
-[node name="Checkpoint3" parent="Objects" instance=ExtResource("2_checkpoint")]
-position = Vector2(1100, 870)
-
-[node name="Checkpoint4" parent="Objects" instance=ExtResource("2_checkpoint")]
-position = Vector2(700, 120)
-
 [node name="ExitZone" type="Node2D" parent="."]
-position = Vector2(700, 100)
-
-[node name="ExitArea" type="Area2D" parent="ExitZone"]
-
-[node name="ExitShape" type="CollisionShape2D" parent="ExitZone/ExitArea"]
-shape = SubResource("exit_shape")
-
-[node name="ExitLabel" type="Label" parent="ExitZone"]
-modulate = Color(0.3, 1, 0.3, 1)
-offset_left = -32.0
-offset_top = -24.0
-offset_right = 32.0
-offset_bottom = 8.0
-text = "→ 3-4"
-horizontal_alignment = 1
 
 [node name="Foxy" parent="." instance=ExtResource("5_foxy")]
-position = Vector2(450, 1472)
+position = Vector2(140, 180)
