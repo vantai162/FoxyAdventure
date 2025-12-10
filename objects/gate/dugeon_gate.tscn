@@ -1,0 +1,19 @@
+[gd_scene load_steps=4 format=3 uid="uid://g83nl1ihtg6h"]
+
+[ext_resource type="Script" uid="uid://betdbte4tu4w8" path="res://objects/gate/dugeon_gate.gd" id="1_8xopi"]
+[ext_resource type="Texture2D" uid="uid://wh2qp0ugnmln" path="res://assets/objects/blocks.png" id="1_uy5t5"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_8xopi"]
+size = Vector2(48, 89)
+
+[node name="DugeonGate" type="StaticBody2D"]
+script = ExtResource("1_8xopi")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+position = Vector2(14, 35.5)
+scale = Vector2(1.45455, 2.78125)
+texture = ExtResource("1_uy5t5")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(14, 34.5)
+shape = SubResource("RectangleShape2D_8xopi")

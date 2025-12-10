@@ -233,6 +233,7 @@ boomb_scene = ExtResource("2_wuglq")
 rocket_scene = ExtResource("3_tvqld")
 whirlpool_scene = ExtResource("4_4m7bq")
 knockback_force = 0.0
+direction = -1
 max_health = 26
 max_invincible = 3.0
 oxygen_decrease_rate = 0.0
