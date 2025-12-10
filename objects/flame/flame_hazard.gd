@@ -1,3 +1,4 @@
+@tool
 extends Node2D
 class_name FlameHazard
 
@@ -7,6 +8,18 @@ class_name FlameHazard
 ##
 ## SETUP: Scene includes FlameLight PointLight2D and SparkParticles GPUParticles2D
 ## Configure in the editor. Script handles on/off cycling and flicker animation.
+
+enum Orientation {
+	FLOOR,    ## Flame shooting up (default)
+	CEILING,  ## Flame shooting down
+	LEFT,     ## Flame shooting left
+	RIGHT     ## Flame shooting right
+}
+
+@export var orientation := Orientation.FLOOR:
+	set(value):
+		orientation = value
+		_apply_orientation()
 
 @export_group("Flame Settings")
 @export var cycle_enabled: bool = true  ## If false, flame stays on permanently
@@ -28,7 +41,29 @@ var _base_energy: float = 0.8
 var _base_color: Color = Color(1.0, 0.7, 0.3, 1.0)
 var _flicker_tween: Tween
 
+# Rotation angles for each orientation
+const ROTATIONS := {
+	Orientation.FLOOR: 0.0,
+	Orientation.CEILING: PI,
+	Orientation.LEFT: PI / 2,
+	Orientation.RIGHT: -PI / 2
+}
+
+func _apply_orientation() -> void:
+	if not is_inside_tree():
+		return
+	rotation = ROTATIONS.get(orientation, 0.0)
+
+func _notification(what: int) -> void:
+	if what == NOTIFICATION_SCENE_INSTANTIATED:
+		call_deferred("_apply_orientation")
+
 func _ready() -> void:
+	_apply_orientation()
+	
+	# Don't run gameplay logic in editor
+	if Engine.is_editor_hint():
+		return
 	# Setup collisions as disabled initially
 	_set_collision_enabled(false)
 	

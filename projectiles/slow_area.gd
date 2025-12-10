@@ -1,23 +1,33 @@
 extends Area2D
 class_name SlowArea
+## Slow puddle effect - slows player on contact
+##
+## SETUP: Assign texture to the PuddleSprite child node in the editor.
+## The script will duplicate this sprite to create the puddle effect.
 
 @export var lifetime: float = 5.0
 @export var fade_out_time: float = 1.0
 @export var sprite_count: int = 8
-@export var puddle_texture: Texture2D
 @export var slow_duration: float = 3.0
+
+## Template sprite - assign texture here (visible in editor!)
+@onready var template_sprite: Sprite2D = $PuddleSprite if has_node("PuddleSprite") else null
 
 var timer: float = 0.0
 var sprites: Array[Sprite2D] = []
 var fading: bool = false
 
 func _ready() -> void:
-	if not puddle_texture:
+	if not template_sprite or not template_sprite.texture:
+		push_warning("SlowArea: No texture on PuddleSprite child - effect will be invisible")
 		return
-		
+	
+	# Hide template, we'll create duplicates
+	template_sprite.visible = false
+	
 	for i in range(sprite_count):
-		var sprite = Sprite2D.new()
-		sprite.texture = puddle_texture
+		var sprite = template_sprite.duplicate() as Sprite2D
+		sprite.visible = true
 		sprite.modulate = Color(0.4, 0.6, 1.0, 0.6)
 		sprite.scale = Vector2(1.2, 1.2)
 		

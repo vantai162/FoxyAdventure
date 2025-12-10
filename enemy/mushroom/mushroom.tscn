@@ -81,7 +81,7 @@ animations = [{
 "duration": 1.0,
 "texture": ExtResource("6_nf052")
 }],
-"loop": true,
+"loop": false,
 "name": &"sleep",
 "speed": 1.0
 }]
@@ -155,6 +155,8 @@ product_packed_scene = ExtResource("11_wkm5k")
 target_container_name = &"Enemies"
 
 [node name="HurtArea2D" type="Area2D" parent="Direction"]
+collision_layer = 16
+collision_mask = 0
 script = ExtResource("10_7hsqw")
 metadata/_custom_type_script = "uid://csu2b21cwchqw"
 
@@ -180,3 +182,4 @@ script = ExtResource("14_vwwmg")
 script = ExtResource("15_dcy5h")
 
 [connection signal="body_entered" from="Direction/ExplodeArea2D" to="." method="_on_detect_player_area_body_entered"]
+[connection signal="hurt" from="Direction/HurtArea2D" to="." method="_on_hurt_area_2d_hurt"]

@@ -1,6 +1,23 @@
-[gd_resource type="TileSet" load_steps=4 format=3 uid="uid://0yf5cmwk6u1i"]
+[gd_resource type="TileSet" load_steps=22 format=3 uid="uid://0yf5cmwk6u1i"]
 
 [ext_resource type="Texture2D" uid="uid://t3cktfmhcitn" path="res://assets/island/terrain/ice level demo.png" id="1_lvvyk"]
+[ext_resource type="PackedScene" uid="uid://rhntp41ai45p" path="res://environment/cave/stalactite.tscn" id="2_stalactite"]
+[ext_resource type="PackedScene" uid="uid://cqjqdbyd7mqfr" path="res://environment/cave/glowing_crystal.tscn" id="3_crystal"]
+[ext_resource type="PackedScene" path="res://environment/cave/dripping_water.tscn" id="4_drip"]
+[ext_resource type="PackedScene" path="res://objects/spike/spike.tscn" id="5_spike"]
+[ext_resource type="PackedScene" uid="uid://b0h8a022mpy26" path="res://objects/spike/spike_retractable/spike_retractable.tscn" id="6_spike_retract"]
+[ext_resource type="PackedScene" uid="uid://chfe3xrvw4004" path="res://objects/camp_fire/camp_fire.tscn" id="7_campfire"]
+[ext_resource type="PackedScene" uid="uid://bmic0j4cnluey" path="res://objects/checkpoint/checkpoint.tscn" id="8_checkpoint"]
+[ext_resource type="PackedScene" uid="uid://cc07u3qfgccmq" path="res://objects/spring/spring.tscn" id="9_spring"]
+[ext_resource type="PackedScene" uid="uid://mikmney07ycb" path="res://objects/platform/one_way_platform.tscn" id="10_platform"]
+[ext_resource type="PackedScene" uid="uid://b336fup0h7gp5" path="res://objects/collapsable_wall/collapsable_wall.tscn" id="11_collapsable"]
+[ext_resource type="PackedScene" uid="uid://c5m8vno0qh3xy" path="res://objects/whirlpool/whirlpool.tscn" id="12_whirlpool"]
+[ext_resource type="PackedScene" uid="uid://coqrny0yf5swy" path="res://objects/wind/WindArea.tscn" id="13_wind"]
+[ext_resource type="PackedScene" uid="uid://y7p8q2kh8teb" path="res://objects/flame/flame_hazard.tscn" id="14_flame"]
+[ext_resource type="PackedScene" uid="uid://lrdkn2gv1v1m" path="res://effect_Item/coin/coin.tscn" id="15_coin"]
+[ext_resource type="PackedScene" uid="uid://b3cbk6lmh2cc3" path="res://effect_Item/heal_potion/health_potion.tscn" id="16_potion"]
+[ext_resource type="PackedScene" uid="uid://cd4x3xoe8plsn" path="res://effect_Item/chest/chest.tscn" id="17_chest"]
+[ext_resource type="PackedScene" uid="uid://dl1jqgf5ab7l" path="res://effect_Item/chest/gold_chest.tscn" id="18_gold_chest"]
 
 [sub_resource type="OccluderPolygon2D" id="OccluderPolygon2D_lvvyk"]
 polygon = PackedVector2Array(-8, -8, 8, -8, 8, 8, -8, 8)
@@ -298,7 +315,27 @@ texture = ExtResource("1_lvvyk")
 28:15/0 = 0
 29:15/0 = 0
 
+[sub_resource type="TileSetScenesCollectionSource" id="TileSetScenesCollectionSource_sjdx8"]
+scenes/0/scene = ExtResource("2_stalactite")
+scenes/1/scene = ExtResource("3_crystal")
+scenes/2/scene = ExtResource("4_drip")
+scenes/3/scene = ExtResource("5_spike")
+scenes/4/scene = ExtResource("6_spike_retract")
+scenes/5/scene = ExtResource("7_campfire")
+scenes/6/scene = ExtResource("8_checkpoint")
+scenes/7/scene = ExtResource("9_spring")
+scenes/8/scene = ExtResource("10_platform")
+scenes/9/scene = ExtResource("11_collapsable")
+scenes/10/scene = ExtResource("12_whirlpool")
+scenes/11/scene = ExtResource("13_wind")
+scenes/12/scene = ExtResource("14_flame")
+scenes/13/scene = ExtResource("15_coin")
+scenes/14/scene = ExtResource("16_potion")
+scenes/15/scene = ExtResource("17_chest")
+scenes/16/scene = ExtResource("18_gold_chest")
+
 [resource]
 occlusion_layer_0/light_mask = 1
 physics_layer_0/collision_layer = 1
 sources/0 = SubResource("TileSetAtlasSource_ws4v0")
+sources/1 = SubResource("TileSetScenesCollectionSource_sjdx8")

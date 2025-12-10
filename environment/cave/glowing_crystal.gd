@@ -4,15 +4,15 @@ class_name GlowingCrystal
 ## Illuminates dark cave areas with magical twinkling glow
 ## Essential for Level 3 darkness mechanics
 ##
-## SETUP: Scene includes a PointLight2D child "CrystalLight" - configure its
-## color, energy, texture_scale in the editor. Script handles pulse animation.
+## SETUP: Assign texture to CrystalSprite child node in the editor.
+## Configure CrystalLight (color, energy, texture_scale) as desired.
+## If no texture is assigned to CrystalSprite, a procedural fallback is used.
 
 @export_group("Pulse Animation")
 @export var pulse_amount: float = 0.4  ## How much energy varies during pulse
 @export var pulse_speed: float = 2.0  ## Pulse frequency (higher = faster)
 
 @export_group("Crystal Appearance")
-@export var crystal_texture: Texture2D = null  ## Assign sprite texture for GPU rendering (drawn upright ♦, no rotation)
 @export var crystal_scale: float = 1.0  ## Overall size multiplier
 @export_enum("Small:0", "Medium:1", "Large:2", "Cluster:3") var crystal_type: int = 1
 
@@ -29,6 +29,7 @@ class_name GlowingCrystal
 ## Note: VisibleOnScreenEnabler2D handles culling automatically
 
 ## Scene node references
+@onready var crystal_sprite: Sprite2D = $CrystalSprite if has_node("CrystalSprite") else null
 @onready var light: PointLight2D = $CrystalLight
 @onready var sparkles: GPUParticles2D = $Sparkles
 @onready var visibility_enabler: VisibleOnScreenEnabler2D = $VisibilityEnabler
@@ -63,11 +64,11 @@ func _ready() -> void:
 		if light.texture == null:
 			_setup_light_texture()
 	
-	# GPU-rendered sprite or CPU fallback
-	if crystal_texture:
-		_create_sprite_crystal()
+	# Setup crystal sprite (GPU-rendered) or CPU fallback
+	if crystal_sprite and crystal_sprite.texture:
+		_setup_sprite_crystal()
 	else:
-		push_warning("GlowingCrystal: No crystal_texture assigned - using CPU-rendered procedural fallback (assign Texture2D for production)")
+		push_warning("GlowingCrystal: No texture on CrystalSprite child - using CPU-rendered procedural fallback (assign Texture2D to CrystalSprite for production)")
 		_create_diamond_crystal()
 	
 	if enable_sparkles:
@@ -181,12 +182,9 @@ func _setup_light_texture() -> void:
 	gradient.height = 256
 	light.texture = gradient
 
-func _create_sprite_crystal() -> void:
-	## GPU-rendered sprite crystal (production ready)
-	var sprite = Sprite2D.new()
-	sprite.name = "CrystalSprite"
-	sprite.texture = crystal_texture
-	sprite.modulate = crystal_color
+func _setup_sprite_crystal() -> void:
+	## Configure the CrystalSprite child (texture assigned in editor)
+	crystal_sprite.modulate = crystal_color
 	
 	# Apply scale based on crystal type
 	var size = crystal_scale
@@ -200,8 +198,7 @@ func _create_sprite_crystal() -> void:
 		3:  # Cluster
 			size *= 1.2  # Cluster uses single large sprite
 	
-	sprite.scale = Vector2(size, size)
-	add_child(sprite)
+	crystal_sprite.scale = Vector2(size, size)
 
 func _create_diamond_crystal() -> void:
 	var size = crystal_scale

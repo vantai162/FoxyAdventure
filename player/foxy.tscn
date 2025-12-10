@@ -59,7 +59,7 @@
 [ext_resource type="Script" uid="uid://b4hwjgs0cti2b" path="res://player/swim.gd" id="49_2mww5"]
 [ext_resource type="AudioStream" uid="uid://c0fqro5ktfg8n" path="res://assets/sounds/zapsplat_warfare_sword_medieval_heavy_draw_scabbard_005_12092.mp3" id="50_eelxt"]
 [ext_resource type="AudioStream" uid="uid://b8tju1hs1dwa8" path="res://assets/sounds/jump.wav" id="51_a4g31"]
-[ext_resource type="Script" uid="uid://dd38qhsyjdjtb" path="res://player/player_torch.gd" id="52_torch"]
+[ext_resource type="PackedScene" uid="uid://bsqdqcru1xnem" path="res://player/torch/player_torch.tscn" id="53_torch_scene"]
 [ext_resource type="Script" uid="uid://itto4t514erb" path="res://player/stun.gd" id="56_dkaj1"]
 [ext_resource type="Script" uid="uid://co4h0j7dbevid" path="res://player/player_targeting.gd" id="57_targeting"]
 [ext_resource type="PackedScene" uid="uid://cb0oeg7am8tuj" path="res://player/target_indicator.tscn" id="58_indicator"]
@@ -319,13 +319,12 @@ shape = SubResource("RectangleShape2D_8r8n2")
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="Direction"]
 visible = false
 sprite_frames = SubResource("SpriteFrames_7xt5n")
-animation = &"stun"
-frame_progress = 0.160714
+animation = &"idle"
 
 [node name="BladeAnimatedSprite2D" type="AnimatedSprite2D" parent="Direction"]
 visible = false
 sprite_frames = SubResource("SpriteFrames_2mww5")
-animation = &"stun"
+animation = &"idle"
 
 [node name="Stun_Effect" type="AnimatedSprite2D" parent="Direction"]
 position = Vector2(0, -12)
@@ -361,6 +360,9 @@ indicator_scene = ExtResource("58_indicator")
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Direction/TargetingArea"]
 position = Vector2(125, 0)
 shape = SubResource("RectangleShape2D_targeting")
+
+[node name="PlayerTorch" parent="Direction" instance=ExtResource("53_torch_scene")]
+position = Vector2(-3, 7)
 
 [node name="States" type="Node" parent="."]
 
@@ -417,13 +419,5 @@ shape = SubResource("RectangleShape2D_u75vx")
 
 [node name="FloorRayCast2D" type="RayCast2D" parent="."]
 target_position = Vector2(-1, 19)
-
-[node name="PlayerTorch" type="PointLight2D" parent="."]
-position = Vector2(0, -8)
-color = Color(1, 0.95, 0.85, 1)
-energy = 0.8
-shadow_enabled = true
-texture_scale = 0.5
-script = ExtResource("52_torch")
 
 [connection signal="hurt" from="Direction/HurtArea2d" to="." method="_on_hurt_area_2d_hurt"]

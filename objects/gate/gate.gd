@@ -1,11 +1,27 @@
+@tool
 # Gate.gd - Lever-controlled gate with vertical or horizontal movement
 extends Node2D
 class_name Gate
 
-## Gate orientation - vertical moves up, horizontal moves left/right
-enum GateDirection { VERTICAL, HORIZONTAL_LEFT, HORIZONTAL_RIGHT }
+## Gate direction - controls both visual orientation AND movement direction
+## VERTICAL_UP: Gate is "|" shape, slides UP to open (floor gate)
+## VERTICAL_DOWN: Gate is "|" shape, slides DOWN to open (ceiling gate)
+## HORIZONTAL_LEFT: Gate is "—" shape, slides LEFT to open
+## HORIZONTAL_RIGHT: Gate is "—" shape, slides RIGHT to open
+enum GateDirection { VERTICAL_UP, VERTICAL_DOWN, HORIZONTAL_LEFT, HORIZONTAL_RIGHT }
 
-@export var direction: GateDirection = GateDirection.VERTICAL
+const ROTATIONS := {
+	GateDirection.VERTICAL_UP: 0.0,
+	GateDirection.VERTICAL_DOWN: 0.0,  # Same visual, different movement
+	GateDirection.HORIZONTAL_LEFT: PI / 2,  # 90° - horizontal bar
+	GateDirection.HORIZONTAL_RIGHT: PI / 2  # 90° - horizontal bar
+}
+
+@export var direction: GateDirection = GateDirection.VERTICAL_UP:
+	set(value):
+		direction = value
+		_apply_direction()
+
 @export var move_distance: float = 160.0  ## How far gate moves when opening
 @export var open_duration: float = 1.0  ## Animation duration
 
@@ -14,10 +30,26 @@ var _tween: Tween
 
 @onready var gate_body: AnimatableBody2D = $Gate if has_node("Gate") else null
 
+func _apply_direction() -> void:
+	if not is_inside_tree():
+		return
+	if gate_body:
+		gate_body.rotation = ROTATIONS.get(direction, 0.0)
+
+func _notification(what: int) -> void:
+	if what == NOTIFICATION_SCENE_INSTANTIATED:
+		call_deferred("_apply_direction")
+
 func _ready() -> void:
-	pass
+	_apply_direction()
+	
+	# Don't run gameplay logic in editor
+	if Engine.is_editor_hint():
+		return
 
 func open_gate() -> void:
+	if Engine.is_editor_hint():
+		return
 	if is_open:
 		return
 	is_open = true
@@ -33,6 +65,8 @@ func open_gate() -> void:
 	_animate_gate(_get_open_offset())
 
 func close_gate() -> void:
+	if Engine.is_editor_hint():
+		return
 	if not is_open:
 		return
 	is_open = false
@@ -49,8 +83,10 @@ func close_gate() -> void:
 
 func _get_open_offset() -> Vector2:
 	match direction:
-		GateDirection.VERTICAL:
+		GateDirection.VERTICAL_UP:
 			return Vector2(0, -move_distance)
+		GateDirection.VERTICAL_DOWN:
+			return Vector2(0, move_distance)
 		GateDirection.HORIZONTAL_LEFT:
 			return Vector2(-move_distance, 0)
 		GateDirection.HORIZONTAL_RIGHT:
@@ -59,8 +95,10 @@ func _get_open_offset() -> Vector2:
 
 func _get_open_animation_name() -> String:
 	match direction:
-		GateDirection.VERTICAL:
+		GateDirection.VERTICAL_UP:
 			return "open"
+		GateDirection.VERTICAL_DOWN:
+			return "open_down"
 		GateDirection.HORIZONTAL_LEFT:
 			return "open_left"
 		GateDirection.HORIZONTAL_RIGHT:
@@ -69,8 +107,10 @@ func _get_open_animation_name() -> String:
 
 func _get_close_animation_name() -> String:
 	match direction:
-		GateDirection.VERTICAL:
+		GateDirection.VERTICAL_UP:
 			return "close"
+		GateDirection.VERTICAL_DOWN:
+			return "close_down"
 		GateDirection.HORIZONTAL_LEFT:
 			return "close_left"
 		GateDirection.HORIZONTAL_RIGHT:

@@ -1,4 +1,4 @@
-[gd_scene load_steps=24 format=3 uid="uid://bdkss15p4gbma"]
+[gd_scene load_steps=25 format=3 uid="uid://bdkss15p4gbma"]
 
 [ext_resource type="Script" uid="uid://bjinydvnjpo0x" path="res://enemy/barrel/barrel.gd" id="1_ao4iv"]
 [ext_resource type="Texture2D" uid="uid://ch0hp25m7evv1" path="res://assets/monsters/barrel/barrel_hurt_01.png" id="2_5djrk"]
@@ -22,8 +22,7 @@
 [ext_resource type="Script" uid="uid://budybf78cqjcn" path="res://enemy/barrel/hurt.gd" id="15_5djrk"]
 [ext_resource type="Script" uid="uid://ceivkbcn2nfiw" path="res://enemy/barrel/dead.gd" id="17_nles5"]
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_pdnpt"]
-size = Vector2(24, 24)
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_ha0ft"]
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_vpg65"]
 resource_local_to_scene = true
@@ -88,6 +87,9 @@ animations = [{
 "speed": 5.0
 }]
 
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_pdnpt"]
+size = Vector2(24, 24)
+
 [node name="Barrel" type="CharacterBody2D"]
 collision_layer = 8
 script = ExtResource("1_ao4iv")
@@ -95,7 +97,7 @@ metadata/_custom_type_script = "uid://s4xx82espxdt"
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 position = Vector2(0, 6)
-shape = SubResource("RectangleShape2D_pdnpt")
+shape = SubResource("RectangleShape2D_ha0ft")
 
 [node name="Direction" type="Node2D" parent="."]
 

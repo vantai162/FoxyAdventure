@@ -94,7 +94,7 @@ shape = SubResource("RectangleShape2D_body")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="Direction"]
 sprite_frames = SubResource("SpriteFrames_mini")
-animation = &"hurt"
+animation = &"run"
 speed_scale = 1.3
 
 [node name="ToxicGasFactory" type="Marker2D" parent="Direction"]

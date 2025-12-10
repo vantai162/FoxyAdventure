@@ -31,6 +31,7 @@ var is_opened: bool = false
 
 
 func _ready() -> void:
+	super._ready()  # CRITICAL: Connect InteractiveArea2D signals (body_entered, body_exited)
 	_chest_ready()
 
 

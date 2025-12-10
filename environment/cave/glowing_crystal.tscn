@@ -7,6 +7,8 @@ script = ExtResource("1_crystal")
 pulse_amount = 0.136
 pulse_speed = 0.36
 
+[node name="CrystalSprite" type="Sprite2D" parent="."]
+
 [node name="CrystalLight" type="PointLight2D" parent="."]
 color = Color(0.3, 1, 0.5, 1)
 texture_scale = 2.5
