@@ -15,6 +15,9 @@ var detect_ray_casts: Array[RayCast2D] = []  # Multiple raycasts for vision cone
 var detection_distance: float = 100.0
 
 func _ready() -> void:
+	# Add to enemy group for player targeting system
+	add_to_group("enemy")
+	
 	_init_ray_cast()
 	_init_detect_player_area()
 	_init_hurt_area()

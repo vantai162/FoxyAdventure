@@ -87,6 +87,25 @@ func launch(direction: int, from_player: Player) -> void:
 	trail_spawn_timer = 0
 	AudioManager.play_sound("blade_spinning",15.0)
 
+
+## Aimed throw - launches blade at a specific angle (radians)
+## Used by targeting system for smart throws at enemies
+func launch_aimed(angle: float, from_player: Player) -> void:
+	thrower = from_player
+	
+	# Determine throw direction from angle (left or right hemisphere)
+	if angle > PI / 2 or angle < -PI / 2:
+		throw_direction = -1  # Left
+	else:
+		throw_direction = 1  # Right
+	
+	# Calculate velocity vector from angle
+	velocity = Vector2.from_angle(angle) * initial_throw_speed
+	scale.x = throw_direction
+	current_state = State.FLYING
+	trail_spawn_timer = 0
+	AudioManager.play_sound("blade_spinning", 15.0)
+
 func _physics_process(delta: float) -> void:
 	match current_state:
 		State.FLYING:

@@ -1,4 +1,4 @@
-[gd_scene load_steps=21 format=4 uid="uid://baiqhcrd0wqes"]
+[gd_scene load_steps=19 format=4 uid="uid://baiqhcrd0wqes"]
 
 [ext_resource type="Script" uid="uid://dmw85c2q8phxb" path="res://test/levels/level_3/stage_3_3.gd" id="1_stage_script"]
 [ext_resource type="TileSet" uid="uid://0yf5cmwk6u1i" path="res://assets/island/terrain/ice_tile_set.tres" id="3_l86yd"]
@@ -17,7 +17,7 @@
 [ext_resource type="PackedScene" uid="uid://b3rfttffyg1qj" path="res://effect_Item/key/key.tscn" id="16_key"]
 [ext_resource type="PackedScene" uid="uid://h568k604b62r" path="res://effect_Item/BladeContainer/blade_container.tscn" id="17_blade_container"]
 [ext_resource type="PackedScene" uid="uid://dy2go6q81lmqg" path="res://effect_Item/TrapCoin/trap_coin.tscn" id="18_trap_coin"]
-[ext_resource type="PackedScene" uid="uid://trap_chest_trickster" path="res://effect_Item/chest/trap_chest.tscn" id="19_trap_chest"]
+[ext_resource type="PackedScene" uid="uid://cm32wkmjlw1rq" path="res://effect_Item/chest/trap_chest.tscn" id="19_trap_chest"]
 
 [node name="Level_3_3" type="Node2D"]
 script = ExtResource("1_stage_script")
@@ -73,7 +73,6 @@ direction = -1
 
 [node name="Collectibles" type="Node2D" parent="."]
 
-; === HUB: UP ARROW ↑ (5 coins) - "Climb up!" ===
 [node name="Arrow_Hub_1" parent="Collectibles" instance=ExtResource("13_coin")]
 position = Vector2(500, 1480)
 
@@ -89,7 +88,6 @@ position = Vector2(516, 1416)
 [node name="Arrow_Hub_5" parent="Collectibles" instance=ExtResource("13_coin")]
 position = Vector2(516, 1384)
 
-; === LEFT PATH: VERTICAL LINE ↑ (6 coins) - Left route ===
 [node name="Line_Left_1" parent="Collectibles" instance=ExtResource("13_coin")]
 position = Vector2(200, 1300)
 
@@ -108,7 +106,6 @@ position = Vector2(200, 900)
 [node name="Line_Left_6" parent="Collectibles" instance=ExtResource("13_coin")]
 position = Vector2(200, 800)
 
-; === LEFT SECRET: DIAMOND ◇ (4 coins) - BladeContainer marker ===
 [node name="Diamond_Secret_1" parent="Collectibles" instance=ExtResource("13_coin")]
 position = Vector2(150, 700)
 
@@ -121,11 +118,9 @@ position = Vector2(180, 730)
 [node name="Diamond_Secret_4" parent="Collectibles" instance=ExtResource("13_coin")]
 position = Vector2(150, 760)
 
-; === BLADE CONTAINER (secret upgrade!) ===
 [node name="BladeContainer" parent="Collectibles" instance=ExtResource("17_blade_container")]
 position = Vector2(150, 730)
 
-; === RIGHT PATH: VERTICAL LINE ↑ (6 coins) - Right route ===
 [node name="Line_Right_1" parent="Collectibles" instance=ExtResource("13_coin")]
 position = Vector2(1100, 1250)
 
@@ -144,15 +139,12 @@ position = Vector2(1100, 850)
 [node name="Line_Right_6" parent="Collectibles" instance=ExtResource("13_coin")]
 position = Vector2(1100, 750)
 
-; === TRAP COIN (looks tempting on right path!) ===
 [node name="TrapCoin" parent="Collectibles" instance=ExtResource("18_trap_coin")]
 position = Vector2(950, 1300)
 
-; === TRAP CHEST (left water ruins - too easy to reach!) ===
 [node name="TrapChest" parent="Collectibles" instance=ExtResource("19_trap_chest")]
 position = Vector2(250, 850)
 
-; === RIGHT KEY AREA: TRIANGLE △ (3 coins) - Key marker ===
 [node name="Triangle_Key_1" parent="Collectibles" instance=ExtResource("13_coin")]
 position = Vector2(1050, 550)
 
@@ -162,15 +154,12 @@ position = Vector2(1020, 590)
 [node name="Triangle_Key_3" parent="Collectibles" instance=ExtResource("13_coin")]
 position = Vector2(1080, 590)
 
-; === KEY (right path reward) ===
 [node name="Key" parent="Collectibles" instance=ExtResource("16_key")]
 position = Vector2(1050, 570)
 
-; === HEALTH POTION (right path support) ===
 [node name="HealthPotion" parent="Collectibles" instance=ExtResource("14_health_potion")]
 position = Vector2(1200, 900)
 
-; === LEFT TO CENTER: ARC (5 coins) - Converging jump path ===
 [node name="Arc_Converge_1" parent="Collectibles" instance=ExtResource("13_coin")]
 position = Vector2(300, 500)
 
@@ -186,7 +175,6 @@ position = Vector2(540, 410)
 [node name="Arc_Converge_5" parent="Collectibles" instance=ExtResource("13_coin")]
 position = Vector2(620, 420)
 
-; === SUMMIT: CIRCLE/RING (8 coins) - GoldChest jackpot! ===
 [node name="Ring_Summit_1" parent="Collectibles" instance=ExtResource("13_coin")]
 position = Vector2(700, 100)
 
@@ -211,7 +199,6 @@ position = Vector2(650, 150)
 [node name="Ring_Summit_8" parent="Collectibles" instance=ExtResource("13_coin")]
 position = Vector2(665, 115)
 
-; === GOLD CHEST (summit prize!) ===
 [node name="GoldChest" parent="Collectibles" instance=ExtResource("15_gold_chest")]
 position = Vector2(700, 150)
 

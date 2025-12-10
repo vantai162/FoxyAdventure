@@ -71,6 +71,16 @@ signal max_health_changed
 @export var blade_projectile_scene: PackedScene
 @export var air_slash_scene: PackedScene
 
+@export_group("Throw")
+@export var throw_offset_x: float = 40.0  ## Horizontal offset from player center
+@export var throw_offset_y: float = -14.0  ## Vertical offset (negative = above feet)
+
+@export_group("Targeting")
+@export var targeting_enabled: bool = true  ## Enable smart aim-assist for throws
+
+## Targeting system (Area2D in scene under Direction)
+@onready var targeting: PlayerTargeting = $Direction/TargetingArea if has_node("Direction/TargetingArea") else null
+
 @onready var stun_ani: = $Direction/Stun_Effect
 
 @export var Effect = {
@@ -158,9 +168,17 @@ func throw_blade_projectile() -> void:
 	var blade = blade_projectile_scene.instantiate()
 	get_tree().current_scene.add_child(blade)
 	
-	var throw_offset = Vector2(40 * direction, -10)
+	var throw_offset := Vector2(throw_offset_x * direction, throw_offset_y)
 	blade.global_position = global_position + throw_offset
-	blade.launch(direction, self)
+	
+	# Check if we have a locked target for aimed throw
+	if targeting != null and targeting.has_locked_target():
+		# Aimed throw - clamped angle toward target (±25° prevents ground ricochet)
+		var throw_angle := targeting.get_throw_angle(direction)
+		blade.launch_aimed(throw_angle, self)
+	else:
+		# Mindless throw - straight horizontal in facing direction
+		blade.launch(direction, self)
 	
 	consume_blade()
 	
@@ -197,6 +215,10 @@ func _ready() -> void:
 	stun_ani.visible=false
 	call_deferred("_connect_water_signals")
 	emit_signal("health_changed")
+	
+	# Setup targeting system (Area2D already in scene under Direction)
+	if targeting_enabled and targeting != null:
+		targeting.setup(self)
 	
 	# Sync sprite to blade inventory state after base initialization
 	# This handles respawn scenarios where blade state persists but sprite resets
