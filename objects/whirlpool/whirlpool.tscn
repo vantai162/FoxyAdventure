@@ -14,23 +14,21 @@ gradient = SubResource("Gradient_lba4k")
 [sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_lba4k"]
 particle_flag_disable_z = true
 emission_shape = 3
-emission_box_extents = Vector3(50, 8, 0)
+emission_box_extents = Vector3(8, 45, 0)
 angle_min = -20.0
 angle_max = 20.0
-direction = Vector3(0, 0, 0)
 spread = 180.0
 initial_velocity_min = 15.0
 initial_velocity_max = 35.0
 angular_velocity_min = -90.0
 angular_velocity_max = 90.0
-gravity = Vector3(0, 5, 0)
-linear_accel_min = -15.0
-linear_accel_max = 15.0
-damping_min = 0.5
+gravity = Vector3(0, -20, 0)
+linear_accel_min = -10.0
+linear_accel_max = 10.0
+damping_min = 1.0
 damping_max = 2.0
-scale_min = 0.5
-scale_max = 1.5
-color = Color(0.9, 0.95, 1, 0.8)
+scale_min = 0.4
+color = Color(0.9, 0.95, 1, 0.7)
 color_ramp = SubResource("GradientTexture1D_avkd6")
 
 [node name="Whirlpool" type="Area2D" groups=["hazard", "whirlpool"]]
@@ -45,7 +43,24 @@ shape = SubResource("RectangleShape2D_avkd6")
 debug_color = Color(0.941176, 0.196078, 0.509804, 0.0901961)
 
 [node name="WaterParticles" type="GPUParticles2D" parent="."]
-amount = 48
-process_material = SubResource("ParticleProcessMaterial_lba4k")
-lifetime = 2.5
+amount = 20
+lifetime = 2.0
 randomness = 0.3
+local_coords = true
+process_material = SubResource("ParticleProcessMaterial_lba4k")
+
+[node name="VortexVisual" type="Line2D" parent="."]
+points = PackedVector2Array(-25, 0, -15, 25, 0, 50, 15, 25, 25, 0)
+width = 1.5
+default_color = Color(0.4, 0.7, 1, 0.5)
+texture_mode = 1
+begin_cap_mode = 2
+end_cap_mode = 2
+antialiased = true
+
+[node name="InnerVortex" type="Line2D" parent="."]
+points = PackedVector2Array(-15, 0, -10, 17, 0, 35, 10, 17, 15, 0)
+width = 1.0
+default_color = Color(0.6, 0.85, 1, 0.6)
+texture_mode = 1
+antialiased = true

@@ -1,28 +1,27 @@
-[gd_scene load_steps=17 format=4 uid="uid://caxibxcw4tq32"]
+[gd_scene load_steps=18 format=4 uid="uid://caxibxcw4tq32"]
 
 [ext_resource type="Script" uid="uid://dw0q420qxl7ar" path="res://test/levels/level_3/stage_3_4.gd" id="1_stage_script"]
-[ext_resource type="PackedScene" uid="uid://bmic0j4cnluey" path="res://objects/checkpoint/checkpoint.tscn" id="2_checkpoint"]
 [ext_resource type="TileSet" uid="uid://0yf5cmwk6u1i" path="res://assets/island/terrain/ice_tile_set.tres" id="3_esds8"]
-[ext_resource type="PackedScene" uid="uid://mikmney07ycb" path="res://objects/platform/one_way_platform.tscn" id="3_oneway"]
-[ext_resource type="PackedScene" uid="uid://bs816w0pr8all" path="res://player/foxy.tscn" id="5_foxy"]
-[ext_resource type="PackedScene" uid="uid://bdkss15p4gbma" path="res://enemy/barrel/barrel.tscn" id="6_seahorse"]
-[ext_resource type="PackedScene" uid="uid://b1a2s3d4f5g6h" path="res://enemy/aggressive_tribe/aggressive_tribe.tscn" id="7_aggressive_tribe"]
-[ext_resource type="PackedScene" uid="uid://bmgv5cgan4yt" path="res://enemy/mushroom/mushroom.tscn" id="8_mushroom"]
-[ext_resource type="PackedScene" uid="uid://b0h8a022mpy26" path="res://objects/spike/spike_retractable/spike_retractable.tscn" id="9_spike_retract"]
-[ext_resource type="PackedScene" uid="uid://b6uwup34404a8" path="res://objects/spike/right_spike/right_spike.tscn" id="11_right_spike"]
-[ext_resource type="PackedScene" uid="uid://cn3lm5txngxlq" path="res://objects/spike/spike_static/spike.tscn" id="12_spike"]
-[ext_resource type="PackedScene" uid="uid://coqrny0yf5swy" path="res://objects/wind/WindArea.tscn" id="13_wind"]
-[ext_resource type="PackedScene" path="res://environment/cave/stalactite.tscn" id="15_stalactite"]
-[ext_resource type="PackedScene" uid="uid://lrdkn2gv1v1m" path="res://effect_Item/coin/coin.tscn" id="16_coin"]
-[ext_resource type="PackedScene" uid="uid://b3cbk6lmh2cc3" path="res://effect_Item/heal_potion/health_potion.tscn" id="17_heal_potion"]
-
-[sub_resource type="RectangleShape2D" id="exit_shape"]
-size = Vector2(64, 96)
+[ext_resource type="PackedScene" uid="uid://cqjqdbyd7mqfr" path="res://environment/cave/glowing_crystal.tscn" id="4_crystal"]
+[ext_resource type="PackedScene" uid="uid://ufmc2gkfnv58" path="res://enemy/crab/crab.tscn" id="5_crab"]
+[ext_resource type="PackedScene" uid="uid://bmgv5cgan4yt" path="res://enemy/mushroom/mushroom.tscn" id="6_mushroom"]
+[ext_resource type="PackedScene" uid="uid://b1a2s3d4f5g6h" path="res://enemy/aggressive_tribe/aggressive_tribe.tscn" id="7_aggressive"]
+[ext_resource type="PackedScene" uid="uid://c1bijw8i8erx5" path="res://enemy/turtle/turtle.tscn" id="8_turtle"]
+[ext_resource type="PackedScene" uid="uid://dav8b7a6d5e4f" path="res://enemy/shield_tribe/shield_tribe.tscn" id="9_shield"]
+[ext_resource type="PackedScene" uid="uid://bs816w0pr8all" path="res://player/foxy.tscn" id="10_foxy"]
+[ext_resource type="PackedScene" uid="uid://bodccm7jppcjv" path="res://enemy/barrel/elite_sniper.tscn" id="11_elite_sniper"]
+[ext_resource type="PackedScene" uid="uid://lrdkn2gv1v1m" path="res://effect_Item/coin/coin.tscn" id="12_coin"]
+[ext_resource type="PackedScene" uid="uid://b3cbk6lmh2cc3" path="res://effect_Item/heal_potion/health_potion.tscn" id="13_health_potion"]
+[ext_resource type="PackedScene" uid="uid://cd4x3xoe8plsn" path="res://effect_Item/chest/chest.tscn" id="14_chest"]
+[ext_resource type="PackedScene" uid="uid://dy2go6q81lmqg" path="res://effect_Item/TrapCoin/trap_coin.tscn" id="15_trap_coin"]
+[ext_resource type="PackedScene" uid="uid://b3rfttffyg1qj" path="res://effect_Item/key/key.tscn" id="16_key"]
+[ext_resource type="PackedScene" uid="uid://trap_chest_trickster" path="res://effect_Item/chest/trap_chest.tscn" id="17_trap_chest"]
 
 [node name="Level_3_4" type="Node2D"]
 script = ExtResource("1_stage_script")
 
 [node name="CanvasModulate" type="CanvasModulate" parent="."]
+visible = false
 color = Color(0.06, 0.05, 0.08, 1)
 
 [node name="PlayerSpawn" type="Marker2D" parent="."]
@@ -36,238 +35,287 @@ tile_set = ExtResource("3_esds8")
 
 [node name="Platforms" type="Node2D" parent="."]
 
-[node name="CrossfirePlat1" parent="Platforms" instance=ExtResource("3_oneway")]
-position = Vector2(1080, 520)
-
-[node name="CrossfirePlat2" parent="Platforms" instance=ExtResource("3_oneway")]
-position = Vector2(1140, 520)
-
-[node name="WindPlat1" parent="Platforms" instance=ExtResource("3_oneway")]
-position = Vector2(540, 790)
-
-[node name="WindPlat2" parent="Platforms" instance=ExtResource("3_oneway")]
-position = Vector2(430, 805)
-
-[node name="WindPlat3" parent="Platforms" instance=ExtResource("3_oneway")]
-position = Vector2(340, 795)
-
-[node name="ExitPlat1" parent="Platforms" instance=ExtResource("3_oneway")]
-position = Vector2(1420, 920)
-
-[node name="ExitPlat2" parent="Platforms" instance=ExtResource("3_oneway")]
-position = Vector2(1460, 820)
-
-[node name="ExitPlat3" parent="Platforms" instance=ExtResource("3_oneway")]
-position = Vector2(1420, 720)
-
 [node name="Hazards" type="Node2D" parent="."]
 
-[node name="RetractSpike1" parent="Hazards" instance=ExtResource("9_spike_retract")]
-position = Vector2(280, 296)
+[node name="WaterZones" type="Node2D" parent="."]
 
-[node name="RetractSpike2" parent="Hazards" instance=ExtResource("9_spike_retract")]
-position = Vector2(380, 296)
-
-[node name="RetractSpike3" parent="Hazards" instance=ExtResource("9_spike_retract")]
-position = Vector2(490, 296)
-
-[node name="RetractSpike4" parent="Hazards" instance=ExtResource("9_spike_retract")]
-position = Vector2(620, 296)
-
-[node name="RetractSpike5" parent="Hazards" instance=ExtResource("9_spike_retract")]
-position = Vector2(730, 296)
-
-[node name="RetractSpike6" parent="Hazards" instance=ExtResource("9_spike_retract")]
-position = Vector2(860, 296)
-
-[node name="RetractSpike7" parent="Hazards" instance=ExtResource("9_spike_retract")]
-position = Vector2(950, 296)
-
-[node name="CrossfireSpike1" parent="Hazards" instance=ExtResource("12_spike")]
-position = Vector2(620, 688)
-
-[node name="CrossfireSpike2" parent="Hazards" instance=ExtResource("12_spike")]
-position = Vector2(652, 688)
-
-[node name="CrossfireSpike3" parent="Hazards" instance=ExtResource("12_spike")]
-position = Vector2(1180, 688)
-
-[node name="CrossfireSpike4" parent="Hazards" instance=ExtResource("12_spike")]
-position = Vector2(1212, 688)
-
-[node name="WindZone" parent="Hazards" instance=ExtResource("13_wind")]
-position = Vector2(400, 830)
-
-[node name="WindSpike1" parent="Hazards" instance=ExtResource("11_right_spike")]
-position = Vector2(176, 770)
-
-[node name="WindSpike2" parent="Hazards" instance=ExtResource("11_right_spike")]
-position = Vector2(176, 800)
-
-[node name="WindSpike3" parent="Hazards" instance=ExtResource("11_right_spike")]
-position = Vector2(176, 830)
-
-[node name="Stalac1" parent="Hazards" instance=ExtResource("15_stalactite")]
-position = Vector2(820, 940)
-
-[node name="Stalac2" parent="Hazards" instance=ExtResource("15_stalactite")]
-position = Vector2(980, 935)
-
-[node name="Stalac3" parent="Hazards" instance=ExtResource("15_stalactite")]
-position = Vector2(1180, 942)
-
-[node name="Stalac4" parent="Hazards" instance=ExtResource("15_stalactite")]
-position = Vector2(1300, 938)
-
-[node name="ExitSpikeL1" parent="Hazards" instance=ExtResource("11_right_spike")]
-position = Vector2(1410, 850)
-
-[node name="ExitSpikeL2" parent="Hazards" instance=ExtResource("11_right_spike")]
-position = Vector2(1410, 760)
+[node name="Puzzle" type="Node2D" parent="."]
 
 [node name="Enemies" type="Node2D" parent="."]
 
-[node name="SeahorseR" parent="Enemies" instance=ExtResource("6_seahorse")]
-position = Vector2(1360, 568)
-scale = Vector2(-1, 1)
-script = null
+[node name="Crab1" parent="Enemies" instance=ExtResource("5_crab")]
+position = Vector2(350, 323)
 
-[node name="SeahorseL" parent="Enemies" instance=ExtResource("6_seahorse")]
-position = Vector2(640, 548)
-script = null
+[node name="Mushroom1" parent="Enemies" instance=ExtResource("6_mushroom")]
+position = Vector2(600, 324)
 
-[node name="CrossfireMushroom" parent="Enemies" instance=ExtResource("8_mushroom")]
-position = Vector2(700, 688)
+[node name="AggressiveTribe1" parent="Enemies" instance=ExtResource("7_aggressive")]
+position = Vector2(900, 313)
+direction = -1
 
-[node name="WindTribe1" parent="Enemies" instance=ExtResource("7_aggressive_tribe")]
-position = Vector2(240, 754)
+[node name="Turtle1" parent="Enemies" instance=ExtResource("8_turtle")]
+position = Vector2(1100, 576)
 
-[node name="FinalMushroom" parent="Enemies" instance=ExtResource("8_mushroom")]
-position = Vector2(880, 1008)
+[node name="ShieldTribe1" parent="Enemies" instance=ExtResource("9_shield")]
+position = Vector2(1300, 564)
+direction = -1
 
-[node name="FinalTribe" parent="Enemies" instance=ExtResource("7_aggressive_tribe")]
-position = Vector2(1200, 1008)
-scale = Vector2(-1, 1)
+[node name="Mushroom2" parent="Enemies" instance=ExtResource("6_mushroom")]
+position = Vector2(1500, 1124)
 
-[node name="Atmosphere" type="Node2D" parent="."]
+[node name="Crab2" parent="Enemies" instance=ExtResource("5_crab")]
+position = Vector2(176, 835)
+
+[node name="AggressiveTribe2" parent="Enemies" instance=ExtResource("7_aggressive")]
+position = Vector2(461, 825)
+direction = -1
+
+[node name="EliteSniper" parent="Enemies" instance=ExtResource("11_elite_sniper")]
+position = Vector2(644, 574)
+direction = -1
 
 [node name="Collectibles" type="Node2D" parent="."]
 
-[node name="SpikeCoin1" parent="Collectibles" instance=ExtResource("16_coin")]
-position = Vector2(420, 296)
+; === SPIKE CORRIDOR: RIGHT ARROW → (5 coins) - "Move forward!" ===
+[node name="Arrow_Spike_1" parent="Collectibles" instance=ExtResource("12_coin")]
+position = Vector2(200, 300)
 
-[node name="SpikeCoin2" parent="Collectibles" instance=ExtResource("16_coin")]
-position = Vector2(680, 296)
+[node name="Arrow_Spike_2" parent="Collectibles" instance=ExtResource("12_coin")]
+position = Vector2(200, 332)
 
-[node name="SpikeCoin3" parent="Collectibles" instance=ExtResource("16_coin")]
-position = Vector2(900, 296)
+[node name="Arrow_Spike_3" parent="Collectibles" instance=ExtResource("12_coin")]
+position = Vector2(232, 316)
 
-[node name="CrossfireCoin1" parent="Collectibles" instance=ExtResource("16_coin")]
-position = Vector2(800, 600)
+[node name="Arrow_Spike_4" parent="Collectibles" instance=ExtResource("12_coin")]
+position = Vector2(264, 316)
 
-[node name="CrossfireCoin2" parent="Collectibles" instance=ExtResource("16_coin")]
-position = Vector2(1140, 600)
+[node name="Arrow_Spike_5" parent="Collectibles" instance=ExtResource("12_coin")]
+position = Vector2(296, 316)
 
-[node name="WindCoin1" parent="Collectibles" instance=ExtResource("16_coin")]
+; === SPIKE PATH LINE (5 coins) - Safe traverse ===
+[node name="Line_Spike_1" parent="Collectibles" instance=ExtResource("12_coin")]
+position = Vector2(400, 310)
+
+[node name="Line_Spike_2" parent="Collectibles" instance=ExtResource("12_coin")]
+position = Vector2(480, 310)
+
+[node name="Line_Spike_3" parent="Collectibles" instance=ExtResource("12_coin")]
+position = Vector2(560, 310)
+
+[node name="Line_Spike_4" parent="Collectibles" instance=ExtResource("12_coin")]
+position = Vector2(640, 310)
+
+[node name="Line_Spike_5" parent="Collectibles" instance=ExtResource("12_coin")]
+position = Vector2(720, 310)
+
+; === TRAP COINS (X pattern warning - danger ahead!) ===
+[node name="TrapCoin1" parent="Collectibles" instance=ExtResource("15_trap_coin")]
+position = Vector2(580, 320)
+
+; === TRAP CHEST (after spike corridor - "safe haven" bait!) ===
+[node name="TrapChest" parent="Collectibles" instance=ExtResource("17_trap_chest")]
+position = Vector2(350, 450)
+
+; === CROSSFIRE ROOM: X PATTERN (5 coins) - Danger warning! ===
+[node name="X_Cross_1" parent="Collectibles" instance=ExtResource("12_coin")]
+position = Vector2(900, 520)
+
+[node name="X_Cross_2" parent="Collectibles" instance=ExtResource("12_coin")]
+position = Vector2(870, 550)
+
+[node name="X_Cross_3" parent="Collectibles" instance=ExtResource("12_coin")]
+position = Vector2(930, 550)
+
+[node name="X_Cross_4" parent="Collectibles" instance=ExtResource("12_coin")]
+position = Vector2(870, 490)
+
+[node name="X_Cross_5" parent="Collectibles" instance=ExtResource("12_coin")]
+position = Vector2(930, 490)
+
+; === CROSSFIRE ARC (5 coins) - Jump path through danger ===
+[node name="Arc_Cross_1" parent="Collectibles" instance=ExtResource("12_coin")]
+position = Vector2(1000, 560)
+
+[node name="Arc_Cross_2" parent="Collectibles" instance=ExtResource("12_coin")]
+position = Vector2(1060, 540)
+
+[node name="Arc_Cross_3" parent="Collectibles" instance=ExtResource("12_coin")]
+position = Vector2(1120, 530)
+
+[node name="Arc_Cross_4" parent="Collectibles" instance=ExtResource("12_coin")]
+position = Vector2(1180, 540)
+
+[node name="Arc_Cross_5" parent="Collectibles" instance=ExtResource("12_coin")]
+position = Vector2(1240, 560)
+
+; === HEALTH POTION 1 (crossfire support) ===
+[node name="HealthPotion1" parent="Collectibles" instance=ExtResource("13_health_potion")]
+position = Vector2(1100, 520)
+
+; === DESCENT: DIAGONAL LINE ↙ (5 coins) - Down path ===
+[node name="Diag_Descent_1" parent="Collectibles" instance=ExtResource("12_coin")]
+position = Vector2(1300, 620)
+
+[node name="Diag_Descent_2" parent="Collectibles" instance=ExtResource("12_coin")]
+position = Vector2(1240, 680)
+
+[node name="Diag_Descent_3" parent="Collectibles" instance=ExtResource("12_coin")]
+position = Vector2(1180, 740)
+
+[node name="Diag_Descent_4" parent="Collectibles" instance=ExtResource("12_coin")]
+position = Vector2(1120, 800)
+
+[node name="Diag_Descent_5" parent="Collectibles" instance=ExtResource("12_coin")]
+position = Vector2(1060, 860)
+
+; === TRAP COIN 2 (hidden in descent) ===
+[node name="TrapCoin2" parent="Collectibles" instance=ExtResource("15_trap_coin")]
+position = Vector2(1100, 870)
+
+; === WIND TUNNEL: ZIGZAG (6 coins) - Weaving through! ===
+[node name="Zigzag_Wind_1" parent="Collectibles" instance=ExtResource("12_coin")]
+position = Vector2(200, 780)
+
+[node name="Zigzag_Wind_2" parent="Collectibles" instance=ExtResource("12_coin")]
+position = Vector2(280, 810)
+
+[node name="Zigzag_Wind_3" parent="Collectibles" instance=ExtResource("12_coin")]
+position = Vector2(200, 840)
+
+[node name="Zigzag_Wind_4" parent="Collectibles" instance=ExtResource("12_coin")]
+position = Vector2(280, 870)
+
+[node name="Zigzag_Wind_5" parent="Collectibles" instance=ExtResource("12_coin")]
+position = Vector2(200, 900)
+
+[node name="Zigzag_Wind_6" parent="Collectibles" instance=ExtResource("12_coin")]
+position = Vector2(280, 930)
+
+; === HEALTH POTION 2 (wind tunnel support) ===
+[node name="HealthPotion2" parent="Collectibles" instance=ExtResource("13_health_potion")]
+position = Vector2(350, 900)
+
+; === KEY AREA: DIAMOND ◇ (4 coins) - Key marker ===
+[node name="Diamond_Key_1" parent="Collectibles" instance=ExtResource("12_coin")]
+position = Vector2(550, 800)
+
+[node name="Diamond_Key_2" parent="Collectibles" instance=ExtResource("12_coin")]
+position = Vector2(520, 830)
+
+[node name="Diamond_Key_3" parent="Collectibles" instance=ExtResource("12_coin")]
+position = Vector2(580, 830)
+
+[node name="Diamond_Key_4" parent="Collectibles" instance=ExtResource("12_coin")]
+position = Vector2(550, 860)
+
+; === KEY (wind tunnel reward) ===
+[node name="Key" parent="Collectibles" instance=ExtResource("16_key")]
+position = Vector2(550, 830)
+
+; === FINAL STRETCH: RIGHT ARROW → (6 coins) - "Almost there!" ===
+[node name="Arrow_Final_1" parent="Collectibles" instance=ExtResource("12_coin")]
+position = Vector2(800, 1080)
+
+[node name="Arrow_Final_2" parent="Collectibles" instance=ExtResource("12_coin")]
+position = Vector2(800, 1112)
+
+[node name="Arrow_Final_3" parent="Collectibles" instance=ExtResource("12_coin")]
+position = Vector2(832, 1096)
+
+[node name="Arrow_Final_4" parent="Collectibles" instance=ExtResource("12_coin")]
+position = Vector2(864, 1096)
+
+[node name="Arrow_Final_5" parent="Collectibles" instance=ExtResource("12_coin")]
+position = Vector2(896, 1096)
+
+[node name="Arrow_Final_6" parent="Collectibles" instance=ExtResource("12_coin")]
+position = Vector2(928, 1096)
+
+; === FINAL LINE (5 coins) - To the chest! ===
+[node name="Line_Final_1" parent="Collectibles" instance=ExtResource("12_coin")]
+position = Vector2(1050, 1096)
+
+[node name="Line_Final_2" parent="Collectibles" instance=ExtResource("12_coin")]
+position = Vector2(1130, 1096)
+
+[node name="Line_Final_3" parent="Collectibles" instance=ExtResource("12_coin")]
+position = Vector2(1210, 1096)
+
+[node name="Line_Final_4" parent="Collectibles" instance=ExtResource("12_coin")]
+position = Vector2(1290, 1096)
+
+[node name="Line_Final_5" parent="Collectibles" instance=ExtResource("12_coin")]
+position = Vector2(1370, 1096)
+
+; === CHEST AREA: SQUARE □ (4 coins) - Victory! ===
+[node name="Square_End_1" parent="Collectibles" instance=ExtResource("12_coin")]
+position = Vector2(1460, 1060)
+
+[node name="Square_End_2" parent="Collectibles" instance=ExtResource("12_coin")]
+position = Vector2(1460, 1120)
+
+[node name="Square_End_3" parent="Collectibles" instance=ExtResource("12_coin")]
+position = Vector2(1540, 1060)
+
+[node name="Square_End_4" parent="Collectibles" instance=ExtResource("12_coin")]
+position = Vector2(1540, 1120)
+
+; === CHEST (end reward!) ===
+[node name="Chest" parent="Collectibles" instance=ExtResource("14_chest")]
+position = Vector2(1500, 1090)
+
+[node name="LightSources" type="Node2D" parent="."]
+
+[node name="Crystal_Spawn_Ice" parent="LightSources" instance=ExtResource("4_crystal")]
+position = Vector2(180, 280)
+color_preset = 5
+
+[node name="Crystal_Spike_Ruby1" parent="LightSources" instance=ExtResource("4_crystal")]
+position = Vector2(700, 300)
+crystal_type = 2
+color_preset = 2
+
+[node name="Crystal_Crossfire_Amethyst1" parent="LightSources" instance=ExtResource("4_crystal")]
+position = Vector2(650, 480)
+crystal_type = 2
+color_preset = 3
+
+[node name="Crystal_Crossfire_Ruby2" parent="LightSources" instance=ExtResource("4_crystal")]
+position = Vector2(1350, 600)
+color_preset = 2
+
+[node name="Crystal_Wind_IceCluster" parent="LightSources" instance=ExtResource("4_crystal")]
 position = Vector2(480, 780)
+crystal_type = 3
+color_preset = 5
 
-[node name="WindCoin2" parent="Collectibles" instance=ExtResource("16_coin")]
-position = Vector2(320, 780)
+[node name="Crystal_Final_Amethyst" parent="LightSources" instance=ExtResource("4_crystal")]
+position = Vector2(750, 1050)
+crystal_type = 2
+color_preset = 3
 
-[node name="FinalCoin1" parent="Collectibles" instance=ExtResource("16_coin")]
-position = Vector2(1000, 980)
+[node name="Crystal_Final_Sapphire" parent="LightSources" instance=ExtResource("4_crystal")]
+position = Vector2(1250, 1080)
+crystal_type = 0
+color_preset = 1
 
-[node name="Heal1" parent="Collectibles" instance=ExtResource("17_heal_potion")]
-position = Vector2(1100, 500)
+[node name="Crystal_Exit_Gold1" parent="LightSources" instance=ExtResource("4_crystal")]
+position = Vector2(1500, 720)
+crystal_type = 2
+color_preset = 4
 
-[node name="Heal2" parent="Collectibles" instance=ExtResource("17_heal_potion")]
-position = Vector2(600, 848)
+[node name="Crystal_Exit_Gold2" parent="LightSources" instance=ExtResource("4_crystal")]
+position = Vector2(1480, 620)
+crystal_type = 2
+color_preset = 4
 
-[node name="Heal3" parent="Collectibles" instance=ExtResource("17_heal_potion")]
-position = Vector2(1480, 588)
+[node name="Crystal_Descent_Amethyst" parent="LightSources" instance=ExtResource("4_crystal")]
+position = Vector2(200, 650)
+color_preset = 3
 
 [node name="Objects" type="Node2D" parent="."]
 
-[node name="Checkpoint1" parent="Objects" instance=ExtResource("2_checkpoint")]
-position = Vector2(140, 328)
-
-[node name="Checkpoint2" parent="Objects" instance=ExtResource("2_checkpoint")]
-position = Vector2(1100, 688)
-
-[node name="Checkpoint3" parent="Objects" instance=ExtResource("2_checkpoint")]
-position = Vector2(700, 1008)
-
-[node name="Checkpoint4" parent="Objects" instance=ExtResource("2_checkpoint")]
-position = Vector2(1420, 588)
-
 [node name="ExitZone" type="Node2D" parent="."]
-position = Vector2(1520, 588)
 
-[node name="ExitArea" type="Area2D" parent="ExitZone"]
-
-[node name="ExitShape" type="CollisionShape2D" parent="ExitZone/ExitArea"]
-shape = SubResource("exit_shape")
-
-[node name="ExitLabel" type="Label" parent="ExitZone"]
-modulate = Color(0.3, 1, 0.3, 1)
-offset_left = -48.0
-offset_top = -24.0
-offset_right = 48.0
-offset_bottom = 8.0
-text = "→ 3-5 BOSS"
-horizontal_alignment = 1
-
-[node name="DebugLabels" type="Node2D" parent="."]
-
-[node name="Label_Path" type="Label" parent="DebugLabels"]
-modulate = Color(1, 1, 1, 0.9)
-offset_left = 160.0
-offset_top = 120.0
-offset_right = 160.0
-offset_bottom = 120.0
-text = "THE WINDING GAUNTLET
-Path: RIGHT→DROP→LEFT→DROP→RIGHT
-Not a vertical slide - you ZIGZAG!"
-
-[node name="Label_Section1" type="Label" parent="DebugLabels"]
-modulate = Color(1, 0.6, 0.3, 0.8)
-offset_left = 350.0
-offset_top = 200.0
-offset_right = 350.0
-offset_bottom = 200.0
-text = "SPIKE CORRIDOR (→)
-Time your run!
-Low ceiling, can't jump over."
-
-[node name="Label_Section2" type="Label" parent="DebugLabels"]
-modulate = Color(1, 0.3, 0.3, 0.8)
-offset_left = 800.0
-offset_top = 480.0
-offset_right = 800.0
-offset_bottom = 480.0
-text = "CROSSFIRE CHAMBER
-Seahorses both sides!
-Use cover. Don't camp."
-
-[node name="Label_Section3" type="Label" parent="DebugLabels"]
-modulate = Color(0.3, 0.7, 1, 0.8)
-offset_left = 250.0
-offset_top = 870.0
-offset_right = 250.0
-offset_bottom = 870.0
-text = "WIND TUNNEL (←)
-Wind pushes toward spikes!
-Tribe throws coconuts."
-
-[node name="Label_Section4" type="Label" parent="DebugLabels"]
-modulate = Color(0.8, 0.3, 1, 0.8)
-offset_left = 900.0
-offset_top = 1060.0
-offset_right = 900.0
-offset_bottom = 1060.0
-text = "FINAL STRETCH (→)
-Stalactites! Enemies!
-Exit climb on right."
-
-[node name="Foxy" parent="." instance=ExtResource("5_foxy")]
-position = Vector2(140, 312)
+[node name="Foxy" parent="." instance=ExtResource("10_foxy")]
+position = Vector2(140, 180)

@@ -16,6 +16,14 @@ shape = SubResource("RectangleShape2D_plate")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 
+[node name="PressureGlow" type="PointLight2D" parent="Sprite2D"]
+enabled = false
+color = Color(1, 0.9, 0.5, 1)
+energy = 0.5
+blend_mode = 2
+range_height = 32.0
+texture_scale = 0.3
+
 [node name="PlateVisual" type="Polygon2D" parent="Sprite2D"]
 color = Color(0.5, 0.45, 0.4, 1)
 polygon = PackedVector2Array(-16, -3, 16, -3, 14, 3, -14, 3)

@@ -15,7 +15,6 @@ var _tween: Tween
 @onready var gate_body: AnimatableBody2D = $Gate if has_node("Gate") else null
 
 func _ready() -> void:
-	# If no animations exist, we'll use tween-based movement
 	pass
 
 func open_gate() -> void:
@@ -38,7 +37,7 @@ func close_gate() -> void:
 		return
 	is_open = false
 	
-	# Try animation player first (legacy support)
+	# Try animation player (legacy support)
 	if has_node("AnimationPlayer"):
 		var anim_name = _get_close_animation_name()
 		if $AnimationPlayer.has_animation(anim_name):

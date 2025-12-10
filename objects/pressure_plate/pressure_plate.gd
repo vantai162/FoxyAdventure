@@ -44,6 +44,7 @@ var _flame_ref: Node = null
 var _water_ref: Node = null
 
 @onready var sprite: Sprite2D = $Sprite2D if has_node("Sprite2D") else null
+@onready var pressure_glow: PointLight2D = $Sprite2D/PressureGlow if has_node("Sprite2D/PressureGlow") else null
 var _original_sprite_pos: Vector2 = Vector2.ZERO
 
 func _ready() -> void:
@@ -60,9 +61,15 @@ func _ready() -> void:
 	if not water_node.is_empty():
 		_water_ref = get_node_or_null(water_node)
 	
-	# Store original sprite position
+	# Store original sprite position for tween animation
 	if sprite:
 		_original_sprite_pos = sprite.position
+	else:
+		# Fallback: create visual if none exists
+		var plate_visual = get_node_or_null("Sprite2D")
+		if plate_visual:
+			sprite = plate_visual
+			_original_sprite_pos = sprite.position
 
 func _on_body_entered(body: Node2D) -> void:
 	# Filter by weight requirement
@@ -102,10 +109,14 @@ func _press() -> void:
 	is_pressed = true
 	plate_pressed.emit()
 	
-	# Visual feedback
+	# Visual feedback - tween position and enable glow
 	if sprite:
 		var tween = create_tween()
+		tween.set_parallel(true)
 		tween.tween_property(sprite, "position", _original_sprite_pos + pressed_offset, press_duration)
+		if pressure_glow:
+			pressure_glow.enabled = true
+			tween.tween_property(pressure_glow, "energy", 0.8, press_duration)
 	
 	# Trigger target
 	_on_plate_pressed()
@@ -117,10 +128,17 @@ func _release() -> void:
 	is_pressed = false
 	plate_released.emit()
 	
-	# Visual feedback
+	# Visual feedback - tween position back and fade glow
 	if sprite:
 		var tween = create_tween()
+		tween.set_parallel(true)
 		tween.tween_property(sprite, "position", _original_sprite_pos, press_duration)
+		if pressure_glow:
+			tween.tween_property(pressure_glow, "energy", 0.0, press_duration)
+			tween.finished.connect(func(): 
+				if pressure_glow:
+					pressure_glow.enabled = false
+			)
 	
 	# Release target
 	_on_plate_released()

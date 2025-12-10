@@ -129,6 +129,11 @@ func stop_move() -> void:
 func take_damage(damage: int) -> void:
 	health -= damage
 	AudioManager.play_sound("hurt",20.0)
+
+## Check if character is dead (used by player targeting system)
+func is_dead() -> bool:
+	return health <= 0
+
 # Change the animation of the character on the next frame
 func change_animation(new_animation: String) -> void:
 	_next_animation = new_animation
@@ -202,7 +207,13 @@ func spring():
 func drop_down_platform():
 	var PLATFORM_LAYER = 1
 	set_collision_mask_value(PLATFORM_LAYER, false)
-	await get_tree().create_timer(0.25).timeout
+	var tree = get_tree()
+	if tree == null:
+		return
+	await tree.create_timer(0.25).timeout
+	# Guard: character may have been freed during await
+	if not is_instance_valid(self):
+		return
 	set_collision_mask_value(PLATFORM_LAYER, true)
 	
 # Hàm chung để phát âm thanh

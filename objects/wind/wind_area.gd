@@ -1,7 +1,7 @@
 extends Area2D
 class_name WindArea
-## Wind zone that pushes entities
-## Affects player, enemies, and optionally projectiles
+## Wind zone that pushes entities with proper visual feedback
+## Features: horizontal speed streaks shader + dust particles
 
 @export_group("Wind Settings")
 @export var wind_force: Vector2 = Vector2(-150, 0)  ## Force applied per frame
@@ -10,10 +10,43 @@ class_name WindArea
 @export var enemy_force_multiplier: float = 0.5  ## Enemies resist wind more
 
 var _bodies_in_wind: Array[Node2D] = []
+var _wind_streaks: ColorRect = null
+var _dust_particles: GPUParticles2D = null
 
 func _ready() -> void:
 	body_entered.connect(_on_body_entered)
 	body_exited.connect(_on_body_exited)
+	
+	# Get visual nodes
+	_wind_streaks = get_node_or_null("WindStreaks")
+	_dust_particles = get_node_or_null("DustParticles")
+	
+	# Configure visuals to match wind direction
+	_configure_wind_visuals()
+
+
+func _configure_wind_visuals() -> void:
+	## Sync visual direction with physics wind_force
+	var wind_angle = wind_force.angle()
+	
+	# Update shader direction
+	if _wind_streaks and _wind_streaks.material is ShaderMaterial:
+		var mat = _wind_streaks.material as ShaderMaterial
+		mat.set_shader_parameter("direction_angle", wind_angle)
+		# Scale speed with force magnitude
+		var speed_factor = wind_force.length() / 150.0
+		mat.set_shader_parameter("wind_speed", 1.2 * speed_factor)
+	
+	# Update particle direction
+	if _dust_particles and _dust_particles.process_material is ParticleProcessMaterial:
+		var pmat = _dust_particles.process_material as ParticleProcessMaterial
+		# Convert 2D angle to 3D direction for particles
+		var dir_3d = Vector3(cos(wind_angle), sin(wind_angle), 0.0)
+		pmat.direction = dir_3d
+		# Scale velocity with force
+		var base_vel = wind_force.length() * 0.8
+		pmat.initial_velocity_min = base_vel * 0.6
+		pmat.initial_velocity_max = base_vel * 1.2
 
 func _physics_process(delta: float) -> void:
 	## Apply wind to all tracked bodies
