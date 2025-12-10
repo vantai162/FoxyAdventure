@@ -12,9 +12,13 @@ func _enter() -> void:
 	is_air_attack = not obj.is_on_floor()
 	if not is_air_attack:
 		obj.change_animation("attack")
+		# Ground attack: commitment - stop horizontal movement (unless on ice)
+		if not obj._is_on_ice():
+			obj.velocity.x = 0
 	else:
 		obj.change_animation("Jump_attack")
-		# Apply reduced gravity for air suspension effect
+		# Air attack: preserve momentum (physics-consistent), but apply hover effect
+		# NOT zeroing velocity - player keeps their arc
 		original_gravity = obj.gravity
 		obj.gravity = original_gravity * obj.attack_air_gravity_scale
 
@@ -22,10 +26,6 @@ func _enter() -> void:
 	
 	# Start attack cooldown
 	obj.start_attack_cooldown()
-	
-	# Stop player on normal ground, but preserve momentum on ice
-	if not (obj.is_on_floor() and obj._is_on_ice()):
-		obj.velocity.x = 0
 
 	# Enable collision shape of hit area
 	obj.get_node("Direction/HitArea2D/CollisionShape2D").disabled = false
