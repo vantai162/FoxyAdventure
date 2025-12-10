@@ -1,35 +1,53 @@
 class_name InteractiveArea2D
 extends Area2D
+## Interactive Area for player-triggered interactions (chests, levers, NPCs, etc.)
+## 
+## CRITICAL: Only responds to Player bodies, not any CharacterBody2D.
+## Each instance tracks its own interaction state independently.
 
-#signal when player interact with the area
-signal interacted
+signal interacted  ## Emitted when player presses interact while in this area
+signal interaction_available  ## Emitted when player enters interaction range
+signal interaction_unavailable  ## Emitted when player leaves interaction range
 
-#signal when player can interact with the area
-signal interaction_available
+@export var interact_input_action: String = "interact"
 
-#signal when player can't interact with the area
-signal interaction_unavailable
-
-@export var interact_input_action = "interact"
+## Track whether THIS specific area has the player inside
+var _player_inside: bool = false
 
 
-func _ready():
+func _ready() -> void:
 	set_process_unhandled_input(false)
 	body_entered.connect(_on_body_entered)
 	body_exited.connect(_on_body_exited)
 
-func _unhandled_input(event):
+
+func _unhandled_input(event: InputEvent) -> void:
+	# Only process if player is actually inside THIS area
+	if not _player_inside:
+		return
+	
 	if event.is_action_pressed(interact_input_action):
 		interacted.emit()
-		var viewport = get_viewport()
+		var viewport := get_viewport()
 		if viewport != null:
 			viewport.set_input_as_handled()
 
-func _on_body_entered(_body: Node2D) -> void:
+
+func _on_body_entered(body: Node2D) -> void:
+	# CRITICAL: Only respond to Player, not any body
+	if not body is Player:
+		return
+	
+	_player_inside = true
 	set_process_unhandled_input(true)
 	interaction_available.emit()
 
 
-func _on_body_exited(_body: Node2D) -> void:
+func _on_body_exited(body: Node2D) -> void:
+	# CRITICAL: Only respond to Player, not any body
+	if not body is Player:
+		return
+	
+	_player_inside = false
 	set_process_unhandled_input(false)
 	interaction_unavailable.emit()
