@@ -4,7 +4,7 @@ class_name KeyPickup
 ## Features: float, color glow, shimmer, pickup particles
 
 @export_group("Key Identity")
-@export var key_id: String = "default"  ## Unique ID to match with locks
+@export var key_id: String = ""  ## Unique ID to match with locks (empty = generic key, works with has_key())
 @export var key_color: Color = Color.YELLOW  ## Visual tint for the key
 
 @export_group("Pickup Effects")

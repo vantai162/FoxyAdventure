@@ -4,6 +4,7 @@ extends MarginContainer
 @onready var sound_check_button: CheckButton = $NinePatchRect/SoundCheckButton
 
 
+
 func _ready():
 	sound_check_button.button_pressed = not AudioServer.is_bus_mute(AudioServer.get_bus_index("SFX"))
 	music_check_button.button_pressed = not AudioServer.is_bus_mute(AudioServer.get_bus_index("Music"))
@@ -40,3 +41,11 @@ func _on_restart_button_pressed() -> void:
 	hide_popup()
 	player.die()
 	
+
+
+func _on_control_button_pressed() -> void:
+	var remap_scene = preload("res://scenes/game_screen/input_settings_ui.tscn")
+	var remap_ui = remap_scene.instantiate()
+	
+	# Thêm vào cây node, thường là dưới CanvasLayer hoặc root
+	add_child(remap_ui)

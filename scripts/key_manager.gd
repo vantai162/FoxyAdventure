@@ -22,6 +22,7 @@ func _set_key(action:String,key:int):
 	if KeyDict.size()==0:
 		print("Oops!You dont have the KeyDictYet ")
 	if key>0:
+		Input.action_release(action)
 		var cur_input=InputEventKey.new()
 		cur_input.physical_keycode=KeyDict[action]
 		InputMap.action_erase_event(action,cur_input)
@@ -65,13 +66,13 @@ func listening_and_set(scene_tree:SceneTree,action:String)->int:#only call this 
 	return keycode
 	
 func disableinput(exception:Array):
-	GameManager.player.velocity=Vector2.ZERO
+	if GameManager.player:
+		GameManager.player.velocity=Vector2.ZERO
 	for key in InputMap.get_actions():
 		Input.action_release(key)
 	for key in KeyDict.keys():
 		if(key!="pause"&&!(key in exception)):
 			InputMap.action_erase_events(key)
-	GameManager.player.velocity=Vector2.ZERO
 	for key in InputMap.get_actions():
 		Input.action_release(key)
 

@@ -1,4 +1,4 @@
-[gd_scene load_steps=10 format=3 uid="uid://485meohsiugp"]
+[gd_scene load_steps=12 format=3 uid="uid://485meohsiugp"]
 
 [ext_resource type="Script" uid="uid://c3jinqop44upq" path="res://scenes/game_screen/main_menu.gd" id="1_ab5lu"]
 [ext_resource type="Texture2D" uid="uid://bm66ag0j7y3qi" path="res://assets/ui/popup.png" id="1_p4sw0"]
@@ -11,12 +11,22 @@ texture = ExtResource("2_ab5lu")
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_jdxg6"]
 bg_color = Color(0.6, 0.6, 0.6, 0)
+border_color = Color(0.8, 0.8, 0.8, 0)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_p4sw0"]
 bg_color = Color(0.6, 0.6, 0.6, 0)
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_y7hy3"]
+bg_color = Color(0.6, 0.6, 0.6, 0.027451)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_06bq6"]
+bg_color = Color(0.6, 0.6, 0.6, 0)
+border_color = Color(0.8, 0.8, 0.8, 0.054902)
+border_blend = true
+
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_snmln"]
 bg_color = Color(0.6, 0.6, 0.6, 0.00392157)
+border_color = Color(0.8, 0.8, 0.8, 0.0509804)
 shadow_offset = Vector2(0, 3.41)
 
 [node name="MainMenu" type="Control"]
@@ -81,10 +91,13 @@ offset_right = 85.5
 offset_bottom = 25.0
 grow_horizontal = 2
 grow_vertical = 2
+focus_mode = 0
 theme_override_fonts/font = ExtResource("2_jdxg6")
 theme_override_font_sizes/font_size = 17
 theme_override_styles/hover_pressed = SubResource("StyleBoxFlat_jdxg6")
 theme_override_styles/hover = SubResource("StyleBoxFlat_p4sw0")
+theme_override_styles/pressed_mirrored = SubResource("StyleBoxFlat_y7hy3")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_06bq6")
 theme_override_styles/normal = SubResource("StyleBoxFlat_snmln")
 text = "START GAME"
 
@@ -114,6 +127,7 @@ offset_right = 85.5
 offset_bottom = 25.0
 grow_horizontal = 2
 grow_vertical = 2
+focus_mode = 0
 theme_override_fonts/font = ExtResource("2_jdxg6")
 theme_override_font_sizes/font_size = 20
 theme_override_styles/hover_pressed = SubResource("StyleBoxFlat_jdxg6")
@@ -147,6 +161,7 @@ offset_right = 85.5
 offset_bottom = 25.0
 grow_horizontal = 2
 grow_vertical = 2
+focus_mode = 0
 theme_override_fonts/font = ExtResource("2_jdxg6")
 theme_override_font_sizes/font_size = 20
 theme_override_styles/hover_pressed = SubResource("StyleBoxFlat_jdxg6")

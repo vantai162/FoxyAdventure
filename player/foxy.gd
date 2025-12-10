@@ -144,15 +144,16 @@ func consume_blade() -> void:
 	if blade_count > 0:
 		# 1. Trừ biến nội bộ (để chặn không cho ném tiếp)
 		blade_count -= 1
-		
+		blade_changed.emit(blade_count)
 		# 2. [THÊM DÒNG NÀY] Trừ trong Inventory để UI biết mà nhảy số
-		inventory.use_blade(1)
+		#inventory.use_blade(1)
 		# Hoặc: inventory.adjust_amount_item("Blade", -1)
 
 func return_blade() -> void:
 	if blade_count < max_blade_capacity:
 		blade_count += 1
-		inventory.adjust_amount_item("Blade", 1) 
+		#inventory.adjust_amount_item("Blade", 1) 
+		blade_changed.emit(blade_count)
 		# Switch back to blade sprite when getting a blade back
 		if has_unlocked_blade and blade_count > 0:
 			set_animated_sprite($Direction/BladeAnimatedSprite2D)
@@ -286,7 +287,7 @@ func _collect_blade(is_upgrade_item: bool = false) -> void:
 		set_animated_sprite($Direction/BladeAnimatedSprite2D)
 		
 		# Đồng bộ Inventory & UI
-		inventory.adjust_amount_item("Blade", 1)
+		#inventory.adjust_amount_item("Blade", 1)
 		blade_changed.emit(blade_count)
 		return
 
@@ -301,15 +302,15 @@ func _collect_blade(is_upgrade_item: bool = false) -> void:
 		# Lưu ý: Cần xử lý logic cộng inventory tương ứng để khớp số
 		# (Đoạn này hơi phức tạp nếu inventory không có biến max, 
 		# nhưng tạm thời ta cứ cho là cộng thêm blade cho đầy túi)
-		var needed = max_blade_capacity - inventory.get_amount("Blade")
+		var needed = max_blade_capacity - blade_count
 		if needed > 0:
-			inventory.adjust_amount_item("Blade", needed)
+			blade_count += needed
 			
 	# Nếu là Dao ném ra -> Chỉ hồi đạn (+1)
 	else:
 		if blade_count < max_blade_capacity:
 			blade_count += 1
-			inventory.adjust_amount_item("Blade", 1)
+			#inventory.adjust_amount_item("Blade", 1)
 		else:
 			return # Đầy rồi thì thôi không nhặt, không cộng
 
@@ -381,7 +382,7 @@ func take_damage(damage: int) -> void:
 		if has_node("Camera2D"):
 			$Camera2D.shake(8.0)
 		super.take_damage(damage)
-		_applyeffect("Invicibility",0.2)
+		_applyeffect("Invicibility",0.7)
 		fsm.change_state(fsm.states.hurt)
 
 func _updatecooldown(delta: float) -> void:
@@ -415,8 +416,8 @@ func load_state(data: Dictionary) -> void:
 		global_position = Vector2(pos_array[0], pos_array[1])
 	
 	if data.has("blade_count"):
-		blade_count = inventory.get_amount("Blade")
-		#blade_count = data["blade_count"]
+		#blade_count = inventory.get_amount("Blade")
+		blade_count = data["blade_count"]
 	if data.has("max_blade_capacity"):
 		max_blade_capacity = data["max_blade_capacity"]
 	if data.has("has_unlocked_blade"):
