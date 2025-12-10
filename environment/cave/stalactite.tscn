@@ -1,20 +1,24 @@
-[gd_scene load_steps=6 format=3 uid="uid://stalactite_cave"]
+[gd_scene load_steps=8 format=3 uid="uid://rhntp41ai45p"]
 
 [ext_resource type="Script" uid="uid://dlo71csbfckc1" path="res://environment/cave/stalactite.gd" id="1_stalactite"]
 [ext_resource type="Script" uid="uid://xqvgljx4hk1s" path="res://scripts/hit_area_2d.gd" id="2_hitarea"]
+[ext_resource type="Texture2D" uid="uid://t3cktfmhcitn" path="res://assets/island/terrain/ice level demo.png" id="2_lweuf"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_hbanp"]
+atlas = ExtResource("2_lweuf")
+region = Rect2(457, 17, 14, 34)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_spike"]
-size = Vector2(16, 48)
+size = Vector2(16, 36)
 
-[sub_resource type="CircleShape2D" id="CircleShape2D_detect"]
-radius = 80.0
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_lweuf"]
+size = Vector2(20, 400)
 
 [sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_dust"]
 particle_flag_disable_z = true
 emission_shape = 1
 emission_sphere_radius = 8.0
 direction = Vector3(0, 1, 0)
-spread = 45.0
 initial_velocity_min = 20.0
 initial_velocity_max = 40.0
 gravity = Vector3(0, 50, 0)
@@ -23,43 +27,30 @@ scale_max = 1.5
 
 [node name="Stalactite" type="Node2D"]
 script = ExtResource("1_stalactite")
-detection_radius = 80.0
-detection_below_only = true
-fall_delay = 0.3
-fall_speed = 500.0
-fall_acceleration = 800.0
-shake_intensity = 3.0
-damage = 1
-destroy_on_impact = true
-respawn_time = 5.0
-warning_particles = true
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 modulate = Color(0.6, 0.65, 0.7, 1)
-position = Vector2(0, 24)
-scale = Vector2(0.5, 1.5)
+texture = SubResource("AtlasTexture_hbanp")
 
-[node name="HitArea2D" type="Area2D" parent="." node_paths=PackedStringArray()]
+[node name="HitArea2D" type="Area2D" parent="."]
 collision_layer = 0
 collision_mask = 4
 script = ExtResource("2_hitarea")
-damage = 1
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="HitArea2D"]
-position = Vector2(0, 24)
 shape = SubResource("RectangleShape2D_spike")
 
 [node name="DetectionArea" type="Area2D" parent="."]
+position = Vector2(0, -218)
 collision_layer = 0
 collision_mask = 2
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="DetectionArea"]
-shape = SubResource("CircleShape2D_detect")
+shape = SubResource("RectangleShape2D_lweuf")
 
 [node name="DustParticles" type="GPUParticles2D" parent="."]
 emitting = false
-amount = 8
-process_material = SubResource("ParticleProcessMaterial_dust")
+lifetime = 0.5
 one_shot = true
 explosiveness = 0.8
-lifetime = 0.5
+process_material = SubResource("ParticleProcessMaterial_dust")
