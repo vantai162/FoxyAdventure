@@ -1,12 +1,9 @@
-[gd_scene load_steps=4 format=3 uid="uid://pressure_plate_001"]
+[gd_scene load_steps=3 format=3 uid="uid://d1twwiutipd8r"]
 
-[ext_resource type="Script" path="res://objects/pressure_plate/pressure_plate.gd" id="1_script"]
+[ext_resource type="Script" uid="uid://dwbq3xeo1lhu5" path="res://objects/pressure_plate/pressure_plate.gd" id="1_script"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_plate"]
 size = Vector2(32, 8)
-
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_visual"]
-size = Vector2(32, 6)
 
 [node name="PressurePlate" type="Area2D"]
 collision_layer = 0
@@ -18,8 +15,6 @@ position = Vector2(0, -4)
 shape = SubResource("RectangleShape2D_plate")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
-position = Vector2(0, 0)
-texture = null
 
 [node name="PressureGlow" type="PointLight2D" parent="Sprite2D"]
 enabled = false

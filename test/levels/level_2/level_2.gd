@@ -1,29 +1,15 @@
 extends Node2D
 
-@onready var warlord = preload("res://enemy/boss/warlordturtle.tscn")
-@onready var turtle_spawn = preload("res://spawner/turtle_spawner.tscn")
-@onready var healpotion_spawn = preload("res://spawner/healthpotion_spawner.tscn")
 @onready var settings_ui = preload("res://scenes/game_screen/settings_popup.tscn")
-@export var timeline_name_1: String = "warlord_1"
-@export var timeline_name_2: String = "warlord_2"
-@onready var music_id = "warlord_theme"
 @onready var stage_music_id = "level_1_music"
 var cursetting=null
-var timeline2_triggered = false
-var is_clean_up = false
-var endgame = false
-var warlord_spawned = false
-var turtle_spawner_spawned = false
-var healpotion_spawner_spawned = false
-var boss_phase1_healthbar: TextureProgressBar
-var boss_phase2_healthbar: TextureProgressBar
-var boss
 var can_pause = true
 
 func _enter_tree() -> void:
 	GameManager.current_stage = self
 
 func _ready() -> void:
+	
 	var editor_player = find_child("Foxy", true, false)
 	if editor_player != null:
 		if GameManager.player == null and GameManager.persistent_player_data.is_empty():
@@ -47,37 +33,7 @@ func _ready() -> void:
 
 
 
-
-
-
-func _on_body_entered(body: Node2D) -> void:
-	pass # Replace with function body.
-
-
-func _process(delta: float) -> void:
-	if boss:
-		if boss.current_phase == 2 and not endgame:
-			boss_phase2_healthbar = $CanvasLayer/WarlordPhase2HealthBar
-			boss_phase2_healthbar.setup()
-			boss_phase2_healthbar.visible = true
-			boss_phase1_healthbar.visible = false
-		
-		if boss.health <= 1 and not timeline2_triggered and not is_clean_up:
-			timeline2_triggered = true
-			is_clean_up = true
-			cleanup_after_winning()
-			var player = GameManager.player
-			player.set_physics_process(false)
-			if player.has_method("stop_move"): 
-				player.stop_move()
-			player.position = Vector2(608,465)
-			Dialogic.start(timeline_name_2)
-			Dialogic.signal_event.connect(_on_dialogic_signal_event)
-			Dialogic.timeline_ended.connect(_on_dialog_finished)
-			#theme.stop()
-			AudioManager.stop_music(0.5)
-			
-			
+func _process(delta: float) -> void:	
 	if Input.is_action_just_pressed("pause") and can_pause:
 		if(GameManager.paused):
 			hide_pop_up()
@@ -95,70 +51,10 @@ func hide_pop_up():
 		cursetting.hide_popup()
 		cursetting.queue_free()	
 
-func _on_meet_boss_area_2d_body_entered(body: Node2D) -> void:
-	if body.is_in_group("player") and warlord_spawned == false:
-		boss = warlord.instantiate()
-		boss.position = Vector2(468, 400)
-		add_child(boss)
-		warlord_spawned = true
-		
-		var spawner = turtle_spawn.instantiate()
-		spawner.position = Vector2(850, 36)
-		get_node("Spawner").add_child(spawner)
-		turtle_spawner_spawned = true
-		
-		var heal_spawner = healpotion_spawn.instantiate()
-		heal_spawner.position = Vector2(1077,452)
-		get_node("Spawner").add_child(heal_spawner)
-		healpotion_spawner_spawned = true
-		
-		boss_phase1_healthbar = $CanvasLayer/WarlordHealthBar
-		boss_phase1_healthbar.visible = true
-		boss_phase1_healthbar.setup()
-		
-		#dialog
-		var player = GameManager.player
-		player.set_physics_process(false)
-		if player.has_method("stop_move"): 
-			player.stop_move()
-		Dialogic.start(timeline_name_1)
-		Dialogic.timeline_ended.connect(_on_dialog_finished)
-		#theme.play()
-		AudioManager.play_music(music_id,10.0,0.5)
 
 func _on_dialog_finished():
 	var player = GameManager.player
 	player.set_physics_process(true)
 	can_pause = true
-	
-func cleanup_after_winning():
-	# XÓA TẤT CẢ ENEMY TRONG MAP
-	var enemies = get_node("Enemy")
-	for e in enemies.get_children():
-		e.queue_free()
 
-	# XÓA TẤT CẢ SPAWNER
-	var spawners = get_node("Spawner")
-	for s in spawners.get_children():
-		s.queue_free()
 		
-func _on_dialogic_signal_event(argument: String):
-	var player = GameManager.player
-	endgame = true
-	boss_phase2_healthbar.visible = false
-	# --- GỌI HÀM RESET NƯỚC CÓ SẴN CỦA BẠN ---
-		# 1. Tìm node nước (Thay "WaterArea" bằng tên thật của node nước trong Scene của bạn)
-	var water_node = find_child("water", true, false) 
-		
-		# 2. Gọi hàm reset (Thay "ten_ham_reset_cua_ban" bằng tên hàm thật bạn đã viết)
-	if water_node:
-		if water_node.has_method("lower_water"): # Ví dụ tên hàm là reset_water
-			water_node.lower_water(0.5, 2)
-			print("Đã cho nước rúttt")
-		else:
-			print("Lỗi: Tìm thấy node nước nhưng không thấy hàm reset!")
-			
-	if argument == "kill_warlord":
-		boss.die()
-	if argument == "spare_warlord":
-		boss.queue_free()

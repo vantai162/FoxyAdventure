@@ -5493,6 +5493,8 @@ sources/7 = SubResource("TileSetAtlasSource_sq1oj")
 [node name="Level1" type="Node2D"]
 material = ExtResource("11_h4ytb")
 script = ExtResource("1_7qv11")
+music_id = null
+wakeup_timeline = null
 
 [node name="CanvasLayer" type="CanvasLayer" parent="."]
 layer = 100
