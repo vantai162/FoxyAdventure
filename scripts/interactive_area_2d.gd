@@ -2,7 +2,7 @@ class_name InteractiveArea2D
 extends Area2D
 ## Interactive Area for player-triggered interactions (chests, levers, NPCs, etc.)
 ## 
-## CRITICAL: Only responds to Player bodies, not any CharacterBody2D.
+## CRITICAL: Only responds to Player (in "player" group), not any body.
 ## Each instance tracks its own interaction state independently.
 
 signal interacted  ## Emitted when player presses interact while in this area
@@ -34,8 +34,8 @@ func _unhandled_input(event: InputEvent) -> void:
 
 
 func _on_body_entered(body: Node2D) -> void:
-	# CRITICAL: Only respond to Player, not any body
-	if not body is Player:
+	# Only respond to bodies in the "player" group
+	if not body.is_in_group("player"):
 		return
 	
 	_player_inside = true
@@ -44,8 +44,8 @@ func _on_body_entered(body: Node2D) -> void:
 
 
 func _on_body_exited(body: Node2D) -> void:
-	# CRITICAL: Only respond to Player, not any body
-	if not body is Player:
+	# Only respond to bodies in the "player" group
+	if not body.is_in_group("player"):
 		return
 	
 	_player_inside = false
