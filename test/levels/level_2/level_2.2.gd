@@ -7,7 +7,6 @@ extends Node2D
 @export var timeline_name_1: String = "warlord_1"
 @export var timeline_name_2: String = "warlord_2"
 @onready var music_id = "warlord_theme"
-@onready var stage_music_id = "level_1_music"
 var cursetting=null
 var timeline2_triggered = false
 var is_clean_up = false
@@ -19,11 +18,14 @@ var boss_phase1_healthbar: TextureProgressBar
 var boss_phase2_healthbar: TextureProgressBar
 var boss
 var can_pause = true
+@onready var door = $DugeonGate
+@onready var camera_target_boss =$CameraTarget
 
 func _enter_tree() -> void:
 	GameManager.current_stage = self
 
 func _ready() -> void:
+	AudioManager.stop_music()
 	var editor_player = find_child("Foxy", true, false)
 	if editor_player != null:
 		if GameManager.player == null and GameManager.persistent_player_data.is_empty():
@@ -43,7 +45,6 @@ func _ready() -> void:
 		GameManager.target_portal_name = ""
 	
 	await GameManager.fade_from_black()
-	AudioManager.play_music(stage_music_id,10.0,0.5)
 
 
 
@@ -65,16 +66,18 @@ func _process(delta: float) -> void:
 		if boss.health <= 1 and not timeline2_triggered and not is_clean_up:
 			timeline2_triggered = true
 			is_clean_up = true
+			if Dialogic.timeline_ended.is_connected(_on_dialog_finished):
+				Dialogic.timeline_ended.disconnect(_on_dialog_finished)
+
 			cleanup_after_winning()
 			var player = GameManager.player
 			player.set_physics_process(false)
 			if player.has_method("stop_move"): 
 				player.stop_move()
-			player.position = Vector2(608,465)
+			player.position = Vector2(950,369)
 			Dialogic.start(timeline_name_2)
 			Dialogic.signal_event.connect(_on_dialogic_signal_event)
-			Dialogic.timeline_ended.connect(_on_dialog_finished)
-			#theme.stop()
+			Dialogic.timeline_ended.connect(_on_dialog_finished_2)
 			AudioManager.stop_music(0.5)
 			
 			
@@ -97,40 +100,74 @@ func hide_pop_up():
 
 func _on_meet_boss_area_2d_body_entered(body: Node2D) -> void:
 	if body.is_in_group("player") and warlord_spawned == false:
-		boss = warlord.instantiate()
-		boss.position = Vector2(468, 400)
-		add_child(boss)
 		warlord_spawned = true
-		
-		var spawner = turtle_spawn.instantiate()
-		spawner.position = Vector2(850, 36)
-		get_node("Spawner").add_child(spawner)
-		turtle_spawner_spawned = true
-		
-		var heal_spawner = healpotion_spawn.instantiate()
-		heal_spawner.position = Vector2(1077,452)
-		get_node("Spawner").add_child(heal_spawner)
-		healpotion_spawner_spawned = true
-		
-		boss_phase1_healthbar = $CanvasLayer/WarlordHealthBar
-		boss_phase1_healthbar.visible = true
-		boss_phase1_healthbar.setup()
-		
-		#dialog
-		var player = GameManager.player
-		player.set_physics_process(false)
-		if player.has_method("stop_move"): 
-			player.stop_move()
+		var cam = GameManager.player.get_node("Camera2D")
+		AudioManager.play_sound("earthquake",10.0)
+		await boss_entry_cinematic()
+		# --- PAN CAMERA SANG CỬA ---
+		boss = warlord.instantiate()
+		boss.position = Vector2(1079, 369)
+		add_child(boss)
+		cam.global_position = camera_target_boss.global_position
+		await get_tree().create_timer(0.5).timeout
+		boss.set_physics_process(false)
+
+		# --- HIỆN HỘI THOẠI ---
 		Dialogic.start(timeline_name_1)
-		Dialogic.timeline_ended.connect(_on_dialog_finished)
-		#theme.play()
 		AudioManager.play_music(music_id,10.0,0.5)
+		Dialogic.timeline_ended.connect(_on_dialog_finished)
+		
+func boss_entry_cinematic():
+	can_pause = false
+	var player = GameManager.player
+	var cam = player.get_node("Camera2D")
+	
+	player.set_physics_process(false)
+	if player.has_method("stop_move"):
+		player.stop_move()
+
+	# ---- ĐÓNG CỬA + RUNG ----
+	if door.has_method("close"):
+		door.close()
+
+	if cam.has_method("shake_tsunami"):
+		cam.shake_tsunami(20.0, 1.0)
+
+	await get_tree().create_timer(1.7).timeout
+
+
 
 func _on_dialog_finished():
 	var player = GameManager.player
+	var cam = player.get_node("Camera2D")
+	# --- CAMERA QUAY VỀ PLAYER ---
+	cam.global_position = player.global_position
+	await get_tree().create_timer(0.2).timeout
 	player.set_physics_process(true)
 	can_pause = true
+	var spawner = turtle_spawn.instantiate()
+	spawner.position = Vector2(676, 26)
+	get_node("Spawner").add_child(spawner)
+	turtle_spawner_spawned = true
+		
+	var heal_spawner = healpotion_spawn.instantiate()
+	heal_spawner.position = Vector2(626,338)
+	get_node("Spawner").add_child(heal_spawner)
+	healpotion_spawner_spawned = true
+		
+	boss_phase1_healthbar = $CanvasLayer/WarlordHealthBar
+	boss_phase1_healthbar.visible = true
+	boss_phase1_healthbar.setup()
 	
+	if boss:
+		boss.set_physics_process(true)
+	
+	
+func _on_dialog_finished_2():
+	var player = GameManager.player
+	player.set_physics_process(true)
+	can_pause = true
+
 func cleanup_after_winning():
 	# XÓA TẤT CẢ ENEMY TRONG MAP
 	var enemies = get_node("Enemy")

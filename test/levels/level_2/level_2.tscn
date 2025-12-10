@@ -200,9 +200,6 @@ position = Vector2(2774, 110)
 [node name="Turtle5" parent="Enemy" instance=ExtResource("19_rqkkq")]
 position = Vector2(3395, 109)
 
-[node name="Turtle6" parent="Enemy" instance=ExtResource("19_rqkkq")]
-position = Vector2(722, 387)
-
 [node name="Barrel2" parent="Enemy" instance=ExtResource("22_1xjcy")]
 position = Vector2(433, 49)
 
@@ -256,25 +253,13 @@ position = Vector2(1710, 415)
 [node name="Checkpoint2" parent="." instance=ExtResource("20_x03np")]
 position = Vector2(270, 145)
 
-[node name="Blade2" parent="." instance=ExtResource("15_7ulr3")]
-position = Vector2(1602, 243)
-
-[node name="Blade4" parent="." instance=ExtResource("15_7ulr3")]
-position = Vector2(1633, 241)
-
-[node name="Blade5" parent="." instance=ExtResource("15_7ulr3")]
-position = Vector2(1633, 241)
-
-[node name="Blade3" parent="." instance=ExtResource("15_7ulr3")]
-position = Vector2(1549, 232)
-
 [node name="Spawner" type="Node2D" parent="."]
 
 [node name="ShopVendor" parent="." instance=ExtResource("34_5l4f7")]
 position = Vector2(974, -236)
 
 [node name="Foxy" parent="." instance=ExtResource("36_wn3ka")]
-position = Vector2(218, 130)
+position = Vector2(1565, 235)
 
 [node name="VerticalMovingPlatform" parent="." groups=["one_way_platform"] instance=ExtResource("37_q2kgt")]
 position = Vector2(432, 73)
@@ -296,7 +281,7 @@ move_distance = 250.0
 change_direction_time = 4.5
 
 [node name="DarkEntrance" parent="." instance=ExtResource("38_q2kgt")]
-position = Vector2(151, 165)
+position = Vector2(162, 170)
 scale = Vector2(3, -2.971)
 collision_layer = 0
 collision_mask = 2

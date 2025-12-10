@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="AudioClip" load_steps=2 format=3 uid="uid://ssasg5ds3xqq"]
+
+[ext_resource type="Script" uid="uid://chlphbiuq1gay" path="res://scripts/audio/audio_clip.gd" id="1_4hfdf"]
+
+[resource]
+script = ExtResource("1_4hfdf")
+clip_id = ""
+volume_db = 0.0
+randomize_pitch = false
+pitch_min = 0.9
+pitch_max = 1.1
+description = ""
+metadata/_custom_type_script = "uid://chlphbiuq1gay"

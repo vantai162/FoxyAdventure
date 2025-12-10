@@ -9,6 +9,7 @@ func _enter_tree() -> void:
 	GameManager.current_stage = self
 
 func _ready() -> void:
+	
 	var editor_player = find_child("Foxy", true, false)
 	if editor_player != null:
 		if GameManager.player == null and GameManager.persistent_player_data.is_empty():
