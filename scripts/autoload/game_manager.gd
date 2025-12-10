@@ -21,6 +21,7 @@ var paused=false
 var skin_manager:SkinManager=SkinManager.new()
 var kill_count: int = 0
 
+
 func _ready() -> void:
 	load_checkpoint_data()
 	key_manager.load_key()
