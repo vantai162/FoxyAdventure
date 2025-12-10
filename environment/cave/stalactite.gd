@@ -3,6 +3,9 @@ class_name Stalactite
 ## Stalactite Hazard - Ceiling spike that falls when triggered
 ## Multiple trigger modes: player proximity, random timer, or manual (for puzzles)
 ## Deals damage on contact, can optionally respawn
+##
+## SETUP: Assign texture to the Sprite2D child node directly in the editor.
+## If no texture is assigned, a procedural fallback will be used (for prototyping).
 
 ## Trigger mode determines how stalactite activates
 enum TriggerMode {
@@ -30,9 +33,8 @@ enum TriggerMode {
 @export var respawn_time: float = 5.0  ## 0 = no respawn
 
 @export_group("Visual")
-@export var stalactite_texture: Texture2D = null  ## Assign sprite texture for GPU rendering (drawn pointing DOWN ↓)
 @export var warning_particles: bool = true  ## Dust before falling
-@export var stalactite_scale: float = 1.0  ## Size multiplier
+@export var stalactite_scale: float = 1.0  ## Size multiplier (applied to Sprite2D.scale)
 
 enum State { IDLE, SHAKING, FALLING, DESTROYED }
 var current_state: State = State.IDLE
@@ -50,12 +52,14 @@ func _ready() -> void:
 	original_position = global_position
 	original_x = position.x
 	
-	# Generate procedural sprite if no texture, or use GPU sprite if texture assigned
+	# Generate procedural sprite if no texture assigned on Sprite2D child
+	# DESIGNER: Assign texture directly to the Sprite2D child node!
 	if sprite:
-		if stalactite_texture:
-			_setup_sprite_texture()
-		elif sprite.texture == null:
-			push_warning("Stalactite: No stalactite_texture assigned - using CPU-rendered procedural fallback (assign Texture2D for production)")
+		if sprite.texture:
+			# Apply scale multiplier to existing sprite
+			sprite.scale *= stalactite_scale
+		else:
+			push_warning("Stalactite: No texture on Sprite2D child - using CPU-rendered procedural fallback (assign Texture2D to Sprite2D for production)")
 			_create_procedural_stalactite()
 	
 	# Setup based on trigger mode
@@ -196,16 +200,6 @@ func trigger_fall() -> void:
 ## Reset to idle state
 func reset() -> void:
 	_respawn()
-
-## Setup GPU sprite rendering (production mode)
-func _setup_sprite_texture() -> void:
-	if not sprite or not stalactite_texture:
-		return
-	
-	sprite.texture = stalactite_texture
-	sprite.scale = Vector2(stalactite_scale, stalactite_scale)
-	sprite.visible = true
-	# No rotation needed - sprite is drawn pointing DOWN ↓
 
 ## Create a simple procedural stalactite shape when no sprite is assigned
 func _create_procedural_stalactite() -> void:

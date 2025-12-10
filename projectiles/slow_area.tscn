@@ -10,7 +10,10 @@ size = Vector2(50, 10)
 collision_layer = 0
 collision_mask = 2
 script = ExtResource("1_slow")
-puddle_texture = ExtResource("2_q4s1c")
+
+[node name="PuddleSprite" type="Sprite2D" parent="."]
+modulate = Color(0.4, 0.6, 1, 0.6)
+texture = ExtResource("2_q4s1c")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 shape = SubResource("RectangleShape2D_3oyj8")

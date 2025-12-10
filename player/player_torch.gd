@@ -22,15 +22,20 @@ class_name PlayerTorch
 @export var spark_lifetime: float = 0.6
 
 @export_group("State")
-@export var is_lit: bool = true
+## Torch starts OFF by default. Auto-lights if level has DarknessModulate.
+@export var is_lit: bool = false
 
 var _spark_particles: GPUParticles2D
 var _flicker_tween: Tween
 var _animated_sprite: AnimatedSprite2D
 
 func _ready() -> void:
+	# Auto-detect if level has darkness - if so, light the torch automatically
+	if not is_lit:
+		_auto_detect_darkness()
+	
 	texture_scale = base_radius / 512.0
-	energy = base_energy
+	energy = base_energy if is_lit else 0.0
 	enabled = is_lit
 	shadow_enabled = cast_shadows
 	
@@ -107,6 +112,22 @@ func _create_torch_sprite() -> void:
 		_animated_sprite.play("burn")
 	else:
 		_animated_sprite.play("unlit")
+
+func _auto_detect_darkness() -> void:
+	## Auto-detect if level has darkness (DarknessModulate or CanvasModulate node)
+	## If found, automatically light the torch so player can see in dark levels
+	var scene_root = get_tree().current_scene
+	if not scene_root:
+		return
+	
+	# Check for DarknessModulate (preferred name) or CanvasModulate (legacy name)
+	var darkness = scene_root.get_node_or_null("DarknessModulate")
+	if not darkness:
+		darkness = scene_root.get_node_or_null("CanvasModulate")
+	
+	if darkness and darkness is CanvasModulate:
+		# Level has darkness - light the torch!
+		is_lit = true
 
 func _create_light_texture() -> void:
 	## Smooth gradient for light glow - particles are the sharp bits!
