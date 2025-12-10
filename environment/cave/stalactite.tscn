@@ -26,6 +26,7 @@ scale_min = 0.5
 scale_max = 1.5
 
 [node name="Stalactite" type="Node2D"]
+scale = Vector2(1, -1)
 script = ExtResource("1_stalactite")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]

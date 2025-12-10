@@ -1,5 +1,4 @@
 extends EnemyState
-## Elite Seahorse "Sniper" shoot state
 ## Tracks player diagonally with smooth lerp (70% smoothness)
 ## Uses detection area reference - only tracks player while in forward cone
 

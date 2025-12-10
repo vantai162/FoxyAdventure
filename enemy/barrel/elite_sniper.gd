@@ -1,5 +1,4 @@
 extends EnemyCharacter
-class_name EliteSniperSeahorse
 ## Elite Barrel: "The Sniper"
 ## Stationary turret with diagonal tracking
 ## Fires 5-shot burst (vs base 3), faster timing, player tracking with lerp

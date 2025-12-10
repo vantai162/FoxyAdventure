@@ -1,7 +1,18 @@
+@tool
 extends Node2D
 class_name SpikeRetractable
 ## Retractable spike hazard with multiple trigger modes
 ## Use in rhythm platforming or trap setups
+## 
+## @tool script - orientation updates immediately in editor
+
+## Visual orientation (which way the spike points)
+enum Orientation {
+	FLOOR,    ## Spike pointing up (default)
+	CEILING,  ## Spike pointing down
+	LEFT,     ## Spike pointing left
+	RIGHT     ## Spike pointing right
+}
 
 ## Trigger modes for different gameplay patterns
 enum TriggerMode {
@@ -9,6 +20,18 @@ enum TriggerMode {
 	PRESSURE_PLATE,  ## Extends when player steps on detection area
 	MANUAL           ## Only via trigger_extend()/trigger_retract() calls
 }
+
+const ROTATIONS := {
+	Orientation.FLOOR: 0.0,
+	Orientation.CEILING: PI,
+	Orientation.LEFT: PI / 2,
+	Orientation.RIGHT: -PI / 2
+}
+
+@export var orientation := Orientation.FLOOR:
+	set(value):
+		orientation = value
+		_apply_orientation()
 
 @export_group("Trigger Mode")
 @export var trigger_mode: TriggerMode = TriggerMode.INTERVAL
@@ -34,7 +57,25 @@ var _detection_area: Area2D = null
 var _player_on_plate: bool = false
 var _current_tween: Tween = null
 
+@onready var sprite: Sprite2D = $Sprite2D if has_node("Sprite2D") else null
+
+func _apply_orientation() -> void:
+	if not is_inside_tree():
+		return
+	if sprite:
+		sprite.rotation = ROTATIONS.get(orientation, 0.0)
+
+func _notification(what: int) -> void:
+	if what == NOTIFICATION_SCENE_INSTANTIATED:
+		call_deferred("_apply_orientation")
+
 func _ready() -> void:
+	_apply_orientation()
+	
+	# Don't run gameplay logic in editor
+	if Engine.is_editor_hint():
+		return
+	
 	# Set initial position
 	position = up_pos if start_extended else down_pos
 	is_extended = start_extended

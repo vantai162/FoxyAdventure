@@ -1,11 +1,22 @@
+@tool
 extends Node2D
 class_name Stalactite
-## Stalactite Hazard - Ceiling spike that falls when triggered
+## Stalactite/Stalagmite Hazard - Spike that falls/launches when triggered
 ## Multiple trigger modes: player proximity, random timer, or manual (for puzzles)
 ## Deals damage on contact, can optionally respawn
 ##
-## SETUP: Assign texture to the Sprite2D child node directly in the editor.
-## If no texture is assigned, a procedural fallback will be used (for prototyping).
+## Supports 4 orientations via @tool - updates in editor immediately!
+## CEILING: Falls down (classic stalactite)
+## FLOOR: Launches up (stalagmite trap)
+## LEFT/RIGHT: Shoots horizontally from walls
+
+## Orientation determines fall direction and visual rotation
+enum Orientation {
+	CEILING,  ## Hangs from ceiling, falls DOWN (default stalactite)
+	FLOOR,    ## On floor, launches UP (stalagmite trap)
+	LEFT,     ## On left wall, shoots RIGHT
+	RIGHT     ## On right wall, shoots LEFT
+}
 
 ## Trigger mode determines how stalactite activates
 enum TriggerMode {
@@ -14,10 +25,13 @@ enum TriggerMode {
 	MANUAL             ## Only falls when trigger_fall() is called (puzzles)
 }
 
+@export var orientation := Orientation.CEILING:
+	set(value):
+		orientation = value
+		_apply_orientation()
+
 @export_group("Trigger Settings")
 @export var trigger_mode: TriggerMode = TriggerMode.PLAYER_PROXIMITY
-@export var detection_radius: float = 80.0  ## How close player must be (PLAYER_PROXIMITY)
-@export var detection_below_only: bool = true  ## Only trigger if player is below
 @export var random_min_time: float = 3.0  ## Min time between falls (RANDOM_TIMER)
 @export var random_max_time: float = 8.0  ## Max time between falls (RANDOM_TIMER)
 
@@ -40,7 +54,22 @@ enum State { IDLE, SHAKING, FALLING, DESTROYED }
 var current_state: State = State.IDLE
 var velocity: float = 0.0
 var original_position: Vector2
-var original_x: float
+var original_local_pos: Vector2
+
+# Direction vectors based on orientation
+const FALL_DIRECTIONS := {
+	Orientation.CEILING: Vector2(0, 1),   # Down
+	Orientation.FLOOR: Vector2(0, -1),    # Up
+	Orientation.LEFT: Vector2(1, 0),      # Right
+	Orientation.RIGHT: Vector2(-1, 0)     # Left
+}
+
+const ROTATIONS := {
+	Orientation.CEILING: 0.0,
+	Orientation.FLOOR: PI,
+	Orientation.LEFT: -PI / 2,
+	Orientation.RIGHT: PI / 2
+}
 
 @onready var sprite: Sprite2D = $Sprite2D if has_node("Sprite2D") else null
 @onready var collision: CollisionShape2D = $HitArea2D/CollisionShape2D if has_node("HitArea2D/CollisionShape2D") else null
@@ -48,9 +77,23 @@ var original_x: float
 @onready var hit_area: HitArea2D = $HitArea2D if has_node("HitArea2D") else null
 @onready var dust_particles: GPUParticles2D = $DustParticles if has_node("DustParticles") else null
 
+func _apply_orientation() -> void:
+	if not is_inside_tree():
+		return
+	rotation = ROTATIONS.get(orientation, 0.0)
+
+func _notification(what: int) -> void:
+	if what == NOTIFICATION_SCENE_INSTANTIATED:
+		call_deferred("_apply_orientation")
+
 func _ready() -> void:
+	_apply_orientation()
 	original_position = global_position
-	original_x = position.x
+	original_local_pos = position
+	
+	# Don't run gameplay logic in editor
+	if Engine.is_editor_hint():
+		return
 	
 	# Generate procedural sprite if no texture assigned on Sprite2D child
 	# DESIGNER: Assign texture directly to the Sprite2D child node!
@@ -79,11 +122,8 @@ func _setup_detection_area() -> void:
 		return
 	
 	detection_area.body_entered.connect(_on_detection_body_entered)
-	# Set detection shape radius
-	var circle = CircleShape2D.new()
-	circle.radius = detection_radius
-	if detection_area.has_node("CollisionShape2D"):
-		detection_area.get_node("CollisionShape2D").shape = circle
+	# Detection shape is defined in scene - designer controls size/position
+	# Shape rotates with root node, so it stays "in front" of spike automatically
 
 func _start_random_timer() -> void:
 	if current_state != State.IDLE:
@@ -97,14 +137,22 @@ func _start_random_timer() -> void:
 
 
 func _physics_process(delta: float) -> void:
+	# Don't run in editor
+	if Engine.is_editor_hint():
+		return
+	
+	var fall_dir = FALL_DIRECTIONS.get(orientation, Vector2.DOWN)
+	var shake_axis = Vector2(fall_dir.y, fall_dir.x).abs()  # Perpendicular to fall
+	
 	match current_state:
 		State.SHAKING:
-			# Shake effect
-			position.x = original_x + randf_range(-shake_intensity, shake_intensity)
+			# Shake perpendicular to fall direction
+			var shake_offset = shake_axis * randf_range(-shake_intensity, shake_intensity)
+			position = original_local_pos + shake_offset
 		
 		State.FALLING:
 			velocity += fall_acceleration * delta
-			position.y += velocity * delta
+			position += fall_dir * velocity * delta
 			
 			# Check for ground collision
 			if _check_ground_collision():
@@ -117,10 +165,8 @@ func _on_detection_body_entered(body: Node2D) -> void:
 	if not body.is_in_group("player"):
 		return
 	
-	# Check if player is below (if required)
-	if detection_below_only and body.global_position.y < global_position.y:
-		return
-	
+	# Detection area shape in scene determines trigger zone
+	# Position it in front of spike to only trigger when player is in fall path
 	_start_falling()
 
 func _start_falling() -> void:
@@ -136,14 +182,16 @@ func _start_falling() -> void:
 	if current_state == State.SHAKING:  # Still shaking (not reset)
 		current_state = State.FALLING
 		velocity = fall_speed * 0.5  # Initial fall speed
-		position.x = original_x  # Stop shaking
+		position = original_local_pos  # Stop shaking
 
 func _check_ground_collision() -> bool:
-	# Simple raycast down or use collision
+	var fall_dir = FALL_DIRECTIONS.get(orientation, Vector2.DOWN)
+	
+	# Raycast in fall direction
 	var space_state = get_world_2d().direct_space_state
 	var query = PhysicsRayQueryParameters2D.create(
 		global_position,
-		global_position + Vector2(0, 10),
+		global_position + fall_dir * 10,
 		1  # Ground layer
 	)
 	var result = space_state.intersect_ray(query)
@@ -178,7 +226,7 @@ func _hide_and_respawn() -> void:
 
 func _respawn() -> void:
 	global_position = original_position
-	position.x = original_x
+	position = original_local_pos
 	velocity = 0.0
 	current_state = State.IDLE
 	visible = true
