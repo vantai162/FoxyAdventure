@@ -54,22 +54,39 @@ offset_right = 176.0
 mouse_filter = 2
 
 [node name="CoinUI" parent="CanvasLayer" instance=ExtResource("2_7ulr3")]
-anchors_preset = -1
-anchor_left = 0.015
-anchor_top = 0.097
+anchors_preset = 0
+anchor_right = 0.0
+anchor_bottom = 0.0
+offset_left = 20.0
+offset_top = 60.0
+offset_right = 20.0
+offset_bottom = 60.0
+grow_horizontal = 1
+grow_vertical = 1
 mouse_filter = 2
 
 [node name="KeyUI" parent="CanvasLayer" instance=ExtResource("3_2a1r0")]
-anchors_preset = -1
-anchor_left = 0.015
-anchor_top = 0.155
+anchors_preset = 0
+anchor_right = 0.0
+anchor_bottom = 0.0
+offset_left = 20.0
+offset_top = 100.0
+offset_right = 20.0
+offset_bottom = 100.0
+grow_horizontal = 1
+grow_vertical = 1
 mouse_filter = 2
 
 [node name="BladeUI" parent="CanvasLayer" instance=ExtResource("5_q2kgt")]
-offset_left = 19.0
-offset_top = 163.0
-offset_right = 19.0
-offset_bottom = 163.0
+anchors_preset = 0
+anchor_right = 0.0
+anchor_bottom = 0.0
+offset_left = 20.0
+offset_top = 145.0
+offset_right = 20.0
+offset_bottom = 145.0
+grow_horizontal = 1
+grow_vertical = 1
 
 [node name="WarlordHealthBar" parent="CanvasLayer" instance=ExtResource("5_chxal")]
 visible = false
@@ -289,6 +306,5 @@ target_stage = "uid://5my2pujg1oqp"
 target_door = "DarkEntrance"
 can_enter = true
 
-[connection signal="area_entered" from="DirtLayer/HealthPotion" to="DirtLayer/HealthPotion" method="_on_area_entered"]
 [connection signal="lever_activated" from="Lever" to="Gate" method="open_gate"]
 [connection signal="lever_deactivated" from="Lever" to="Gate" method="close_gate"]
