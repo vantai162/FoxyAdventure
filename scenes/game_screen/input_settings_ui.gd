@@ -11,7 +11,7 @@ func _populate_actions():
 		var row = HBoxContainer.new()
 		
 		var label = Label.new()
-		label.text = action.capitalize()
+		label.text = action.to_upper()
 		row.add_child(label)
 		
 		var button = Button.new()
