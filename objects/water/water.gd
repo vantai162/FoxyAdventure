@@ -37,7 +37,6 @@ class_name water
 @export var ambient_wave_length: float = 0.25  ## Wavelength (0.1-1.0, lower = more waves)
 
 @export_group("Physics Simulation")
-@export_range(0.0,1000.0) var water_physics_speed: float = 80.0  ## DEPRECATED: Legacy parameter, no longer used
 @export var water_restoring_force: float = 300.0  ## Spring constant pulling toward rest_height (higher = faster response)
 @export var wave_energy_loss: float = 35.0  ## Linear damping coefficient (base resistance)
 @export var quadratic_damping: float = 0.15  ## Quadratic damping (v²) - prevents overshoot at high velocities

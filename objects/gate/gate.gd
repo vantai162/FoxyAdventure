@@ -98,7 +98,7 @@ func open_gate() -> void:
 		return
 	is_open = true
 	
-	# Try animation player first (legacy support)
+	# Try animation player first (for custom animations)
 	if has_node("AnimationPlayer"):
 		var anim_name = _get_open_animation_name()
 		if $AnimationPlayer.has_animation(anim_name):
@@ -115,7 +115,7 @@ func close_gate() -> void:
 		return
 	is_open = false
 	
-	# Try animation player (legacy support)
+	# Try animation player (for custom animations)
 	if has_node("AnimationPlayer"):
 		var anim_name = _get_close_animation_name()
 		if $AnimationPlayer.has_animation(anim_name):
@@ -126,6 +126,9 @@ func close_gate() -> void:
 	_animate_gate(Vector2.ZERO)
 
 func _get_open_offset() -> Vector2:
+	## NOTE: gate_body IS rotated for horizontal orientations, but gate_body.position
+	## is set in PARENT space (this Node2D), which is NOT rotated.
+	## So world-space directions work correctly here - no rotation compensation needed.
 	match direction:
 		GateDirection.VERTICAL_UP:
 			return Vector2(0, -move_distance)

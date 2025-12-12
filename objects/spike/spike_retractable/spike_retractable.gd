@@ -35,13 +35,10 @@ const ROTATIONS := {
 	Orientation.RIGHT: -PI / 2
 }
 
-## Retract directions for each orientation (where the spike hides)
-const RETRACT_DIRECTIONS := {
-	Orientation.FLOOR: Vector2(0, 1),     ## Retracts down into floor
-	Orientation.CEILING: Vector2(0, -1),  ## Retracts up into ceiling
-	Orientation.LEFT: Vector2(1, 0),      ## Retracts right into left wall
-	Orientation.RIGHT: Vector2(-1, 0)     ## Retracts left into right wall
-}
+## Retract direction in LOCAL space (same for all orientations)
+## Since SpikeBody is rotated, local +Y always points "into the wall"
+## The rotation handles converting this to correct world direction
+const LOCAL_RETRACT_DIRECTION := Vector2(0, 1)  ## Down in local = towards base/wall
 
 @export var orientation := Orientation.FLOOR:
 	set(value):
@@ -64,10 +61,17 @@ const RETRACT_DIRECTIONS := {
 @export var retract_distance: float = 20.0
 
 @export_group("Timing")
-@export var up_time: float = 0.3
-@export var down_time: float = 0.3
-@export var hold_time: float = 1.0
+## How long the extend animation takes (spike emerging)
+@export var extend_duration: float = 0.3
+## How long the retract animation takes (spike hiding)
+@export var retract_duration: float = 0.3
+## How long spike stays EXTENDED (dangerous!) in INTERVAL mode
+@export var extended_hold: float = 1.0
+## How long spike stays RETRACTED (safe) in INTERVAL mode
+@export var retracted_hold: float = 1.0
+## Delay before extending when player steps on detection area (PRESSURE_PLATE mode)
 @export var pressure_delay: float = 0.15
+## Delay before retracting after player leaves detection area (PRESSURE_PLATE mode)
 @export var pressure_retract_delay: float = 0.5
 
 @export_group("Initial State")
@@ -98,8 +102,16 @@ func _get_extended_pos() -> Vector2:
 	return Vector2.ZERO
 
 ## Get retracted position (spike is hidden)
+## Uses LOCAL space direction - the SpikeBody's rotation handles orientation
 func _get_retracted_pos() -> Vector2:
-	return RETRACT_DIRECTIONS.get(orientation, Vector2(0, 1)) * retract_distance
+	# Since SpikeBody is rotated by _apply_orientation(), we need to account for that.
+	# The position we set is in PARENT space, but we want movement in the 
+	# SpikeBody's local "down" direction (towards its base/wall).
+	# 
+	# Solution: Rotate the local retract direction by the spike's rotation
+	# to convert it to parent/world space.
+	var rotation_rad: float = ROTATIONS.get(orientation, 0.0)
+	return LOCAL_RETRACT_DIRECTION.rotated(rotation_rad) * retract_distance
 
 func _notification(what: int) -> void:
 	if what == NOTIFICATION_SCENE_INSTANTIATED:
@@ -187,12 +199,12 @@ func _run_cycle() -> void:
 	var retracted_pos := _get_retracted_pos()
 	
 	_current_tween = create_tween()
-	_current_tween.tween_property(_spike_body, "position", extended_pos, up_time)
+	_current_tween.tween_property(_spike_body, "position", extended_pos, extend_duration)
 	_current_tween.tween_callback(func(): is_extended = true)
-	_current_tween.tween_interval(hold_time)
-	_current_tween.tween_property(_spike_body, "position", retracted_pos, down_time)
+	_current_tween.tween_interval(extended_hold)
+	_current_tween.tween_property(_spike_body, "position", retracted_pos, retract_duration)
 	_current_tween.tween_callback(func(): is_extended = false)
-	_current_tween.tween_interval(hold_time)
+	_current_tween.tween_interval(retracted_hold)
 	_current_tween.finished.connect(_run_cycle)
 
 func _setup_pressure_plate() -> void:
@@ -247,7 +259,7 @@ func trigger_extend() -> void:
 		_current_tween.kill()
 	
 	_current_tween = create_tween()
-	_current_tween.tween_property(_spike_body, "position", _get_extended_pos(), up_time)
+	_current_tween.tween_property(_spike_body, "position", _get_extended_pos(), extend_duration)
 	_current_tween.tween_callback(func(): is_extended = true)
 
 func trigger_retract() -> void:
@@ -258,7 +270,7 @@ func trigger_retract() -> void:
 		_current_tween.kill()
 	
 	_current_tween = create_tween()
-	_current_tween.tween_property(_spike_body, "position", _get_retracted_pos(), down_time)
+	_current_tween.tween_property(_spike_body, "position", _get_retracted_pos(), retract_duration)
 	_current_tween.tween_callback(func(): is_extended = false)
 
 func pause() -> void:
@@ -283,6 +295,6 @@ func force_retracted() -> void:
 		_spike_body.position = _get_retracted_pos()
 	is_extended = false
 
-# Legacy compatibility - keep active() as alias
+## Convenience alias for stage scripts - triggers a single cycle
 func active() -> void:
 	_run_cycle()

@@ -9,7 +9,7 @@ class_name LavaPool
 ## PUZZLE INTEGRATION:
 ## - drain(duration) - Lowers lava, player can cross
 ## - fill(duration) - Raises lava back
-## - Connect via Channel System or legacy Lever with LAVA_LEVEL target type
+## - Connect via Channel System (set listen_channel, trigger sets same channel)
 
 signal lava_drained  ## Emitted when drain animation completes
 signal lava_filled   ## Emitted when fill animation completes

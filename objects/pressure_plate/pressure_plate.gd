@@ -1,9 +1,7 @@
 # Pressure Plate - Activates while player/object stands on it
+# Uses Channel System: set a channel name, receivers (Gate, Flame, etc.) listen on the same channel
 extends Area2D
 class_name PressurePlate
-
-## What the plate controls (legacy - use channel for new designs)
-enum PlateTarget { SIGNAL_ONLY, GATE, LAVA_LEVEL, FLAME, WATER_LEVEL }
 
 @export_group("Channel System")
 ## Channel to broadcast on when pressed/released
@@ -11,8 +9,6 @@ enum PlateTarget { SIGNAL_ONLY, GATE, LAVA_LEVEL, FLAME, WATER_LEVEL }
 @export var channel: StringName = &""
 
 @export_group("Plate Settings")
-## Legacy target type - prefer using channel system for new designs
-@export var target_type: PlateTarget = PlateTarget.SIGNAL_ONLY
 @export var stay_activated: bool = false  ## If true, stays ON after first press
 @export var require_weight: bool = false  ## If true, only heavy objects trigger (not player)
 
@@ -20,34 +16,12 @@ enum PlateTarget { SIGNAL_ONLY, GATE, LAVA_LEVEL, FLAME, WATER_LEVEL }
 @export var pressed_offset: Vector2 = Vector2(0, 2)  ## How much plate sinks when pressed
 @export var press_duration: float = 0.1  ## Animation time
 
-@export_group("Gate Control")
-@export var gate_node: NodePath
-
-@export_group("Lava Control")
-@export var lava_node: NodePath
-@export var lava_drain_time: float = 2.0
-@export var lava_fill_time: float = 3.0
-
-@export_group("Flame Control")
-@export var flame_node: NodePath
-
-@export_group("Water Control")
-@export var water_node: NodePath
-@export var water_on_level: float = -50.0
-@export var water_off_level: float = 50.0
-@export var water_transition_time: float = 2.0
-
 signal plate_pressed
 signal plate_released
 
 var is_pressed: bool = false
 var _bodies_on_plate: Array = []
 var _permanently_activated: bool = false
-
-var _gate_ref: Node = null
-var _lava_ref: Node = null
-var _flame_ref: Node = null
-var _water_ref: Node = null
 
 @onready var sprite: Sprite2D = $Sprite2D if has_node("Sprite2D") else null
 @onready var pressure_glow: PointLight2D = $Sprite2D/PressureGlow if has_node("Sprite2D/PressureGlow") else null
@@ -58,16 +32,6 @@ func _ready() -> void:
 	body_exited.connect(_on_body_exited)
 	area_entered.connect(_on_area_entered)
 	area_exited.connect(_on_area_exited)
-	
-	# Cache node references
-	if not gate_node.is_empty():
-		_gate_ref = get_node_or_null(gate_node)
-	if not lava_node.is_empty():
-		_lava_ref = get_node_or_null(lava_node)
-	if not flame_node.is_empty():
-		_flame_ref = get_node_or_null(flame_node)
-	if not water_node.is_empty():
-		_water_ref = get_node_or_null(water_node)
 	
 	# Store original sprite position for tween animation
 	if sprite:
@@ -82,13 +46,21 @@ func _ready() -> void:
 func _on_body_entered(body: Node2D) -> void:
 	# Filter by weight requirement
 	if require_weight:
-		if body.is_in_group("heavy") or body.is_in_group("pushable"):
-			pass  # Allow heavy objects
-		else:
-			return  # Ignore player and light objects
+		# Only heavy/pushable objects trigger
+		if not (body.is_in_group("heavy") or body.is_in_group("pushable")):
+			return
 	else:
-		# Accept player and interactable objects
-		if not (body is Player or body.is_in_group("pushable")):
+		# Accept: player, enemies, and pushable objects
+		# This allows puzzle design where enemies can trigger plates!
+		var is_valid := false
+		if body is Player:
+			is_valid = true
+		elif body.is_in_group("enemy"):
+			is_valid = true
+		elif body.is_in_group("pushable"):
+			is_valid = true
+		
+		if not is_valid:
 			return
 	
 	if not _bodies_on_plate.has(body):
@@ -132,9 +104,6 @@ func _press() -> void:
 			pressure_glow.enabled = true
 			tween.tween_property(pressure_glow, "energy", 0.8, press_duration)
 	
-	# Trigger target (legacy)
-	_on_plate_pressed()
-	
 	if stay_activated:
 		_permanently_activated = true
 
@@ -159,39 +128,6 @@ func _release() -> void:
 				if pressure_glow:
 					pressure_glow.enabled = false
 			)
-	
-	# Release target (legacy)
-	_on_plate_released()
-
-func _on_plate_pressed() -> void:
-	match target_type:
-		PlateTarget.GATE:
-			if _gate_ref and _gate_ref.has_method("open_gate"):
-				_gate_ref.open_gate()
-		PlateTarget.LAVA_LEVEL:
-			if _lava_ref and _lava_ref.has_method("drain"):
-				_lava_ref.drain(lava_drain_time)
-		PlateTarget.FLAME:
-			if _flame_ref and _flame_ref.has_method("extinguish"):
-				_flame_ref.extinguish()
-		PlateTarget.WATER_LEVEL:
-			if _water_ref and _water_ref.has_method("raise_water"):
-				_water_ref.raise_water(water_on_level, water_transition_time)
-
-func _on_plate_released() -> void:
-	match target_type:
-		PlateTarget.GATE:
-			if _gate_ref and _gate_ref.has_method("close_gate"):
-				_gate_ref.close_gate()
-		PlateTarget.LAVA_LEVEL:
-			if _lava_ref and _lava_ref.has_method("fill"):
-				_lava_ref.fill(lava_fill_time)
-		PlateTarget.FLAME:
-			if _flame_ref and _flame_ref.has_method("ignite"):
-				_flame_ref.ignite()
-		PlateTarget.WATER_LEVEL:
-			if _water_ref and _water_ref.has_method("lower_water"):
-				_water_ref.lower_water(water_off_level, water_transition_time)
 
 ## Force plate state (for scripted events)
 func force_press() -> void:
