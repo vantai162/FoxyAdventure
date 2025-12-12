@@ -11,6 +11,7 @@ size = Vector2(29, 13)
 radius = 32.0
 
 [node name="Spike_Retractable" type="Node2D"]
+z_index = -15
 script = ExtResource("1_oa2u3")
 
 [node name="SpikeBody" type="Node2D" parent="."]

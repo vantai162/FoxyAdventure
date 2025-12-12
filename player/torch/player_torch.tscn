@@ -79,6 +79,7 @@ fill_from = Vector2(0.5, 0.5)
 fill_to = Vector2(0.5, 0)
 
 [node name="PlayerTorch" type="Node2D"]
+z_index = 20
 script = ExtResource("1_script")
 
 [node name="TorchSprite" type="AnimatedSprite2D" parent="."]

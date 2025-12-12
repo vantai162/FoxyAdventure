@@ -11,6 +11,7 @@ radius = 4.0
 radius = 4.0
 
 [node name="BarrelBullet" type="RigidBody2D"]
+z_index = 12
 collision_layer = 32
 mass = 0.001
 gravity_scale = 0.0

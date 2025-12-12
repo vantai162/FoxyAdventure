@@ -379,13 +379,13 @@ func _initiate_water() -> void:
 	new_line.begin_cap_mode = Line2D.LINE_CAP_ROUND
 	new_line.end_cap_mode = Line2D.LINE_CAP_ROUND
 	new_line.joint_mode = Line2D.LINE_JOINT_ROUND
-	new_line.z_index = ZLayers.FLUID_SURFACE  # Surface in FRONT of player
+	new_line.z_index = ZLayers.FLUID_SURFACE  # Surface BEHIND terrain (visible through opening)
 	add_child(new_line)
 	surface_line = new_line
 	
 	var new_polygon: Polygon2D = Polygon2D.new()
 	new_polygon.color = water_fill_color
-	new_polygon.z_index = ZLayers.FLUID_BODY  # Body BEHIND player (player swims IN it)
+	new_polygon.z_index = ZLayers.FLUID_BODY  # Body BEHIND terrain (walls mask edges)
 	add_child(new_polygon)  # Add directly to water node, not to line
 	fill_polygon = new_polygon
 	
@@ -1017,6 +1017,7 @@ func _spawn_splash_particles(splash_global_pos: Vector2, impact_strength: float)
 	for i in range(droplet_count):
 		var droplet = Node2D.new()
 		droplet.name = "Droplet"
+		droplet.z_index = ZLayers.EFFECT_FRONT  # Splash droplets above water
 		
 		# Start at surface
 		droplet.position = Vector2(local_pos.x + randf_range(-8, 8), surface_pos_y)
@@ -1125,6 +1126,7 @@ func _setup_water_lights() -> void:
 		light.range_z_min = -100
 		light.range_z_max = 100
 		light.shadow_enabled = false  # Water doesn't cast shadows
+		light.z_index = ZLayers.LIGHT_EFFECT  # Light effect layer
 		
 		# First light creates texture, others share it
 		if i == 0:

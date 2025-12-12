@@ -3,4 +3,5 @@
 [ext_resource type="Script" uid="uid://lavapool_script" path="res://environment/lava/lava_pool.gd" id="1_lava"]
 
 [node name="LavaPool" type="Node2D" groups=["hazard", "lava"]]
+z_index = -25
 script = ExtResource("1_lava")

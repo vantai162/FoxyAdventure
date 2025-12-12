@@ -6,6 +6,7 @@
 size = Vector2(64.5, 8)
 
 [node name="OneWayPlatform" type="AnimatableBody2D" groups=["one_way_platform"]]
+z_index = -15
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 position = Vector2(1, 2.38419e-07)

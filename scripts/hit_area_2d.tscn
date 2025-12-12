@@ -3,4 +3,5 @@
 [ext_resource type="Script" uid="uid://xqvgljx4hk1s" path="res://scripts/hit_area_2d.gd" id="1_32xet"]
 
 [node name="HitArea2d" type="Area2D"]
+z_index = 0
 script = ExtResource("1_32xet")

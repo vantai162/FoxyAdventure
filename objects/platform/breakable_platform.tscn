@@ -10,6 +10,7 @@ size = Vector2(41, 7.5)
 size = Vector2(41, 2)
 
 [node name="BreakablePlatform" type="StaticBody2D" groups=["one_way_platform"]]
+z_index = -15
 position = Vector2(38, 19)
 script = ExtResource("1_2wltc")
 

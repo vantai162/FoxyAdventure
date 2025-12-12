@@ -34,8 +34,9 @@ class_name ZLayers
 ##    - Player goes IN FRONT OF terrain and background
 ##
 ## 2. WATER/FLUID HIERARCHY
-##    - Fluid BODY (fill): BEHIND player (player swims IN it)
-##    - Fluid SURFACE (line): SAME or slightly ABOVE player (overlaps top)
+##    - Fluid BODY (fill): BEHIND terrain (walls mask rectangle edges)
+##    - Fluid SURFACE (line): BEHIND terrain (visible through pool opening)
+##    - Player renders IN FRONT of terrain+fluid, appearing to swim in visible area
 ##    - Fluid EFFECTS (splash/bubbles): ABOVE player (particle overlay)
 ##
 ## 3. ENEMIES MATCH PLAYER
@@ -60,14 +61,17 @@ const BACKGROUND_DECOR: int = -50   ## Decorative cave walls, vines
 
 ## --- TERRAIN TIER (the world itself) ---
 const TERRAIN_BACK: int = -30       ## Back layer of terrain (caves behind caves)
-const TERRAIN_MAIN: int = -20       ## Main walkable terrain, walls
+const TERRAIN_MAIN: int = -20       ## Main walkable terrain, walls, pool containers
 const TERRAIN_DETAIL: int = -15     ## Terrain details, moss, cracks
 
 ## --- ENVIRONMENT TIER (interactive world elements) ---
-const FLUID_BODY: int = -5          ## Water/lava FILL polygon (player swims IN this)
-const FLUID_SURFACE: int = 5        ## Water/lava SURFACE line (overlaps player top)
-const FLUID_FALL_BODY: int = -3     ## Waterfall/lavafall fill (behind player)
-const FLUID_FALL_SURFACE: int = 7   ## Waterfall/lavafall edges (in front)
+## CRITICAL: Fluids must be BEHIND terrain so pool walls mask the fluid rectangle edges!
+## The fluid is only visible through the "opening" at the top of the pool container.
+## Player (z=10) renders in front of everything, appearing to swim in the visible area.
+const FLUID_BODY: int = -25         ## Water/lava FILL polygon - BEHIND terrain walls
+const FLUID_SURFACE: int = -22      ## Water/lava SURFACE line - BEHIND terrain (visible through opening)
+const FLUID_FALL_BODY: int = -24    ## Waterfall/lavafall fill - BEHIND terrain
+const FLUID_FALL_SURFACE: int = -21 ## Waterfall/lavafall edges - BEHIND terrain
 
 ## --- OBJECTS TIER (things in the world) ---
 const OBJECT_BEHIND: int = -2       ## Objects player walks in front of
@@ -100,20 +104,30 @@ const DAMAGE_NUMBER: int = 55       ## Floating damage numbers
 ## VISUAL HIERARCHY EXAMPLES
 ## ============================================================
 ##
-## SWIMMING IN WATER:
-##   Water fill (z=-5) → Player (z=10) → Water surface (z=5)
-##   Result: Player appears "inside" the water, surface overlaps top
+## SWIMMING IN WATER (side view cross-section):
+##   
+##   [TERRAIN WALL]  [OPENING]  [TERRAIN WALL]
+##        ████                      ████
+##        ████   ~~~SURFACE~~~      ████   ← Surface visible through opening
+##        ████   ░░░░░░░░░░░░░      ████   ← Body visible through opening
+##        ████   ░░░PLAYER░░░░      ████   ← Player in front of fluid
+##        ████   ░░░░░░░░░░░░░      ████
+##        ████████████████████████████████  ← Bottom terrain covers fluid bottom
+##
+##   Z-order (back to front):
+##   Fluid body (-25) → Fluid surface (-22) → Terrain (-20) → Player (10)
+##   Result: Terrain walls MASK fluid edges, player appears to swim in opening
 ##
 ## LAVA POOL:
-##   Lava fill (z=-5) → Player (z=10) → Lava surface (z=5) → Glow (z=20)
-##   Result: Danger feels immersive, glow overlays everything
+##   Fluid body (-25) → Surface (-22) → Terrain (-20) → Player (10) → Glow (20)
+##   Result: Same masking, glow overlays everything for danger feel
 ##
 ## COMBAT:
-##   Terrain (z=-20) → Enemy (z=8) → Player (z=10) → Projectile (z=12)
+##   Terrain (-20) → Enemy (8) → Player (10) → Projectile (12)
 ##   Result: Action reads clearly, projectiles pop
 ##
 ## WATERFALL INTO POOL:
-##   Fall body (z=-3) → Pool body (z=-5) → Player (z=10) → Fall surface (z=7)
-##   Result: Fluid feels continuous, player can walk through/behind
+##   Fall body (-24) → Pool body (-25) → Surfaces (-22,-21) → Terrain (-20) → Player (10)
+##   Result: Fluid feels continuous, terrain masks all edges
 ##
 ## ============================================================

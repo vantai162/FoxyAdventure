@@ -53,6 +53,7 @@ func _create_glow() -> void:
 	_glow.energy = 0.3  # Was 0.6 - halved
 	_glow.texture_scale = 0.8  # Was 0.4 - with 16px texture = 12.8px glow
 	_glow.blend_mode = Light2D.BLEND_MODE_ADD
+	_glow.z_index = ZLayers.LIGHT_EFFECT  # Light effect layer
 	
 	# Create radial gradient texture
 	var gradient = Gradient.new()

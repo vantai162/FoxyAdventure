@@ -38,6 +38,7 @@ func _ready():
 			Vector2(2, 0)     # Base right
 		])
 		spike.color = spike_color
+		spike.z_index = ZLayers.PROJECTILE  # Match projectile layer
 		add_child(spike)
 		sprite.visible = false  # Hide empty sprite
 	

@@ -1,3 +1,4 @@
 [gd_scene format=3 uid="uid://c6tapw356s6yd"]
 
 [node name="GateContainer" type="Node2D"]
+z_index = 0

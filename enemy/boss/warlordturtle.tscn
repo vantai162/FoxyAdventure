@@ -226,6 +226,7 @@ size = Vector2(75, 67)
 size = Vector2(74, 67)
 
 [node name="WarlordTurtle" type="CharacterBody2D" groups=["boss"]]
+z_index = 15
 scale = Vector2(1.5, 1.5)
 collision_layer = 8
 script = ExtResource("1_ef40p")

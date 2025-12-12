@@ -403,13 +403,13 @@ func _initiate_lava() -> void:
 	surface_line.begin_cap_mode = Line2D.LINE_CAP_ROUND
 	surface_line.end_cap_mode = Line2D.LINE_CAP_ROUND
 	surface_line.joint_mode = Line2D.LINE_JOINT_ROUND
-	surface_line.z_index = ZLayers.FLUID_SURFACE  # Surface in FRONT of player
+	surface_line.z_index = ZLayers.FLUID_SURFACE  # Surface BEHIND terrain (visible through opening)
 	add_child(surface_line)
 	
 	# Create fill polygon
 	fill_polygon = Polygon2D.new()
 	fill_polygon.color = lava_fill_color
-	fill_polygon.z_index = ZLayers.FLUID_BODY  # Body BEHIND player
+	fill_polygon.z_index = ZLayers.FLUID_BODY  # Body BEHIND terrain (walls mask edges)
 	add_child(fill_polygon)  # Add directly, not to line
 	
 	# Create damage area
@@ -478,6 +478,7 @@ func _setup_ember_gpu_particles() -> void:
 	ember_gpu_particles.lifetime = particle_lifetime
 	ember_gpu_particles.randomness = 0.5
 	ember_gpu_particles.emitting = true
+	ember_gpu_particles.z_index = ZLayers.EFFECT_FRONT  # Embers above lava
 	
 	# Configure particle material
 	var mat = ParticleProcessMaterial.new()
@@ -525,6 +526,7 @@ func _setup_bubble_gpu_particles() -> void:
 	bubble_gpu_particles.lifetime = bubble_spawn_interval * bubble_count
 	bubble_gpu_particles.randomness = 0.6
 	bubble_gpu_particles.emitting = true
+	bubble_gpu_particles.z_index = ZLayers.EFFECT_FRONT  # Bubbles above lava
 	
 	# Configure particle material
 	var mat = ParticleProcessMaterial.new()

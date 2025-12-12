@@ -82,6 +82,7 @@ size = Vector2(35, 27)
 size = Vector2(527, 237)
 
 [node name="EliteHunterCrab" type="CharacterBody2D"]
+z_index = 8
 collision_layer = 8
 script = ExtResource("1_elite")
 

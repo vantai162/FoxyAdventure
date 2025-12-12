@@ -3,6 +3,7 @@
 [ext_resource type="Script" uid="uid://b816dw2huc1gq" path="res://environment/cave/dripping_water.gd" id="1_drip"]
 
 [node name="DrippingWater" type="Node2D"]
+z_index = 25
 script = ExtResource("1_drip")
 drip_rate = 2.0
 drop_speed = 200.0

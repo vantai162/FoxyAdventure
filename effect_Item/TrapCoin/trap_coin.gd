@@ -65,6 +65,7 @@ func _on_area_entered(area: Area2D) -> void:
 		burst.explosiveness = 1.0
 		burst.amount = 8
 		burst.lifetime = 0.4
+		burst.z_index = ZLayers.EFFECT_FRONT  # Burst above collectible
 		
 		var mat = ParticleProcessMaterial.new()
 		mat.emission_shape = ParticleProcessMaterial.EMISSION_SHAPE_SPHERE

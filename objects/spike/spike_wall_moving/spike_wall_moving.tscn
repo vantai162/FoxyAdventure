@@ -11,6 +11,7 @@ size = Vector2(127, 12.5)
 size = Vector2(49.5, 120.5)
 
 [node name="Spike_Wall_Moving" type="Node2D"]
+z_index = -15
 script = ExtResource("1_y4rd2")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]

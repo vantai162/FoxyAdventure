@@ -8,6 +8,7 @@
 size = Vector2(29, 13)
 
 [node name="Spike" type="Node2D"]
+z_index = -15
 script = ExtResource("3_spike")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]

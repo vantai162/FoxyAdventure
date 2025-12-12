@@ -50,6 +50,7 @@ size = Vector2(64, 13)
 size = Vector2(64, 64)
 
 [node name="FloatingBoatPlatform" type="AnimatableBody2D" groups=["can_interact_with_water", "one_way_platform", "platform"]]
+z_index = -15
 script = ExtResource("1_boat")
 glide_distance = 120.0
 glide_pause_time = 0.36

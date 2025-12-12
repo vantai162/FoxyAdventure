@@ -3,6 +3,7 @@
 [ext_resource type="Script" uid="uid://dxyyl80bbof3c" path="res://environment/cave/glowing_crystal.gd" id="1_crystal"]
 
 [node name="GlowingCrystal" type="Node2D"]
+z_index = -15
 script = ExtResource("1_crystal")
 pulse_amount = 0.136
 pulse_speed = 0.36

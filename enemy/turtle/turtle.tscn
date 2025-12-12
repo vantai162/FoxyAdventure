@@ -80,6 +80,7 @@ animations = [{
 radius = 16.0
 
 [node name="Turtle" type="CharacterBody2D" groups=["can_interact_with_water"]]
+z_index = 8
 collision_layer = 8
 script = ExtResource("1_raxgc")
 max_health = 2

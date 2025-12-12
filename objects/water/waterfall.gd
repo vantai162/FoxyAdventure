@@ -185,7 +185,7 @@ func _create_visuals() -> void:
 	# Fill polygon
 	fill_polygon = Polygon2D.new()
 	fill_polygon.color = water_fill_color
-	fill_polygon.z_index = ZLayers.FLUID_FALL_BODY  # Behind player
+	fill_polygon.z_index = ZLayers.FLUID_FALL_BODY  # Behind terrain
 	add_child(fill_polygon)
 
 func _make_surface_line() -> Line2D:
@@ -196,7 +196,7 @@ func _make_surface_line() -> Line2D:
 	line.begin_cap_mode = Line2D.LINE_CAP_ROUND
 	line.end_cap_mode = Line2D.LINE_CAP_ROUND
 	line.joint_mode = Line2D.LINE_JOINT_ROUND
-	line.z_index = ZLayers.FLUID_FALL_SURFACE  # In front of player
+	line.z_index = ZLayers.FLUID_FALL_SURFACE  # Behind terrain (visible through gap)
 	
 	# SEAMLESS BLEND: Edge fades to ZERO at bottom
 	# When fall meets pool, NO visible edge = one continuous fluid
@@ -292,6 +292,7 @@ func _create_light() -> void:
 	_water_light.energy = 0.5
 	_water_light.texture_scale = 1.5
 	_water_light.position = Vector2(waterfall_size.x / 2.0, waterfall_size.y * 0.3)
+	_water_light.z_index = ZLayers.LIGHT_EFFECT  # Light above water
 	
 	var img = Image.create(64, 64, false, Image.FORMAT_RGBA8)
 	var center = Vector2(32, 32)
