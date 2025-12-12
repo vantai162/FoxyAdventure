@@ -111,6 +111,7 @@ var bubble_gpu_particles: GPUParticles2D
 
 @export_tool_button("Update Lava") var update_lava_button: Callable = func():
 	_ready()
+	_update_visuals()
 
 func _ready() -> void:
 	# Clean up existing children
@@ -134,9 +135,11 @@ func _ready() -> void:
 		if emit_bubbles:
 			_setup_bubble_gpu_particles()
 	
+	# Always enable processing for visuals (editor + runtime)
+	set_process(true)
+	
+	# Runtime-only: subscribe to channel system
 	if not Engine.is_editor_hint():
-		set_process(true)
-		# Subscribe to channel system
 		if not listen_channel.is_empty():
 			var channel_manager = get_node_or_null("/root/InteractionChannel")
 			if channel_manager:
@@ -159,7 +162,9 @@ func _on_channel_deactivated(channel: StringName, _source: Node) -> void:
 
 
 func _process(delta: float) -> void:
+	# EDITOR MODE: Only update visuals (no physics, particles, or gameplay)
 	if Engine.is_editor_hint():
+		_update_visuals()
 		return
 	
 	# Debug diagnostics
