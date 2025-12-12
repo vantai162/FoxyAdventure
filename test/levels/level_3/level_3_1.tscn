@@ -65,13 +65,13 @@ tile_set = ExtResource("2_a6ecy")
 [node name="Platforms" type="Node2D" parent="."]
 
 [node name="VerticalMovingPlatform" parent="Platforms" instance=ExtResource("30_p5pao")]
-position = Vector2(1415, 229)
+position = Vector2(1415, 309)
 move_speed = 150.0
-move_distance = 600.0
+move_distance = 1200.0
 
 [node name="HorizontalMovingPlatform" parent="Platforms" instance=ExtResource("4_343a2")]
-position = Vector2(343, 1210)
-move_distance = 300.0
+position = Vector2(324, 1210)
+move_distance = 600.0
 
 [node name="Hazards" type="Node2D" parent="."]
 
@@ -119,6 +119,147 @@ orientation = 1
 [node name="Spike7" parent="Hazards" instance=ExtResource("6_alf78")]
 position = Vector2(539, 177)
 orientation = 1
+
+[node name="FlameHazard" parent="Hazards" instance=ExtResource("27_alf78")]
+position = Vector2(521, 93)
+scale = Vector2(0.3, 0.3)
+off_duration = 1.0
+
+[node name="FlameHazard2" parent="Hazards" instance=ExtResource("27_alf78")]
+position = Vector2(665, 93)
+scale = Vector2(0.3, 0.3)
+
+[node name="FlameHazard5" parent="Hazards" instance=ExtResource("27_alf78")]
+position = Vector2(1357, 93)
+rotation = -1.5708
+scale = Vector2(1.5, 1.5)
+orientation = 3
+
+[node name="FlameHazard3" parent="Hazards" instance=ExtResource("27_alf78")]
+position = Vector2(809, 85)
+rotation = 3.14159
+scale = Vector2(0.3, 0.3)
+orientation = 1
+off_duration = 1.0
+
+[node name="FlameHazard4" parent="Hazards" instance=ExtResource("27_alf78")]
+position = Vector2(937, 85)
+rotation = 3.14159
+scale = Vector2(0.3, 0.3)
+orientation = 1
+on_duration = 3.0
+off_duration = 3.0
+
+[node name="LavaPool" parent="Hazards" instance=ExtResource("6_4aydh")]
+position = Vector2(1072, 471)
+lava_size = Vector2(226, 45)
+
+[node name="WindArea2" parent="Hazards" instance=ExtResource("26_2y2ek")]
+position = Vector2(1315, 413)
+
+[node name="Stalactite4" parent="Hazards" instance=ExtResource("4_b7ip3")]
+position = Vector2(1051, 604)
+trigger_mode = 1
+
+[node name="Stalactite5" parent="Hazards" instance=ExtResource("4_b7ip3")]
+position = Vector2(851, 604)
+trigger_mode = 1
+
+[node name="Stalactite6" parent="Hazards" instance=ExtResource("4_b7ip3")]
+position = Vector2(699, 588)
+trigger_mode = 1
+
+[node name="Stalactite7" parent="Hazards" instance=ExtResource("4_b7ip3")]
+position = Vector2(579, 588)
+trigger_mode = 1
+
+[node name="LavaPool2" parent="Hazards" instance=ExtResource("6_4aydh")]
+position = Vector2(987, 803)
+lava_size = Vector2(220, 64)
+
+[node name="Lavafall" parent="Hazards" instance=ExtResource("29_qrwfa")]
+position = Vector2(1524, 1599)
+lavafall_size = Vector2(51, 95)
+surface_mode = 0
+
+[node name="Spike_Retractable2" parent="Hazards" instance=ExtResource("28_fcwnb")]
+position = Vector2(1392, 488)
+orientation = 2
+trigger_mode = 1
+
+[node name="Spike_Retractable7" parent="Hazards" instance=ExtResource("28_fcwnb")]
+position = Vector2(1504, 544)
+trigger_mode = 1
+
+[node name="Spike_Retractable3" parent="Hazards" instance=ExtResource("28_fcwnb")]
+position = Vector2(1392, 632)
+orientation = 2
+trigger_mode = 1
+
+[node name="Spike_Retractable4" parent="Hazards" instance=ExtResource("28_fcwnb")]
+position = Vector2(1440, 696)
+orientation = 3
+trigger_mode = 1
+
+[node name="Spike_Retractable5" parent="Hazards" instance=ExtResource("28_fcwnb")]
+position = Vector2(1536, 504)
+orientation = 3
+trigger_mode = 1
+
+[node name="Spike_Retractable6" parent="Hazards" instance=ExtResource("28_fcwnb")]
+position = Vector2(1440, 360)
+orientation = 3
+trigger_mode = 1
+
+[node name="Stalactite8" parent="Hazards" instance=ExtResource("4_b7ip3")]
+position = Vector2(446, 1014)
+rotation = -1.5708
+orientation = 2
+
+[node name="WindArea" parent="Hazards" instance=ExtResource("26_2y2ek")]
+position = Vector2(1019, 213)
+
+[node name="LavaPool3" parent="Hazards" instance=ExtResource("6_4aydh")]
+position = Vector2(1180, 1684)
+lava_size = Vector2(375, 276)
+
+[node name="Spike_Retractable" parent="Hazards" instance=ExtResource("28_fcwnb")]
+position = Vector2(158, 672)
+extended_hold = 0.3
+retracted_hold = 3.0
+
+[node name="Lavafall2" parent="Hazards" instance=ExtResource("29_qrwfa")]
+position = Vector2(1124, 1678)
+lavafall_size = Vector2(32, 98)
+surface_mode = 0
+
+[node name="Spike8" parent="Hazards" instance=ExtResource("6_alf78")]
+position = Vector2(753, 1765)
+orientation = 2
+
+[node name="Spike9" parent="Hazards" instance=ExtResource("6_alf78")]
+position = Vector2(753, 1794)
+orientation = 2
+
+[node name="Spike10" parent="Hazards" instance=ExtResource("6_alf78")]
+position = Vector2(753, 1823)
+orientation = 2
+
+[node name="Spike11" parent="Hazards" instance=ExtResource("6_alf78")]
+position = Vector2(768, 1566)
+orientation = 2
+
+[node name="Spike12" parent="Hazards" instance=ExtResource("6_alf78")]
+position = Vector2(768, 1595)
+orientation = 2
+
+[node name="Spike13" parent="Hazards" instance=ExtResource("6_alf78")]
+position = Vector2(768, 1624)
+orientation = 2
+
+[node name="Spike14" parent="Hazards" instance=ExtResource("6_alf78")]
+position = Vector2(768, 1653)
+orientation = 2
 
 [node name="WaterZones" type="Node2D" parent="."]
 
@@ -315,7 +456,7 @@ position = Vector2(550, 2120)
 position = Vector2(565, 2085)
 
 [node name="Chest" parent="Collectibles" instance=ExtResource("14_chest")]
-position = Vector2(1052, 1721)
+position = Vector2(1052, 1722)
 
 [node name="BladeContainer" parent="Collectibles" instance=ExtResource("17_blade_container")]
 position = Vector2(1450, 1555)
@@ -328,6 +469,9 @@ position = Vector2(96, 1481)
 
 [node name="TrapChest" parent="Collectibles" instance=ExtResource("19_trap_chest")]
 position = Vector2(450, 1257)
+
+[node name="Blade" parent="Collectibles" instance=ExtResource("3_vnnrn")]
+position = Vector2(824, 1648)
 
 [node name="LightSources" type="Node2D" parent="."]
 
@@ -394,178 +538,34 @@ color_preset = 4
 
 [node name="Objects" type="Node2D" parent="."]
 
+[node name="Spring2" parent="Objects" instance=ExtResource("5_2y2ek")]
+position = Vector2(917, 1810)
+
+[node name="Spring3" parent="Objects" instance=ExtResource("5_2y2ek")]
+position = Vector2(962, 1778)
+rotation = -1.5708
+orientation = 3
+
+[node name="Spring5" parent="Objects" instance=ExtResource("5_2y2ek")]
+position = Vector2(926, 1656)
+rotation = 1.5708
+orientation = 2
+
+[node name="Spring4" parent="Objects" instance=ExtResource("5_2y2ek")]
+position = Vector2(962, 1593)
+rotation = -1.5708
+orientation = 3
+
+[node name="Spring" parent="Objects" instance=ExtResource("5_2y2ek")]
+position = Vector2(94, 1715)
+rotation = 1.5708
+orientation = 2
+
 [node name="ExitZone" type="Node2D" parent="."]
 
 [node name="Foxy" parent="." instance=ExtResource("9_foxy")]
 position = Vector2(140, 180)
 
-[node name="FlameHazard" parent="." instance=ExtResource("27_alf78")]
-position = Vector2(521, 93)
-scale = Vector2(0.3, 0.3)
-off_duration = 1.0
-
-[node name="FlameHazard2" parent="." instance=ExtResource("27_alf78")]
-position = Vector2(665, 93)
-scale = Vector2(0.3, 0.3)
-
-[node name="FlameHazard5" parent="." instance=ExtResource("27_alf78")]
-position = Vector2(1357, 93)
-rotation = -1.5708
-scale = Vector2(1.5, 1.5)
-orientation = 3
-
-[node name="FlameHazard3" parent="." instance=ExtResource("27_alf78")]
-position = Vector2(809, 85)
-rotation = 3.14159
-scale = Vector2(0.3, 0.3)
-orientation = 1
-off_duration = 1.0
-
-[node name="FlameHazard4" parent="." instance=ExtResource("27_alf78")]
-position = Vector2(937, 85)
-rotation = 3.14159
-scale = Vector2(0.3, 0.3)
-orientation = 1
-on_duration = 3.0
-off_duration = 3.0
-
-[node name="LavaPool" parent="." instance=ExtResource("6_4aydh")]
-position = Vector2(1072, 471)
-lava_size = Vector2(226, 45)
-
-[node name="WindArea2" parent="." instance=ExtResource("26_2y2ek")]
-position = Vector2(1315, 413)
-
-[node name="Stalactite" parent="." instance=ExtResource("4_b7ip3")]
-position = Vector2(1051, 604)
-trigger_mode = 1
-
-[node name="Stalactite2" parent="." instance=ExtResource("4_b7ip3")]
-position = Vector2(851, 604)
-trigger_mode = 1
-
-[node name="Stalactite3" parent="." instance=ExtResource("4_b7ip3")]
-position = Vector2(699, 588)
-trigger_mode = 1
-
-[node name="Stalactite4" parent="." instance=ExtResource("4_b7ip3")]
-position = Vector2(579, 588)
-trigger_mode = 1
-
-[node name="LavaPool2" parent="." instance=ExtResource("6_4aydh")]
-position = Vector2(987, 803)
-lava_size = Vector2(220, 64)
-
-[node name="Lavafall" parent="." instance=ExtResource("29_qrwfa")]
-position = Vector2(1524, 1599)
-lavafall_size = Vector2(51, 95)
-surface_mode = 0
-
-[node name="Spring" parent="." instance=ExtResource("5_2y2ek")]
-position = Vector2(94, 1715)
-rotation = 1.5708
-orientation = 2
-
-[node name="Spike_Retractable2" parent="." instance=ExtResource("28_fcwnb")]
-position = Vector2(1392, 488)
-orientation = 2
-trigger_mode = 1
-
-[node name="Spike_Retractable7" parent="." instance=ExtResource("28_fcwnb")]
-position = Vector2(1504, 544)
-trigger_mode = 1
-
-[node name="Spike_Retractable3" parent="." instance=ExtResource("28_fcwnb")]
-position = Vector2(1392, 632)
-orientation = 2
-trigger_mode = 1
-
-[node name="Spike_Retractable4" parent="." instance=ExtResource("28_fcwnb")]
-position = Vector2(1440, 696)
-orientation = 3
-trigger_mode = 1
-
-[node name="Spike_Retractable5" parent="." instance=ExtResource("28_fcwnb")]
-position = Vector2(1536, 504)
-orientation = 3
-trigger_mode = 1
-
-[node name="Spike_Retractable6" parent="." instance=ExtResource("28_fcwnb")]
-position = Vector2(1440, 360)
-orientation = 3
-trigger_mode = 1
-
-[node name="Blade" parent="." instance=ExtResource("3_vnnrn")]
-position = Vector2(824, 1648)
-
-[node name="Stalactite5" parent="." instance=ExtResource("4_b7ip3")]
-position = Vector2(446, 1014)
-rotation = -1.5708
-orientation = 2
-
-[node name="WindArea" parent="." instance=ExtResource("26_2y2ek")]
-position = Vector2(1019, 213)
-
-[node name="LavaPool3" parent="." instance=ExtResource("6_4aydh")]
-position = Vector2(1180, 1684)
-lava_size = Vector2(375, 276)
-
-[node name="Spike_Retractable" parent="." instance=ExtResource("28_fcwnb")]
-position = Vector2(158, 672)
-extended_hold = 0.3
-retracted_hold = 3.0
-
-[node name="Spring2" parent="." instance=ExtResource("5_2y2ek")]
-position = Vector2(917, 1810)
-
-[node name="Spring3" parent="." instance=ExtResource("5_2y2ek")]
-position = Vector2(962, 1778)
-rotation = -1.5708
-orientation = 3
-
-[node name="Spring5" parent="." instance=ExtResource("5_2y2ek")]
-position = Vector2(926, 1656)
-rotation = 1.5708
-orientation = 2
-
-[node name="Spring4" parent="." instance=ExtResource("5_2y2ek")]
-position = Vector2(962, 1593)
-rotation = -1.5708
-orientation = 3
-
-[node name="Lavafall2" parent="." instance=ExtResource("29_qrwfa")]
-position = Vector2(1124, 1678)
-lavafall_size = Vector2(32, 98)
-surface_mode = 0
-
-[node name="Spike" parent="." instance=ExtResource("6_alf78")]
-position = Vector2(753, 1765)
-orientation = 2
-
-[node name="Spike2" parent="." instance=ExtResource("6_alf78")]
-position = Vector2(753, 1794)
-orientation = 2
-
-[node name="Spike7" parent="." instance=ExtResource("6_alf78")]
-position = Vector2(753, 1823)
-orientation = 2
-
-[node name="Spike3" parent="." instance=ExtResource("6_alf78")]
-position = Vector2(768, 1566)
-orientation = 2
-
-[node name="Spike4" parent="." instance=ExtResource("6_alf78")]
-position = Vector2(768, 1595)
-orientation = 2
-
-[node name="Spike5" parent="." instance=ExtResource("6_alf78")]
-position = Vector2(768, 1624)
-orientation = 2
-
-[node name="Spike6" parent="." instance=ExtResource("6_alf78")]
-position = Vector2(768, 1653)
-orientation = 2
-
 [connection signal="area_entered" from="Terrain/TileMapLayer/HealthPotion" to="Terrain/TileMapLayer/HealthPotion" method="_on_area_entered"]
-[connection signal="area_entered" from="Terrain/TileMapLayer/@Area2D@107635" to="Terrain/TileMapLayer/@Area2D@107635" method="_on_area_entered"]
-[connection signal="area_entered" from="Terrain/TileMapLayer/@Area2D@107636" to="Terrain/TileMapLayer/@Area2D@107636" method="_on_area_entered"]
+[connection signal="area_entered" from="Terrain/TileMapLayer/@Area2D@125501" to="Terrain/TileMapLayer/@Area2D@125501" method="_on_area_entered"]
+[connection signal="area_entered" from="Terrain/TileMapLayer/@Area2D@125502" to="Terrain/TileMapLayer/@Area2D@125502" method="_on_area_entered"]
