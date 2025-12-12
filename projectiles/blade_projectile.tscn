@@ -1,9 +1,10 @@
-[gd_scene load_steps=9 format=3 uid="uid://vifaaniwbdnv"]
+[gd_scene load_steps=11 format=3 uid="uid://vifaaniwbdnv"]
 
 [ext_resource type="Script" uid="uid://cimqxeik4xdhh" path="res://projectiles/blade_projectile.gd" id="1"]
 [ext_resource type="Texture2D" uid="uid://bng34woae2g8q" path="res://assets/foxy/blade/blade_throw_1.png" id="2_kj2ao"]
 [ext_resource type="Texture2D" uid="uid://baucskhqdceas" path="res://assets/foxy/blade/blade_target_4.png" id="3_1qqcv"]
 [ext_resource type="Script" uid="uid://xqvgljx4hk1s" path="res://scripts/hit_area_2d.gd" id="3_w0xp1"]
+[ext_resource type="Texture2D" uid="uid://6qd3pdlxcu43" path="res://assets/effects/player_torch.tres" id="5_1qqcv"]
 
 [sub_resource type="Gradient" id="Gradient_blade_glow"]
 colors = PackedColorArray(1, 0.9, 0.4, 1, 1, 0.8, 0.2, 0)
@@ -21,6 +22,10 @@ radius = 8.0
 [sub_resource type="CircleShape2D" id="CircleShape2D_45h00"]
 radius = 16.0
 
+[sub_resource type="Gradient" id="Gradient_w0xp1"]
+offsets = PackedFloat32Array(0, 0.423077, 1)
+colors = PackedColorArray(1, 0.623529, 0, 1, 1, 0.623529, 0, 1, 0, 0, 0, 0)
+
 [node name="BladeProjectile" type="Area2D" groups=["player_attack"]]
 collision_layer = 0
 collision_mask = 11
@@ -30,6 +35,7 @@ close_bounce_speed_multiplier = 0.75
 far_bounce_speed_multiplier = 0.75
 rotation_speed_flying = 27.0
 rotation_speed_bouncing = 36.0
+light_flicker_intensity = 0.07
 trail_texture = ExtResource("2_kj2ao")
 glow_blink_speed = 1.0
 magnet_range_grounded = 80.0
@@ -69,3 +75,21 @@ shape = SubResource("CircleShape2D_45h00")
 [node name="GroundTimer" type="Timer" parent="."]
 wait_time = 6.5
 one_shot = true
+
+[node name="FireParticles" type="CPUParticles2D" parent="."]
+position = Vector2(-1, 0)
+amount = 40
+lifetime = 0.4
+emission_shape = 1
+emission_sphere_radius = 2.0
+gravity = Vector2(0, 0)
+initial_velocity_min = 50.0
+initial_velocity_max = 120.0
+radial_accel_min = -50.0
+radial_accel_max = -40.0
+scale_amount_max = 1.5
+color = Color(1, 0.623529, 0, 1)
+color_ramp = SubResource("Gradient_w0xp1")
+
+[node name="Light" type="PointLight2D" parent="."]
+texture = ExtResource("5_1qqcv")

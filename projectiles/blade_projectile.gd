@@ -23,6 +23,13 @@ var damage: int = 1
 @export_group("Visual")
 @export var rotation_speed_flying: float = 10.0
 @export var rotation_speed_bouncing: float = 20.0
+@onready var fire_particles = $FireParticles
+@onready var blade_light: PointLight2D = $Light
+var light_base_energy := 0.0
+var light_flicker_tween: Tween
+@export var light_flicker_enabled := true
+@export var light_flicker_speed := 12.0
+@export var light_flicker_intensity := 0.12
 
 @export_subgroup("Motion Blur Trail")
 @export var trail_enabled: bool = true
@@ -67,7 +74,12 @@ var bounced_time: float = 0.0  # Time spent in BOUNCED state
 func _ready() -> void:
 	body_entered.connect(_on_body_entered)
 	area_entered.connect(_on_area_entered)
+	fire_particles.emitting = GameManager.player.has_unlocked_flame_blade
 	
+	light_base_energy = blade_light.energy
+	blade_light.enabled = GameManager.player.has_unlocked_flame_blade
+	if GameManager.player.has_unlocked_flame_blade:
+		_start_light_flicker()
 	# Only set if not already configured in editor
 	if ground_timer.wait_time == 0:
 		ground_timer.wait_time = pickup_delay_seconds
@@ -85,6 +97,9 @@ func launch(direction: int, from_player: Player) -> void:
 	scale.x = direction
 	current_state = State.FLYING
 	trail_spawn_timer = 0
+	if GameManager.player.has_unlocked_flame_blade:
+		blade_light.enabled = true
+		_start_light_flicker()
 	AudioManager.play_sound("blade_spinning",15.0)
 
 
@@ -104,6 +119,9 @@ func launch_aimed(angle: float, from_player: Player) -> void:
 	scale.x = throw_direction
 	current_state = State.FLYING
 	trail_spawn_timer = 0
+	if GameManager.player.has_unlocked_flame_blade:
+		blade_light.enabled = true
+		_start_light_flicker()
 	AudioManager.play_sound("blade_spinning", 15.0)
 
 func _physics_process(delta: float) -> void:
@@ -317,3 +335,34 @@ func _pickup_by_player() -> void:
 
 func _on_ground_timer_timeout() -> void:
 	_pickup_by_player()
+	
+func _start_light_flicker():
+	if not light_flicker_enabled:
+		return
+
+	if light_flicker_tween:
+		light_flicker_tween.kill()
+
+	light_flicker_tween = create_tween().set_loops()
+
+	var duration = 1.0 / max(light_flicker_speed, 0.1)
+	var high := light_base_energy + light_flicker_intensity
+	var low := light_base_energy - light_flicker_intensity
+
+	light_flicker_tween.tween_property(blade_light, "energy", high, duration * 0.4)\
+		.set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+
+	light_flicker_tween.tween_property(blade_light, "energy", low, duration * 0.3)\
+		.set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+
+	light_flicker_tween.tween_property(blade_light, "energy", light_base_energy, duration * 0.3)\
+		.set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+
+
+func _extinguish_light():
+	if light_flicker_tween:
+		light_flicker_tween.kill()
+
+	var t = create_tween()
+	t.tween_property(blade_light, "energy", 0.0, 0.1)
+	blade_light.enabled = false
