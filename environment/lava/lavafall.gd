@@ -3,6 +3,12 @@ extends Node2D
 class_name Lavafall
 ## Vertical lava sheet (lavafall) with viscous animated surfaces
 ##
+## Z-INDEX LAYERING (see scripts/z_layers.gd):
+## - Fill polygon: FLUID_FALL_BODY (-3) - behind player
+## - Surface lines: FLUID_FALL_SURFACE (7) - in front of player
+## - Light effects: LIGHT_EFFECT (20)
+## - Particles: EFFECT_FRONT (25)
+##
 ## AUTONOMOUS BLENDING:
 ## Just place this above a lava pool. That's it.
 ## - ONE toggle: `auto_blend_with_pool` (default: ON)
@@ -183,7 +189,7 @@ func _create_visuals() -> void:
 	
 	fill_polygon = Polygon2D.new()
 	fill_polygon.color = lava_fill_color
-	fill_polygon.show_behind_parent = true
+	fill_polygon.z_index = ZLayers.FLUID_FALL_BODY  # Behind player
 	add_child(fill_polygon)
 
 func _make_surface_line() -> Line2D:
@@ -194,6 +200,7 @@ func _make_surface_line() -> Line2D:
 	line.begin_cap_mode = Line2D.LINE_CAP_ROUND
 	line.end_cap_mode = Line2D.LINE_CAP_ROUND
 	line.joint_mode = Line2D.LINE_JOINT_ROUND
+	line.z_index = ZLayers.FLUID_FALL_SURFACE  # In front of player
 	
 	# SEAMLESS BLEND: Edge fades to ZERO at bottom
 	# When fall meets pool, NO visible edge = one continuous fluid
@@ -235,7 +242,7 @@ func _create_lights() -> void:
 		light.energy = 0.8
 		light.texture_scale = 1.5
 		light.blend_mode = Light2D.BLEND_MODE_ADD
-		light.z_index = 10
+		light.z_index = ZLayers.LIGHT_EFFECT
 		
 		var gradient = GradientTexture2D.new()
 		gradient.fill = GradientTexture2D.FILL_RADIAL
@@ -262,7 +269,7 @@ func _create_embers() -> void:
 	_ember_particles.amount = 6
 	_ember_particles.lifetime = 1.5
 	_ember_particles.emitting = true
-	_ember_particles.z_index = 5
+	_ember_particles.z_index = ZLayers.EFFECT_FRONT
 	
 	var mat = ParticleProcessMaterial.new()
 	mat.emission_shape = ParticleProcessMaterial.EMISSION_SHAPE_BOX
@@ -305,7 +312,7 @@ func _create_impact_heat() -> void:
 	_impact_heat.amount = 8
 	_impact_heat.lifetime = 0.6
 	_impact_heat.emitting = true
-	_impact_heat.z_index = 3
+	_impact_heat.z_index = ZLayers.EFFECT_FRONT
 	
 	var mat = ParticleProcessMaterial.new()
 	mat.emission_shape = ParticleProcessMaterial.EMISSION_SHAPE_BOX

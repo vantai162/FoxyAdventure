@@ -185,7 +185,7 @@ func _create_visuals() -> void:
 	# Fill polygon
 	fill_polygon = Polygon2D.new()
 	fill_polygon.color = water_fill_color
-	fill_polygon.show_behind_parent = true
+	fill_polygon.z_index = ZLayers.FLUID_FALL_BODY  # Behind player
 	add_child(fill_polygon)
 
 func _make_surface_line() -> Line2D:
@@ -196,6 +196,7 @@ func _make_surface_line() -> Line2D:
 	line.begin_cap_mode = Line2D.LINE_CAP_ROUND
 	line.end_cap_mode = Line2D.LINE_CAP_ROUND
 	line.joint_mode = Line2D.LINE_JOINT_ROUND
+	line.z_index = ZLayers.FLUID_FALL_SURFACE  # In front of player
 	
 	# SEAMLESS BLEND: Edge fades to ZERO at bottom
 	# When fall meets pool, NO visible edge = one continuous fluid
@@ -234,7 +235,7 @@ func _create_impact_spray() -> void:
 	_impact_spray.amount = 20  # More particles for dramatic splash
 	_impact_spray.lifetime = 1.0
 	_impact_spray.emitting = true
-	_impact_spray.z_index = 2
+	_impact_spray.z_index = ZLayers.EFFECT_FRONT
 	
 	var mat = ParticleProcessMaterial.new()
 	mat.emission_shape = ParticleProcessMaterial.EMISSION_SHAPE_BOX

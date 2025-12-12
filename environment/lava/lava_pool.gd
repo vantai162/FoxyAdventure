@@ -403,12 +403,14 @@ func _initiate_lava() -> void:
 	surface_line.begin_cap_mode = Line2D.LINE_CAP_ROUND
 	surface_line.end_cap_mode = Line2D.LINE_CAP_ROUND
 	surface_line.joint_mode = Line2D.LINE_JOINT_ROUND
+	surface_line.z_index = ZLayers.FLUID_SURFACE  # Surface in FRONT of player
 	add_child(surface_line)
 	
 	# Create fill polygon
 	fill_polygon = Polygon2D.new()
 	fill_polygon.color = lava_fill_color
-	surface_line.add_child(fill_polygon)
+	fill_polygon.z_index = ZLayers.FLUID_BODY  # Body BEHIND player
+	add_child(fill_polygon)  # Add directly, not to line
 	
 	# Create damage area
 	lava_area = Area2D.new()
@@ -440,7 +442,7 @@ func _setup_light() -> void:
 		light.energy = light_energy / float(num_lights) * 1.5  # Distribute energy, slight boost
 		light.texture_scale = 2.0  # Radius per light
 		light.shadow_enabled = false  # Shadows only on first light to save performance
-		light.z_index = 10
+		light.z_index = ZLayers.LIGHT_EFFECT
 		light.blend_mode = Light2D.BLEND_MODE_ADD  # Additive blend for overlapping glows
 		
 		# Create radial gradient texture (shared across lights for efficiency)

@@ -2,6 +2,11 @@
 extends Node2D
 class_name water
 
+## Z-INDEX LAYERING:
+## Water body (fill) sits BEHIND the player so player appears INSIDE the water
+## Water surface (line) sits IN FRONT of player for "head poking out" effect
+## See scripts/z_layers.gd for the full system
+
 @export var water_size: Vector2 = Vector2(8.0,16.0)
 @export var surface_pos_y: float = 0.5
 @export_range(2,512) var segment_count: int = 64
@@ -374,13 +379,14 @@ func _initiate_water() -> void:
 	new_line.begin_cap_mode = Line2D.LINE_CAP_ROUND
 	new_line.end_cap_mode = Line2D.LINE_CAP_ROUND
 	new_line.joint_mode = Line2D.LINE_JOINT_ROUND
+	new_line.z_index = ZLayers.FLUID_SURFACE  # Surface in FRONT of player
 	add_child(new_line)
 	surface_line = new_line
 	
 	var new_polygon: Polygon2D = Polygon2D.new()
 	new_polygon.color = water_fill_color
-	# Don't use show_behind_parent - we want water to overlay the player
-	surface_line.add_child(new_polygon)
+	new_polygon.z_index = ZLayers.FLUID_BODY  # Body BEHIND player (player swims IN it)
+	add_child(new_polygon)  # Add directly to water node, not to line
 	fill_polygon = new_polygon
 	
 	var new_area: Area2D = Area2D.new()
