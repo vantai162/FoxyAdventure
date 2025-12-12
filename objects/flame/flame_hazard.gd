@@ -8,6 +8,8 @@ class_name FlameHazard
 ##
 ## SETUP: Scene includes FlameLight PointLight2D and SparkParticles GPUParticles2D
 ## Configure in the editor. Script handles on/off cycling and flicker animation.
+##
+## CHANNEL SYSTEM: Set listen_channel to connect to Lever/PressurePlate
 
 enum Orientation {
 	FLOOR,    ## Flame shooting up (default)
@@ -16,10 +18,22 @@ enum Orientation {
 	RIGHT     ## Flame shooting right
 }
 
+## What to do when channel is activated/deactivated
+enum FlameAction { IGNITE, EXTINGUISH, TOGGLE }
+
 @export var orientation := Orientation.FLOOR:
 	set(value):
 		orientation = value
 		_apply_orientation()
+
+@export_group("Channel System")
+## Channel to listen to for flame control
+## Set same channel on trigger objects (Lever, PressurePlate) to connect them
+@export var listen_channel: StringName = &""
+## What to do when channel activates (lever pulled, plate pressed)
+@export var on_activate: FlameAction = FlameAction.EXTINGUISH
+## What to do when channel deactivates (lever unpulled, plate released)
+@export var on_deactivate: FlameAction = FlameAction.IGNITE
 
 @export_group("Flame Settings")
 @export var cycle_enabled: bool = true  ## If false, flame stays on permanently
@@ -79,6 +93,11 @@ func _ready() -> void:
 	if spark_particles:
 		_setup_spark_particles()
 	
+	# Subscribe to channel system
+	if not listen_channel.is_empty():
+		InteractionChannel.channel_activated.connect(_on_channel_activated)
+		InteractionChannel.channel_deactivated.connect(_on_channel_deactivated)
+	
 	# Start the cycle
 	if cycle_enabled:
 		play_cycle()
@@ -86,6 +105,31 @@ func _ready() -> void:
 		# Permanent flame
 		await start_phase()
 		await active_phase_loop()
+
+
+func _on_channel_activated(channel: StringName, _source: Node) -> void:
+	if channel != listen_channel:
+		return
+	_execute_flame_action(on_activate)
+
+
+func _on_channel_deactivated(channel: StringName, _source: Node) -> void:
+	if channel != listen_channel:
+		return
+	_execute_flame_action(on_deactivate)
+
+
+func _execute_flame_action(action: FlameAction) -> void:
+	match action:
+		FlameAction.IGNITE:
+			ignite()
+		FlameAction.EXTINGUISH:
+			extinguish()
+		FlameAction.TOGGLE:
+			if is_active:
+				extinguish()
+			else:
+				ignite()
 
 func _setup_light_texture() -> void:
 	## Smooth gradient for flame glow

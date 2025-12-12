@@ -1,12 +1,29 @@
 # Lever - Interactive switch for gates, water, lava, flames, and custom actions
+# Supports both toggle mode (stays on/off) and timed mode (auto-resets after duration)
 extends Area2D
 class_name Lever
 
-## What the lever controls
+## What the lever controls (legacy - use channel for new designs)
 enum LeverTarget { SIGNAL_ONLY, WATER_LEVEL, GATE, LAVA_LEVEL, FLAME }
 
+## Lever behavior mode
+enum LeverMode { 
+	TOGGLE,  ## Standard on/off toggle - stays in state until interacted again
+	TIMED    ## Activates then auto-deactivates after duration (for timed puzzles)
+}
+
+@export_group("Channel System")
+## Channel to broadcast on when activated/deactivated
+## Leave empty to use legacy NodePath system
+## Set same channel on receiver objects (Gate, Flame, etc.) to connect them
+@export var channel: StringName = &""
+
 @export_group("Lever Settings")
+@export var mode: LeverMode = LeverMode.TOGGLE
+## How long lever stays active in TIMED mode (seconds)
+@export var timer_duration: float = 3.0
 @export var is_activated: bool = false
+## Legacy target type - prefer using channel system for new designs
 @export var target_type: LeverTarget = LeverTarget.SIGNAL_ONLY
 
 @export_group("Water Control")
@@ -34,9 +51,16 @@ var _water_ref: Node = null
 var _gate_ref: Node = null
 var _lava_ref: Node = null
 var _flame_ref: Node = null
+var _timer: Timer = null
 
 func _ready() -> void:
 	update_animation()
+	
+	# Create timer for timed mode
+	_timer = Timer.new()
+	_timer.one_shot = true
+	_timer.timeout.connect(_on_timer_timeout)
+	add_child(_timer)
 	
 	# Cache node references
 	if not water_node.is_empty():
@@ -53,14 +77,40 @@ func _process(_delta: float) -> void:
 		activate()
 
 func activate() -> void:
+	# In TIMED mode, ignore if already active (player must wait for reset)
+	if mode == LeverMode.TIMED and is_activated:
+		return
+	
 	is_activated = not is_activated
 	update_animation()
 
 	if is_activated:
 		lever_activated.emit()
+		# Broadcast on channel (new system)
+		if not channel.is_empty():
+			InteractionChannel.activate(channel, self)
+		# Legacy direct control
 		_on_lever_on()
+		# Start timer in TIMED mode
+		if mode == LeverMode.TIMED:
+			_timer.wait_time = timer_duration
+			_timer.start()
 	else:
 		lever_deactivated.emit()
+		# Broadcast on channel (new system)
+		if not channel.is_empty():
+			InteractionChannel.deactivate(channel, self)
+		# Legacy direct control
+		_on_lever_off()
+
+func _on_timer_timeout() -> void:
+	# Auto-deactivate when timer expires (TIMED mode only)
+	if is_activated:
+		is_activated = false
+		update_animation()
+		lever_deactivated.emit()
+		if not channel.is_empty():
+			InteractionChannel.deactivate(channel, self)
 		_on_lever_off()
 
 func _on_lever_on() -> void:

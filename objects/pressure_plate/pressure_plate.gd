@@ -2,10 +2,16 @@
 extends Area2D
 class_name PressurePlate
 
-## What the plate controls
+## What the plate controls (legacy - use channel for new designs)
 enum PlateTarget { SIGNAL_ONLY, GATE, LAVA_LEVEL, FLAME, WATER_LEVEL }
 
+@export_group("Channel System")
+## Channel to broadcast on when pressed/released
+## Set same channel on receiver objects (Gate, Flame, etc.) to connect them
+@export var channel: StringName = &""
+
 @export_group("Plate Settings")
+## Legacy target type - prefer using channel system for new designs
 @export var target_type: PlateTarget = PlateTarget.SIGNAL_ONLY
 @export var stay_activated: bool = false  ## If true, stays ON after first press
 @export var require_weight: bool = false  ## If true, only heavy objects trigger (not player)
@@ -50,6 +56,8 @@ var _original_sprite_pos: Vector2 = Vector2.ZERO
 func _ready() -> void:
 	body_entered.connect(_on_body_entered)
 	body_exited.connect(_on_body_exited)
+	area_entered.connect(_on_area_entered)
+	area_exited.connect(_on_area_exited)
 	
 	# Cache node references
 	if not gate_node.is_empty():
@@ -109,6 +117,10 @@ func _press() -> void:
 	is_pressed = true
 	plate_pressed.emit()
 	
+	# Broadcast on channel
+	if not channel.is_empty():
+		InteractionChannel.activate(channel, self)
+	
 	# Visual feedback - tween position and enable glow
 	if sprite:
 		var tween = create_tween()
@@ -118,7 +130,7 @@ func _press() -> void:
 			pressure_glow.enabled = true
 			tween.tween_property(pressure_glow, "energy", 0.8, press_duration)
 	
-	# Trigger target
+	# Trigger target (legacy)
 	_on_plate_pressed()
 	
 	if stay_activated:
@@ -127,6 +139,10 @@ func _press() -> void:
 func _release() -> void:
 	is_pressed = false
 	plate_released.emit()
+	
+	# Broadcast on channel
+	if not channel.is_empty():
+		InteractionChannel.deactivate(channel, self)
 	
 	# Visual feedback - tween position back and fade glow
 	if sprite:
@@ -140,7 +156,7 @@ func _release() -> void:
 					pressure_glow.enabled = false
 			)
 	
-	# Release target
+	# Release target (legacy)
 	_on_plate_released()
 
 func _on_plate_pressed() -> void:
@@ -188,3 +204,24 @@ func reset() -> void:
 	_bodies_on_plate.clear()
 	if is_pressed:
 		_release()
+
+
+## Blade projectile detection (Area2D-to-Area2D)
+func _on_area_entered(area: Area2D) -> void:
+	# Check if it's a grounded blade projectile
+	if area is BladeProjectile:
+		var blade := area as BladeProjectile
+		# Only trigger if blade is grounded (not flying through)
+		if blade.current_state == BladeProjectile.State.GROUNDED:
+			if not _bodies_on_plate.has(blade):
+				_bodies_on_plate.append(blade)
+			if not is_pressed and not _permanently_activated:
+				_press()
+
+
+func _on_area_exited(area: Area2D) -> void:
+	if area is BladeProjectile:
+		_bodies_on_plate.erase(area)
+		
+		if is_pressed and _bodies_on_plate.is_empty() and not stay_activated:
+			_release()

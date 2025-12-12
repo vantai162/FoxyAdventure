@@ -9,7 +9,7 @@ class_name LavaPool
 ## PUZZLE INTEGRATION:
 ## - drain(duration) - Lowers lava, player can cross
 ## - fill(duration) - Raises lava back
-## - Connect to Lever with LAVA_LEVEL target type
+## - Connect via Channel System or legacy Lever with LAVA_LEVEL target type
 
 signal lava_drained  ## Emitted when drain animation completes
 signal lava_filled   ## Emitted when fill animation completes
@@ -17,6 +17,11 @@ signal lava_filled   ## Emitted when fill animation completes
 @export var lava_size: Vector2 = Vector2(128.0, 64.0)
 @export var surface_pos_y: float = 0.5
 @export_range(2, 256) var segment_count: int = 32
+
+@export_group("Channel System")
+## Channel to listen to for lava drain/fill control
+## Set same channel on trigger objects (Lever, PressurePlate) to connect them
+@export var listen_channel: StringName = &""
 
 @export_group("Drain/Fill Settings")
 @export var drain_target_y: float = 60.0  ## Where lava drains to (lower = more visible)
@@ -131,8 +136,24 @@ func _ready() -> void:
 	
 	if not Engine.is_editor_hint():
 		set_process(true)
+		# Subscribe to channel system
+		if not listen_channel.is_empty():
+			InteractionChannel.channel_activated.connect(_on_channel_activated)
+			InteractionChannel.channel_deactivated.connect(_on_channel_deactivated)
 
-func _process(delta: float) -> void:
+
+func _on_channel_activated(channel: StringName, _source: Node) -> void:
+	if channel != listen_channel:
+		return
+	# Channel activated = drain lava (safe to cross)
+	drain()
+
+
+func _on_channel_deactivated(channel: StringName, _source: Node) -> void:
+	if channel != listen_channel:
+		return
+	# Channel deactivated = fill lava (danger!)
+	fill()
 	# Debug diagnostics
 	if enable_debug_diagnostics:
 		debug_timer += delta

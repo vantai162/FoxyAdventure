@@ -6,6 +6,17 @@ class_name water
 @export var surface_pos_y: float = 0.5
 @export_range(2,512) var segment_count: int = 64
 
+@export_group("Channel System")
+## Channel to listen to for water level control
+## Set same channel on trigger objects (Lever, PressurePlate) to connect them
+@export var listen_channel: StringName = &""
+## Water surface level when channel is ACTIVATED (negative = higher, positive = lower)
+@export var raised_level: float = -50.0
+## Water surface level when channel is DEACTIVATED
+@export var lowered_level: float = 50.0
+## Time in seconds for water level transition
+@export var level_transition_time: float = 2.0
+
 @export_group("Visuals")
 @export var surface_line_thickness: float = 2.0  ## Thicker for visibility
 @export var surface_color: Color = Color("3ce1da")
@@ -127,6 +138,22 @@ func _ready() -> void:
 	_initiate_water()
 	if not Engine.is_editor_hint():
 		set_process(true)
+		# Subscribe to channel system
+		if not listen_channel.is_empty():
+			InteractionChannel.channel_activated.connect(_on_channel_activated)
+			InteractionChannel.channel_deactivated.connect(_on_channel_deactivated)
+
+
+func _on_channel_activated(channel: StringName, _source: Node) -> void:
+	if channel != listen_channel:
+		return
+	raise_water(raised_level, level_transition_time)
+
+
+func _on_channel_deactivated(channel: StringName, _source: Node) -> void:
+	if channel != listen_channel:
+		return
+	lower_water(lowered_level, level_transition_time)
 
 
 func _process(delta:float)->void:
@@ -526,8 +553,9 @@ func get_water_height_at_global_x(global_x: float) -> float:
 	return global_position.y + segment_data[index]["height"]
 
 func _update_collision_shape() -> void:
-	## Dynamically update collision shape SIZE and POSITION to match water level
-	## The water should expand from bottom up, not move as a whole
+	## Dynamically update collision shape SIZE and POSITION to match VISUAL water level
+	## CRITICAL: Must match what players SEE, not the tween target
+	## Uses average segment height to stay synchronized with update_visuals()
 	if not water_collision_shape or not water_collision_shape.shape:
 		return
 	
@@ -535,13 +563,18 @@ func _update_collision_shape() -> void:
 	if not shape:
 		return
 	
-	# Calculate new size: from bottom (water_size.y) to current surface (surface_pos_y)
-	# surface_pos_y is offset from origin, negative = higher up
-	var new_height = water_size.y - surface_pos_y  # Total height from surface to bottom
-	var old_size = shape.size
-	shape.size = Vector2(water_size.x, new_height)
+	# Calculate average visual surface height from actual segment data
+	# This is what update_visuals() uses, so collision matches visuals exactly
+	var avg_surface_height: float = 0.0
+	for seg in segment_data:
+		avg_surface_height += seg["height"]
+	avg_surface_height /= segment_count
 	
-	var center_y = surface_pos_y + new_height / 2.0
+	# Calculate new size: from bottom (water_size.y) to current visual surface
+	var new_height = water_size.y - avg_surface_height  # Total height from surface to bottom
+	shape.size = Vector2(water_size.x, max(new_height, 1.0))  # Ensure positive height
+	
+	var center_y = avg_surface_height + new_height / 2.0
 	water_collision_shape.position = Vector2(water_size.x / 2.0, center_y)
 
 ## Water level control for boss fights and scripted events

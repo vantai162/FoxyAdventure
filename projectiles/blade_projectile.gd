@@ -309,6 +309,18 @@ func _on_area_entered(area: Area2D) -> void:
 	if area.get_parent() == thrower:
 		_pickup_by_player()
 		return
+	
+	# Trigger interactable objects (levers, etc.)
+	if area.is_in_group("blade_interactable"):
+		_trigger_interactable(area)
+
+func _trigger_interactable(area: Area2D) -> void:
+	## Activate levers and other blade-interactable objects
+	if area is Lever:
+		area.activate()
+	elif area is TimerLever:
+		area.activate_switch()
+	# Future: other interactables can be added here
 
 func _pickup_by_player() -> void:
 	if thrower and thrower.has_method("return_blade"):

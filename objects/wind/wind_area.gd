@@ -2,16 +2,30 @@ extends Area2D
 class_name WindArea
 ## Wind zone that pushes entities with proper visual feedback
 ## Features: horizontal speed streaks shader + dust particles
+## Supports Channel System for puzzle integration (toggle on/off via lever)
+
+## What to do when channel is activated
+enum ChannelAction { ENABLE, DISABLE, TOGGLE }
+
+@export_group("Channel System")
+## Channel to listen to for activation/deactivation
+@export var listen_channel: StringName = &""
+## What happens when channel activates
+@export var on_activate: ChannelAction = ChannelAction.DISABLE
+## What happens when channel deactivates  
+@export var on_deactivate: ChannelAction = ChannelAction.ENABLE
 
 @export_group("Wind Settings")
 @export var wind_force: Vector2 = Vector2(-150, 0)  ## Force applied per frame
 @export var affect_enemies: bool = true  ## Push enemies too
 @export var affect_projectiles: bool = false  ## Push projectiles
 @export var enemy_force_multiplier: float = 0.5  ## Enemies resist wind more
+@export var start_enabled: bool = true  ## Initial state
 
 var _bodies_in_wind: Array[Node2D] = []
 var _wind_streaks: ColorRect = null
 var _dust_particles: GPUParticles2D = null
+var _is_enabled: bool = true
 
 func _ready() -> void:
 	body_entered.connect(_on_body_entered)
@@ -23,6 +37,54 @@ func _ready() -> void:
 	
 	# Configure visuals to match wind direction
 	_configure_wind_visuals()
+	
+	# Set initial state
+	_is_enabled = start_enabled
+	_update_visual_state()
+	
+	# Register for channel events
+	if not listen_channel.is_empty():
+		InteractionChannel.register_listener(listen_channel, _on_channel_activated, _on_channel_deactivated)
+
+func _exit_tree() -> void:
+	if not listen_channel.is_empty():
+		InteractionChannel.unregister_listener(listen_channel, _on_channel_activated, _on_channel_deactivated)
+
+func _on_channel_activated(_source: Node) -> void:
+	match on_activate:
+		ChannelAction.ENABLE: enable_wind()
+		ChannelAction.DISABLE: disable_wind()
+		ChannelAction.TOGGLE: toggle_wind()
+
+func _on_channel_deactivated(_source: Node) -> void:
+	match on_deactivate:
+		ChannelAction.ENABLE: enable_wind()
+		ChannelAction.DISABLE: disable_wind()
+		ChannelAction.TOGGLE: toggle_wind()
+
+func enable_wind() -> void:
+	_is_enabled = true
+	_update_visual_state()
+
+func disable_wind() -> void:
+	_is_enabled = false
+	# Clear wind from any player currently in zone
+	for body in _bodies_in_wind:
+		if body.is_in_group("player") and "wind_velocity" in body:
+			body.wind_velocity = Vector2.ZERO
+	_update_visual_state()
+
+func toggle_wind() -> void:
+	if _is_enabled:
+		disable_wind()
+	else:
+		enable_wind()
+
+func _update_visual_state() -> void:
+	if _wind_streaks:
+		_wind_streaks.visible = _is_enabled
+	if _dust_particles:
+		_dust_particles.emitting = _is_enabled
 
 
 func _configure_wind_visuals() -> void:
@@ -49,7 +111,10 @@ func _configure_wind_visuals() -> void:
 		pmat.initial_velocity_max = base_vel * 1.2
 
 func _physics_process(delta: float) -> void:
-	## Apply wind to all tracked bodies
+	## Apply wind to all tracked bodies (only when enabled)
+	if not _is_enabled:
+		return
+	
 	for body in _bodies_in_wind:
 		if not is_instance_valid(body):
 			continue
@@ -58,7 +123,7 @@ func _physics_process(delta: float) -> void:
 
 
 func _on_body_entered(body: Node2D) -> void:
-	if body == null:
+	if body == null or not _is_enabled:
 		return
 	
 	# Player - use wind_velocity property for smooth integration

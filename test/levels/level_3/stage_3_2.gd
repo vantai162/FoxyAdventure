@@ -28,6 +28,9 @@ extends StageBase
 ## - Aggressive Tribe: Demo on platform, then real combat on ground
 ##
 ## FEELING: Exploration, navigation, "where does this lead?"
+##
+## CONNECTION: JunctionLever and CampGate use Channel System
+## Set in scene: JunctionLever.channel = "junction", CampGate.listen_channel = "junction"
 ## ═══════════════════════════════════════════════════════════════════════════
 
 
@@ -40,15 +43,7 @@ func _init() -> void:
 
 func _ready() -> void:
 	super._ready()
-	_connect_lever_to_gate()
-
-
-func _connect_lever_to_gate() -> void:
-	var lever = get_node_or_null("Puzzle/JunctionLever")
-	var gate = get_node_or_null("Puzzle/CampGate")
-	if lever and gate:
-		lever.lever_activated.connect(gate.open_gate)
-		lever.lever_deactivated.connect(gate.close_gate)
+	# Lever/Gate connection now handled by Channel System in inspector
 
 
 func _on_stage_ready() -> void:

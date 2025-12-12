@@ -22,8 +22,8 @@ radius = 8.0
 radius = 16.0
 
 [node name="BladeProjectile" type="Area2D" groups=["player_attack"]]
-collision_layer = 0
-collision_mask = 11
+collision_layer = 128
+collision_mask = 1035
 script = ExtResource("1")
 first_bounce_upward_force = 366.6
 close_bounce_speed_multiplier = 0.75
