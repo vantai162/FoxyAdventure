@@ -7,7 +7,7 @@
 size = Vector2(64.5, 8)
 
 [node name="VerticalMovingPlatform" type="AnimatableBody2D"]
-z_index = -15
+z_index = 15
 script = ExtResource("1_typrs")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]

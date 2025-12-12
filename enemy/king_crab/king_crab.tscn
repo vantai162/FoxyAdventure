@@ -361,7 +361,7 @@ size = Vector2(63, 63)
 size = Vector2(555, 555)
 
 [node name="KingCrab" type="CharacterBody2D"]
-z_index = 15
+z_index = 13
 scale = Vector2(2, 2)
 collision_layer = 8
 script = ExtResource("1_script")

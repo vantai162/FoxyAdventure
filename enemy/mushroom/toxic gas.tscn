@@ -8,7 +8,7 @@
 size = Vector2(102, 27)
 
 [node name="ToxicGas" type="RigidBody2D"]
-z_index = 12
+z_index = 14
 collision_layer = 32
 script = ExtResource("1_vv3ki")
 

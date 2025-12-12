@@ -2,9 +2,11 @@
 extends Node2D
 class_name water
 
-## Z-INDEX LAYERING:
-## Water body (fill) sits BEHIND the player so player appears INSIDE the water
-## Water surface (line) sits IN FRONT of player for "head poking out" effect
+## Z-INDEX LAYERING - SIMPLE STACKING:
+## Player (z=10) → Water (z=12) → Terrain (z=15)
+## - Water is IN FRONT of player, so player looks submerged
+## - Terrain is IN FRONT of water, so terrain masks rectangle edges
+## Result: Non-rectangular pool shapes, player appears underwater. No overlay needed.
 ## See scripts/z_layers.gd for the full system
 
 @export var water_size: Vector2 = Vector2(8.0,16.0)
@@ -379,14 +381,18 @@ func _initiate_water() -> void:
 	new_line.begin_cap_mode = Line2D.LINE_CAP_ROUND
 	new_line.end_cap_mode = Line2D.LINE_CAP_ROUND
 	new_line.joint_mode = Line2D.LINE_JOINT_ROUND
-	new_line.z_index = ZLayers.FLUID_SURFACE  # Surface BEHIND terrain (visible through opening)
+	new_line.z_as_relative = false  # Use absolute z_index
+	new_line.z_index = ZLayers.FLUID_SURFACE  # IN FRONT of player (11)
 	add_child(new_line)
 	surface_line = new_line
 	
+	# Main water body - IN FRONT of player so player looks submerged
+	# Terrain is IN FRONT of water to mask rectangle edges
 	var new_polygon: Polygon2D = Polygon2D.new()
 	new_polygon.color = water_fill_color
-	new_polygon.z_index = ZLayers.FLUID_BODY  # Body BEHIND terrain (walls mask edges)
-	add_child(new_polygon)  # Add directly to water node, not to line
+	new_polygon.z_as_relative = false  # Use absolute z_index
+	new_polygon.z_index = ZLayers.FLUID_BODY  # IN FRONT of player (12)
+	add_child(new_polygon)
 	fill_polygon = new_polygon
 	
 	var new_area: Area2D = Area2D.new()
@@ -641,7 +647,7 @@ func update_visuals() -> void:
 	final_points.append(Vector2(water_size.x, bottom_y))
 	final_points.append(Vector2(0, bottom_y))
 	fill_polygon.polygon = final_points
-
+	
 func splash(splash_pos:Vector2, splash_velocity:float) -> void:
 	var local_x_pos: float = to_local(splash_pos).x
 	var segment_width: float = water_size.x / (segment_count - 1)

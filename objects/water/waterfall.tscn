@@ -3,5 +3,5 @@
 [ext_resource type="Script" uid="uid://waterfall_script" path="res://objects/water/waterfall.gd" id="1_waterfall"]
 
 [node name="Waterfall" type="Node2D"]
-z_index = -24
+z_index = 0
 script = ExtResource("1_waterfall")

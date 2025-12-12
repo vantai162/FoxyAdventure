@@ -33,7 +33,7 @@ animations = [{
 }]
 
 [node name="Water" type="Node2D"]
-z_index = -25
+z_index = 12
 script = ExtResource("1_i1jtv")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]

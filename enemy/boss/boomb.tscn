@@ -152,7 +152,7 @@ animations = [{
 }]
 
 [node name="Boomb" type="RigidBody2D"]
-z_index = 12
+z_index = 14
 collision_layer = 128
 script = ExtResource("1_l0drh")
 

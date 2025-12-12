@@ -403,13 +403,15 @@ func _initiate_lava() -> void:
 	surface_line.begin_cap_mode = Line2D.LINE_CAP_ROUND
 	surface_line.end_cap_mode = Line2D.LINE_CAP_ROUND
 	surface_line.joint_mode = Line2D.LINE_JOINT_ROUND
-	surface_line.z_index = ZLayers.FLUID_SURFACE  # Surface BEHIND terrain (visible through opening)
+	surface_line.z_as_relative = false  # Use absolute z_index
+	surface_line.z_index = ZLayers.FLUID_SURFACE  # IN FRONT of player (rippling top edge)
 	add_child(surface_line)
 	
 	# Create fill polygon
 	fill_polygon = Polygon2D.new()
 	fill_polygon.color = lava_fill_color
-	fill_polygon.z_index = ZLayers.FLUID_BODY  # Body BEHIND terrain (walls mask edges)
+	fill_polygon.z_as_relative = false  # Use absolute z_index
+	fill_polygon.z_index = ZLayers.FLUID_BODY  # IN FRONT of player (semi-transparent submersion)
 	add_child(fill_polygon)  # Add directly, not to line
 	
 	# Create damage area
