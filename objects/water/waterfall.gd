@@ -358,7 +358,8 @@ func _update_visuals() -> void:
 				amp *= 1.2 - (flare_t - 0.5) * 1.4  # Calm as it merges
 		
 		# Multi-frequency organic waves
-		var phase = _wave_time * wave_speed + (y + _flow_offset) / waterfall_size.y * TAU * 3.0
+		# Subtract flow_offset so waves travel DOWNWARD with the flow
+		var phase = _wave_time * wave_speed + (y - _flow_offset) / waterfall_size.y * TAU * 3.0
 		var wave_l = sin(phase) * amp + sin(phase * 2.1 + 0.5) * amp * 0.25
 		var wave_r = sin(phase + 0.4) * amp + sin(phase * 1.9 + 0.3) * amp * 0.25
 		

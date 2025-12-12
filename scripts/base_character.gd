@@ -202,7 +202,12 @@ func _is_on_one_way_platform():
 	
 
 func spring():
+	## Legacy spring - always launches UP (for backward compatibility)
 	velocity.y = -650
+
+func spring_launch(launch_velocity: Vector2) -> void:
+	## Directional spring launch - applies velocity in the given direction
+	velocity = launch_velocity
 		
 func drop_down_platform():
 	var PLATFORM_LAYER = 1

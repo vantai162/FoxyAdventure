@@ -50,6 +50,7 @@ signal lava_filled   ## Emitted when fill animation completes
 @export var ambient_wave_amplitude: float = 2.5  ## Lava is more viscous, bigger waves
 @export var ambient_wave_speed: float = 0.8  ## Slower than water (thicker)
 @export var ambient_wave_length: float = 0.35
+@export_range(-1.0, 1.0) var ambient_wave_direction: float = 1.0  ## -1 = left, 0 = standing, 1 = right
 
 @export_group("Physics Simulation")
 @export var lava_restoring_force: float = 24.0  ## Spring constant (recalibrated from 0.015×40²)
@@ -310,6 +311,10 @@ func _on_channel_deactivated(channel: StringName, _source: Node) -> void:
 
 
 func _process(delta: float) -> void:
+	# Ambient wave animation (runs in BOTH editor and runtime for visual life)
+	if ambient_wave_enabled:
+		_ambient_wave_time += delta
+	
 	# EDITOR MODE: Only update visuals (no physics, particles, or gameplay)
 	if Engine.is_editor_hint():
 		_update_visuals()
@@ -325,10 +330,6 @@ func _process(delta: float) -> void:
 	# Drain/fill animation
 	if _drain_active:
 		_update_drain_fill(delta)
-	
-	# Ambient wave animation
-	if ambient_wave_enabled:
-		_ambient_wave_time += delta
 	
 	# Light pulsing
 	if light_pulse_enabled and lava_lights.size() > 0:
@@ -729,7 +730,10 @@ func _update_visuals() -> void:
 		# Add ambient wave offset
 		var ambient_offset = 0.0
 		if ambient_wave_enabled:
-			var wave_phase = _ambient_wave_time * ambient_wave_speed + (float(i) / segment_count) * TAU / ambient_wave_length
+			# direction: -1 = waves travel left, 0 = standing wave, 1 = waves travel right
+			var direction = ambient_wave_direction if ambient_wave_direction != null else 1.0
+			var position_term = (float(i) / segment_count) * TAU / ambient_wave_length
+			var wave_phase = _ambient_wave_time * ambient_wave_speed - position_term * direction
 			ambient_offset = sin(wave_phase) * ambient_wave_amplitude
 		
 		points.append(Vector2(i * segment_width, base_height + ambient_offset))

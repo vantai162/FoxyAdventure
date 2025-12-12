@@ -38,6 +38,7 @@
 script = ExtResource("1_stage_script")
 
 [node name="DarknessModulate" type="CanvasModulate" parent="."]
+visible = false
 color = Color(0.0558769, 0.0395219, 0.0722072, 1)
 
 [node name="PlayerSpawn" type="Marker2D" parent="."]
@@ -566,5 +567,5 @@ position = Vector2(768, 1653)
 orientation = 2
 
 [connection signal="area_entered" from="Terrain/TileMapLayer/HealthPotion" to="Terrain/TileMapLayer/HealthPotion" method="_on_area_entered"]
-[connection signal="area_entered" from="Terrain/TileMapLayer/@Area2D@105285" to="Terrain/TileMapLayer/@Area2D@105285" method="_on_area_entered"]
-[connection signal="area_entered" from="Terrain/TileMapLayer/@Area2D@105286" to="Terrain/TileMapLayer/@Area2D@105286" method="_on_area_entered"]
+[connection signal="area_entered" from="Terrain/TileMapLayer/@Area2D@107635" to="Terrain/TileMapLayer/@Area2D@107635" method="_on_area_entered"]
+[connection signal="area_entered" from="Terrain/TileMapLayer/@Area2D@107636" to="Terrain/TileMapLayer/@Area2D@107636" method="_on_area_entered"]

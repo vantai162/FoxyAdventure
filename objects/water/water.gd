@@ -35,6 +35,7 @@ class_name water
 @export var ambient_wave_amplitude: float = 2.0  ## How high/low waves go (pixels) - more visible
 @export var ambient_wave_speed: float = 1.5  ## Wave frequency - slightly faster
 @export var ambient_wave_length: float = 0.25  ## Wavelength (0.1-1.0, lower = more waves)
+@export_range(-1.0, 1.0) var ambient_wave_direction: float = 1.0  ## -1 = left, 0 = standing, 1 = right
 
 @export_group("Physics Simulation")
 @export var water_restoring_force: float = 300.0  ## Spring constant pulling toward rest_height (higher = faster response)
@@ -290,9 +291,12 @@ func _ready() -> void:
 	_swim_disturbance_timers.clear()
 	_boats_in_water.clear()
 	_initiate_water()
+	
+	# Always enable processing for ambient wave animation (editor + runtime)
+	set_process(true)
+	
+	# Runtime-only: subscribe to channel system
 	if not Engine.is_editor_hint():
-		set_process(true)
-		# Subscribe to channel system
 		if not listen_channel.is_empty():
 			var channel_manager = get_node_or_null("/root/InteractionChannel")
 			if channel_manager:
@@ -313,6 +317,15 @@ func _on_channel_deactivated(channel: StringName, _source: Node) -> void:
 
 
 func _process(delta:float)->void:
+	# Ambient wave animation (runs in BOTH editor and runtime for visual life)
+	if ambient_wave_enabled:
+		_ambient_wave_time += delta
+	
+	# EDITOR MODE: Only update visuals (no physics, particles, or gameplay)
+	if Engine.is_editor_hint():
+		update_visuals()
+		return
+	
 	if enable_debug_diagnostics:
 		debug_timer += delta
 		if debug_timer >= debug_interval:
@@ -322,10 +335,6 @@ func _process(delta:float)->void:
 	# Update water raising animation
 	if _water_raise_active:
 		_update_water_raise(delta)
-	
-	# Ambient wave animation (always runs for visual life)
-	if ambient_wave_enabled:
-		_ambient_wave_time += delta
 	
 	# Swim disturbance: create periodic ripples for bodies in water
 	if swim_disturbance_enabled:
@@ -623,7 +632,10 @@ func update_visuals() -> void:
 		# Add ambient wave offset (purely visual, doesn't affect physics)
 		var ambient_offset = 0.0
 		if ambient_wave_enabled:
-			var wave_phase = _ambient_wave_time * ambient_wave_speed + (float(i) / segment_count) * TAU / ambient_wave_length
+			# direction: -1 = waves travel left, 0 = standing wave, 1 = waves travel right
+			var direction = ambient_wave_direction if ambient_wave_direction != null else 1.0
+			var position_term = (float(i) / segment_count) * TAU / ambient_wave_length
+			var wave_phase = _ambient_wave_time * ambient_wave_speed - position_term * direction
 			ambient_offset = sin(wave_phase) * ambient_wave_amplitude
 		
 		points.append(Vector2(i * segment_width, base_height + ambient_offset))

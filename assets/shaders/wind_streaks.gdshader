@@ -32,11 +32,12 @@ void fragment() {
 	float time = TIME * wind_speed;
 	
 	// Rotate UV based on wind direction
+	// We rotate the coordinate space so that "wind direction" becomes +X
 	float cos_a = cos(direction_angle);
 	float sin_a = sin(direction_angle);
 	vec2 rotated_uv = vec2(
-		UV.x * cos_a - UV.y * sin_a,
-		UV.x * sin_a + UV.y * cos_a
+		UV.x * cos_a + UV.y * sin_a,  // Note: changed sign for correct rotation
+		-UV.x * sin_a + UV.y * cos_a
 	);
 	
 	// Create streak grid
@@ -47,7 +48,8 @@ void fragment() {
 	float turb = noise(vec2(rotated_uv.y * 5.0, time * 0.5)) * turbulence;
 	
 	// Streak position with time offset
-	float streak_x = fract(rotated_uv.x + time + row_offset + turb);
+	// Streaks travel in the wind direction (positive X in rotated space)
+	float streak_x = fract(rotated_uv.x - time + row_offset + turb);
 	
 	// Streak visibility (head to tail fade)
 	float in_streak = smoothstep(0.0, streak_length, streak_x) * 

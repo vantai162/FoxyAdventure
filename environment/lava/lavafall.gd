@@ -403,7 +403,8 @@ func _update_visuals() -> void:
 				amp *= 1.18 - (flare_t - 0.6) * 1.2
 		
 		# Slower, goopier waves (lava is viscous)
-		var phase = _wave_time * wave_speed + (y + _flow_offset) / lavafall_size.y * TAU * 2.5
+		# Subtract flow_offset so waves travel DOWNWARD with the flow
+		var phase = _wave_time * wave_speed + (y - _flow_offset) / lavafall_size.y * TAU * 2.5
 		var wave_l = sin(phase) * amp + sin(phase * 1.7 + 0.5) * amp * 0.3
 		var wave_r = sin(phase + 0.6) * amp + sin(phase * 1.5 + 0.2) * amp * 0.3
 		
