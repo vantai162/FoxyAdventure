@@ -68,6 +68,7 @@ func deactivate(channel: StringName, source: Node = null) -> void:
 func is_channel_active(channel: StringName) -> bool:
 	return _active_channels.has(channel) and not _active_channels[channel].is_empty()
 
+
 ## Get all sources currently activating a channel
 func get_channel_sources(channel: StringName) -> Array:
 	if _active_channels.has(channel):
@@ -77,3 +78,25 @@ func get_channel_sources(channel: StringName) -> Array:
 ## Debug: List all active channels
 func get_active_channels() -> Array:
 	return _active_channels.keys()
+
+## Convenience method to register a listener for a specific channel
+## Connects to both activated and deactivated signals with channel filtering
+func register_listener(channel: StringName, on_activate: Callable, on_deactivate: Callable) -> void:
+	if channel.is_empty():
+		return
+	# Connect with channel filtering wrapper
+	channel_activated.connect(func(ch: StringName, source: Node):
+		if ch == channel:
+			on_activate.call(source)
+	)
+	channel_deactivated.connect(func(ch: StringName, source: Node):
+		if ch == channel:
+			on_deactivate.call(source)
+	)
+
+## Convenience method to unregister a listener (Note: with lambdas, this is a no-op for safety)
+## Objects should be freed naturally or use direct signal connections if unregistration is needed
+func unregister_listener(_channel: StringName, _on_activate: Callable, _on_deactivate: Callable) -> void:
+	# Lambda connections can't be easily disconnected by reference
+	# Objects are freed naturally when removed from scene tree
+	pass

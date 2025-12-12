@@ -44,11 +44,15 @@ func _ready() -> void:
 	
 	# Register for channel events
 	if not listen_channel.is_empty():
-		InteractionChannel.register_listener(listen_channel, _on_channel_activated, _on_channel_deactivated)
+		var channel_manager = get_node_or_null("/root/InteractionChannel")
+		if channel_manager:
+			channel_manager.register_listener(listen_channel, _on_channel_activated, _on_channel_deactivated)
 
 func _exit_tree() -> void:
 	if not listen_channel.is_empty():
-		InteractionChannel.unregister_listener(listen_channel, _on_channel_activated, _on_channel_deactivated)
+		var channel_manager = get_node_or_null("/root/InteractionChannel")
+		if channel_manager:
+			channel_manager.unregister_listener(listen_channel, _on_channel_activated, _on_channel_deactivated)
 
 func _on_channel_activated(_source: Node) -> void:
 	match on_activate:

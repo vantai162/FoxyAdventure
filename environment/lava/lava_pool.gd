@@ -138,8 +138,10 @@ func _ready() -> void:
 		set_process(true)
 		# Subscribe to channel system
 		if not listen_channel.is_empty():
-			InteractionChannel.channel_activated.connect(_on_channel_activated)
-			InteractionChannel.channel_deactivated.connect(_on_channel_deactivated)
+			var channel_manager = get_node_or_null("/root/InteractionChannel")
+			if channel_manager:
+				channel_manager.channel_activated.connect(_on_channel_activated)
+				channel_manager.channel_deactivated.connect(_on_channel_deactivated)
 
 
 func _on_channel_activated(channel: StringName, _source: Node) -> void:
@@ -154,6 +156,12 @@ func _on_channel_deactivated(channel: StringName, _source: Node) -> void:
 		return
 	# Channel deactivated = fill lava (danger!)
 	fill()
+
+
+func _process(delta: float) -> void:
+	if Engine.is_editor_hint():
+		return
+	
 	# Debug diagnostics
 	if enable_debug_diagnostics:
 		debug_timer += delta

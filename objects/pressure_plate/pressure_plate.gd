@@ -119,7 +119,9 @@ func _press() -> void:
 	
 	# Broadcast on channel
 	if not channel.is_empty():
-		InteractionChannel.activate(channel, self)
+		var channel_manager = get_node_or_null("/root/InteractionChannel")
+		if channel_manager:
+			channel_manager.activate(channel, self)
 	
 	# Visual feedback - tween position and enable glow
 	if sprite:
@@ -142,7 +144,9 @@ func _release() -> void:
 	
 	# Broadcast on channel
 	if not channel.is_empty():
-		InteractionChannel.deactivate(channel, self)
+		var channel_manager = get_node_or_null("/root/InteractionChannel")
+		if channel_manager:
+			channel_manager.deactivate(channel, self)
 	
 	# Visual feedback - tween position back and fade glow
 	if sprite:

@@ -88,7 +88,9 @@ func activate() -> void:
 		lever_activated.emit()
 		# Broadcast on channel (new system)
 		if not channel.is_empty():
-			InteractionChannel.activate(channel, self)
+			var channel_manager = get_node_or_null("/root/InteractionChannel")
+			if channel_manager:
+				channel_manager.activate(channel, self)
 		# Legacy direct control
 		_on_lever_on()
 		# Start timer in TIMED mode
@@ -99,7 +101,9 @@ func activate() -> void:
 		lever_deactivated.emit()
 		# Broadcast on channel (new system)
 		if not channel.is_empty():
-			InteractionChannel.deactivate(channel, self)
+			var channel_manager = get_node_or_null("/root/InteractionChannel")
+			if channel_manager:
+				channel_manager.deactivate(channel, self)
 		# Legacy direct control
 		_on_lever_off()
 
@@ -110,7 +114,9 @@ func _on_timer_timeout() -> void:
 		update_animation()
 		lever_deactivated.emit()
 		if not channel.is_empty():
-			InteractionChannel.deactivate(channel, self)
+			var channel_manager = get_node_or_null("/root/InteractionChannel")
+			if channel_manager:
+				channel_manager.deactivate(channel, self)
 		_on_lever_off()
 
 func _on_lever_on() -> void:

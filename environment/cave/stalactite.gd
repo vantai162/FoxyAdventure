@@ -120,7 +120,9 @@ func _ready() -> void:
 			pass  # Wait for trigger_fall() call
 		TriggerMode.CHANNEL:
 			if not listen_channel.is_empty():
-				InteractionChannel.register_listener(listen_channel, _on_channel_activated, _on_channel_deactivated)
+				var channel_manager = get_node_or_null("/root/InteractionChannel")
+				if channel_manager:
+					channel_manager.register_listener(listen_channel, _on_channel_activated, _on_channel_deactivated)
 	
 	if hit_area:
 		hit_area.damage = damage
@@ -261,7 +263,9 @@ func _on_channel_deactivated(_source: Node) -> void:
 
 func _exit_tree() -> void:
 	if trigger_mode == TriggerMode.CHANNEL and not listen_channel.is_empty():
-		InteractionChannel.unregister_listener(listen_channel, _on_channel_activated, _on_channel_deactivated)
+		var channel_manager = get_node_or_null("/root/InteractionChannel")
+		if channel_manager:
+			channel_manager.unregister_listener(listen_channel, _on_channel_activated, _on_channel_deactivated)
 
 ## Reset to idle state
 func reset() -> void:

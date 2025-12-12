@@ -136,8 +136,10 @@ func _setup_channel_mode() -> void:
 		push_warning("SpikeRetractable: CHANNEL mode but no listen_channel set")
 		return
 	
-	InteractionChannel.channel_activated.connect(_on_channel_activated)
-	InteractionChannel.channel_deactivated.connect(_on_channel_deactivated)
+	var channel_manager = get_node_or_null("/root/InteractionChannel")
+	if channel_manager:
+		channel_manager.channel_activated.connect(_on_channel_activated)
+		channel_manager.channel_deactivated.connect(_on_channel_deactivated)
 
 func _on_channel_activated(channel: StringName, _source: Node) -> void:
 	if channel != listen_channel:
