@@ -72,7 +72,12 @@ class_name water
 @export_group("Debug")
 @export var enable_debug_diagnostics: bool = false  ## Enable water stability monitoring (prints every second)
 
+@export_group("Waterfall Blending")
+## Just ONE toggle - waterfalls handle everything else automatically
+@export var allow_waterfall_blend: bool = true  ## Allow waterfalls to blend into this pool
+
 var segment_data: Array = []
+var _surface_suppression_zones: Array = []  ## Runtime: auto-populated by waterfalls
 var segment_rest_height: Array = []  ## Per-segment equilibrium height (allows external depression control)
 var recently_splashed: bool = false
 
@@ -117,6 +122,149 @@ var water_collision_shape: CollisionShape2D  ## Reference to collision shape for
 
 signal player_entered_water(body)
 signal player_exited_water(body)
+
+## ==========================================
+## AUTONOMOUS WATERFALL BLEND RECEIVER
+## Waterfalls call this automatically - you don't need to do anything!
+## ==========================================
+
+## Called by Waterfall when it detects this pool below it
+func _receive_waterfall_blend(x_min: float, x_max: float, waterfall: Node2D) -> void:
+	if not allow_waterfall_blend:
+		return
+	
+	# 1. Surface line suppression (subtle fade, not invisible)
+	_surface_suppression_zones.append({
+		"x_min": x_min,
+		"x_max": x_max,
+		"fade_width": 10.0
+	})
+	_rebuild_surface_gradient()
+	
+	# 2. PHYSICS: Depress the pool surface where fall impacts
+	#    Real fluid: falling column pushes surface down, curves away at edges
+	#    This creates the "dip" that matches the waterfall's flare
+	_apply_waterfall_depression(x_min, x_max)
+	
+	# 3. CONTINUOUS RIPPLES: Store impact zone for ongoing disturbance
+	#    Real water: constant small splashing/rippling from falling water
+	_waterfall_impact_zones.append({
+		"x_min": x_min,
+		"x_max": x_max,
+		"waterfall": waterfall,
+		"last_ripple_time": 0.0
+	})
+
+## Track waterfall impact zones for continuous rippling
+var _waterfall_impact_zones: Array = []
+
+## Apply a permanent surface depression where waterfall impacts
+## The falling water pushes the surface down - edges curve up smoothly
+func _apply_waterfall_depression(x_min: float, x_max: float) -> void:
+	if segment_rest_height.is_empty():
+		return
+	
+	var seg_width = water_size.x / float(segment_count - 1)
+	var depression_depth: float = 4.0  # How much the surface dips (pixels)
+	var edge_fade: float = 16.0  # Smooth transition at edges
+	
+	for i in range(segment_count):
+		var seg_x = i * seg_width
+		
+		# Calculate distance from impact zone
+		var dist_from_center: float = 0.0
+		if seg_x < x_min:
+			dist_from_center = x_min - seg_x
+		elif seg_x > x_max:
+			dist_from_center = seg_x - x_max
+		else:
+			dist_from_center = 0.0  # Inside impact zone
+		
+		# Inside the impact zone: full depression
+		# Near edges: smooth fade using smoothstep
+		var depression: float = 0.0
+		if dist_from_center <= 0.0:
+			# Inside: full depression
+			depression = depression_depth
+		elif dist_from_center < edge_fade:
+			# Edge fade: smooth curve up
+			var t = dist_from_center / edge_fade
+			t = 1.0 - (t * t * (3.0 - 2.0 * t))  # inverse smoothstep
+			depression = t * depression_depth
+		
+		# Apply depression (raise the rest height = lower the surface visually)
+		if depression > 0.0:
+			segment_rest_height[i] += depression
+
+## Called every physics frame to apply continuous waterfall disturbance
+func _apply_waterfall_ripples(time: float) -> void:
+	if _waterfall_impact_zones.is_empty():
+		return
+	
+	var seg_width = water_size.x / float(segment_count - 1)
+	var ripple_interval: float = 0.15  # Create ripple every 150ms
+	var ripple_strength: float = 1.5  # Small continuous disturbance
+	
+	for zone in _waterfall_impact_zones:
+		if not is_instance_valid(zone["waterfall"]):
+			continue
+		
+		# Check if it's time for another ripple
+		if time - zone["last_ripple_time"] >= ripple_interval:
+			zone["last_ripple_time"] = time
+			
+			# Pick a random segment within the impact zone
+			var zone_center_x = (zone["x_min"] + zone["x_max"]) / 2.0
+			var zone_width = zone["x_max"] - zone["x_min"]
+			var random_x = zone_center_x + (randf() - 0.5) * zone_width
+			var seg_idx = int(random_x / seg_width)
+			seg_idx = clamp(seg_idx, 0, segment_count - 1)
+			
+			# Apply small downward impulse (waterfall pushing down)
+			if seg_idx < segment_data.size():
+				segment_data[seg_idx]["velocity"] += ripple_strength * (0.8 + randf() * 0.4)
+				_settled_segments[seg_idx] = 0  # Mark as active
+
+## Rebuild the Line2D gradient based on suppression zones (internal)
+func _rebuild_surface_gradient() -> void:
+	if not surface_line or _surface_suppression_zones.is_empty():
+		if surface_line:
+			surface_line.gradient = null
+		return
+	
+	var grad = Gradient.new()
+	var stops: Array = []
+	stops.append({"offset": 0.0, "color": surface_color})
+	
+	for zone in _surface_suppression_zones:
+		var x_min = zone["x_min"]
+		var x_max = zone["x_max"]
+		var fade = zone["fade_width"]
+		
+		var t_fade_start = clamp((x_min - fade) / water_size.x, 0.0, 1.0)
+		var t_zone_start = clamp(x_min / water_size.x, 0.0, 1.0)
+		var t_zone_end = clamp(x_max / water_size.x, 0.0, 1.0)
+		var t_fade_end = clamp((x_max + fade) / water_size.x, 0.0, 1.0)
+		
+		if t_fade_start > 0.01:
+			stops.append({"offset": t_fade_start, "color": surface_color})
+		stops.append({"offset": t_zone_start, "color": Color(surface_color.r, surface_color.g, surface_color.b, 0.0)})
+		stops.append({"offset": t_zone_end, "color": Color(surface_color.r, surface_color.g, surface_color.b, 0.0)})
+		if t_fade_end < 0.99:
+			stops.append({"offset": t_fade_end, "color": surface_color})
+	
+	stops.append({"offset": 1.0, "color": surface_color})
+	stops.sort_custom(func(a, b): return a["offset"] < b["offset"])
+	
+	grad.offsets = PackedFloat32Array()
+	grad.colors = PackedColorArray()
+	var last_offset = -1.0
+	for stop in stops:
+		if stop["offset"] > last_offset + 0.001:
+			grad.add_point(stop["offset"], stop["color"])
+			last_offset = stop["offset"]
+	
+	surface_line.gradient = grad
 
 ## Debug monitoring
 var debug_timer: float = 0.0
@@ -193,6 +341,9 @@ func _process(delta:float)->void:
 	# Update optional lighting (bioluminescent glow)
 	if emit_light and _water_lights.size() > 0:
 		_update_water_lights(delta)
+	
+	# Continuous waterfall ripples (creates "damn that's smooth" effect)
+	_apply_waterfall_ripples(_ambient_wave_time)
 	
 	update_physics(delta)
 	update_visuals()

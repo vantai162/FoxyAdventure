@@ -485,6 +485,5 @@ position = Vector2(987, 803)
 lava_size = Vector2(220, 64)
 
 [node name="Lavafall" parent="." instance=ExtResource("29_qrwfa")]
-position = Vector2(1523, 1595)
-lavafall_size = Vector2(32, 173)
+position = Vector2(1516, 1641)
 surface_mode = 0

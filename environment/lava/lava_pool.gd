@@ -86,8 +86,13 @@ signal lava_filled   ## Emitted when fill animation completes
 @export var damage_per_second: float = 50.0  ## If not instant kill, DPS
 @export var damage_interval: float = 0.25  ## Damage tick rate
 
+@export_group("Lavafall Blending")
+## Just ONE toggle - lavafalls handle everything else automatically
+@export var allow_lavafall_blend: bool = true  ## Allow lavafalls to blend into this pool
+
 var segment_data: Array = []
 var segment_rest_height: Array = []  ## Per-segment equilibrium height (future: lava geysers/vents)
+var _surface_suppression_zones: Array = []  ## Runtime: auto-populated by lavafalls
 var _ambient_wave_time: float = 0.0
 var _light_pulse_time: float = 0.0
 var _damage_timers: Dictionary = {}  ## Per-body damage cooldown
@@ -108,6 +113,149 @@ var lava_area: Area2D
 var lava_lights: Array[PointLight2D] = []  ## Multiple light sources for distributed glow
 var ember_gpu_particles: GPUParticles2D
 var bubble_gpu_particles: GPUParticles2D
+
+## ==========================================
+## AUTONOMOUS LAVAFALL BLEND RECEIVER
+## Lavafalls call this automatically - you don't need to do anything!
+## ==========================================
+
+## Called by Lavafall when it detects this pool below it
+func _receive_lavafall_blend(x_min: float, x_max: float, lavafall: Node2D) -> void:
+	if not allow_lavafall_blend:
+		return
+	
+	# 1. Surface line suppression (subtle fade, not invisible)
+	_surface_suppression_zones.append({
+		"x_min": x_min,
+		"x_max": x_max,
+		"fade_width": 10.0
+	})
+	_rebuild_surface_gradient()
+	
+	# 2. PHYSICS: Depress the pool surface where fall impacts
+	#    Real fluid: falling column pushes surface down, curves away at edges
+	#    This creates the "dip" that matches the lavafall's flare
+	_apply_lavafall_depression(x_min, x_max)
+	
+	# 3. CONTINUOUS BUBBLING: Store impact zone for ongoing disturbance
+	#    Real lava: constant bubbling/roiling from falling lava
+	_lavafall_impact_zones.append({
+		"x_min": x_min,
+		"x_max": x_max,
+		"lavafall": lavafall,
+		"last_bubble_time": 0.0
+	})
+
+## Track lavafall impact zones for continuous bubbling
+var _lavafall_impact_zones: Array = []
+
+## Apply a permanent surface depression where lavafall impacts
+## The falling lava pushes the surface down - edges curve up smoothly
+func _apply_lavafall_depression(x_min: float, x_max: float) -> void:
+	if segment_rest_height.is_empty():
+		return
+	
+	var seg_width = lava_size.x / float(segment_count - 1)
+	var depression_depth: float = 5.0  # Lava is heavier, deeper depression
+	var edge_fade: float = 18.0  # Wider smooth transition (viscous)
+	
+	for i in range(segment_count):
+		var seg_x = i * seg_width
+		
+		# Calculate distance from impact zone
+		var dist_from_center: float = 0.0
+		if seg_x < x_min:
+			dist_from_center = x_min - seg_x
+		elif seg_x > x_max:
+			dist_from_center = seg_x - x_max
+		else:
+			dist_from_center = 0.0  # Inside impact zone
+		
+		# Inside the impact zone: full depression
+		# Near edges: smooth fade using smoothstep
+		var depression: float = 0.0
+		if dist_from_center <= 0.0:
+			# Inside: full depression
+			depression = depression_depth
+		elif dist_from_center < edge_fade:
+			# Edge fade: smooth curve up
+			var t = dist_from_center / edge_fade
+			t = 1.0 - (t * t * (3.0 - 2.0 * t))  # inverse smoothstep
+			depression = t * depression_depth
+		
+		# Apply depression (raise the rest height = lower the surface visually)
+		if depression > 0.0:
+			segment_rest_height[i] += depression
+
+## Called every physics frame to apply continuous lavafall bubbling
+func _apply_lavafall_bubbles(time: float) -> void:
+	if _lavafall_impact_zones.is_empty():
+		return
+	
+	var seg_width = lava_size.x / float(segment_count - 1)
+	var bubble_interval: float = 0.25  # Slower than water (viscous lava)
+	var bubble_strength: float = 2.0  # Bigger bubbles (dense fluid)
+	
+	for zone in _lavafall_impact_zones:
+		if not is_instance_valid(zone["lavafall"]):
+			continue
+		
+		# Check if it's time for another bubble
+		if time - zone["last_bubble_time"] >= bubble_interval:
+			zone["last_bubble_time"] = time
+			
+			# Pick a random segment within the impact zone
+			var zone_center_x = (zone["x_min"] + zone["x_max"]) / 2.0
+			var zone_width = zone["x_max"] - zone["x_min"]
+			var random_x = zone_center_x + (randf() - 0.5) * zone_width
+			var seg_idx = int(random_x / seg_width)
+			seg_idx = clamp(seg_idx, 0, segment_count - 1)
+			
+			# Apply upward impulse (lava bubble popping)
+			if seg_idx < segment_data.size():
+				segment_data[seg_idx]["velocity"] -= bubble_strength * (0.7 + randf() * 0.6)
+				_settled_segments[seg_idx] = 0  # Mark as active
+
+## Rebuild the Line2D gradient based on suppression zones (internal)
+func _rebuild_surface_gradient() -> void:
+	if not surface_line or _surface_suppression_zones.is_empty():
+		if surface_line:
+			surface_line.gradient = null
+		return
+	
+	var grad = Gradient.new()
+	var stops: Array = []
+	stops.append({"offset": 0.0, "color": surface_color})
+	
+	for zone in _surface_suppression_zones:
+		var x_min = zone["x_min"]
+		var x_max = zone["x_max"]
+		var fade = zone["fade_width"]
+		
+		var t_fade_start = clamp((x_min - fade) / lava_size.x, 0.0, 1.0)
+		var t_zone_start = clamp(x_min / lava_size.x, 0.0, 1.0)
+		var t_zone_end = clamp(x_max / lava_size.x, 0.0, 1.0)
+		var t_fade_end = clamp((x_max + fade) / lava_size.x, 0.0, 1.0)
+		
+		if t_fade_start > 0.01:
+			stops.append({"offset": t_fade_start, "color": surface_color})
+		stops.append({"offset": t_zone_start, "color": Color(surface_color.r, surface_color.g, surface_color.b, 0.0)})
+		stops.append({"offset": t_zone_end, "color": Color(surface_color.r, surface_color.g, surface_color.b, 0.0)})
+		if t_fade_end < 0.99:
+			stops.append({"offset": t_fade_end, "color": surface_color})
+	
+	stops.append({"offset": 1.0, "color": surface_color})
+	stops.sort_custom(func(a, b): return a["offset"] < b["offset"])
+	
+	grad.offsets = PackedFloat32Array()
+	grad.colors = PackedColorArray()
+	var last_offset = -1.0
+	for stop in stops:
+		if stop["offset"] > last_offset + 0.001:
+			grad.add_point(stop["offset"], stop["color"])
+			last_offset = stop["offset"]
+	
+	surface_line.gradient = grad
 
 @export_tool_button("Update Lava") var update_lava_button: Callable = func():
 	_ready()
@@ -185,6 +333,9 @@ func _process(delta: float) -> void:
 	# Light pulsing
 	if light_pulse_enabled and lava_lights.size() > 0:
 		_update_light_pulse(delta)
+	
+	# Continuous lavafall bubbling (creates "damn that's smooth" effect)
+	_apply_lavafall_bubbles(_ambient_wave_time)
 	
 	# Wave physics (KEEP - this is gameplay interaction)
 	_update_physics(delta)
