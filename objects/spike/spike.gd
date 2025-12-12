@@ -71,9 +71,20 @@ func _apply_orientation() -> void:
 	if collision_shape:
 		collision_shape.position = COLLISION_OFFSETS.get(orientation, Vector2.ZERO)
 		
-		# Resize the shape
+		# CRITICAL: Make the shape resource local/unique before modifying!
+		# Without this, all spike instances share the same RectangleShape2D resource,
+		# and changing size on one spike affects ALL spikes using the same scene.
 		var shape = collision_shape.shape
 		if shape is RectangleShape2D:
+			# Check if we need to make a unique copy
+			# In editor: always duplicate to prevent cross-instance pollution
+			# At runtime: duplicate once to ensure independence
+			if not shape.resource_local_to_scene:
+				var unique_shape = shape.duplicate()
+				unique_shape.resource_local_to_scene = true
+				collision_shape.shape = unique_shape
+				shape = unique_shape
+			
 			shape.size = COLLISION_SIZES.get(orientation, Vector2(29, 13))
 
 
