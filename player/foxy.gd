@@ -78,6 +78,10 @@ signal max_health_changed
 @export_group("Blade")
 @export var blade_projectile_scene: PackedScene
 @export var air_slash_scene: PackedScene
+@export var has_unlocked_flame_blade: bool = false
+var blade_count: int = 0
+var max_blade_capacity: int = 1
+var has_unlocked_blade: bool = false
 
 @export_group("Throw")
 @export var throw_offset_x: float = 40.0  ## Horizontal offset from player center
@@ -117,9 +121,7 @@ var timeline: float = 0.0
 var last_jumppress_onair: float = -1211.0
 var last_ground_time: float = -1211.0
 
-var blade_count: int = 0
-var max_blade_capacity: int = 1
-var has_unlocked_blade: bool = false
+
 
 ## Get current air acceleration value based on wall jump restriction state
 func get_current_air_acceleration() -> float:
@@ -460,7 +462,8 @@ func save_state() -> Dictionary:
 		"has_unlocked_blade": has_unlocked_blade,
 		"health": health,
 		"Inventory":inventory._save_inventory(),
-		"max_health": max_health
+		"max_health": max_health,
+		"has_unlocked_flame_blade": has_unlocked_flame_blade
 	}
 
 func load_state(data: Dictionary) -> void:
@@ -486,6 +489,8 @@ func load_state(data: Dictionary) -> void:
 		inventory._load_inventory(data["Inventory"])
 	if data.has("max_health"):
 		max_health = data["max_health"]
+	if data.has("has_unlocked_flame_blade"):
+		has_unlocked_flame_blade = data["has_unlocked_flame_blade"]
 	# Đã loại bỏ logic: if data.has("has_blade") and data["has_blade"] == true:
 	
 

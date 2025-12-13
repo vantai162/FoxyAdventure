@@ -1,4 +1,4 @@
-[gd_scene load_steps=40 format=4 uid="uid://bxknbajfocd87"]
+[gd_scene load_steps=41 format=4 uid="uid://bxknbajfocd87"]
 
 [ext_resource type="Script" uid="uid://b6xvcjrh55sd6" path="res://test/levels/level_2/level_2.gd" id="1_5l4f7"]
 [ext_resource type="PackedScene" uid="uid://dm741hii7d5nv" path="res://scenes/game_screen/health_bar.tscn" id="1_x7kuf"]
@@ -38,6 +38,7 @@
 [ext_resource type="PackedScene" uid="uid://bp4fcvlg5b31p" path="res://objects/platform/vertical_moving_platform.tscn" id="37_q2kgt"]
 [ext_resource type="PackedScene" path="res://objects/door/dark_entrance.tscn" id="38_q2kgt"]
 [ext_resource type="PackedScene" uid="uid://dvjr8elgnjvcw" path="res://objects/platform/circular_moving_platform.tscn" id="39_dmtgj"]
+[ext_resource type="PackedScene" uid="uid://lrdkn2gv1v1m" path="res://effect_Item/coin/coin.tscn" id="39_uhkhi"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_c7bg8"]
 size = Vector2(29.5, 32)
@@ -54,22 +55,39 @@ offset_right = 176.0
 mouse_filter = 2
 
 [node name="CoinUI" parent="CanvasLayer" instance=ExtResource("2_7ulr3")]
-anchors_preset = -1
-anchor_left = 0.015
-anchor_top = 0.097
+anchors_preset = 0
+anchor_right = 0.0
+anchor_bottom = 0.0
+offset_left = 20.0
+offset_top = 60.0
+offset_right = 20.0
+offset_bottom = 60.0
+grow_horizontal = 1
+grow_vertical = 1
 mouse_filter = 2
 
 [node name="KeyUI" parent="CanvasLayer" instance=ExtResource("3_2a1r0")]
-anchors_preset = -1
-anchor_left = 0.015
-anchor_top = 0.155
+anchors_preset = 0
+anchor_right = 0.0
+anchor_bottom = 0.0
+offset_left = 20.0
+offset_top = 100.0
+offset_right = 20.0
+offset_bottom = 100.0
+grow_horizontal = 1
+grow_vertical = 1
 mouse_filter = 2
 
 [node name="BladeUI" parent="CanvasLayer" instance=ExtResource("5_q2kgt")]
-offset_left = 19.0
-offset_top = 163.0
-offset_right = 19.0
-offset_bottom = 163.0
+anchors_preset = 0
+anchor_right = 0.0
+anchor_bottom = 0.0
+offset_left = 20.0
+offset_top = 145.0
+offset_right = 20.0
+offset_bottom = 145.0
+grow_horizontal = 1
+grow_vertical = 1
 
 [node name="WarlordHealthBar" parent="CanvasLayer" instance=ExtResource("5_chxal")]
 visible = false
@@ -261,7 +279,7 @@ position = Vector2(270, 145)
 position = Vector2(974, -236)
 
 [node name="Foxy" parent="." instance=ExtResource("36_wn3ka")]
-position = Vector2(1565, 235)
+position = Vector2(-50, -250)
 
 [node name="VerticalMovingPlatform" parent="." groups=["one_way_platform"] instance=ExtResource("37_q2kgt")]
 position = Vector2(432, 73)
@@ -291,4 +309,21 @@ target_stage = "uid://5my2pujg1oqp"
 target_door = "DarkEntrance"
 can_enter = true
 
+[node name="Blade2" parent="." instance=ExtResource("15_7ulr3")]
+position = Vector2(1625, 247)
 
+[node name="Coin" parent="." instance=ExtResource("39_uhkhi")]
+position = Vector2(1107, -222)
+
+[node name="Coin2" parent="." instance=ExtResource("39_uhkhi")]
+position = Vector2(1175, -216)
+
+[node name="Blade3" parent="." instance=ExtResource("15_7ulr3")]
+position = Vector2(821, -210)
+
+[node name="Blade4" parent="." instance=ExtResource("15_7ulr3")]
+position = Vector2(887, -218)
+
+[connection signal="area_entered" from="DirtLayer/HealthPotion" to="DirtLayer/HealthPotion" method="_on_area_entered"]
+[connection signal="lever_activated" from="Lever" to="Gate" method="open_gate"]
+[connection signal="lever_deactivated" from="Lever" to="Gate" method="close_gate"]
