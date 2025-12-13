@@ -119,10 +119,28 @@ func _perform_transition_in() -> void:
 	## Perform the appropriate transition-in effect
 	## Checks if we came from a SceneTransition (directional wipe) or regular (fade)
 	
+	# CRITICAL: Warm-up frames before ANY visual transition.
+	# This ensures:
+	# 1. All shaders are compiled (first-use compilation causes hitches)
+	# 2. All textures are GPU-resident (upload latency)
+	# 3. Physics world is stable (collision shapes registered)
+	# 4. Camera is settled (no smoothing jumps)
+	#
+	# We wait for 2-3 process frames, not just timer time, because
+	# we need the ENGINE to run its full update loop including rendering.
+	await get_tree().process_frame
+	await get_tree().process_frame
+	await get_tree().process_frame
+	
 	if GameManager.has_meta("incoming_transition_direction"):
 		# We came from a SceneTransition - do directional wipe-in
 		var incoming_dir: int = GameManager.get_meta("incoming_transition_direction", 1)
 		GameManager.remove_meta("incoming_transition_direction")
+		
+		# Retrieve the wipe duration used on the source side for symmetry
+		# Default to WIPE_DURATION_FAST (0.25s) if not stored
+		var wipe_duration: float = GameManager.get_meta("incoming_transition_duration", 0.25)
+		GameManager.remove_meta("incoming_transition_duration")
 		
 		# Wipe direction should be opposite of incoming direction
 		# (if player walked RIGHT into transition, wipe should exit LEFT)
@@ -139,13 +157,14 @@ func _perform_transition_in() -> void:
 		
 		var transition_fx = get_node_or_null("/root/TransitionEffects")
 		if transition_fx:
-			# Use the soft shader wipe with matching timing
-			await transition_fx.wipe_in(wipe_dir, 0.2)
+			# Use symmetric duration for seamless flow
+			await transition_fx.wipe_in(wipe_dir, wipe_duration)
 		else:
 			# Fallback to regular fade
 			await GameManager.fade_from_black()
 	else:
 		# Regular fade in
+		GameManager.paused = false
 		await GameManager.fade_from_black()
 
 

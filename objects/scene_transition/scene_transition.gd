@@ -40,8 +40,11 @@ enum Direction { LEFT, RIGHT, UP, DOWN }
 @export var trigger_threshold: float = 10.0
 
 @export_group("Wipe Effect")
-## Duration of the wipe transition - 0.15s is snappy but smooth, 0.2s is more relaxed
-@export var wipe_duration: float = 0.15
+## Duration of the wipe transition
+## 0.25s = brisk but perceptible (15 frames at 60fps)
+## 0.35s = standard cinematic feel
+## Below 0.2s becomes a flash, not a flow
+@export var wipe_duration: float = 0.25
 
 @export_group("Preloading")
 ## Distance from transition to start preloading (0 = preload immediately on level start)
@@ -349,6 +352,12 @@ func _trigger_transition(player: Node2D) -> void:
 		# Fallback: use GameManager fade
 		await _wipe_out()
 	
+	# CRITICAL: Hold black for a moment to conceal the scene change stutter
+	# Even preloaded scenes cause micro-hitches during instantiation.
+	# This "breath" makes the transition feel deliberate, not glitchy.
+	# 3-4 frames at 60fps = 50-66ms, enough to hide any jank
+	await get_tree().create_timer(0.05).timeout
+	
 	# Change scene
 	_change_to_target_scene()
 
@@ -368,6 +377,8 @@ func _store_transition_direction() -> void:
 		# Use meta to store arbitrary data
 		GameManager.set_meta("incoming_transition_direction", exit_direction)
 		GameManager.set_meta("incoming_transition_spawn", target_spawn_name)
+		# Store wipe duration for symmetric wipe_in
+		GameManager.set_meta("incoming_transition_duration", wipe_duration)
 
 func _direction_to_wipe_direction(dir: Direction) -> int:
 	# Maps to TransitionEffects.WipeDirection enum
@@ -407,7 +418,8 @@ func _wipe_out() -> void:
 			end_pos = Vector2(0, 0)
 	
 	wipe.position = start_pos
-	tween.tween_property(wipe, "position", end_pos, wipe_duration).set_ease(Tween.EASE_IN).set_trans(Tween.TRANS_QUAD)
+	# EASE_OUT: Immediate response, smooth landing (matches shader wipe)
+	tween.tween_property(wipe, "position", end_pos, wipe_duration).set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_QUAD)
 	
 	await tween.finished
 

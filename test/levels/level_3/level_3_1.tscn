@@ -568,16 +568,12 @@ orientation = 2
 [node name="ExitZone" type="Node2D" parent="."]
 
 [node name="ToLevel3_2" parent="ExitZone" instance=ExtResource("30_scene_transition")]
-position = Vector2(1412, 2104)
+position = Vector2(1543, 2120)
 target_scene = "res://test/levels/level_3/level_3_2.tscn"
 target_spawn_name = "FromLevel3_1"
 
 [node name="Foxy" parent="." instance=ExtResource("9_foxy")]
 z_index = 1
 position = Vector2(67, 235)
-
-[connection signal="area_entered" from="Terrain/TileMapLayer/HealthPotion" to="Terrain/TileMapLayer/HealthPotion" method="_on_area_entered"]
-[connection signal="area_entered" from="Terrain/TileMapLayer/@Area2D@55592" to="Terrain/TileMapLayer/@Area2D@55592" method="_on_area_entered"]
-[connection signal="area_entered" from="Terrain/TileMapLayer/@Area2D@55593" to="Terrain/TileMapLayer/@Area2D@55593" method="_on_area_entered"]
 
 [editable path="Platforms/MovingPlatform1"]

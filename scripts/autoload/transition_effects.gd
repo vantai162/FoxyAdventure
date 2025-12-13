@@ -15,16 +15,19 @@ signal fade_completed
 
 enum WipeDirection { LEFT, RIGHT, UP, DOWN }
 
-## Timing presets - these match the game's action feel
-## OPTIMIZED: 0.15s feels snappier than 0.2s while still being smooth
-const WIPE_DURATION_FAST: float = 0.15   ## For quick seamless transitions (butter smooth)
-const WIPE_DURATION_NORMAL: float = 0.25 ## Standard transition
-const WIPE_DURATION_SLOW: float = 0.4    ## Dramatic moments
+## Timing presets - calibrated for human perception
+## At 60fps: 0.25s = 15 frames, 0.35s = 21 frames, 0.5s = 30 frames
+## Key insight: A transition must be PERCEPTIBLE to convey meaning.
+## Below ~0.2s, humans see a flash, not a flow. Above ~0.5s, it feels sluggish.
+const WIPE_DURATION_FAST: float = 0.25    ## Brisk but perceptible (platformer pace)
+const WIPE_DURATION_NORMAL: float = 0.35  ## Standard (cinematic but not slow)
+const WIPE_DURATION_SLOW: float = 0.5     ## Dramatic moments (boss reveals, act breaks)
 
-## Visual tuning
-const FEATHER_SOFT: float = 0.2    ## Soft gradient edge
-const FEATHER_MEDIUM: float = 0.12 ## Balanced 
-const FEATHER_SHARP: float = 0.06  ## Snappier edge
+## Visual tuning - feather affects perceived smoothness
+## Faster wipes need SOFTER feathers to avoid strobing edge artifacts
+const FEATHER_SOFT: float = 0.25   ## Dreamy, gentle (use with SLOW)
+const FEATHER_MEDIUM: float = 0.15 ## Balanced (use with NORMAL/FAST)
+const FEATHER_SHARP: float = 0.08  ## Crisp edge (use with SLOW only)
 
 var _wipe_rect: ColorRect = null
 var _wipe_material: ShaderMaterial = null
@@ -152,10 +155,16 @@ func wipe_in(direction: WipeDirection = WipeDirection.LEFT, duration: float = WI
 	# Start fully covered
 	_set_progress(1.0)
 	
+	# CRITICAL: Wait one frame to ensure the wipe shader is rendered/compiled
+	# before we start animating. This prevents first-frame stutter.
+	await get_tree().process_frame
+	
 	# Animate progress from 1.0 to 0.0 (revealing)
-	# EASE_OUT: Fast start, gentle end - feels like pulling back a curtain
+	# EASE_IN_OUT: Smooth throughout - the reveal breathes.
+	# Starts gently (coming out of rest), peaks, ends gently (settles into new scene)
+	# This pairs with EASE_OUT on wipe_out for symmetric flow
 	var tween = create_tween()
-	tween.tween_method(_set_progress, 1.0, 0.0, duration).set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_QUAD)
+	tween.tween_method(_set_progress, 1.0, 0.0, duration).set_ease(Tween.EASE_IN_OUT).set_trans(Tween.TRANS_SINE)
 	
 	await tween.finished
 	
@@ -200,9 +209,11 @@ func wipe_out(direction: WipeDirection = WipeDirection.RIGHT, duration: float = 
 	_set_progress(0.0)
 	
 	# Animate progress from 0.0 to 1.0 (covering)
-	# EASE_IN: Builds momentum - feels like darkness rushing toward you
+	# EASE_OUT: Immediate response to player action, then settles smoothly to black
+	# This feels "flowy" - the wipe STARTS with energy (player walked through)
+	# and LANDS gently (rest before scene change)
 	var tween = create_tween()
-	tween.tween_method(_set_progress, 0.0, 1.0, duration).set_ease(Tween.EASE_IN).set_trans(Tween.TRANS_QUAD)
+	tween.tween_method(_set_progress, 0.0, 1.0, duration).set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_QUAD)
 	
 	await tween.finished
 	

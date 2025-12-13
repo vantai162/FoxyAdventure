@@ -114,11 +114,6 @@ lava_size = Vector2(284, 228)
 [node name="Lavafall" parent="Hazards" instance=ExtResource("20_bo748")]
 position = Vector2(1806, -1)
 lavafall_size = Vector2(32, 140)
-light_color = null
-light_energy = null
-light_pulse_enabled = null
-light_pulse_speed = null
-light_pulse_amount = null
 
 [node name="LavaPool3" parent="Hazards" instance=ExtResource("19_b55ue")]
 position = Vector2(61, 267)
@@ -212,11 +207,6 @@ orientation = 2
 [node name="Lavafall2" parent="Hazards" instance=ExtResource("20_bo748")]
 position = Vector2(1904, 343)
 lavafall_size = Vector2(32, 180)
-light_color = null
-light_energy = null
-light_pulse_enabled = null
-light_pulse_speed = null
-light_pulse_amount = null
 
 [node name="LavaPool4" parent="Hazards" instance=ExtResource("19_b55ue")]
 position = Vector2(1884, 485)
@@ -498,6 +488,7 @@ position = Vector2(1925, 1002)
 target_scene = "res://test/levels/level_3/level_3_3.tscn"
 target_spawn_name = "FromLevel3_2"
 spawn_offset = Vector2(-48, 0)
+wipe_duration = 0.15
 
 [node name="Foxy" parent="." instance=ExtResource("10_foxy")]
 z_index = 1
