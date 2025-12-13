@@ -199,14 +199,21 @@ func start_phase() -> void:
 	animated_sprite.play("start")
 	_set_collision_enabled(true)
 	
-	# Enable GPU particles
+	# Calculate animation duration: 5 frames at 10fps = 0.5s
+	# Light should fade in over the FULL animation duration
+	# so it reaches full brightness when flame tip bursts out
+	var anim_duration := animated_sprite.sprite_frames.get_frame_count("start") / animated_sprite.sprite_frames.get_animation_speed("start")
+	
+	# Enable GPU particles (sparks start as flame emerges)
 	if spark_particles:
 		spark_particles.emitting = true
 	
-	# Fade in light
+	# Fade in light gradually over animation duration
+	# Light starts dim and reaches full brightness when flame is fully out
 	if flame_light:
+		flame_light.energy = 0.0
 		var tween = create_tween()
-		tween.tween_property(flame_light, "energy", _base_energy, 0.3)
+		tween.tween_property(flame_light, "energy", _base_energy, anim_duration * 0.9)
 	
 	await animated_sprite.animation_finished
 
@@ -252,14 +259,17 @@ func end_phase() -> void:
 	animated_sprite.play("end")
 	_set_collision_enabled(false)
 	
+	# Calculate animation duration for synchronized fade-out
+	var anim_duration := animated_sprite.sprite_frames.get_frame_count("end") / animated_sprite.sprite_frames.get_animation_speed("end")
+	
 	# Disable GPU particles
 	if spark_particles:
 		spark_particles.emitting = false
 	
-	# Fade out light
+	# Fade out light over animation duration (flame retracting)
 	if flame_light:
 		var tween = create_tween()
-		tween.tween_property(flame_light, "energy", 0.0, 0.2)
+		tween.tween_property(flame_light, "energy", 0.0, anim_duration * 0.8)
 	
 	await animated_sprite.animation_finished
 

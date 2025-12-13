@@ -1,20 +1,10 @@
-[gd_scene load_steps=2 format=3 uid="uid://drip_water_cave"]
+[gd_scene load_steps=2 format=3 uid="uid://bc78438yhr3na"]
 
 [ext_resource type="Script" uid="uid://b816dw2huc1gq" path="res://environment/cave/dripping_water.gd" id="1_drip"]
 
 [node name="DrippingWater" type="Node2D"]
 z_index = 25
 script = ExtResource("1_drip")
-drip_rate = 2.0
-drop_speed = 200.0
-drop_lifetime = 1.5
-drop_spread = 8.0
-drop_color = Color(0.6, 0.8, 1, 0.8)
-drop_size = 3.0
-splash_on_ground = true
-splash_y_offset = 100.0
-play_drip_sound = true
-sound_interval = 1.5
 
 [node name="GPUParticles2D" type="GPUParticles2D" parent="."]
 emitting = false

@@ -68,7 +68,11 @@ class_name water
 @export var splash_color: Color = Color(0.8, 0.95, 1.0, 0.9)  ## Light blue-white
 
 @export_group("Glow Light (Optional)")
-@export var emit_light: bool = false  ## Water glows (bioluminescent/magical for dark caves)
+@export var emit_light: bool = false:  ## Water glows (bioluminescent/magical for dark caves)
+	set(value):
+		emit_light = value
+		if is_inside_tree():
+			_rebuild_water_lights()
 @export var light_color: Color = Color(0.3, 0.8, 1.0, 0.8)  ## Soft cyan glow
 @export var light_energy: float = 0.6  ## Subtle illumination
 @export var light_sample_points: int = 4  ## Distributed light sources (1-8)
@@ -321,6 +325,10 @@ func _process(delta:float)->void:
 	if ambient_wave_enabled:
 		_ambient_wave_time += delta
 	
+	# Light pulsing (runs in BOTH editor and runtime so designers see the glow)
+	if emit_light and _water_lights.size() > 0:
+		_update_water_lights(delta)
+	
 	# EDITOR MODE: Only update visuals (no physics, particles, or gameplay)
 	if Engine.is_editor_hint():
 		update_visuals()
@@ -352,10 +360,6 @@ func _process(delta:float)->void:
 	# Update splash particles
 	if emit_splash_particles:
 		_update_splash_droplets(delta)
-	
-	# Update optional lighting (bioluminescent glow)
-	if emit_light and _water_lights.size() > 0:
-		_update_water_lights(delta)
 	
 	# Continuous waterfall ripples (creates "damn that's smooth" effect)
 	_apply_waterfall_ripples(_ambient_wave_time)
@@ -424,7 +428,8 @@ func _initiate_water() -> void:
 	water_collision_shape = new_collisionshape  # Store reference
 	
 	# Optional lighting setup (bioluminescent/magical water)
-	if emit_light and not Engine.is_editor_hint():
+	# Works in editor so designers can see the glow
+	if emit_light:
 		_setup_water_lights()
 
 
@@ -1119,6 +1124,19 @@ func _update_splash_droplets(delta: float) -> void:
 ## Multi-point lighting learned from lava, distributed across surface
 ## Disabled by default for backward compatibility with existing levels
 ## ============================================================================
+
+func _rebuild_water_lights() -> void:
+	## Rebuild lights when emit_light is toggled in editor
+	# Clear existing lights
+	for light in _water_lights:
+		if is_instance_valid(light):
+			light.queue_free()
+	_water_lights.clear()
+	
+	# Create new lights if enabled
+	if emit_light:
+		_setup_water_lights()
+
 
 func _setup_water_lights() -> void:
 	## Create distributed lights along water surface (1-8 configurable)

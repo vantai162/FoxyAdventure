@@ -38,7 +38,6 @@
 script = ExtResource("1_stage_script")
 
 [node name="DarknessModulate" type="CanvasModulate" parent="."]
-visible = false
 color = Color(0.0558769, 0.0395219, 0.0722072, 1)
 
 [node name="PlayerSpawn" type="Marker2D" parent="."]
@@ -266,6 +265,7 @@ orientation = 2
 [node name="water" parent="WaterZones" instance=ExtResource("3_is5y3")]
 position = Vector2(165, 2181)
 water_size = Vector2(1126, 165)
+emit_light = true
 
 [node name="Whirlpool" parent="WaterZones" instance=ExtResource("4_vnnrn")]
 position = Vector2(392, 2239)
