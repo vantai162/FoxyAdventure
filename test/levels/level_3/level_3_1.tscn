@@ -575,8 +575,8 @@ target_spawn_name = "FromLevel3_1"
 
 [node name="Foxy" parent="." instance=ExtResource("9_foxy")]
 z_index = 1
-position = Vector2(1345, 2129)
+position = Vector2(67, 235)
 
 [connection signal="area_entered" from="Terrain/TileMapLayer/HealthPotion" to="Terrain/TileMapLayer/HealthPotion" method="_on_area_entered"]
-[connection signal="area_entered" from="Terrain/TileMapLayer/@Area2D@33336" to="Terrain/TileMapLayer/@Area2D@33336" method="_on_area_entered"]
-[connection signal="area_entered" from="Terrain/TileMapLayer/@Area2D@33337" to="Terrain/TileMapLayer/@Area2D@33337" method="_on_area_entered"]
+[connection signal="area_entered" from="Terrain/TileMapLayer/@Area2D@38648" to="Terrain/TileMapLayer/@Area2D@38648" method="_on_area_entered"]
+[connection signal="area_entered" from="Terrain/TileMapLayer/@Area2D@38649" to="Terrain/TileMapLayer/@Area2D@38649" method="_on_area_entered"]

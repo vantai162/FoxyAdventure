@@ -20,14 +20,25 @@ extends Node2D
 @export var debug_logging: bool = false
 
 @export_group("Ignition Effect")
-## Delay before torch ignites (feels like responding to darkness)
-## NOTE: Keep this shorter than the transition wipe_in duration (0.15s)
-## so torch is lit BEFORE the reveal completes
-@export var ignition_delay: float = 0.08
-## How long the flame fades in
-@export var ignition_duration: float = 0.25
+## Delay before torch ignites after entering darkness
+## This is INTENTIONAL for immersion - the fox "notices" the darkness, then responds
+## The player sees darkness first, THEN the fox pulls out the torch
+## 0.4-0.5s feels organic: transition completes → moment of darkness → fox reacts
+@export var ignition_delay: float = 0.45
+## How long the flame fades in (like lighting a match)
+@export var ignition_duration: float = 0.4
 ## How long to fade out when extinguishing
-@export var extinguish_duration: float = 0.15
+@export var extinguish_duration: float = 0.2
+
+@export_group("Re-ignition")
+## Delay before torch can re-ignite after being extinguished (e.g., after swimming)
+## This is a SIGNIFICANT penalty - a wet torch takes TIME to dry!
+## 5+ seconds forces the player to navigate in darkness, punishing careless water entry
+## Design: "The player if jumps in water in a dark level should be penalized for it"
+@export var reignition_delay: float = 6.0
+## Whether to automatically re-ignite in darkness after extinguishing
+## Set to false if you want the torch to stay out permanently (harsher penalty)
+@export var auto_reignite: bool = true
 
 @export_group("State")
 @export var is_lit: bool = false  ## Current torch state
@@ -41,6 +52,7 @@ var _flicker_tween: Tween
 var _ignition_tween: Tween
 var _base_energy: float
 var _is_igniting: bool = false
+var _was_extinguished_by_water: bool = false  ## Track if we need to re-ignite
 
 
 func _ready() -> void:
@@ -146,13 +158,21 @@ func ignite() -> void:
 	_is_igniting = false
 
 
-func extinguish() -> void:
+func extinguish(reason: String = "unknown") -> void:
 	## Turn off the torch with a fade-out effect
+	## @param reason: Why the torch is being extinguished ("water", "death", "manual")
+	##                Used to determine if re-ignition should happen
 	if not is_lit and not _is_igniting:
 		return
 	
 	_is_igniting = false
 	is_lit = false
+	
+	# Track if this was a water extinguish (for re-ignition)
+	_was_extinguished_by_water = (reason == "water")
+	
+	if debug_logging:
+		print("[PlayerTorch] Extinguishing - reason: ", reason, ", will reignite: ", _was_extinguished_by_water and auto_reignite)
 	
 	# Stop flicker
 	if _flicker_tween:
@@ -185,6 +205,105 @@ func _set_completely_off() -> void:
 	torch_sprite.visible = false
 	torch_sprite.modulate.a = 1.0  # Reset modulate for next ignite
 	torch_sparks.emitting = false
+
+
+func try_reignite() -> void:
+	## Called when player exits water - attempt to re-ignite if in darkness
+	## The torch was wet, so it takes longer to catch fire again
+	
+	if not auto_reignite:
+		return
+	
+	if not _was_extinguished_by_water:
+		return  # Only auto-reignite if extinguished by water
+	
+	if is_lit or _is_igniting:
+		return  # Already lit or igniting
+	
+	# Check if we're still in a dark level
+	if not _is_in_darkness():
+		if debug_logging:
+			print("[PlayerTorch] Not in darkness, skipping reignite")
+		return
+	
+	if debug_logging:
+		print("[PlayerTorch] Attempting re-ignition after water (delay: ", reignition_delay, "s)")
+	
+	# Clear the flag
+	_was_extinguished_by_water = false
+	
+	# Re-ignite with longer delay (drying out)
+	_reignite_after_delay()
+
+
+func _reignite_after_delay() -> void:
+	## Internal: ignite with the longer reignition delay
+	if is_lit or _is_igniting:
+		return
+	
+	_is_igniting = true
+	
+	# Kill any existing animation
+	if _ignition_tween:
+		_ignition_tween.kill()
+	
+	# Longer delay - the torch was wet and needs to dry!
+	await get_tree().create_timer(reignition_delay).timeout
+	
+	# Safety check
+	if not _is_igniting:
+		return
+	
+	# Double-check we're still in darkness (player might have moved to bright area)
+	if not _is_in_darkness():
+		_is_igniting = false
+		if debug_logging:
+			print("[PlayerTorch] Left darkness during drying, canceling reignite")
+		return
+	
+	is_lit = true
+	
+	# Same ignition animation as normal
+	torch_sprite.visible = true
+	torch_sprite.modulate.a = 0.0
+	torch_sprite.play("default")
+	
+	torch_light.enabled = true
+	torch_light.energy = 0.0
+	
+	_ignition_tween = create_tween()
+	_ignition_tween.set_parallel(true)
+	
+	_ignition_tween.tween_property(torch_sprite, "modulate:a", 1.0, ignition_duration)\
+		.set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_QUAD)
+	
+	_ignition_tween.tween_property(torch_light, "energy", _base_energy, ignition_duration * 1.2)\
+		.set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_QUAD)
+	
+	await _ignition_tween.finished
+	
+	torch_sparks.emitting = true
+	
+	if flicker_enabled:
+		_start_flicker()
+	
+	_is_igniting = false
+	
+	if debug_logging:
+		print("[PlayerTorch] Re-ignition complete!")
+
+
+func _is_in_darkness() -> bool:
+	## Check if the current scene has a darkness modulate
+	var scene_root = get_tree().current_scene
+	if scene_root == null:
+		return false
+	
+	var darkness = scene_root.get_node_or_null("DarknessModulate")
+	if not darkness:
+		darkness = scene_root.get_node_or_null("CanvasModulate")
+	
+	return darkness != null and darkness is CanvasModulate
 
 
 func _instant_light() -> void:

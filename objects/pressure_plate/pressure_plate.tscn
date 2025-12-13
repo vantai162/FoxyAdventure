@@ -1,6 +1,7 @@
-[gd_scene load_steps=3 format=3 uid="uid://d1twwiutipd8r"]
+[gd_scene load_steps=4 format=3 uid="uid://d1twwiutipd8r"]
 
 [ext_resource type="Script" uid="uid://dwbq3xeo1lhu5" path="res://objects/pressure_plate/pressure_plate.gd" id="1_script"]
+[ext_resource type="Texture2D" uid="uid://csoft_radial_light" path="res://assets/effects/soft_radial_light.tres" id="2_glow"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_plate"]
 size = Vector2(32, 8)
@@ -20,9 +21,10 @@ shape = SubResource("RectangleShape2D_plate")
 [node name="PressureGlow" type="PointLight2D" parent="Sprite2D"]
 enabled = false
 color = Color(1, 0.9, 0.5, 1)
-energy = 0.5
+energy = 0.6
 blend_mode = 2
-texture_scale = 0.3
+texture = ExtResource("2_glow")
+texture_scale = 0.4
 
 [node name="PlateVisual" type="Polygon2D" parent="Sprite2D"]
 color = Color(0.5, 0.45, 0.4, 1)

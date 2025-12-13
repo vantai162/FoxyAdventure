@@ -1,11 +1,11 @@
-[gd_scene load_steps=22 format=3 uid="uid://y7p8q2kh8teb"]
+[gd_scene load_steps=23 format=3 uid="uid://y7p8q2kh8teb"]
 
 [ext_resource type="Script" uid="uid://xqvgljx4hk1s" path="res://scripts/hit_area_2d.gd" id="2_hit"]
 [ext_resource type="Texture2D" uid="uid://5to5ysqlevmf" path="res://assets/objects/flame/FlammeActive.png" id="3_active"]
 [ext_resource type="Texture2D" uid="uid://d1j4q4yvkdgn6" path="res://assets/objects/flame/FlammeEnd.png" id="4_end"]
 [ext_resource type="Texture2D" uid="uid://cr8kgfqd0xp2d" path="res://assets/objects/flame/FlammeStart.png" id="5_start"]
 [ext_resource type="Script" uid="uid://dhsr0eiuk05ku" path="res://objects/flame/flame_hazard.gd" id="6_script"]
-
+[ext_resource type="Texture2D" uid="uid://6qd3pdlxcu43" path="res://assets/effects/player_torch.tres" id="7_fire_light"]
 [sub_resource type="AtlasTexture" id="AtlasTexture_oklhg"]
 atlas = ExtResource("3_active")
 region = Rect2(0, 0, 260, 78)
@@ -139,8 +139,9 @@ animation = &"active"
 [node name="FlameLight" type="PointLight2D" parent="."]
 z_index = 20
 position = Vector2(0, -100)
-color = Color(1, 0.75, 0.35, 1)
-energy = 2.2
+color = Color(1, 0.7, 0.35, 1)
+energy = 2.0
+texture = ExtResource("7_fire_light")
 texture_scale = 0.5
 
 [node name="SparkParticles" type="GPUParticles2D" parent="."]

@@ -4,7 +4,8 @@
 [ext_resource type="Script" uid="uid://cxexrwo2d2ojn" path="res://effect_Item/BladeItem/blade.gd" id="1_tcnf6"]
 
 [sub_resource type="Gradient" id="Gradient_blade"]
-colors = PackedColorArray(0.6, 0.8, 1, 1, 0.4, 0.6, 1, 0)
+offsets = PackedFloat32Array(0, 0.6, 1)
+colors = PackedColorArray(1, 0.9, 0.5, 1, 1, 0.7, 0.3, 0.5, 1, 0.5, 0.2, 0)
 
 [sub_resource type="GradientTexture2D" id="GradientTexture2D_blade"]
 gradient = SubResource("Gradient_blade")
@@ -12,6 +13,7 @@ width = 16
 height = 16
 fill = 1
 fill_from = Vector2(0.5, 0.5)
+fill_to = Vector2(0.5, 0)
 
 [sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_blade"]
 blend_mode = 1
@@ -26,8 +28,8 @@ collision_mask = 2
 script = ExtResource("1_tcnf6")
 
 [node name="BladeGlow" type="PointLight2D" parent="."]
-color = Color(0.6, 0.85, 1, 1)
-energy = 0.3
+color = Color(1, 0.8, 0.4, 1)
+energy = 0.4
 blend_mode = 1
 texture = SubResource("GradientTexture2D_blade")
 texture_scale = 0.8

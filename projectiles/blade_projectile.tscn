@@ -15,6 +15,7 @@ width = 16
 height = 16
 fill = 1
 fill_from = Vector2(0.5, 0.5)
+fill_to = Vector2(0.5, 0)
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_1qqcv"]
 radius = 8.0
@@ -93,4 +94,7 @@ color = Color(1, 0.623529, 0, 1)
 color_ramp = SubResource("Gradient_w0xp1")
 
 [node name="Light" type="PointLight2D" parent="."]
+color = Color(1, 0.7, 0.3, 1)
+energy = 0.8
 texture = ExtResource("5_1qqcv")
+texture_scale = 0.5
