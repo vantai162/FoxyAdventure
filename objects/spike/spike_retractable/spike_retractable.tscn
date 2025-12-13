@@ -1,4 +1,4 @@
-[gd_scene load_steps=5 format=3 uid="uid://b0h8a022mpy26"]
+[gd_scene load_steps=6 format=3 uid="uid://b0h8a022mpy26"]
 
 [ext_resource type="Script" uid="uid://bon77da3yap55" path="res://objects/spike/spike_retractable/spike_retractable.gd" id="1_oa2u3"]
 [ext_resource type="Texture2D" uid="uid://dkcqiqg0lsqx6" path="res://assets/monsters/spikes/spikes.png" id="1_xmkwv"]
@@ -7,18 +7,31 @@
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_17rlb"]
 size = Vector2(29, 13)
 
+[sub_resource type="CircleShape2D" id="CircleShape2D_pressure"]
+radius = 32.0
+
 [node name="Spike_Retractable" type="Node2D"]
+z_index = 0
 script = ExtResource("1_oa2u3")
 
-[node name="Sprite2D" type="Sprite2D" parent="."]
+[node name="SpikeBody" type="Node2D" parent="."]
+
+[node name="Sprite2D" type="Sprite2D" parent="SpikeBody"]
 texture = ExtResource("1_xmkwv")
 
-[node name="HitArea2D" type="Area2D" parent="."]
+[node name="HitArea2D" type="Area2D" parent="SpikeBody"]
 collision_layer = 0
 collision_mask = 4
 script = ExtResource("2_urrha")
 metadata/_custom_type_script = "uid://xqvgljx4hk1s"
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="HitArea2D"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="SpikeBody/HitArea2D"]
 position = Vector2(-0.5, 10.5)
 shape = SubResource("RectangleShape2D_17rlb")
+
+[node name="PressureDetection" type="Area2D" parent="."]
+collision_layer = 0
+collision_mask = 2
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="PressureDetection"]
+shape = SubResource("CircleShape2D_pressure")

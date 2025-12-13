@@ -3,6 +3,7 @@
 [ext_resource type="Script" uid="uid://h75oxvvjt2l4" path="res://spawner/healthpotion_spawner.gd" id="1_c31ia"]
 
 [node name="HealthpotionSpawner" type="Node2D"]
+z_index = 0
 script = ExtResource("1_c31ia")
 
 [node name="Timer" type="Timer" parent="."]

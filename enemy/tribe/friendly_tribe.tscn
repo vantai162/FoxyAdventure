@@ -162,6 +162,7 @@ radius = 34.7385
 size = Vector2(46.875, 51.4705)
 
 [node name="FriendlyTribe" type="CharacterBody2D"]
+z_index = 8
 position = Vector2(-23, 20)
 scale = Vector2(0.64, 0.680001)
 collision_layer = 8

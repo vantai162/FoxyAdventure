@@ -151,6 +151,7 @@ func _spawn_pre_fade_particles() -> void:
 	particles.amount = 12  # Low count for performance
 	particles.lifetime = 0.3
 	particles.explosiveness = 0.8  # Burst effect
+	particles.z_index = ZLayers.EFFECT_FRONT  # Particles above enemies
 	
 	var mat = ParticleProcessMaterial.new()
 	mat.emission_shape = ParticleProcessMaterial.EMISSION_SHAPE_SPHERE
@@ -201,6 +202,7 @@ func _spawn_arrival_particles() -> void:
 	particles.amount = 16  # Medium count
 	particles.lifetime = 0.5
 	particles.explosiveness = 0.9  # Strong burst
+	particles.z_index = ZLayers.EFFECT_FRONT  # Particles above enemies
 	
 	var mat = ParticleProcessMaterial.new()
 	mat.emission_shape = ParticleProcessMaterial.EMISSION_SHAPE_RING

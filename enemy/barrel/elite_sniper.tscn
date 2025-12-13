@@ -104,6 +104,7 @@ size = Vector2(24, 24)
 size = Vector2(600, 200)
 
 [node name="EliteSniperBarrel" type="CharacterBody2D"]
+z_index = 8
 collision_layer = 8
 script = ExtResource("1_elite_sniper")
 

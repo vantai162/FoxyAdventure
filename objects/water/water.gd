@@ -2,9 +2,27 @@
 extends Node2D
 class_name water
 
+## Z-INDEX LAYERING - SIMPLE STACKING:
+## Player (z=10) → Water (z=12) → Terrain (z=15)
+## - Water is IN FRONT of player, so player looks submerged
+## - Terrain is IN FRONT of water, so terrain masks rectangle edges
+## Result: Non-rectangular pool shapes, player appears underwater. No overlay needed.
+## See scripts/z_layers.gd for the full system
+
 @export var water_size: Vector2 = Vector2(8.0,16.0)
 @export var surface_pos_y: float = 0.5
 @export_range(2,512) var segment_count: int = 64
+
+@export_group("Channel System")
+## Channel to listen to for water level control
+## Set same channel on trigger objects (Lever, PressurePlate) to connect them
+@export var listen_channel: StringName = &""
+## Water surface level when channel is ACTIVATED (negative = higher, positive = lower)
+@export var raised_level: float = -50.0
+## Water surface level when channel is DEACTIVATED
+@export var lowered_level: float = 50.0
+## Time in seconds for water level transition
+@export var level_transition_time: float = 2.0
 
 @export_group("Visuals")
 @export var surface_line_thickness: float = 2.0  ## Thicker for visibility
@@ -17,9 +35,9 @@ class_name water
 @export var ambient_wave_amplitude: float = 2.0  ## How high/low waves go (pixels) - more visible
 @export var ambient_wave_speed: float = 1.5  ## Wave frequency - slightly faster
 @export var ambient_wave_length: float = 0.25  ## Wavelength (0.1-1.0, lower = more waves)
+@export_range(-1.0, 1.0) var ambient_wave_direction: float = 1.0  ## -1 = left, 0 = standing, 1 = right
 
 @export_group("Physics Simulation")
-@export_range(0.0,1000.0) var water_physics_speed: float = 80.0  ## DEPRECATED: Legacy parameter, no longer used
 @export var water_restoring_force: float = 300.0  ## Spring constant pulling toward rest_height (higher = faster response)
 @export var wave_energy_loss: float = 35.0  ## Linear damping coefficient (base resistance)
 @export var quadratic_damping: float = 0.15  ## Quadratic damping (v²) - prevents overshoot at high velocities
@@ -50,7 +68,11 @@ class_name water
 @export var splash_color: Color = Color(0.8, 0.95, 1.0, 0.9)  ## Light blue-white
 
 @export_group("Glow Light (Optional)")
-@export var emit_light: bool = false  ## Water glows (bioluminescent/magical for dark caves)
+@export var emit_light: bool = false:  ## Water glows (bioluminescent/magical for dark caves)
+	set(value):
+		emit_light = value
+		if is_inside_tree():
+			_rebuild_water_lights()
 @export var light_color: Color = Color(0.3, 0.8, 1.0, 0.8)  ## Soft cyan glow
 @export var light_energy: float = 0.6  ## Subtle illumination
 @export var light_sample_points: int = 4  ## Distributed light sources (1-8)
@@ -61,7 +83,12 @@ class_name water
 @export_group("Debug")
 @export var enable_debug_diagnostics: bool = false  ## Enable water stability monitoring (prints every second)
 
+@export_group("Waterfall Blending")
+## Just ONE toggle - waterfalls handle everything else automatically
+@export var allow_waterfall_blend: bool = true  ## Allow waterfalls to blend into this pool
+
 var segment_data: Array = []
+var _surface_suppression_zones: Array = []  ## Runtime: auto-populated by waterfalls
 var segment_rest_height: Array = []  ## Per-segment equilibrium height (allows external depression control)
 var recently_splashed: bool = false
 
@@ -107,6 +134,149 @@ var water_collision_shape: CollisionShape2D  ## Reference to collision shape for
 signal player_entered_water(body)
 signal player_exited_water(body)
 
+## ==========================================
+## AUTONOMOUS WATERFALL BLEND RECEIVER
+## Waterfalls call this automatically - you don't need to do anything!
+## ==========================================
+
+## Called by Waterfall when it detects this pool below it
+func _receive_waterfall_blend(x_min: float, x_max: float, waterfall: Node2D) -> void:
+	if not allow_waterfall_blend:
+		return
+	
+	# 1. Surface line suppression (subtle fade, not invisible)
+	_surface_suppression_zones.append({
+		"x_min": x_min,
+		"x_max": x_max,
+		"fade_width": 10.0
+	})
+	_rebuild_surface_gradient()
+	
+	# 2. PHYSICS: Depress the pool surface where fall impacts
+	#    Real fluid: falling column pushes surface down, curves away at edges
+	#    This creates the "dip" that matches the waterfall's flare
+	_apply_waterfall_depression(x_min, x_max)
+	
+	# 3. CONTINUOUS RIPPLES: Store impact zone for ongoing disturbance
+	#    Real water: constant small splashing/rippling from falling water
+	_waterfall_impact_zones.append({
+		"x_min": x_min,
+		"x_max": x_max,
+		"waterfall": waterfall,
+		"last_ripple_time": 0.0
+	})
+
+## Track waterfall impact zones for continuous rippling
+var _waterfall_impact_zones: Array = []
+
+## Apply a permanent surface depression where waterfall impacts
+## The falling water pushes the surface down - edges curve up smoothly
+func _apply_waterfall_depression(x_min: float, x_max: float) -> void:
+	if segment_rest_height.is_empty():
+		return
+	
+	var seg_width = water_size.x / float(segment_count - 1)
+	var depression_depth: float = 4.0  # How much the surface dips (pixels)
+	var edge_fade: float = 16.0  # Smooth transition at edges
+	
+	for i in range(segment_count):
+		var seg_x = i * seg_width
+		
+		# Calculate distance from impact zone
+		var dist_from_center: float = 0.0
+		if seg_x < x_min:
+			dist_from_center = x_min - seg_x
+		elif seg_x > x_max:
+			dist_from_center = seg_x - x_max
+		else:
+			dist_from_center = 0.0  # Inside impact zone
+		
+		# Inside the impact zone: full depression
+		# Near edges: smooth fade using smoothstep
+		var depression: float = 0.0
+		if dist_from_center <= 0.0:
+			# Inside: full depression
+			depression = depression_depth
+		elif dist_from_center < edge_fade:
+			# Edge fade: smooth curve up
+			var t = dist_from_center / edge_fade
+			t = 1.0 - (t * t * (3.0 - 2.0 * t))  # inverse smoothstep
+			depression = t * depression_depth
+		
+		# Apply depression (raise the rest height = lower the surface visually)
+		if depression > 0.0:
+			segment_rest_height[i] += depression
+
+## Called every physics frame to apply continuous waterfall disturbance
+func _apply_waterfall_ripples(time: float) -> void:
+	if _waterfall_impact_zones.is_empty():
+		return
+	
+	var seg_width = water_size.x / float(segment_count - 1)
+	var ripple_interval: float = 0.15  # Create ripple every 150ms
+	var ripple_strength: float = 1.5  # Small continuous disturbance
+	
+	for zone in _waterfall_impact_zones:
+		if not is_instance_valid(zone["waterfall"]):
+			continue
+		
+		# Check if it's time for another ripple
+		if time - zone["last_ripple_time"] >= ripple_interval:
+			zone["last_ripple_time"] = time
+			
+			# Pick a random segment within the impact zone
+			var zone_center_x = (zone["x_min"] + zone["x_max"]) / 2.0
+			var zone_width = zone["x_max"] - zone["x_min"]
+			var random_x = zone_center_x + (randf() - 0.5) * zone_width
+			var seg_idx = int(random_x / seg_width)
+			seg_idx = clamp(seg_idx, 0, segment_count - 1)
+			
+			# Apply small downward impulse (waterfall pushing down)
+			if seg_idx < segment_data.size():
+				segment_data[seg_idx]["velocity"] += ripple_strength * (0.8 + randf() * 0.4)
+				_settled_segments[seg_idx] = 0  # Mark as active
+
+## Rebuild the Line2D gradient based on suppression zones (internal)
+func _rebuild_surface_gradient() -> void:
+	if not surface_line or _surface_suppression_zones.is_empty():
+		if surface_line:
+			surface_line.gradient = null
+		return
+	
+	var grad = Gradient.new()
+	var stops: Array = []
+	stops.append({"offset": 0.0, "color": surface_color})
+	
+	for zone in _surface_suppression_zones:
+		var x_min = zone["x_min"]
+		var x_max = zone["x_max"]
+		var fade = zone["fade_width"]
+		
+		var t_fade_start = clamp((x_min - fade) / water_size.x, 0.0, 1.0)
+		var t_zone_start = clamp(x_min / water_size.x, 0.0, 1.0)
+		var t_zone_end = clamp(x_max / water_size.x, 0.0, 1.0)
+		var t_fade_end = clamp((x_max + fade) / water_size.x, 0.0, 1.0)
+		
+		if t_fade_start > 0.01:
+			stops.append({"offset": t_fade_start, "color": surface_color})
+		stops.append({"offset": t_zone_start, "color": Color(surface_color.r, surface_color.g, surface_color.b, 0.0)})
+		stops.append({"offset": t_zone_end, "color": Color(surface_color.r, surface_color.g, surface_color.b, 0.0)})
+		if t_fade_end < 0.99:
+			stops.append({"offset": t_fade_end, "color": surface_color})
+	
+	stops.append({"offset": 1.0, "color": surface_color})
+	stops.sort_custom(func(a, b): return a["offset"] < b["offset"])
+	
+	grad.offsets = PackedFloat32Array()
+	grad.colors = PackedColorArray()
+	var last_offset = -1.0
+	for stop in stops:
+		if stop["offset"] > last_offset + 0.001:
+			grad.add_point(stop["offset"], stop["color"])
+			last_offset = stop["offset"]
+	
+	surface_line.gradient = grad
+
 ## Debug monitoring
 var debug_timer: float = 0.0
 var debug_interval: float = 1.0
@@ -125,11 +295,45 @@ func _ready() -> void:
 	_swim_disturbance_timers.clear()
 	_boats_in_water.clear()
 	_initiate_water()
+	
+	# Always enable processing for ambient wave animation (editor + runtime)
+	set_process(true)
+	
+	# Runtime-only: subscribe to channel system
 	if not Engine.is_editor_hint():
-		set_process(true)
+		if not listen_channel.is_empty():
+			var channel_manager = get_node_or_null("/root/InteractionChannel")
+			if channel_manager:
+				channel_manager.channel_activated.connect(_on_channel_activated)
+				channel_manager.channel_deactivated.connect(_on_channel_deactivated)
+
+
+func _on_channel_activated(channel: StringName, _source: Node) -> void:
+	if channel != listen_channel:
+		return
+	raise_water(raised_level, level_transition_time)
+
+
+func _on_channel_deactivated(channel: StringName, _source: Node) -> void:
+	if channel != listen_channel:
+		return
+	lower_water(lowered_level, level_transition_time)
 
 
 func _process(delta:float)->void:
+	# Ambient wave animation (runs in BOTH editor and runtime for visual life)
+	if ambient_wave_enabled:
+		_ambient_wave_time += delta
+	
+	# Light pulsing (runs in BOTH editor and runtime so designers see the glow)
+	if emit_light and _water_lights.size() > 0:
+		_update_water_lights(delta)
+	
+	# EDITOR MODE: Only update visuals (no physics, particles, or gameplay)
+	if Engine.is_editor_hint():
+		update_visuals()
+		return
+	
 	if enable_debug_diagnostics:
 		debug_timer += delta
 		if debug_timer >= debug_interval:
@@ -139,10 +343,6 @@ func _process(delta:float)->void:
 	# Update water raising animation
 	if _water_raise_active:
 		_update_water_raise(delta)
-	
-	# Ambient wave animation (always runs for visual life)
-	if ambient_wave_enabled:
-		_ambient_wave_time += delta
 	
 	# Swim disturbance: create periodic ripples for bodies in water
 	if swim_disturbance_enabled:
@@ -161,9 +361,8 @@ func _process(delta:float)->void:
 	if emit_splash_particles:
 		_update_splash_droplets(delta)
 	
-	# Update optional lighting (bioluminescent glow)
-	if emit_light and _water_lights.size() > 0:
-		_update_water_lights(delta)
+	# Continuous waterfall ripples (creates "damn that's smooth" effect)
+	_apply_waterfall_ripples(_ambient_wave_time)
 	
 	update_physics(delta)
 	update_visuals()
@@ -194,13 +393,18 @@ func _initiate_water() -> void:
 	new_line.begin_cap_mode = Line2D.LINE_CAP_ROUND
 	new_line.end_cap_mode = Line2D.LINE_CAP_ROUND
 	new_line.joint_mode = Line2D.LINE_JOINT_ROUND
+	new_line.z_as_relative = false  # Use absolute z_index
+	new_line.z_index = ZLayers.FLUID_SURFACE  # IN FRONT of player (11)
 	add_child(new_line)
 	surface_line = new_line
 	
+	# Main water body - IN FRONT of player so player looks submerged
+	# Terrain is IN FRONT of water to mask rectangle edges
 	var new_polygon: Polygon2D = Polygon2D.new()
 	new_polygon.color = water_fill_color
-	# Don't use show_behind_parent - we want water to overlay the player
-	surface_line.add_child(new_polygon)
+	new_polygon.z_as_relative = false  # Use absolute z_index
+	new_polygon.z_index = ZLayers.FLUID_BODY  # IN FRONT of player (12)
+	add_child(new_polygon)
 	fill_polygon = new_polygon
 	
 	var new_area: Area2D = Area2D.new()
@@ -224,7 +428,8 @@ func _initiate_water() -> void:
 	water_collision_shape = new_collisionshape  # Store reference
 	
 	# Optional lighting setup (bioluminescent/magical water)
-	if emit_light and not Engine.is_editor_hint():
+	# Works in editor so designers can see the glow
+	if emit_light:
 		_setup_water_lights()
 
 
@@ -432,7 +637,10 @@ func update_visuals() -> void:
 		# Add ambient wave offset (purely visual, doesn't affect physics)
 		var ambient_offset = 0.0
 		if ambient_wave_enabled:
-			var wave_phase = _ambient_wave_time * ambient_wave_speed + (float(i) / segment_count) * TAU / ambient_wave_length
+			# direction: -1 = waves travel left, 0 = standing wave, 1 = waves travel right
+			var direction = ambient_wave_direction if ambient_wave_direction != null else 1.0
+			var position_term = (float(i) / segment_count) * TAU / ambient_wave_length
+			var wave_phase = _ambient_wave_time * ambient_wave_speed - position_term * direction
 			ambient_offset = sin(wave_phase) * ambient_wave_amplitude
 		
 		points.append(Vector2(i * segment_width, base_height + ambient_offset))
@@ -455,7 +663,7 @@ func update_visuals() -> void:
 	final_points.append(Vector2(water_size.x, bottom_y))
 	final_points.append(Vector2(0, bottom_y))
 	fill_polygon.polygon = final_points
-
+	
 func splash(splash_pos:Vector2, splash_velocity:float) -> void:
 	var local_x_pos: float = to_local(splash_pos).x
 	var segment_width: float = water_size.x / (segment_count - 1)
@@ -526,8 +734,9 @@ func get_water_height_at_global_x(global_x: float) -> float:
 	return global_position.y + segment_data[index]["height"]
 
 func _update_collision_shape() -> void:
-	## Dynamically update collision shape SIZE and POSITION to match water level
-	## The water should expand from bottom up, not move as a whole
+	## Dynamically update collision shape SIZE and POSITION to match VISUAL water level
+	## CRITICAL: Must match what players SEE, not the tween target
+	## Uses average segment height to stay synchronized with update_visuals()
 	if not water_collision_shape or not water_collision_shape.shape:
 		return
 	
@@ -535,13 +744,18 @@ func _update_collision_shape() -> void:
 	if not shape:
 		return
 	
-	# Calculate new size: from bottom (water_size.y) to current surface (surface_pos_y)
-	# surface_pos_y is offset from origin, negative = higher up
-	var new_height = water_size.y - surface_pos_y  # Total height from surface to bottom
-	var old_size = shape.size
-	shape.size = Vector2(water_size.x, new_height)
+	# Calculate average visual surface height from actual segment data
+	# This is what update_visuals() uses, so collision matches visuals exactly
+	var avg_surface_height: float = 0.0
+	for seg in segment_data:
+		avg_surface_height += seg["height"]
+	avg_surface_height /= segment_count
 	
-	var center_y = surface_pos_y + new_height / 2.0
+	# Calculate new size: from bottom (water_size.y) to current visual surface
+	var new_height = water_size.y - avg_surface_height  # Total height from surface to bottom
+	shape.size = Vector2(water_size.x, max(new_height, 1.0))  # Ensure positive height
+	
+	var center_y = avg_surface_height + new_height / 2.0
 	water_collision_shape.position = Vector2(water_size.x / 2.0, center_y)
 
 ## Water level control for boss fights and scripted events
@@ -825,6 +1039,7 @@ func _spawn_splash_particles(splash_global_pos: Vector2, impact_strength: float)
 	for i in range(droplet_count):
 		var droplet = Node2D.new()
 		droplet.name = "Droplet"
+		droplet.z_index = ZLayers.EFFECT_FRONT  # Splash droplets above water
 		
 		# Start at surface
 		droplet.position = Vector2(local_pos.x + randf_range(-8, 8), surface_pos_y)
@@ -910,6 +1125,19 @@ func _update_splash_droplets(delta: float) -> void:
 ## Disabled by default for backward compatibility with existing levels
 ## ============================================================================
 
+func _rebuild_water_lights() -> void:
+	## Rebuild lights when emit_light is toggled in editor
+	# Clear existing lights
+	for light in _water_lights:
+		if is_instance_valid(light):
+			light.queue_free()
+	_water_lights.clear()
+	
+	# Create new lights if enabled
+	if emit_light:
+		_setup_water_lights()
+
+
 func _setup_water_lights() -> void:
 	## Create distributed lights along water surface (1-8 configurable)
 	## Each light tracks local segment heights for realistic wave illumination
@@ -933,6 +1161,7 @@ func _setup_water_lights() -> void:
 		light.range_z_min = -100
 		light.range_z_max = 100
 		light.shadow_enabled = false  # Water doesn't cast shadows
+		light.z_index = ZLayers.LIGHT_EFFECT  # Light effect layer
 		
 		# First light creates texture, others share it
 		if i == 0:

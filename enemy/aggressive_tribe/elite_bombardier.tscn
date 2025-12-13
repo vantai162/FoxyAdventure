@@ -1,7 +1,7 @@
 [gd_scene load_steps=39 format=3 uid="uid://cvq5vx1o24fpg"]
 
 [ext_resource type="Script" uid="uid://b6h2aoddd6yyw" path="res://enemy/aggressive_tribe/elite_bombardier.gd" id="1_elite_bomb"]
-[ext_resource type="PackedScene" path="res://enemy/elite_eye_trail.tscn" id="2_eye_trail"]
+[ext_resource type="PackedScene" uid="uid://dxcnl8fucu5je" path="res://enemy/elite_eye_trail.tscn" id="2_eye_trail"]
 [ext_resource type="Shader" uid="uid://q33y13b56v1g" path="res://enemy/elite_enemy.gdshader" id="2_shader"]
 [ext_resource type="PackedScene" uid="uid://ct1tqxgwkuvbe" path="res://scripts/hurt_area_2d.tscn" id="3_hurt_area"]
 [ext_resource type="PackedScene" uid="uid://d2e3f4g5h6i7j" path="res://projectiles/slowing_coconut.tscn" id="5_slow_coconut"]
@@ -142,6 +142,7 @@ animations = [{
 size = Vector2(60, 60)
 
 [node name="EliteBombardier" type="CharacterBody2D"]
+z_index = 8
 scale = Vector2(0.85, 0.85)
 collision_layer = 8
 script = ExtResource("1_elite_bomb")
@@ -187,7 +188,7 @@ collision_mask = 2
 
 [node name="DetectPlayerRayCast2D2" type="RayCast2D" parent="Direction"]
 position = Vector2(0, 16)
-target_position = Vector2(500, 20)
+target_position = Vector2(500, 30)
 collision_mask = 2
 
 [node name="DetectPlayerRayCast2D3" type="RayCast2D" parent="Direction"]

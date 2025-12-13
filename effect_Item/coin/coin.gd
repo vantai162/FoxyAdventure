@@ -67,6 +67,7 @@ func _setup_glow() -> void:
 	_glow.energy = 0.25  # Was 0.5 - halved for subtlety
 	_glow.texture_scale = 0.2  # Was 0.4 - 16px × 0.2 = 3.2px radius = 6.4px diameter (tight halo)
 	_glow.blend_mode = Light2D.BLEND_MODE_ADD
+	_glow.z_index = ZLayers.LIGHT_EFFECT  # Light effect layer
 	
 	var gradient = Gradient.new()
 	gradient.set_color(0, Color(1, 1, 1, 1))
@@ -97,6 +98,7 @@ func _setup_sparkles() -> void:
 	_sparkle_particles.lifetime = 0.4  # Was 0.6 - snappier
 	_sparkle_particles.explosiveness = 0.9  # Was 0.8 - more burst-like
 	_sparkle_particles.randomness = 0.3  # Was 0.5 - tighter pattern
+	_sparkle_particles.z_index = ZLayers.EFFECT_FRONT  # Sparkles visible above coin
 	
 	var mat = ParticleProcessMaterial.new()
 	mat.emission_shape = ParticleProcessMaterial.EMISSION_SHAPE_POINT  # Was SPHERE 6.0 - now point emission from center

@@ -41,6 +41,7 @@ scale_min = 0.5
 scale_max = 1.2
 
 [node name="WindArea" type="Area2D"]
+z_index = 0
 collision_layer = 0
 collision_mask = 2
 script = ExtResource("1_3t54o")
@@ -50,7 +51,7 @@ position = Vector2(3, 4)
 shape = SubResource("RectangleShape2D_uiemc")
 
 [node name="WindStreaks" type="ColorRect" parent="."]
-z_index = 5
+z_index = 25
 material = SubResource("ShaderMaterial_wind")
 offset_left = -120.0
 offset_top = -50.0
@@ -60,7 +61,7 @@ mouse_filter = 2
 color = Color(1, 1, 1, 0)
 
 [node name="DustParticles" type="GPUParticles2D" parent="."]
-z_index = 4
+z_index = 25
 amount = 10
 process_material = SubResource("ParticleProcessMaterial_dust")
 texture = SubResource("GradientTexture2D_dust")

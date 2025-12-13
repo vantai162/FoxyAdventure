@@ -68,6 +68,7 @@ func _setup_glow() -> void:
 	_glow.energy = 0.3  # Was 0.6 - halved
 	_glow.texture_scale = 0.6  # Was 0.5 - with 16px texture = 9.6px radius = ~20px diameter
 	_glow.blend_mode = Light2D.BLEND_MODE_ADD
+	_glow.z_index = ZLayers.LIGHT_EFFECT  # Light effect layer
 	
 	var gradient = Gradient.new()
 	gradient.set_color(0, Color(1, 1, 1, 1))
@@ -96,6 +97,7 @@ func _setup_bubbles() -> void:
 	_bubbles.amount = 2  # Was 3 - sparser for small item
 	_bubbles.lifetime = 0.8  # Was 1.0 - quicker rise
 	_bubbles.preprocess = 0.3  # Was 0.5
+	_bubbles.z_index = ZLayers.EFFECT_FRONT  # Bubbles visible above potion
 	
 	var mat = ParticleProcessMaterial.new()
 	mat.emission_shape = ParticleProcessMaterial.EMISSION_SHAPE_BOX

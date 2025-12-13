@@ -70,6 +70,7 @@ size = Vector2(400, 120)
 size = Vector2(37, 34)
 
 [node name="EliteSpawnerMushroom" type="CharacterBody2D"]
+z_index = 8
 collision_layer = 8
 script = ExtResource("1_elite")
 mini_mushroom_scene = ExtResource("3_mini")

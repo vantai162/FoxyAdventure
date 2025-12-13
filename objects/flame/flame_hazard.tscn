@@ -119,14 +119,15 @@ animations = [{
 }]
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_qpa8o"]
-radius = 27.0
-height = 190.0
+radius = 30.0
+height = 160.0
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_b2iij"]
-radius = 40.0
-height = 150.0
+radius = 35.0
+height = 120.0
 
 [node name="FlameHazard" type="Node2D"]
+z_index = 0
 scale = Vector2(0.5, 0.5)
 script = ExtResource("6_script")
 
@@ -136,13 +137,15 @@ sprite_frames = SubResource("SpriteFrames_hapyr")
 animation = &"active"
 
 [node name="FlameLight" type="PointLight2D" parent="."]
-position = Vector2(0, -36)
-color = Color(1, 0.7, 0.3, 1)
-energy = 1.8
-texture_scale = 0.3
+z_index = 20
+position = Vector2(0, -100)
+color = Color(1, 0.75, 0.35, 1)
+energy = 2.2
+texture_scale = 0.5
 
 [node name="SparkParticles" type="GPUParticles2D" parent="."]
-position = Vector2(0, -36)
+z_index = 25
+position = Vector2(0, -105)
 emitting = false
 lifetime = 0.5
 randomness = 0.4
@@ -156,7 +159,7 @@ metadata/_custom_type_script = "uid://xqvgljx4hk1s"
 [node name="CollisionShape2D" type="CollisionShape2D" parent="HitArea2D"]
 light_mask = 0
 visibility_layer = 0
-position = Vector2(0, 23)
+position = Vector2(0, 40)
 shape = SubResource("CapsuleShape2D_qpa8o")
 
 [node name="HitArea2D2" type="Area2D" parent="."]
@@ -168,5 +171,5 @@ metadata/_custom_type_script = "uid://xqvgljx4hk1s"
 [node name="CollisionShape2D" type="CollisionShape2D" parent="HitArea2D2"]
 light_mask = 0
 visibility_layer = 0
-position = Vector2(0, -73)
+position = Vector2(0, -55)
 shape = SubResource("CapsuleShape2D_b2iij")

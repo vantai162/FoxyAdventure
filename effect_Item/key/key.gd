@@ -62,6 +62,7 @@ func _setup_glow() -> void:
 	_glow.energy = 0.3  # Was 0.6 - halved
 	_glow.texture_scale = 0.8  # Was 0.5 - with 16px texture = 12.8px, slightly larger than key
 	_glow.blend_mode = Light2D.BLEND_MODE_ADD
+	_glow.z_index = ZLayers.LIGHT_EFFECT  # Light effect layer
 	
 	var gradient = Gradient.new()
 	gradient.set_color(0, Color(1, 1, 1, 1))
@@ -111,6 +112,7 @@ func _spawn_pickup_particles() -> void:
 	particles.amount = 8
 	particles.lifetime = 0.5
 	particles.global_position = global_position
+	particles.z_index = ZLayers.EFFECT_FRONT  # Pickup effect visible
 	
 	var material = ParticleProcessMaterial.new()
 	material.emission_shape = ParticleProcessMaterial.EMISSION_SHAPE_SPHERE

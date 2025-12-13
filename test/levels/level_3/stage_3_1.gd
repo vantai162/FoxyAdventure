@@ -11,9 +11,9 @@ extends StageBase
 ## return via platforms to claim the reward.
 ##
 ## EMOTIONAL ARC: SAFETY → CURIOSITY → COMMITMENT → TENSION → RELIEF
-
-@onready var lever: Lever = $Puzzle/TreasureLever
-@onready var gate: Gate = $Puzzle/TreasureGate
+##
+## CONNECTION: TreasureLever and TreasureGate use Channel System
+## Set in scene: TreasureLever.channel = "treasure", TreasureGate.listen_channel = "treasure"
 
 
 func _init() -> void:
@@ -26,20 +26,7 @@ func _init() -> void:
 
 func _ready() -> void:
 	super._ready()
-	# Connect lever to gate
-	if lever and gate:
-		lever.lever_activated.connect(_on_lever_activated)
-		lever.lever_deactivated.connect(_on_lever_deactivated)
-
-
-func _on_lever_activated() -> void:
-	if gate:
-		gate.open_gate()
-
-
-func _on_lever_deactivated() -> void:
-	if gate:
-		gate.close_gate()
+	# Lever/Gate connection now handled by Channel System in inspector
 
 
 func _on_stage_ready() -> void:

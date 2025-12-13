@@ -7,6 +7,7 @@
 size = Vector2(48, 89)
 
 [node name="DugeonGate" type="StaticBody2D"]
+z_index = 0
 script = ExtResource("1_8xopi")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]

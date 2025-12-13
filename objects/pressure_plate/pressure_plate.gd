@@ -1,12 +1,18 @@
+@tool
 # Pressure Plate - Activates while player/object stands on it
+# Uses Channel System: set a channel name, receivers (Gate, Flame, etc.) listen on the same channel
 extends Area2D
 class_name PressurePlate
 
-## What the plate controls
-enum PlateTarget { SIGNAL_ONLY, GATE, LAVA_LEVEL, FLAME, WATER_LEVEL }
+@export_group("Channel System")
+## Channel to broadcast on when pressed/released
+## Set same channel on receiver objects (Gate, Flame, etc.) to connect them
+@export var channel: StringName = &"":
+	set(value):
+		channel = value
+		queue_redraw()
 
 @export_group("Plate Settings")
-@export var target_type: PlateTarget = PlateTarget.SIGNAL_ONLY
 @export var stay_activated: bool = false  ## If true, stays ON after first press
 @export var require_weight: bool = false  ## If true, only heavy objects trigger (not player)
 
@@ -14,22 +20,12 @@ enum PlateTarget { SIGNAL_ONLY, GATE, LAVA_LEVEL, FLAME, WATER_LEVEL }
 @export var pressed_offset: Vector2 = Vector2(0, 2)  ## How much plate sinks when pressed
 @export var press_duration: float = 0.1  ## Animation time
 
-@export_group("Gate Control")
-@export var gate_node: NodePath
-
-@export_group("Lava Control")
-@export var lava_node: NodePath
-@export var lava_drain_time: float = 2.0
-@export var lava_fill_time: float = 3.0
-
-@export_group("Flame Control")
-@export var flame_node: NodePath
-
-@export_group("Water Control")
-@export var water_node: NodePath
-@export var water_on_level: float = -50.0
-@export var water_off_level: float = 50.0
-@export var water_transition_time: float = 2.0
+@export_group("Editor Preview")
+@export var show_channel_label: bool = true:
+	set(value):
+		show_channel_label = value
+		queue_redraw()
+@export var label_color: Color = Color(0.2, 0.9, 0.4, 0.9)
 
 signal plate_pressed
 signal plate_released
@@ -38,28 +34,19 @@ var is_pressed: bool = false
 var _bodies_on_plate: Array = []
 var _permanently_activated: bool = false
 
-var _gate_ref: Node = null
-var _lava_ref: Node = null
-var _flame_ref: Node = null
-var _water_ref: Node = null
-
 @onready var sprite: Sprite2D = $Sprite2D if has_node("Sprite2D") else null
 @onready var pressure_glow: PointLight2D = $Sprite2D/PressureGlow if has_node("Sprite2D/PressureGlow") else null
 var _original_sprite_pos: Vector2 = Vector2.ZERO
 
 func _ready() -> void:
+	# Skip gameplay in editor
+	if Engine.is_editor_hint():
+		return
+	
 	body_entered.connect(_on_body_entered)
 	body_exited.connect(_on_body_exited)
-	
-	# Cache node references
-	if not gate_node.is_empty():
-		_gate_ref = get_node_or_null(gate_node)
-	if not lava_node.is_empty():
-		_lava_ref = get_node_or_null(lava_node)
-	if not flame_node.is_empty():
-		_flame_ref = get_node_or_null(flame_node)
-	if not water_node.is_empty():
-		_water_ref = get_node_or_null(water_node)
+	area_entered.connect(_on_area_entered)
+	area_exited.connect(_on_area_exited)
 	
 	# Store original sprite position for tween animation
 	if sprite:
@@ -71,16 +58,48 @@ func _ready() -> void:
 			sprite = plate_visual
 			_original_sprite_pos = sprite.position
 
+## Editor draw - show channel label
+func _draw() -> void:
+	if not Engine.is_editor_hint():
+		return
+	if not show_channel_label or channel.is_empty():
+		return
+	
+	# Draw channel name label above the plate
+	var font := ThemeDB.fallback_font
+	var label_text := str(channel)
+	var font_size := 12
+	var text_size := font.get_string_size(label_text, HORIZONTAL_ALIGNMENT_CENTER, -1, font_size)
+	var label_pos := Vector2(-text_size.x / 2, -24)
+	
+	# Background for readability
+	var bg_rect := Rect2(label_pos - Vector2(4, font_size), text_size + Vector2(8, 4))
+	draw_rect(bg_rect, Color(0.1, 0.1, 0.1, 0.7))
+	
+	# Draw text
+	draw_string(font, label_pos, label_text, HORIZONTAL_ALIGNMENT_CENTER, -1, font_size, label_color)
+	
+	# Draw indicator icon (P for Plate)
+	draw_circle(Vector2(0, -32), 8, label_color * Color(1, 1, 1, 0.6))
+
 func _on_body_entered(body: Node2D) -> void:
 	# Filter by weight requirement
 	if require_weight:
-		if body.is_in_group("heavy") or body.is_in_group("pushable"):
-			pass  # Allow heavy objects
-		else:
-			return  # Ignore player and light objects
+		# Only heavy/pushable objects trigger
+		if not (body.is_in_group("heavy") or body.is_in_group("pushable")):
+			return
 	else:
-		# Accept player and interactable objects
-		if not (body is Player or body.is_in_group("pushable")):
+		# Accept: player, enemies, and pushable objects
+		# This allows puzzle design where enemies can trigger plates!
+		var is_valid := false
+		if body is Player:
+			is_valid = true
+		elif body.is_in_group("enemy"):
+			is_valid = true
+		elif body.is_in_group("pushable"):
+			is_valid = true
+		
+		if not is_valid:
 			return
 	
 	if not _bodies_on_plate.has(body):
@@ -109,6 +128,12 @@ func _press() -> void:
 	is_pressed = true
 	plate_pressed.emit()
 	
+	# Broadcast on channel
+	if not channel.is_empty():
+		var channel_manager = get_node_or_null("/root/InteractionChannel")
+		if channel_manager:
+			channel_manager.activate(channel, self)
+	
 	# Visual feedback - tween position and enable glow
 	if sprite:
 		var tween = create_tween()
@@ -118,15 +143,18 @@ func _press() -> void:
 			pressure_glow.enabled = true
 			tween.tween_property(pressure_glow, "energy", 0.8, press_duration)
 	
-	# Trigger target
-	_on_plate_pressed()
-	
 	if stay_activated:
 		_permanently_activated = true
 
 func _release() -> void:
 	is_pressed = false
 	plate_released.emit()
+	
+	# Broadcast on channel
+	if not channel.is_empty():
+		var channel_manager = get_node_or_null("/root/InteractionChannel")
+		if channel_manager:
+			channel_manager.deactivate(channel, self)
 	
 	# Visual feedback - tween position back and fade glow
 	if sprite:
@@ -139,39 +167,6 @@ func _release() -> void:
 				if pressure_glow:
 					pressure_glow.enabled = false
 			)
-	
-	# Release target
-	_on_plate_released()
-
-func _on_plate_pressed() -> void:
-	match target_type:
-		PlateTarget.GATE:
-			if _gate_ref and _gate_ref.has_method("open_gate"):
-				_gate_ref.open_gate()
-		PlateTarget.LAVA_LEVEL:
-			if _lava_ref and _lava_ref.has_method("drain"):
-				_lava_ref.drain(lava_drain_time)
-		PlateTarget.FLAME:
-			if _flame_ref and _flame_ref.has_method("extinguish"):
-				_flame_ref.extinguish()
-		PlateTarget.WATER_LEVEL:
-			if _water_ref and _water_ref.has_method("raise_water"):
-				_water_ref.raise_water(water_on_level, water_transition_time)
-
-func _on_plate_released() -> void:
-	match target_type:
-		PlateTarget.GATE:
-			if _gate_ref and _gate_ref.has_method("close_gate"):
-				_gate_ref.close_gate()
-		PlateTarget.LAVA_LEVEL:
-			if _lava_ref and _lava_ref.has_method("fill"):
-				_lava_ref.fill(lava_fill_time)
-		PlateTarget.FLAME:
-			if _flame_ref and _flame_ref.has_method("ignite"):
-				_flame_ref.ignite()
-		PlateTarget.WATER_LEVEL:
-			if _water_ref and _water_ref.has_method("lower_water"):
-				_water_ref.lower_water(water_off_level, water_transition_time)
 
 ## Force plate state (for scripted events)
 func force_press() -> void:
@@ -188,3 +183,24 @@ func reset() -> void:
 	_bodies_on_plate.clear()
 	if is_pressed:
 		_release()
+
+
+## Blade projectile detection (Area2D-to-Area2D)
+func _on_area_entered(area: Area2D) -> void:
+	# Check if it's a grounded blade projectile
+	if area is BladeProjectile:
+		var blade := area as BladeProjectile
+		# Only trigger if blade is grounded (not flying through)
+		if blade.current_state == BladeProjectile.State.GROUNDED:
+			if not _bodies_on_plate.has(blade):
+				_bodies_on_plate.append(blade)
+			if not is_pressed and not _permanently_activated:
+				_press()
+
+
+func _on_area_exited(area: Area2D) -> void:
+	if area is BladeProjectile:
+		_bodies_on_plate.erase(area)
+		
+		if is_pressed and _bodies_on_plate.is_empty() and not stay_activated:
+			_release()

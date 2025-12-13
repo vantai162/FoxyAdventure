@@ -202,7 +202,17 @@ func _is_on_one_way_platform():
 	
 
 func spring():
+	## Legacy spring - always launches UP (for backward compatibility)
 	velocity.y = -650
+
+func spring_launch(launch_velocity: Vector2) -> void:
+	## Directional spring launch - applies velocity in the given direction
+	velocity = launch_velocity
+	
+	# Trigger impulse momentum preservation for horizontal launches (player only)
+	if has_method("apply_impulse_momentum"):
+		var horizontal_dir = sign(launch_velocity.x) as int
+		call("apply_impulse_momentum", horizontal_dir)
 		
 func drop_down_platform():
 	var PLATFORM_LAYER = 1

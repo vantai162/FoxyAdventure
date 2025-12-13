@@ -69,6 +69,7 @@ animations = [{
 }]
 
 [node name="PlayerTorch" type="Node2D"]
+z_index = 20
 script = ExtResource("1_script")
 
 [node name="TorchSprite" type="AnimatedSprite2D" parent="."]
@@ -79,10 +80,10 @@ autoplay = "default"
 [node name="TorchLight" type="PointLight2D" parent="."]
 position = Vector2(0, -8)
 color = Color(1, 0.95, 0.85, 1)
-energy = 0.8
+energy = 1.1
 shadow_enabled = true
-texture = ExtResource("3_dos75")
-texture_scale = 0.4
+texture = SubResource("GradientTexture2D_light")
+texture_scale = 0.75
 
 [node name="TorchSparks" type="GPUParticles2D" parent="."]
 position = Vector2(0, -12)

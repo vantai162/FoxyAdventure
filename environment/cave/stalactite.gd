@@ -22,13 +22,18 @@ enum Orientation {
 enum TriggerMode {
 	PLAYER_PROXIMITY,  ## Falls when player gets close (default)
 	RANDOM_TIMER,      ## Falls at random intervals
-	MANUAL             ## Only falls when trigger_fall() is called (puzzles)
+	MANUAL,            ## Only falls when trigger_fall() is called (puzzles)
+	CHANNEL            ## Falls when channel is activated (lever-triggered traps)
 }
 
 @export var orientation := Orientation.CEILING:
 	set(value):
 		orientation = value
 		_apply_orientation()
+
+@export_group("Channel System")
+## Channel to listen to (only used when trigger_mode = CHANNEL)
+@export var listen_channel: StringName = &""
 
 @export_group("Trigger Settings")
 @export var trigger_mode: TriggerMode = TriggerMode.PLAYER_PROXIMITY
@@ -113,6 +118,11 @@ func _ready() -> void:
 			_start_random_timer()
 		TriggerMode.MANUAL:
 			pass  # Wait for trigger_fall() call
+		TriggerMode.CHANNEL:
+			if not listen_channel.is_empty():
+				var channel_manager = get_node_or_null("/root/InteractionChannel")
+				if channel_manager:
+					channel_manager.register_listener(listen_channel, _on_channel_activated, _on_channel_deactivated)
 	
 	if hit_area:
 		hit_area.damage = damage
@@ -244,6 +254,18 @@ func _respawn() -> void:
 func trigger_fall() -> void:
 	if current_state == State.IDLE:
 		_start_falling()
+
+func _on_channel_activated(_source: Node) -> void:
+	trigger_fall()
+
+func _on_channel_deactivated(_source: Node) -> void:
+	pass  # Stalactite doesn't "un-fall" - one-shot
+
+func _exit_tree() -> void:
+	if trigger_mode == TriggerMode.CHANNEL and not listen_channel.is_empty():
+		var channel_manager = get_node_or_null("/root/InteractionChannel")
+		if channel_manager:
+			channel_manager.unregister_listener(listen_channel, _on_channel_activated, _on_channel_deactivated)
 
 ## Reset to idle state
 func reset() -> void:

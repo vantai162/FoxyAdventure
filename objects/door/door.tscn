@@ -90,6 +90,7 @@ size = Vector2(19, 32)
 size = Vector2(65, 53)
 
 [node name="Door" type="Node2D"]
+z_index = 0
 script = ExtResource("1_58wfd")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]

@@ -104,6 +104,7 @@ func _spawn_trap_particles() -> void:
 	burst.amount = 12
 	burst.lifetime = 0.5
 	burst.emitting = true
+	burst.z_index = ZLayers.EFFECT_FRONT  # Trap burst visible
 	
 	var mat := ParticleProcessMaterial.new()
 	mat.emission_shape = ParticleProcessMaterial.EMISSION_SHAPE_SPHERE

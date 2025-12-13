@@ -2,7 +2,10 @@
 extends Node2D
 class_name SpikeRetractable
 ## Retractable spike hazard with multiple trigger modes
-## Use in rhythm platforming or trap setups
+## 
+## Architecture:
+## - Root node (this) stays stationary - detection area is here
+## - SpikeBody child moves up/down - contains sprite and hitbox
 ## 
 ## @tool script - orientation updates immediately in editor
 
@@ -18,8 +21,12 @@ enum Orientation {
 enum TriggerMode {
 	INTERVAL,        ## Cycles forever on timer (default, rhythm platforming)
 	PRESSURE_PLATE,  ## Extends when player steps on detection area
-	MANUAL           ## Only via trigger_extend()/trigger_retract() calls
+	MANUAL,          ## Only via trigger_extend()/trigger_retract() calls
+	CHANNEL          ## Controlled by InteractionChannel (lever, pressure plate, etc.)
 }
+
+## What to do when channel is activated
+enum ChannelAction { EXTEND, RETRACT, TOGGLE }
 
 const ROTATIONS := {
 	Orientation.FLOOR: 0.0,
@@ -28,6 +35,11 @@ const ROTATIONS := {
 	Orientation.RIGHT: -PI / 2
 }
 
+## Retract direction in LOCAL space (same for all orientations)
+## Since SpikeBody is rotated, local +Y always points "into the wall"
+## The rotation handles converting this to correct world direction
+const LOCAL_RETRACT_DIRECTION := Vector2(0, 1)  ## Down in local = towards base/wall
+
 @export var orientation := Orientation.FLOOR:
 	set(value):
 		orientation = value
@@ -35,35 +47,71 @@ const ROTATIONS := {
 
 @export_group("Trigger Mode")
 @export var trigger_mode: TriggerMode = TriggerMode.INTERVAL
-@export var detection_radius: float = 32.0  ## For PRESSURE_PLATE mode
+
+@export_group("Channel System")
+## Channel to listen to (only used when trigger_mode = CHANNEL)
+@export var listen_channel: StringName = &""
+## What to do when channel activates
+@export var on_activate: ChannelAction = ChannelAction.EXTEND
+## What to do when channel deactivates
+@export var on_deactivate: ChannelAction = ChannelAction.RETRACT
 
 @export_group("Positions")
-@export var up_pos: Vector2 = Vector2(0, 0)  ## Extended position (dangerous)
-@export var down_pos: Vector2 = Vector2(0, 20)  ## Retracted position (safe)
+## How far the spike retracts (in pixels)
+@export var retract_distance: float = 20.0
 
 @export_group("Timing")
-@export var up_time: float = 0.3  ## Time to extend
-@export var down_time: float = 0.3  ## Time to retract
-@export var hold_time: float = 1.0  ## Time to hold at each position (INTERVAL mode)
-@export var pressure_delay: float = 0.15  ## Delay before extending (PRESSURE_PLATE)
-@export var pressure_retract_delay: float = 0.5  ## Delay before retracting after player leaves
+## How long the extend animation takes (spike emerging)
+@export var extend_duration: float = 0.3
+## How long the retract animation takes (spike hiding)
+@export var retract_duration: float = 0.3
+## How long spike stays EXTENDED (dangerous!) in INTERVAL mode
+@export var extended_hold: float = 1.0
+## How long spike stays RETRACTED (safe) in INTERVAL mode
+@export var retracted_hold: float = 1.0
+## Delay before extending when player steps on detection area (PRESSURE_PLATE mode)
+@export var pressure_delay: float = 0.15
+## Delay before retracting after player leaves detection area (PRESSURE_PLATE mode)
+@export var pressure_retract_delay: float = 0.5
 
 @export_group("Initial State")
-@export var start_extended: bool = true  ## Start in up (dangerous) position
-@export var start_delay: float = 0.0  ## Delay before first cycle (for staggering)
+@export var start_extended: bool = true
+@export var start_delay: float = 0.0
 
 var is_extended: bool = false
-var _detection_area: Area2D = null
 var _player_on_plate: bool = false
 var _current_tween: Tween = null
 
-@onready var sprite: Sprite2D = $Sprite2D if has_node("Sprite2D") else null
+# The moving part (sprite + hitbox)
+@onready var _spike_body: Node2D = $SpikeBody
+# Detection stays with root (doesn't move)
+@onready var _pressure_detection: Area2D = $PressureDetection
+# Sprite is now under SpikeBody
+@onready var _sprite: Sprite2D = $SpikeBody/Sprite2D if has_node("SpikeBody/Sprite2D") else null
 
 func _apply_orientation() -> void:
 	if not is_inside_tree():
 		return
-	if sprite:
-		sprite.rotation = ROTATIONS.get(orientation, 0.0)
+	# Rotate the ENTIRE spike body (sprite + hitbox together)
+	var spike_body = get_node_or_null("SpikeBody")
+	if spike_body:
+		spike_body.rotation = ROTATIONS.get(orientation, 0.0)
+
+## Get extended position (spike is OUT and dangerous)
+func _get_extended_pos() -> Vector2:
+	return Vector2.ZERO
+
+## Get retracted position (spike is hidden)
+## Uses LOCAL space direction - the SpikeBody's rotation handles orientation
+func _get_retracted_pos() -> Vector2:
+	# Since SpikeBody is rotated by _apply_orientation(), we need to account for that.
+	# The position we set is in PARENT space, but we want movement in the 
+	# SpikeBody's local "down" direction (towards its base/wall).
+	# 
+	# Solution: Rotate the local retract direction by the spike's rotation
+	# to convert it to parent/world space.
+	var rotation_rad: float = ROTATIONS.get(orientation, 0.0)
+	return LOCAL_RETRACT_DIRECTION.rotated(rotation_rad) * retract_distance
 
 func _notification(what: int) -> void:
 	if what == NOTIFICATION_SCENE_INSTANTIATED:
@@ -72,12 +120,17 @@ func _notification(what: int) -> void:
 func _ready() -> void:
 	_apply_orientation()
 	
-	# Don't run gameplay logic in editor
 	if Engine.is_editor_hint():
 		return
 	
-	# Set initial position
-	position = up_pos if start_extended else down_pos
+	# Disable pressure detection by default
+	if _pressure_detection:
+		_pressure_detection.monitoring = false
+		_pressure_detection.monitorable = false
+	
+	# Set initial position of the SPIKE BODY (not self!)
+	if _spike_body:
+		_spike_body.position = _get_extended_pos() if start_extended else _get_retracted_pos()
 	is_extended = start_extended
 	
 	match trigger_mode:
@@ -85,37 +138,92 @@ func _ready() -> void:
 			_start_interval_mode()
 		TriggerMode.PRESSURE_PLATE:
 			_setup_pressure_plate()
+		TriggerMode.CHANNEL:
+			_setup_channel_mode()
 		TriggerMode.MANUAL:
-			pass  # Wait for external calls
+			pass
+
+func _setup_channel_mode() -> void:
+	if listen_channel.is_empty():
+		push_warning("SpikeRetractable: CHANNEL mode but no listen_channel set")
+		return
+	
+	var channel_manager = get_node_or_null("/root/InteractionChannel")
+	if channel_manager:
+		channel_manager.channel_activated.connect(_on_channel_activated)
+		channel_manager.channel_deactivated.connect(_on_channel_deactivated)
+
+func _on_channel_activated(channel: StringName, _source: Node) -> void:
+	if channel != listen_channel:
+		return
+	
+	match on_activate:
+		ChannelAction.EXTEND:
+			trigger_extend()
+		ChannelAction.RETRACT:
+			trigger_retract()
+		ChannelAction.TOGGLE:
+			if is_extended:
+				trigger_retract()
+			else:
+				trigger_extend()
+
+func _on_channel_deactivated(channel: StringName, _source: Node) -> void:
+	if channel != listen_channel:
+		return
+	
+	match on_deactivate:
+		ChannelAction.EXTEND:
+			trigger_extend()
+		ChannelAction.RETRACT:
+			trigger_retract()
+		ChannelAction.TOGGLE:
+			if is_extended:
+				trigger_retract()
+			else:
+				trigger_extend()
 
 func _start_interval_mode() -> void:
-	# Apply start delay if set
 	if start_delay > 0.0:
 		await get_tree().create_timer(start_delay).timeout
-	active()
+	_run_cycle()
+
+func _run_cycle() -> void:
+	if not _spike_body:
+		return
+	
+	if _current_tween:
+		_current_tween.kill()
+	
+	var extended_pos := _get_extended_pos()
+	var retracted_pos := _get_retracted_pos()
+	
+	_current_tween = create_tween()
+	_current_tween.tween_property(_spike_body, "position", extended_pos, extend_duration)
+	_current_tween.tween_callback(func(): is_extended = true)
+	_current_tween.tween_interval(extended_hold)
+	_current_tween.tween_property(_spike_body, "position", retracted_pos, retract_duration)
+	_current_tween.tween_callback(func(): is_extended = false)
+	_current_tween.tween_interval(retracted_hold)
+	_current_tween.finished.connect(_run_cycle)
 
 func _setup_pressure_plate() -> void:
-	# Create detection area for pressure plate mode
-	_detection_area = Area2D.new()
-	_detection_area.name = "PressureDetection"
-	_detection_area.collision_layer = 0
-	_detection_area.collision_mask = 2  # Player layer
+	if not _pressure_detection:
+		push_warning("SpikeRetractable: PressureDetection node missing")
+		return
+	if not _spike_body:
+		push_warning("SpikeRetractable: SpikeBody node missing")
+		return
 	
-	var collision = CollisionShape2D.new()
-	var shape = CircleShape2D.new()
-	shape.radius = detection_radius
-	collision.shape = shape
-	# Position detection area at the spike base (down position)
-	collision.position = down_pos
+	# Enable detection - it's already at the right position (child of root)
+	_pressure_detection.monitoring = true
+	_pressure_detection.monitorable = true
 	
-	_detection_area.add_child(collision)
-	add_child(_detection_area)
+	_pressure_detection.body_entered.connect(_on_pressure_body_entered)
+	_pressure_detection.body_exited.connect(_on_pressure_body_exited)
 	
-	_detection_area.body_entered.connect(_on_pressure_body_entered)
-	_detection_area.body_exited.connect(_on_pressure_body_exited)
-	
-	# Start retracted for pressure plate mode
-	position = down_pos
+	# Start retracted
+	_spike_body.position = _get_retracted_pos()
 	is_extended = false
 
 func _on_pressure_body_entered(body: Node2D) -> void:
@@ -124,15 +232,13 @@ func _on_pressure_body_entered(body: Node2D) -> void:
 	
 	_player_on_plate = true
 	
-	# Cancel any pending retraction
 	if _current_tween:
 		_current_tween.kill()
 	
-	# Delay then extend
-	await get_tree().create_timer(pressure_delay).timeout
+	if pressure_delay > 0.0:
+		await get_tree().create_timer(pressure_delay).timeout
 	
-	if _player_on_plate:  # Still on plate
-		trigger_extend()
+	trigger_extend()
 
 func _on_pressure_body_exited(body: Node2D) -> void:
 	if not body.is_in_group("player"):
@@ -140,72 +246,55 @@ func _on_pressure_body_exited(body: Node2D) -> void:
 	
 	_player_on_plate = false
 	
-	# Delay then retract
 	await get_tree().create_timer(pressure_retract_delay).timeout
 	
-	if not _player_on_plate:  # Still off plate
+	if not _player_on_plate:
 		trigger_retract()
 
-func active() -> void:
-	## INTERVAL mode: continuous cycle
-	if _current_tween:
-		_current_tween.kill()
-	
-	_current_tween = create_tween()
-	_current_tween.tween_property(self, "position", up_pos, up_time)
-	_current_tween.tween_callback(func(): is_extended = true)
-	_current_tween.tween_interval(hold_time)
-	_current_tween.tween_property(self, "position", down_pos, down_time)
-	_current_tween.tween_callback(func(): is_extended = false)
-	_current_tween.tween_interval(hold_time)
-	_current_tween.finished.connect(active)
-
-## Manual control methods
-
 func trigger_extend() -> void:
-	## Extend spike (make dangerous)
-	if is_extended:
+	if is_extended or not _spike_body:
 		return
 	
 	if _current_tween:
 		_current_tween.kill()
 	
 	_current_tween = create_tween()
-	_current_tween.tween_property(self, "position", up_pos, up_time)
+	_current_tween.tween_property(_spike_body, "position", _get_extended_pos(), extend_duration)
 	_current_tween.tween_callback(func(): is_extended = true)
 
 func trigger_retract() -> void:
-	## Retract spike (make safe)
-	if not is_extended:
+	if not is_extended or not _spike_body:
 		return
 	
 	if _current_tween:
 		_current_tween.kill()
 	
 	_current_tween = create_tween()
-	_current_tween.tween_property(self, "position", down_pos, down_time)
+	_current_tween.tween_property(_spike_body, "position", _get_retracted_pos(), retract_duration)
 	_current_tween.tween_callback(func(): is_extended = false)
 
-## Pause the spike cycle (INTERVAL mode only)
 func pause() -> void:
 	if _current_tween:
 		_current_tween.pause()
 
-## Resume the spike cycle  
 func resume() -> void:
 	if _current_tween:
 		_current_tween.play()
 
-## Force spike to extended position immediately
 func force_extended() -> void:
 	if _current_tween:
 		_current_tween.kill()
-	position = up_pos
+	if _spike_body:
+		_spike_body.position = _get_extended_pos()
 	is_extended = true
 
-## Force spike to retracted position immediately
 func force_retracted() -> void:
 	if _current_tween:
 		_current_tween.kill()
-	position = down_pos
+	if _spike_body:
+		_spike_body.position = _get_retracted_pos()
 	is_extended = false
+
+## Convenience alias for stage scripts - triggers a single cycle
+func active() -> void:
+	_run_cycle()

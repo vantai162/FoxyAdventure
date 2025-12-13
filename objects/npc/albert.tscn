@@ -206,6 +206,7 @@ animations = [{
 [sub_resource type="FontVariation" id="FontVariation_4d3le"]
 
 [node name="Albert" type="Node2D"]
+z_index = 8
 script = ExtResource("1_67l88")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]

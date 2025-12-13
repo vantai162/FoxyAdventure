@@ -65,7 +65,7 @@ scale = Vector2(0.4, 0.4)
 texture = SubResource("GradientTexture2D_eye_core")
 
 [node name="TrailParticles" type="GPUParticles2D" parent="."]
-z_index = 99
+z_index = 25
 material = SubResource("CanvasItemMaterial_unshaded_add")
 amount = 52
 texture = SubResource("GradientTexture2D_particle")

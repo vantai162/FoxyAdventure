@@ -20,6 +20,7 @@ blend_mode = 1
 size = Vector2(13, 10)
 
 [node name="Blade" type="Area2D" groups=["player_attack"]]
+z_index = 5
 collision_layer = 0
 collision_mask = 2
 script = ExtResource("1_tcnf6")

@@ -7,6 +7,7 @@
 size = Vector2(64.5, 8)
 
 [node name="CircularMovingPlatform" type="AnimatableBody2D"]
+z_index = 15
 script = ExtResource("1_mjkwu")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]

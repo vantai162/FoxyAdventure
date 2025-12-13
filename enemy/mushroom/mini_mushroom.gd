@@ -30,7 +30,7 @@ func _physics_process(delta: float) -> void:
 
 func _on_explode_area_body_entered(body: Node2D) -> void:
 	## Proximity detonation - explodes when player gets close
-	## Connected in scene (legacy pattern from OG mushroom)
+	## Connected via scene signal binding
 	if body is Player:
 		if fsm.states.has("miniexplode"):
 			fsm.change_state(fsm.states.miniexplode)

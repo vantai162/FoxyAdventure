@@ -154,6 +154,7 @@ radius = 13.0
 height = 34.0
 
 [node name="Rocket" type="RigidBody2D"]
+z_index = 14
 collision_layer = 128
 script = ExtResource("1_2rbxa")
 

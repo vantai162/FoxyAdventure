@@ -59,6 +59,7 @@ _data = {
 }
 
 [node name="Gate" type="Node2D"]
+z_index = 0
 script = ExtResource("1_lak10")
 
 [node name="Gate" type="AnimatableBody2D" parent="."]

@@ -55,6 +55,14 @@ func _setup_collision_shape() -> void:
 	if shape == null:
 		shape = RectangleShape2D.new()
 		collision_shape.shape = shape
+	else:
+		# SAFETY: Make shape unique to prevent cross-instance pollution
+		# (even though this isn't @tool, multiple instances could share the scene resource)
+		if not shape.resource_local_to_scene:
+			var unique_shape = shape.duplicate()
+			unique_shape.resource_local_to_scene = true
+			collision_shape.shape = unique_shape
+			shape = unique_shape
 	
 	# Auto-size based on direction
 	match direction:

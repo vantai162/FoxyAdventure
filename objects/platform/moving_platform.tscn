@@ -1,0 +1,23 @@
+[gd_scene load_steps=3 format=3 uid="uid://platform_moving_unified"]
+
+[ext_resource type="Texture2D" uid="uid://d3b5gpgx21c1s" path="res://assets/objects/platform/moving_platform.png" id="1_sprite"]
+[ext_resource type="Script" path="res://objects/platform/moving_platform.gd" id="2_script"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_collision"]
+size = Vector2(64.5, 8)
+
+[node name="MovingPlatform" type="AnimatableBody2D"]
+z_index = 15
+script = ExtResource("2_script")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+position = Vector2(1, 0)
+scale = Vector2(0.770588, 0.6875)
+texture = ExtResource("1_sprite")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(0.75, 0)
+shape = SubResource("RectangleShape2D_collision")
+
+[node name="EndPoint" type="Marker2D" parent="."]
+position = Vector2(200, 0)

@@ -54,6 +54,7 @@ animations = [{
 }]
 
 [node name="Stove" type="Node2D"]
+z_index = 0
 script = ExtResource("1_m2p6u")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]

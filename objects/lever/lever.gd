@@ -1,97 +1,118 @@
 # Lever - Interactive switch for gates, water, lava, flames, and custom actions
+# Uses Channel System: set a channel name, receivers listen on the same channel
+# Supports both toggle mode (stays on/off) and timed mode (auto-resets after duration)
+@tool
 extends Area2D
 class_name Lever
 
-## What the lever controls
-enum LeverTarget { SIGNAL_ONLY, WATER_LEVEL, GATE, LAVA_LEVEL, FLAME }
+## Lever behavior mode
+enum LeverMode { 
+	TOGGLE,  ## Standard on/off toggle - stays in state until interacted again
+	TIMED    ## Activates then auto-deactivates after duration (for timed puzzles)
+}
+
+@export_group("Channel System")
+## Channel to broadcast on when activated/deactivated
+## Set same channel on receiver objects (Gate, Flame, etc.) to connect them
+@export var channel: StringName = &""
 
 @export_group("Lever Settings")
-@export var is_activated: bool = false
-@export var target_type: LeverTarget = LeverTarget.SIGNAL_ONLY
+@export var mode: LeverMode = LeverMode.TOGGLE
+## How long lever stays active in TIMED mode (seconds)
+@export var timer_duration: float = 3.0
+@export var is_activated: bool = false:
+	set(value):
+		is_activated = value
+		update_animation()
 
-@export_group("Water Control")
-@export var water_node: NodePath  ## Path to water node to control
-@export var water_on_level: float = -50.0  ## surface_pos_y when ON (negative = higher)
-@export var water_off_level: float = 50.0  ## surface_pos_y when OFF (positive = lower)
-@export var water_transition_time: float = 2.0
-
-@export_group("Gate Control")
-@export var gate_node: NodePath  ## Path to gate node to control
-
-@export_group("Lava Control")
-@export var lava_node: NodePath  ## Path to lava pool to control
-@export var lava_drain_time: float = 2.0  ## How fast lava drains
-@export var lava_fill_time: float = 3.0  ## How fast lava fills (slower = more tension)
-
-@export_group("Flame Control")
-@export var flame_node: NodePath  ## Path to flame hazard to control
+@export_group("Feedback")
+@export var activation_sound: String = "lever_click"  ## Sound to play on activation
+@export var scale_punch: float = 1.3  ## Scale punch on activation (1.0 = no punch)
+@export var punch_duration: float = 0.15  ## Duration of scale punch
 
 signal lever_activated
 signal lever_deactivated
 
 var player_is_near: bool = false
-var _water_ref: Node = null
-var _gate_ref: Node = null
-var _lava_ref: Node = null
-var _flame_ref: Node = null
+var _timer: Timer = null
 
 func _ready() -> void:
 	update_animation()
 	
-	# Cache node references
-	if not water_node.is_empty():
-		_water_ref = get_node_or_null(water_node)
-	if not gate_node.is_empty():
-		_gate_ref = get_node_or_null(gate_node)
-	if not lava_node.is_empty():
-		_lava_ref = get_node_or_null(lava_node)
-	if not flame_node.is_empty():
-		_flame_ref = get_node_or_null(flame_node)
+	# Skip gameplay logic in editor
+	if Engine.is_editor_hint():
+		return
+	
+	# Create timer for timed mode
+	_timer = Timer.new()
+	_timer.one_shot = true
+	_timer.timeout.connect(_on_timer_timeout)
+	add_child(_timer)
 
 func _process(_delta: float) -> void:
+	# Skip in editor
+	if Engine.is_editor_hint():
+		return
+	
 	if player_is_near and Input.is_action_just_pressed("interact"):
 		activate()
 
 func activate() -> void:
+	# Skip in editor
+	if Engine.is_editor_hint():
+		return
+	
+	# In TIMED mode, ignore if already active (player must wait for reset)
+	if mode == LeverMode.TIMED and is_activated:
+		return
+	
 	is_activated = not is_activated
 	update_animation()
+	_play_activation_feedback()
 
 	if is_activated:
 		lever_activated.emit()
-		_on_lever_on()
+		# Broadcast on channel
+		if not channel.is_empty():
+			var channel_manager = get_node_or_null("/root/InteractionChannel")
+			if channel_manager:
+				channel_manager.activate(channel, self)
+		# Start timer in TIMED mode
+		if mode == LeverMode.TIMED:
+			_timer.wait_time = timer_duration
+			_timer.start()
 	else:
 		lever_deactivated.emit()
-		_on_lever_off()
+		# Broadcast on channel
+		if not channel.is_empty():
+			var channel_manager = get_node_or_null("/root/InteractionChannel")
+			if channel_manager:
+				channel_manager.deactivate(channel, self)
 
-func _on_lever_on() -> void:
-	match target_type:
-		LeverTarget.WATER_LEVEL:
-			if _water_ref and _water_ref.has_method("raise_water"):
-				_water_ref.raise_water(water_on_level, water_transition_time)
-		LeverTarget.GATE:
-			if _gate_ref and _gate_ref.has_method("open_gate"):
-				_gate_ref.open_gate()
-		LeverTarget.LAVA_LEVEL:
-			if _lava_ref and _lava_ref.has_method("drain"):
-				_lava_ref.drain(lava_drain_time)
-		LeverTarget.FLAME:
-			if _flame_ref and _flame_ref.has_method("extinguish"):
-				_flame_ref.extinguish()
+func _play_activation_feedback() -> void:
+	## Visual and audio feedback when lever is toggled
+	# Sound
+	if not activation_sound.is_empty():
+		AudioManager.play_sound(activation_sound, 15.0)
+	
+	# Scale punch (satisfying "thunk" feel)
+	if scale_punch != 1.0 and has_node("AnimatedSprite2D"):
+		var sprite = $AnimatedSprite2D
+		var original_scale = sprite.scale
+		var tween = create_tween()
+		tween.tween_property(sprite, "scale", original_scale * scale_punch, punch_duration * 0.3)
+		tween.tween_property(sprite, "scale", original_scale, punch_duration * 0.7).set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_ELASTIC)
 
-func _on_lever_off() -> void:
-	match target_type:
-		LeverTarget.WATER_LEVEL:
-			if _water_ref and _water_ref.has_method("lower_water"):
-				_water_ref.lower_water(water_off_level, water_transition_time)
-		LeverTarget.GATE:
-			if _gate_ref and _gate_ref.has_method("close_gate"):
-				_gate_ref.close_gate()
-		LeverTarget.LAVA_LEVEL:
-			if _lava_ref and _lava_ref.has_method("fill"):
-				_lava_ref.fill(lava_fill_time)
-		LeverTarget.FLAME:
-			if _flame_ref and _flame_ref.has_method("ignite"):
-				await _flame_ref.ignite()
+func _on_timer_timeout() -> void:
+	# Auto-deactivate when timer expires (TIMED mode only)
+	if is_activated:
+		is_activated = false
+		update_animation()
+		lever_deactivated.emit()
+		if not channel.is_empty():
+			var channel_manager = get_node_or_null("/root/InteractionChannel")
+			if channel_manager:
+				channel_manager.deactivate(channel, self)
 
 func update_animation() -> void:
 	if has_node("AnimatedSprite2D"):

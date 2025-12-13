@@ -115,10 +115,9 @@ All elites have: **Red glowing eyes**, **hue-shifted color**, **aggressive pursu
 
 | Object | Scene | Mechanic | Exports |
 |--------|-------|----------|---------|
-| **Lever** | `objects/lever/lever.tscn` | Toggle ON/OFF, emits signals | `target_type`, `gate_node`, `water_node` |
-| **Timer Lever** | `objects/timer_lever/timer_lever.tscn` | Temporary activation, auto-resets | `active_duration` |
-| **Pressure Plate** | `objects/pressure_plate/pressure_plate.tscn` | Activates while stood on | `stay_activated`, `require_weight` |
-| **Gate** | `objects/gate/gate.tscn` | Blocks path, `open_gate()`/`close_gate()` | `starts_open` |
+| **Lever** | `objects/lever/lever.tscn` | Toggle ON/OFF or timed auto-reset | `mode` (TOGGLE/TIMED), `timer_duration`, `channel` |
+| **Pressure Plate** | `objects/pressure_plate/pressure_plate.tscn` | Activates while stood on | `stay_activated`, `require_weight`, `channel` |
+| **Gate** | `objects/gate/gate.tscn` | Blocks path, `open_gate()`/`close_gate()` | `listen_channel`, `starts_open` |
 | **Collapsable Wall** | `objects/collapsable_wall/collapsable_wall.tscn` | Breaks on attack | `hit_required` |
 
 ### Movement Aids
@@ -136,12 +135,22 @@ All elites have: **Red glowing eyes**, **hue-shifted color**, **aggressive pursu
 | Platform | Scene | Mechanic |
 |----------|-------|----------|
 | **One-Way** | `objects/platform/one_way_platform.tscn` | Fall through, can't jump through |
-| **Moving (Horizontal)** | `objects/platform/horizontal_moving_platform.tscn` | Left-right movement |
-| **Moving (Vertical)** | `objects/platform/vertical_moving_platform.tscn` | Up-down movement |
+| **Moving Platform** | `objects/platform/moving_platform.tscn` | **Unified designer-friendly platform** - works for horizontal, vertical, diagonal, or any direction. Drag the `EndPoint` marker in editor to set destination. Shows green trajectory line preview. |
 | **Circular** | `objects/platform/circular_moving_platform.tscn` | Circular path |
 | **Breakable** | `objects/platform/breakable_platform.tscn` | Breaks when stood on |
 | **Breakable (Slow)** | `objects/platform/breakable_platform_slow.tscn` | Breaks slower |
 | **Floating Boat** | `objects/platform/floating_boat_platform.tscn` | Floats on water, bobs with waves |
+
+### Moving Platform Features (NEW!)
+The new unified `MovingPlatform` replaces the old horizontal/vertical variants:
+- **Visual Preview**: Green trajectory line shows exact path in editor
+- **Any Direction**: Horizontal, vertical, diagonal - just drag the EndPoint
+- **Movement Types**: `PING_PONG`, `ONE_WAY`, `LOOP`
+- **Easing Options**: Linear, Ease In/Out
+- **Channel Support**: Can be controlled via lever/pressure plate
+- **Properties**: `speed`, `pause_at_endpoints`, `start_at_end`, `start_paused`
+
+> ⚠️ **DEPRECATED**: `horizontal_moving_platform.tscn` and `vertical_moving_platform.tscn` are legacy. Use `moving_platform.tscn` for all new levels.
 
 ---
 
@@ -210,7 +219,7 @@ color = Color(0.05, 0.04, 0.07, 1)  # Adjust RGB for mood
 - **Death Zone** — Instant kill stakes
 - **Retractable Spikes** — Rhythm platforming
 - **Flame Hazard** — Cycling damage zones
-- **Timer Lever** — Timed puzzle sequences
+- **Lever (Timed mode)** — Timed puzzle sequences
 - **Pressure Plate** — Weight/hold puzzles, multi-target
 - **Whirlpool** — Water terror, pull mechanics
 - **Wall Spikes** — Anti-wallcling
@@ -226,7 +235,7 @@ color = Color(0.05, 0.04, 0.07, 1)  # Adjust RGB for mood
 1. **Stalactites** — Ceiling awareness, keeps player moving
 2. **Wind Areas** — Precision disruption, combo with hazards
 3. **Retractable Spikes** — Rhythm platforming
-4. **Timer Levers** — Timed puzzle sequences
+4. **Levers (Timed mode)** — Timed puzzle sequences
 5. **Pressure Plates** — Weight/hold puzzles
 6. **Wall Spikes** — Punish wall-cling cheese
 7. **Death Zones** — Ultimate stakes for key moments
@@ -247,9 +256,136 @@ color = Color(0.05, 0.04, 0.07, 1)  # Adjust RGB for mood
 
 ---
 
-## 🔗 Quick Connection Reference
+## 🔗 Channel System (NEW - Designer-Friendly Connections)
 
-### Lever → Gate
+The **Channel System** lets you connect triggers (levers, pressure plates) to receivers (gates, spikes, flames) **without writing any code**. Just type the same channel name on both objects!
+
+### How It Works
+1. **Trigger objects** (Lever, PressurePlate) have a `channel` export
+2. **Receiver objects** (Gate, SpikeRetractable, Wind, Stalactite, etc.) have a `listen_channel` export
+3. **Same channel name = connected!**
+
+### Example: Lever Opens Gate
+| Object | Property | Value |
+|--------|----------|-------|
+| Lever | `channel` | `gate_1` |
+| Gate | `listen_channel` | `gate_1` |
+
+That's it! When lever is pulled, gate opens. When lever is unpulled, gate closes.
+
+### Advanced: Multiple Connections
+
+**One lever → Two gates** (same channel on both gates):
+| Object | Channel |
+|--------|---------|
+| Lever | `door_puzzle` |
+| Gate A | `door_puzzle` |
+| Gate B | `door_puzzle` |
+
+**Two levers → One gate** (same channel on both levers):
+| Object | Channel |
+|--------|---------|
+| Lever A | `big_door` |
+| Lever B | `big_door` |
+| Gate | `big_door` |
+
+### Receiver Actions
+
+Receivers can be configured to do different things on activate/deactivate:
+
+**Gate** (`on_activate`, `on_deactivate`):
+- `OPEN` — Open the gate
+- `CLOSE` — Close the gate  
+- `TOGGLE` — Switch state
+
+**SpikeRetractable** (set `trigger_mode = CHANNEL`):
+- `EXTEND` — Spike pops out (dangerous)
+- `RETRACT` — Spike hides (safe)
+- `TOGGLE` — Switch state
+
+**WindArea** (`on_activate`, `on_deactivate`):
+- `ENABLE` — Wind blows
+- `DISABLE` — Wind stops
+- `TOGGLE` — Switch state
+
+**Stalactite** (set `trigger_mode = CHANNEL`):
+- Activate = Falls immediately (one-shot)
+- Deactivate = No effect (can't un-fall!)
+
+### Channel-Enabled Objects
+
+| Object | Role | Channel Property | Designer Controls |
+|--------|------|------------------|-------------------|
+| **Lever** | Trigger | `channel` (broadcasts) | `mode` (TOGGLE/TIMED), `timer_duration` |
+| **PressurePlate** | Trigger | `channel` (broadcasts while pressed) | `stay_activated`, `require_weight` |
+| **Gate** | Receiver | `listen_channel` | `on_activate`/`on_deactivate` (OPEN/CLOSE/TOGGLE), `direction`, `move_distance` |
+| **SpikeRetractable** | Receiver | `listen_channel` (mode = CHANNEL) | `on_activate`/`on_deactivate` (EXTEND/RETRACT/TOGGLE) |
+| **WindArea** | Receiver | `listen_channel` | `on_activate`/`on_deactivate` (ENABLE/DISABLE/TOGGLE), `start_enabled` |
+| **Stalactite** | Receiver | `listen_channel` (mode = CHANNEL) | Falls on activate (one-shot trap) |
+| **Water** | Receiver | `listen_channel` | `raised_level`, `lowered_level`, `level_transition_time` |
+| **LavaPool** | Receiver | `listen_channel` | Uses `drain_target_y`, `fill_target_y`, `default_drain_duration`, `default_fill_duration` |
+| **FlameHazard** | Receiver | `listen_channel` | `on_activate`/`on_deactivate` (IGNITE/EXTINGUISH/TOGGLE) |
+
+---
+
+## 🗡️ Blade Triggering (NEW - Ranged Puzzle Potential!)
+
+The **Blade Projectile** can now trigger interactive objects, enabling exciting ranged puzzles!
+
+### What Blade Can Trigger
+
+| Object | Trigger Condition | Effect |
+|--------|-------------------|--------|
+| **Lever (Toggle)** | Blade hits lever (flying or bouncing) | Lever toggles state |
+| **Lever (Timed)** | Blade hits timed lever | Activates for `timer_duration` then resets |
+| **PressurePlate** | Blade lands on plate (GROUNDED state) | Plate activates while blade rests there |
+
+### Puzzle Design Ideas
+
+**Remote Lever Puzzle**
+> Player can't reach the lever, but can see it. Throw blade to hit it from a distance!
+
+**Thrown Weight Puzzle**
+> Pressure plate in unreachable area. Throw blade so it lands on the plate. Blade stays there, keeping the plate pressed until picked up.
+
+**Timed Throw Challenge**
+> Timed lever (`mode = TIMED`) in a high alcove. Player must throw blade, hit the lever, then quickly navigate before the timer expires.
+
+**Blade Sacrifice Puzzle**
+> Throw blade onto a pressure plate to open a gate. But now you don't have your blade! Navigate the next section without ranged attacks, then retrieve it.
+
+### How It Works (Technical)
+- Lever uses `collision_layer = 1024` (Layer 11: Interactable) and group `blade_interactable`
+- Blade has `collision_layer = 128` (Layer 8: Projectiles), `collision_mask = 1035` (detects environment + player + enemy + interactable)
+- PressurePlate has `collision_mask = 130` (detects Layer 2: player + Layer 8: Projectiles)
+- Blade only triggers pressure plate when GROUNDED (not flying through)
+
+---
+
+### Legacy Support
+
+The old NodePath-based system (`gate_node`, `water_node`, etc.) still works! Channel system is **additive** — if you set a channel AND a NodePath, both will work.
+
+### Debugging
+
+Set `InteractionChannel.debug_mode = true` in code to see channel activity:
+```
+[Channel] ACTIVATE 'gate_1' by MyLever
+[Channel] DEACTIVATE 'gate_1' by MyLever
+```
+
+---
+
+## 🔗 Legacy Connection Reference (Old System)
+
+### Lever → Gate (NodePath method)
+```gdscript
+# On Lever, set in Inspector:
+target_type = GATE
+gate_node = "../MyGate"
+```
+
+### Code-based Connection (stage scripts)
 ```gdscript
 func _ready() -> void:
     super._ready()
