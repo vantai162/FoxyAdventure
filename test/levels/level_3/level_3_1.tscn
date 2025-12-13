@@ -68,8 +68,17 @@ position = Vector2(1415, 309)
 move_speed = 150.0
 move_distance = 1200.0
 
+[node name="VerticalMovingPlatform2" parent="Platforms" instance=ExtResource("30_p5pao")]
+position = Vector2(1415, 1043)
+move_speed = 150.0
+move_distance = 1200.0
+
 [node name="HorizontalMovingPlatform" parent="Platforms" instance=ExtResource("4_343a2")]
 position = Vector2(324, 1210)
+move_distance = 600.0
+
+[node name="HorizontalMovingPlatform2" parent="Platforms" instance=ExtResource("4_343a2")]
+position = Vector2(494, 2016)
 move_distance = 600.0
 
 [node name="Hazards" type="Node2D" parent="."]
