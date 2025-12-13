@@ -126,7 +126,84 @@ All elites have: **Red glowing eyes**, **hue-shifted color**, **aggressive pursu
 |--------|-------|----------|
 | **Spring** | `objects/spring/spring.tscn` | Launches player up (`launch_force`) |
 | **Checkpoint** | `objects/checkpoint/checkpoint.tscn` | Respawn point |
-| **Door** | `objects/door/door.tscn` | Scene transition |
+| **Door** | `objects/door/door.tscn` | Scene transition (fade to black) |
+
+---
+
+## 🚪 Scene Transitions
+
+### SceneTransition (NEW! Seamless Cross-Level)
+
+The new **SceneTransition** system provides modern, seamless level-to-level transitions with directional wipe effects. Player walks through an edge and the screen wipes in the direction of movement.
+
+| Component | Scene | Purpose |
+|-----------|-------|---------|
+| **SceneTransition** | `objects/scene_transition/scene_transition.tscn` | Exit zone that loads next level |
+| **TransitionEffects** | Autoload | Handles directional wipe animations |
+
+### How to Set Up Level 3-1 → 3-2 Transition:
+
+**In Level 3-1 (exit):**
+1. Instance `SceneTransition` at the right edge where player exits
+2. Set properties:
+   | Property | Value |
+   |----------|-------|
+   | `exit_direction` | `RIGHT` (or `DOWN` if exiting bottom) |
+   | `target_scene` | `res://test/levels/level_3/level_3_2.tscn` |
+   | `target_spawn_name` | `"FromLevel3_1"` |
+   | `spawn_offset` | `Vector2(48, 0)` |
+3. Name it something descriptive like `"ToLevel3_2"`
+
+**In Level 3-2 (entry):**
+1. Instance `SceneTransition` at the left edge where player enters
+2. Set properties:
+   | Property | Value |
+   |----------|-------|
+   | `exit_direction` | `LEFT` (opposite of how they entered) |
+   | `target_scene` | `res://test/levels/level_3/level_3_1.tscn` |
+   | `target_spawn_name` | `"ToLevel3_2"` |
+   | `spawn_offset` | `Vector2(-48, 0)` |
+3. Name it `"FromLevel3_1"` (matches `target_spawn_name` from 3-1)
+
+### SceneTransition Properties:
+
+| Property | Type | Description |
+|----------|------|-------------|
+| `target_scene` | String (file path) | Path to the next level's .tscn file |
+| `target_spawn_name` | String | Name of SceneTransition in target scene to spawn at |
+| `exit_direction` | Direction | LEFT/RIGHT/UP/DOWN - direction player is walking |
+| `spawn_offset` | Vector2 | Offset from target transition position |
+| `wipe_duration` | float | How fast the wipe animation (default 0.18s - WHOOSH!) |
+| `wipe_color` | Color | Color of the wipe (default BLACK) |
+| `trigger_threshold` | float | Minimum velocity to trigger (default 10) |
+| `preload_distance` | float | Proximity distance to start preloading (default 400px) |
+
+### Smart Preloading:
+- Scene is NOT loaded when level starts (keeps initial load fast)
+- When player gets within `preload_distance` of the transition, background loading begins
+- By the time player reaches the exit, scene is usually already loaded
+- If not loaded yet, there's a brief pause (but rare)
+
+### Visual Effect ("WHOOSH!"):
+```
+Player walks RIGHT at edge of 3-1:
+  → Player keeps walking (NOT frozen!)
+  → Fast black wipe sweeps from RIGHT (0.09s - half of wipe_duration)
+  → Scene changes to 3-2
+  → Fast black wipe sweeps out (0.18s)
+  → Player appears at left edge of 3-2, continuing to walk
+```
+
+The key is SPEED (0.18s) and player momentum is preserved - they keep walking INTO the wipe, not freezing. This creates the "step step step WHOOSH" feeling.
+
+### Comparison: Door vs SceneTransition
+
+| Feature | Door | SceneTransition |
+|---------|------|-----------------|
+| Trigger | Walk into door | Walk through zone |
+| Effect | Fade to black | Directional wipe |
+| Feel | "Entering a room" | "Continuous world" |
+| Use for | Going behind gates | Walking off level edges |
 
 ---
 

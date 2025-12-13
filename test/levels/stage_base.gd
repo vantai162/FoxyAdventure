@@ -27,8 +27,9 @@ func _ready() -> void:
 	if GameManager.player == null:
 		GameManager.request_player_spawn()
 	
-	# Handle portal teleportation
+	# Handle portal teleportation or scene transition spawn
 	_handle_portal_spawn()
+	_handle_scene_transition_spawn()
 	
 	# Set camera bounds for this stage
 	_setup_camera_bounds()
@@ -36,8 +37,8 @@ func _ready() -> void:
 	# Stage-specific initialization
 	_on_stage_ready()
 	
-	# Fade in
-	await GameManager.fade_from_black()
+	# Perform appropriate transition-in effect
+	await _perform_transition_in()
 
 
 func _process(delta: float) -> void:
@@ -70,6 +71,59 @@ func _handle_portal_spawn() -> void:
 		if portal != null and GameManager.player != null:
 			GameManager.player.global_position = portal.global_position
 		GameManager.target_portal_name = ""
+
+
+func _handle_scene_transition_spawn() -> void:
+	## Handle spawning at SceneTransition after cross-scene transition
+	if not GameManager.has_meta("incoming_transition_spawn"):
+		return
+	
+	var spawn_name: String = GameManager.get_meta("incoming_transition_spawn", "")
+	if spawn_name.is_empty():
+		return
+	
+	# Find the matching SceneTransition
+	var transitions = find_children("*", "SceneTransition", true, false)
+	for t in transitions:
+		if t.name == spawn_name:
+			if GameManager.player != null:
+				GameManager.player.global_position = t.get_spawn_position()
+			break
+	
+	# Clear the meta (consumed)
+	GameManager.remove_meta("incoming_transition_spawn")
+
+
+func _perform_transition_in() -> void:
+	## Perform the appropriate transition-in effect
+	## Checks if we came from a SceneTransition (directional wipe) or regular (fade)
+	
+	if GameManager.has_meta("incoming_transition_direction"):
+		# We came from a SceneTransition - do directional wipe-in
+		var incoming_dir: int = GameManager.get_meta("incoming_transition_direction", 1)
+		GameManager.remove_meta("incoming_transition_direction")
+		
+		# Wipe direction should be opposite of incoming direction
+		# (if player walked RIGHT into transition, wipe should exit LEFT)
+		var wipe_dir: int
+		match incoming_dir:
+			0: wipe_dir = 1  # LEFT -> exit RIGHT
+			1: wipe_dir = 0  # RIGHT -> exit LEFT
+			2: wipe_dir = 3  # UP -> exit DOWN
+			3: wipe_dir = 2  # DOWN -> exit UP
+			_: wipe_dir = 0
+		
+		# Unpause before wipe-in
+		GameManager.paused = false
+		
+		if get_node_or_null("/root/TransitionEffects"):
+			await TransitionEffects.wipe_in(wipe_dir, 0.18)  # Match whoosh timing
+		else:
+			# Fallback to regular fade
+			await GameManager.fade_from_black()
+	else:
+		# Regular fade in
+		await GameManager.fade_from_black()
 
 
 func _setup_camera_bounds() -> void:

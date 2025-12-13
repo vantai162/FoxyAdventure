@@ -4,9 +4,9 @@
 [ext_resource type="TileSet" uid="uid://0yf5cmwk6u1i" path="res://assets/island/terrain/ice_tile_set.tres" id="2_a6ecy"]
 [ext_resource type="PackedScene" uid="uid://giogr7michck" path="res://objects/water/water.tscn" id="3_is5y3"]
 [ext_resource type="PackedScene" uid="uid://dqdstpxycbomj" path="res://effect_Item/BladeItem/blade.tscn" id="3_vnnrn"]
-[ext_resource type="PackedScene" uid="uid://platform_moving_unified" path="res://objects/platform/moving_platform.tscn" id="4_moving"]
 [ext_resource type="PackedScene" uid="uid://rhntp41ai45p" path="res://environment/cave/stalactite.tscn" id="4_b7ip3"]
 [ext_resource type="PackedScene" uid="uid://cqjqdbyd7mqfr" path="res://environment/cave/glowing_crystal.tscn" id="4_crystal"]
+[ext_resource type="PackedScene" path="res://objects/platform/moving_platform.tscn" id="4_moving"]
 [ext_resource type="PackedScene" uid="uid://c5m8vno0qh3xy" path="res://objects/whirlpool/whirlpool.tscn" id="4_vnnrn"]
 [ext_resource type="PackedScene" uid="uid://cc07u3qfgccmq" path="res://objects/spring/spring.tscn" id="5_2y2ek"]
 [ext_resource type="PackedScene" uid="uid://c1bijw8i8erx5" path="res://enemy/turtle/turtle.tscn" id="5_turtle"]
@@ -32,7 +32,7 @@
 [ext_resource type="PackedScene" uid="uid://y7p8q2kh8teb" path="res://objects/flame/flame_hazard.tscn" id="27_alf78"]
 [ext_resource type="PackedScene" uid="uid://b0h8a022mpy26" path="res://objects/spike/spike_retractable/spike_retractable.tscn" id="28_fcwnb"]
 [ext_resource type="PackedScene" path="res://environment/lava/lavafall.tscn" id="29_qrwfa"]
-
+[ext_resource type="PackedScene" path="res://objects/scene_transition/scene_transition.tscn" id="30_scene_transition"]
 
 [node name="Level_3_1" type="Node2D"]
 script = ExtResource("1_stage_script")
@@ -67,29 +67,15 @@ tile_set = ExtResource("2_a6ecy")
 position = Vector2(1415, 309)
 speed = 150.0
 
-[node name="EndPoint" parent="Platforms/MovingPlatform1" index="2"]
-position = Vector2(0, 375)
-
 [node name="MovingPlatform2" parent="Platforms" instance=ExtResource("4_moving")]
 position = Vector2(1415, 1043)
 speed = 150.0
 
-[node name="EndPoint" parent="Platforms/MovingPlatform2" index="2"]
-position = Vector2(0, 375)
-
 [node name="MovingPlatform3" parent="Platforms" instance=ExtResource("4_moving")]
 position = Vector2(324, 1210)
-speed = 100.0
-
-[node name="EndPoint" parent="Platforms/MovingPlatform3" index="2"]
-position = Vector2(250, 0)
 
 [node name="MovingPlatform4" parent="Platforms" instance=ExtResource("4_moving")]
 position = Vector2(494, 2016)
-speed = 100.0
-
-[node name="EndPoint" parent="Platforms/MovingPlatform4" index="2"]
-position = Vector2(250, 0)
 
 [node name="Hazards" type="Node2D" parent="."]
 
@@ -582,9 +568,15 @@ orientation = 2
 
 [node name="ExitZone" type="Node2D" parent="."]
 
+[node name="ToLevel3_2" parent="ExitZone" instance=ExtResource("30_scene_transition")]
+position = Vector2(1556, 2149)
+target_scene = "res://test/levels/level_3/level_3_2.tscn"
+target_spawn_name = "FromLevel3_1"
+spawn_offset = Vector2(0, -48)
+
 [node name="Foxy" parent="." instance=ExtResource("9_foxy")]
 position = Vector2(140, 180)
 
 [connection signal="area_entered" from="Terrain/TileMapLayer/HealthPotion" to="Terrain/TileMapLayer/HealthPotion" method="_on_area_entered"]
-[connection signal="area_entered" from="Terrain/TileMapLayer/@Area2D@125501" to="Terrain/TileMapLayer/@Area2D@125501" method="_on_area_entered"]
-[connection signal="area_entered" from="Terrain/TileMapLayer/@Area2D@125502" to="Terrain/TileMapLayer/@Area2D@125502" method="_on_area_entered"]
+[connection signal="area_entered" from="Terrain/TileMapLayer/@Area2D@306512" to="Terrain/TileMapLayer/@Area2D@306512" method="_on_area_entered"]
+[connection signal="area_entered" from="Terrain/TileMapLayer/@Area2D@306513" to="Terrain/TileMapLayer/@Area2D@306513" method="_on_area_entered"]

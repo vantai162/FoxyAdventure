@@ -819,6 +819,11 @@ func lower_water(target_height: float, duration: float = 2.0) -> void:
 	## @param duration: Time in seconds for transition
 	raise_water(target_height, duration)  # Same implementation
 
+func is_level_transitioning() -> bool:
+	## Returns true if water level is actively changing (raise/lower in progress)
+	## Whirlpools should wait for this to be false before applying depressions
+	return _water_raise_active
+
 func set_water_level_instant(target_height: float) -> void:
 	## Instantly set water level without animation
 	## Useful for initial setup in boss arenas

@@ -27,14 +27,21 @@ var _base_energy: float
 func _ready() -> void:
 	_base_energy = torch_light.energy
 	
-	# Auto-detect darkness in level
-	if not is_lit:
-		_auto_detect_darkness()
-	
 	# Setup particles if not configured
 	if torch_sparks.process_material == null:
 		_setup_spark_material()
 	
+	# Defer darkness detection - current_scene isn't set until root's _ready() completes
+	# PlayerTorch._ready() runs before scene root (children before parents), so we must wait
+	if not is_lit:
+		call_deferred("_deferred_darkness_check")
+	else:
+		_apply_lit_state()
+
+
+func _deferred_darkness_check() -> void:
+	## Called after scene tree is fully ready so current_scene is valid
+	_auto_detect_darkness()
 	_apply_lit_state()
 
 

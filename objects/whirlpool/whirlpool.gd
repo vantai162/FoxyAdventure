@@ -106,7 +106,10 @@ func _physics_process(delta: float) -> void:
 	water_check_timer -= delta
 	if water_check_timer <= 0:
 		water_check_timer = WATER_CHECK_INTERVAL
-		if not _is_in_water():
+		# Retry finding water node if not found initially (timing issue workaround)
+		if not water_node:
+			_find_water_node()
+		elif not _is_in_water():
 			# Water level dropped, despawn gracefully
 			_on_water_disappeared()
 			return
@@ -301,6 +304,12 @@ func _get_affected_segment_range() -> Dictionary:
 
 func _apply_water_depression() -> void:
 	if not water_node or depression_applied:
+		return
+	
+	# CRITICAL: Wait for water level transition to complete before applying depression
+	# Otherwise the water's _update_water_raise() will overwrite our segment modifications
+	if water_node.is_level_transitioning():
+		# Don't apply yet - will retry in _physics_process
 		return
 	
 	var segment_info = _get_affected_segment_range()
