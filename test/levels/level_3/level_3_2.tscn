@@ -32,6 +32,7 @@
 script = ExtResource("1_stage_script")
 
 [node name="DarknessModulate" type="CanvasModulate" parent="."]
+visible = false
 color = Color(0.1, 0.08, 0.12, 1)
 
 [node name="PlayerSpawn" type="Marker2D" parent="."]
@@ -59,6 +60,7 @@ tile_set = ExtResource("2_ob2gj")
 
 [node name="MovingPlatform1" parent="Platforms" instance=ExtResource("26_moving")]
 position = Vector2(744, 918)
+channel_off_behavior = null
 
 [node name="Lever" parent="Platforms/MovingPlatform1" instance=ExtResource("27_1bm0d")]
 position = Vector2(0, -13)
@@ -69,21 +71,31 @@ timer_duration = 7.0
 
 [node name="MovingPlatform2" parent="Platforms" instance=ExtResource("26_moving")]
 position = Vector2(541, 892)
+channel_off_behavior = null
 
 [node name="MovingPlatform3" parent="Platforms" instance=ExtResource("26_moving")]
 position = Vector2(293, 976)
+channel_off_behavior = null
 
 [node name="MovingPlatform4" parent="Platforms" instance=ExtResource("26_moving")]
 position = Vector2(630, 953)
+channel_off_behavior = null
 
 [node name="MovingPlatform5" parent="Platforms" instance=ExtResource("26_moving")]
 position = Vector2(393, 859)
+channel_off_behavior = null
 
 [node name="MovingPlatform6" parent="Platforms" instance=ExtResource("26_moving")]
 position = Vector2(446, 258)
+listen_channel = &"StartPlatform"
+start_paused = true
 
 [node name="EndPoint" parent="Platforms/MovingPlatform6" index="2"]
 position = Vector2(981, 0)
+
+[node name="Lever" parent="Platforms/MovingPlatform6" instance=ExtResource("27_1bm0d")]
+position = Vector2(0, -13)
+channel = &"StartPlatform"
 
 [node name="Hazards" type="Node2D" parent="."]
 

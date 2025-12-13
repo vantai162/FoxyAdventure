@@ -47,8 +47,10 @@ enum EasingType {
 @export_group("Channel Integration")
 ## Channel to listen on for start/stop commands
 @export var listen_channel: StringName = &""
-## Start paused, wait for channel activation
+## Start paused, wait for channel activation to begin moving
 @export var start_paused: bool = false
+## When channel deactivates: PAUSE (can resume) or STOP (stays at current position)
+@export_enum("Pause", "Stop") var channel_off_behavior: int = 0
 
 ## The endpoint marker - drag this in the editor to set destination!
 @onready var end_point: Marker2D = $EndPoint
@@ -61,6 +63,7 @@ var _is_paused: bool = false
 var _pause_timer: float = 0.0
 var _is_moving: bool = true
 var _total_distance: float = 0.0
+var _channel_active: bool = false  # Track channel state separately
 
 func _ready() -> void:
 	# Store positions
@@ -78,9 +81,13 @@ func _ready() -> void:
 		_direction = -1
 		global_position = _end_position
 	
-	# Handle start_paused
+	# Handle start_paused - wait for channel or API call to start
 	if start_paused:
 		_is_moving = false
+	
+	# Apply initial pause at starting endpoint (so platform waits before first move)
+	if pause_at_endpoints > 0 and auto_start and not start_paused:
+		_pause_timer = pause_at_endpoints
 	
 	# Skip gameplay in editor
 	if Engine.is_editor_hint():
@@ -105,10 +112,18 @@ func _exit_tree() -> void:
 			channel_manager.unregister_listener(listen_channel, _on_channel_activated, _on_channel_deactivated)
 
 func _on_channel_activated(_source: Node) -> void:
+	_channel_active = true
 	_is_moving = true
+	# If platform was waiting to start, begin moving now
+	if start_paused:
+		start_paused = false  # One-time trigger
 
 func _on_channel_deactivated(_source: Node) -> void:
-	_is_moving = false
+	_channel_active = false
+	if channel_off_behavior == 0:  # Pause
+		_is_paused = true
+	else:  # Stop
+		_is_moving = false
 
 func _physics_process(delta: float) -> void:
 	# Editor: just update end position from marker
@@ -124,8 +139,16 @@ func _physics_process(delta: float) -> void:
 		_pause_timer -= delta
 		return
 	
+	# If channel is active, unpause
+	if _channel_active and _is_paused:
+		_is_paused = false
+	
 	# Skip if paused or not moving
-	if _is_paused or not _is_moving or not auto_start:
+	if _is_paused or not _is_moving:
+		return
+	
+	# Skip if auto_start is false and we haven't been activated
+	if not auto_start and not _channel_active:
 		return
 	
 	# Calculate movement
