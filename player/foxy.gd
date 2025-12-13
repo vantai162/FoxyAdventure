@@ -59,6 +59,14 @@ var attack_cooldown_remaining: float = 0.0  ## Tracks current cooldown countdown
 ## Runtime state for wall jump air restriction (managed by jump state)
 var wall_jump_restriction_timer: float = -1.0  ## -1 = not active, >=0 = active countdown
 
+@export_group("Impulse Momentum")
+@export var impulse_momentum_duration: float = 0.4  ## Time (seconds) horizontal impulse momentum is preserved without air braking
+@export var impulse_momentum_fade_duration: float = 0.3  ## Time to fade from full momentum preservation to normal air control
+
+## Runtime state for impulse momentum preservation (springs, shockwaves, explosions, etc.)
+var impulse_momentum_timer: float = -1.0  ## -1 = not active, >=0 = time since impulse applied
+var impulse_momentum_direction: int = 0  ## -1 = launched left, 1 = launched right, 0 = no horizontal impulse
+
 var current_water: Node2D = null  ## Reference to current water body player is in
 signal health_changed
 signal coin_changed
@@ -129,6 +137,41 @@ func get_current_air_acceleration() -> float:
 	
 	# Fully restored
 	return air_acceleration
+
+## Get the air deceleration multiplier for impulse momentum preservation
+## Returns 0.0 = full momentum preservation (no braking)
+## Returns 1.0 = normal air deceleration
+## Values between = fading from preserved to normal
+func get_impulse_momentum_multiplier(input_direction: int) -> float:
+	# Not in impulse momentum state
+	if impulse_momentum_timer < 0:
+		return 1.0
+	
+	# Player is actively steering AGAINST the impulse direction - allow normal control
+	# This lets player "fight" the impulse if they want to
+	if input_direction != 0 and input_direction != impulse_momentum_direction:
+		return 1.0
+	
+	# Momentum preservation phase: no air braking at all
+	if impulse_momentum_timer < impulse_momentum_duration:
+		return 0.0
+	
+	# Fade phase: gradually restore normal air deceleration
+	var fade_time = impulse_momentum_timer - impulse_momentum_duration
+	if fade_time < impulse_momentum_fade_duration:
+		return fade_time / impulse_momentum_fade_duration
+	
+	# Fully expired - reset timer and return normal deceleration
+	impulse_momentum_timer = -1.0
+	impulse_momentum_direction = 0
+	return 1.0
+
+## Apply impulse momentum preservation (called by springs, shockwaves, explosions, etc.)
+## This prevents air deceleration from immediately braking externally-applied velocity
+func apply_impulse_momentum(horizontal_direction: int) -> void:
+	if horizontal_direction != 0:
+		impulse_momentum_timer = 0.0
+		impulse_momentum_direction = horizontal_direction
 
 func can_attack() -> bool:
 	return blade_count > 0 and Effect["Stun"] <= 0 and attack_cooldown_remaining <= 0
@@ -269,7 +312,17 @@ func _process(delta: float) -> void:
 	_updateeffect(delta)
 	_update_timeline(delta)
 	_updatecooldown(delta)
+	_update_impulse_momentum(delta)
 	oxy_changed.emit()
+
+func _update_impulse_momentum(delta: float) -> void:
+	# Update impulse momentum timer if active
+	if impulse_momentum_timer >= 0:
+		impulse_momentum_timer += delta
+		# Cancel impulse momentum when landing on floor (momentum transfer complete)
+		if is_on_floor():
+			impulse_momentum_timer = -1.0
+			impulse_momentum_direction = 0
 	
 		
 
