@@ -571,6 +571,7 @@ orientation = 2
 position = Vector2(1543, 2120)
 target_scene = "res://test/levels/level_3/level_3_2.tscn"
 target_spawn_name = "FromLevel3_1"
+spawn_offset = Vector2(48, 0)
 
 [node name="Foxy" parent="." instance=ExtResource("9_foxy")]
 z_index = 1

@@ -87,29 +87,69 @@ func _process(delta: float) -> void:
 
 func _handle_portal_spawn() -> void:
 	## Teleport player to target portal if specified
-	if not GameManager.target_portal_name.is_empty():
-		var portal = find_child(GameManager.target_portal_name)
-		if portal != null and GameManager.player != null:
-			GameManager.player.global_position = portal.global_position
+	## NOTE: This is for LEGACY portal system (GameManager.change_stage).
+	## Scene transitions use "incoming_transition_spawn" meta instead.
+	## We skip this if a scene transition spawn is pending (it takes priority).
+	
+	if GameManager.has_meta("incoming_transition_spawn"):
+		# Scene transition spawn will handle positioning, skip portal spawn
 		GameManager.target_portal_name = ""
+		return
+	
+	if GameManager.target_portal_name.is_empty():
+		return
+	
+	var portal = find_child(GameManager.target_portal_name, true, false)
+	if portal != null and GameManager.player != null:
+		# For legacy portals, use raw position (they don't have spawn_offset)
+		GameManager.player.global_position = portal.global_position
+		if debug_logging:
+			print("[StageBase] Legacy portal spawn at ", portal.global_position)
+	
+	GameManager.target_portal_name = ""
 
 
 func _handle_scene_transition_spawn() -> void:
 	## Handle spawning at SceneTransition after cross-scene transition
+	## This is the AUTHORITATIVE spawn position for scene transitions.
+	## It uses spawn_offset to place the player INSIDE the level bounds.
+	
 	if not GameManager.has_meta("incoming_transition_spawn"):
 		return
 	
 	var spawn_name: String = GameManager.get_meta("incoming_transition_spawn", "")
+	
 	if spawn_name.is_empty():
+		GameManager.remove_meta("incoming_transition_spawn")
 		return
 	
-	# Find the matching SceneTransition
-	var transitions = find_children("*", "SceneTransition", true, false)
-	for t in transitions:
-		if t.name == spawn_name:
-			if GameManager.player != null:
-				GameManager.player.global_position = t.get_spawn_position()
-			break
+	# Find the spawn point by NAME (more reliable than type matching in Godot 4)
+	# The transition might be nested under ExitZone or similar containers
+	var spawn_point = find_child(spawn_name, true, false)
+	
+	if spawn_point == null:
+		push_warning("StageBase: Could not find spawn point '%s'" % spawn_name)
+		GameManager.remove_meta("incoming_transition_spawn")
+		return
+	
+	if GameManager.player == null:
+		push_warning("StageBase: No player to spawn!")
+		GameManager.remove_meta("incoming_transition_spawn")
+		return
+	
+	# Get spawn position - use get_spawn_position() if available (applies offset)
+	# Otherwise fall back to global_position (no offset, not ideal)
+	var spawn_pos: Vector2
+	if spawn_point.has_method("get_spawn_position"):
+		spawn_pos = spawn_point.get_spawn_position()
+	else:
+		push_warning("StageBase: Spawn point '%s' has no get_spawn_position(), using raw position" % spawn_name)
+		spawn_pos = spawn_point.global_position
+	
+	GameManager.player.global_position = spawn_pos
+	
+	if debug_logging:
+		print("[StageBase] Spawned player at ", spawn_pos, " (from transition '", spawn_name, "')")
 	
 	# Clear the meta (consumed)
 	GameManager.remove_meta("incoming_transition_spawn")

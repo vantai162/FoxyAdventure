@@ -29,7 +29,8 @@ enum Direction { LEFT, RIGHT, UP, DOWN }
 		if auto_spawn_offset:
 			spawn_offset = _calculate_spawn_offset(value)
 ## Spawn offset from the target transition position
-@export var spawn_offset: Vector2 = Vector2(48, 0)
+## Default matches exit_direction=RIGHT: spawn to the LEFT (inside level)
+@export var spawn_offset: Vector2 = Vector2(-48, 0)
 ## Automatically calculate spawn_offset based on exit_direction
 @export var auto_spawn_offset: bool = true:
 	set(value):
@@ -88,6 +89,14 @@ var _player_ref: Node2D = null  # Cache player reference
 @onready var collision_shape: CollisionShape2D = $CollisionShape2D if has_node("CollisionShape2D") else null
 
 func _ready() -> void:
+	# CRITICAL: Ensure spawn_offset is correctly calculated on load.
+	# Godot does NOT run setters for default values, only for explicit assignments.
+	# So if exit_direction uses default (RIGHT) and auto_spawn_offset is true,
+	# the setter never runs and spawn_offset stays at its wrong default (+48, 0).
+	# We force recalculation here to guarantee correctness.
+	if auto_spawn_offset:
+		spawn_offset = _calculate_spawn_offset(exit_direction)
+	
 	if Engine.is_editor_hint():
 		return
 	
@@ -336,10 +345,12 @@ func _trigger_transition(player: Node2D) -> void:
 	if GameManager and player and player.has_method("save_state"):
 		GameManager.save_player_state(player)
 	
-	# Store spawn info for target scene
-	GameManager.target_portal_name = target_spawn_name
+	# NOTE: We do NOT set target_portal_name here!
+	# That system is legacy (used by GameManager.change_stage) and doesn't apply offsets.
+	# SceneTransition uses the meta-based "incoming_transition_spawn" system which
+	# correctly applies spawn_offset to position players inside level bounds.
 	
-	# Store transition direction for wipe-in effect
+	# Store transition direction and spawn point for target scene
 	_store_transition_direction()
 	
 	# Perform directional wipe OUT using global TransitionEffects
@@ -496,25 +507,40 @@ static func get_opposite_direction(dir: Direction) -> Direction:
 		Direction.DOWN: return Direction.UP
 	return Direction.RIGHT
 
-## Calculate spawn offset based on exit direction
-## When entering from the LEFT exit of SceneA (exit_direction=LEFT),
-## player spawns on the RIGHT side of the target transition in SceneB
+## Calculate spawn offset based on exit direction of THIS transition
+## 
+## CRITICAL UNDERSTANDING:
+## - exit_direction describes where THIS transition LEADS (where players EXIT to)
+## - spawn_offset describes where INCOMING players should spawn RELATIVE to this transition
+## - These are OPPOSITE operations!
+##
+## Example: A transition with exit_direction=RIGHT
+## - Players who USE this exit walk RIGHT and leave the scene
+## - Players who SPAWN here came FROM the right (via target scene's left exit)
+## - So they should spawn to the LEFT of this transition (inside the level)
+##
+## The spawn position must be OPPOSITE to the exit direction to place
+## players safely inside the level bounds, not outside.
 static func _calculate_spawn_offset(dir: Direction) -> Vector2:
 	const OFFSET_DISTANCE := 48.0  # Pixels past the transition zone
 	match dir:
 		Direction.LEFT:
-			# Player exited LEFT, so they enter from the RIGHT in target scene
-			return Vector2(-OFFSET_DISTANCE, 0)
-		Direction.RIGHT:
-			# Player exited RIGHT, so they enter from the LEFT in target scene
+			# This exit leads LEFT (out of left edge)
+			# Incoming players came from the left, should spawn to the RIGHT (inside level)
 			return Vector2(OFFSET_DISTANCE, 0)
+		Direction.RIGHT:
+			# This exit leads RIGHT (out of right edge)
+			# Incoming players came from the right, should spawn to the LEFT (inside level)
+			return Vector2(-OFFSET_DISTANCE, 0)
 		Direction.UP:
-			# Player exited UP, so they enter from below in target scene
-			return Vector2(0, -OFFSET_DISTANCE)
-		Direction.DOWN:
-			# Player exited DOWN, so they enter from above in target scene
+			# This exit leads UP (out of top edge)
+			# Incoming players came from above, should spawn BELOW (inside level)
 			return Vector2(0, OFFSET_DISTANCE)
-	return Vector2(OFFSET_DISTANCE, 0)
+		Direction.DOWN:
+			# This exit leads DOWN (out of bottom edge)
+			# Incoming players came from below, should spawn ABOVE (inside level)
+			return Vector2(0, -OFFSET_DISTANCE)
+	return Vector2(-OFFSET_DISTANCE, 0)
 
 ## Editor drawing
 func _draw() -> void:

@@ -481,13 +481,12 @@ position = Vector2(57, 456)
 target_scene = "res://test/levels/level_3/level_3_1.tscn"
 target_spawn_name = "ToLevel3_2"
 exit_direction = 0
-spawn_offset = Vector2(-48, 0)
+spawn_offset = Vector2(48, 0)
 
 [node name="ToLevel3_3" parent="ExitZone" instance=ExtResource("28_scene_transition")]
 position = Vector2(1925, 1002)
 target_scene = "res://test/levels/level_3/level_3_3.tscn"
 target_spawn_name = "FromLevel3_2"
-spawn_offset = Vector2(-48, 0)
 wipe_duration = 0.15
 
 [node name="Foxy" parent="." instance=ExtResource("10_foxy")]
