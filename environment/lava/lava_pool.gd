@@ -294,6 +294,23 @@ func _ready() -> void:
 			if channel_manager:
 				channel_manager.channel_activated.connect(_on_channel_activated)
 				channel_manager.channel_deactivated.connect(_on_channel_deactivated)
+				
+				# Check if channel is already active (respawn with lever still on)
+				if channel_manager.is_channel_active(listen_channel):
+					call_deferred("_on_channel_activated", listen_channel, null)
+
+
+func _exit_tree() -> void:
+	## Clean up signal connections when lava is removed from tree
+	if Engine.is_editor_hint():
+		return
+	
+	var channel_manager = get_node_or_null("/root/InteractionChannel")
+	if channel_manager:
+		if channel_manager.channel_activated.is_connected(_on_channel_activated):
+			channel_manager.channel_activated.disconnect(_on_channel_activated)
+		if channel_manager.channel_deactivated.is_connected(_on_channel_deactivated):
+			channel_manager.channel_deactivated.disconnect(_on_channel_deactivated)
 
 
 func _on_channel_activated(channel: StringName, _source: Node) -> void:

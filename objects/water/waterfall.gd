@@ -83,9 +83,25 @@ func _ready() -> void:
 	_rebuild()
 	set_process(true)
 	
+	# Track node removals to clean stale body references (player death scenario)
+	if not Engine.is_editor_hint():
+		get_tree().node_removed.connect(_on_any_node_removed)
+	
 	# Auto-detect pool below at runtime
 	if not Engine.is_editor_hint() and auto_blend_with_pool:
 		call_deferred("_auto_blend_setup")
+
+
+func _exit_tree() -> void:
+	# Disconnect node removal tracking
+	if get_tree() and get_tree().node_removed.is_connected(_on_any_node_removed):
+		get_tree().node_removed.disconnect(_on_any_node_removed)
+
+
+func _on_any_node_removed(node: Node) -> void:
+	# Clean stale body references when nodes are freed (e.g., player death)
+	if _bodies_in_water.has(node):
+		_bodies_in_water.erase(node)
 
 func _rebuild() -> void:
 	for child in get_children():

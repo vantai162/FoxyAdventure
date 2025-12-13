@@ -56,6 +56,9 @@ func _ready() -> void:
 	center_y = global_position.y
 	lifetime_timer = lifetime
 	
+	# Track node removals to clean stale body references (player death scenario)
+	get_tree().node_removed.connect(_on_any_node_removed)
+	
 	# Get collision shape size from scene
 	var collision_shape = $PullRadius as CollisionShape2D
 	if collision_shape and collision_shape.shape is RectangleShape2D:
@@ -133,6 +136,21 @@ func _on_body_exited(body: Node2D) -> void:
 	elif body.is_in_group("player"):
 		if player_in_range == body:
 			player_in_range = null
+
+
+func _exit_tree() -> void:
+	# Disconnect node removal tracking
+	if get_tree() and get_tree().node_removed.is_connected(_on_any_node_removed):
+		get_tree().node_removed.disconnect(_on_any_node_removed)
+
+
+func _on_any_node_removed(node: Node) -> void:
+	# Clean stale body references when nodes are freed (e.g., player death)
+	if boats_in_range.has(node):
+		boats_in_range.erase(node)
+	if player_in_range == node:
+		player_in_range = null
+
 
 func _update_boat_pulls(delta: float) -> void:
 	for boat in boats_in_range:

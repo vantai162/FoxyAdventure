@@ -31,6 +31,9 @@ func _ready() -> void:
 	body_entered.connect(_on_body_entered)
 	body_exited.connect(_on_body_exited)
 	
+	# Track node removals to clean stale body references (player death scenario)
+	get_tree().node_removed.connect(_on_any_node_removed)
+	
 	# Get visual nodes
 	_wind_streaks = get_node_or_null("WindStreaks")
 	_dust_particles = get_node_or_null("DustParticles")
@@ -49,10 +52,22 @@ func _ready() -> void:
 			channel_manager.register_listener(listen_channel, _on_channel_activated, _on_channel_deactivated)
 
 func _exit_tree() -> void:
+	# Disconnect node removal tracking
+	if get_tree() and get_tree().node_removed.is_connected(_on_any_node_removed):
+		get_tree().node_removed.disconnect(_on_any_node_removed)
+	
+	# Disconnect from channel system
 	if not listen_channel.is_empty():
 		var channel_manager = get_node_or_null("/root/InteractionChannel")
 		if channel_manager:
 			channel_manager.unregister_listener(listen_channel, _on_channel_activated, _on_channel_deactivated)
+
+
+func _on_any_node_removed(node: Node) -> void:
+	# Clean stale body references when nodes are freed (e.g., player death)
+	if _bodies_in_wind.has(node):
+		_bodies_in_wind.erase(node)
+
 
 func _on_channel_activated(_source: Node) -> void:
 	match on_activate:
