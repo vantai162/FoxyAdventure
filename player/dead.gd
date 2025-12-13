@@ -8,7 +8,7 @@ func _enter() -> void:
 	# Extinguish torch when player dies
 	var torch = obj.get_node_or_null("Direction/PlayerTorch")
 	if torch and torch.is_lit:
-		torch.extinguish_torch()
+		torch.extinguish()
 	
 	AudioManager.play_sound("game_over",15.0)
 	await obj.animated_sprite.animation_finished

@@ -468,7 +468,7 @@ color_preset = 4
 [node name="ExitZone" type="Node2D" parent="."]
 
 [node name="FromLevel3_1" parent="ExitZone" instance=ExtResource("28_scene_transition")]
-position = Vector2(40, 466)
+position = Vector2(57, 456)
 target_scene = "res://test/levels/level_3/level_3_1.tscn"
 target_spawn_name = "ToLevel3_2"
 exit_direction = 0
@@ -480,6 +480,7 @@ target_spawn_name = "FromLevel3_2"
 spawn_offset = Vector2(-48, 0)
 
 [node name="Foxy" parent="." instance=ExtResource("10_foxy")]
+z_index = 1
 position = Vector2(77, 466)
 
 [editable path="Platforms/MovingPlatform6"]

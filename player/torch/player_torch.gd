@@ -1,19 +1,36 @@
 extends Node2D
 ## Torch that illuminates dark areas - follows player direction
+## 
+## DESIGN PHILOSOPHY:
+## The torch doesn't just "appear" - it IGNITES when entering darkness.
+## A brief delay and fade-in makes this feel intentional and magical,
+## like the torch responds to the environment rather than being a static prop.
 ##
-## Scene structure (finalized):
+## Scene structure:
 ##   PlayerTorch (Node2D) - this script
-##   ├── TorchSprite (AnimatedSprite2D) - animated torch with flame
-##   ├── TorchLight (PointLight2D) - the light glow
+##   ├── TorchSprite (AnimatedSprite2D) - animated torch with flame (7×24 px)
+##   ├── TorchLight (PointLight2D) - the warm glow
 ##   └── TorchSparks (GPUParticles2D) - spark particles
 
 @export_group("Behavior")
 @export var flicker_enabled: bool = true
 @export var flicker_speed: float = 8.0  ## Flickers per second
-@export var flicker_intensity: float = 0.15  ## Energy variance
+@export var flicker_intensity: float = 0.15  ## Energy variance (±)
+## Enable debug logging
+@export var debug_logging: bool = false
+
+@export_group("Ignition Effect")
+## Delay before torch ignites (feels like responding to darkness)
+## NOTE: Keep this shorter than the transition wipe_in duration (0.15s)
+## so torch is lit BEFORE the reveal completes
+@export var ignition_delay: float = 0.08
+## How long the flame fades in
+@export var ignition_duration: float = 0.25
+## How long to fade out when extinguishing
+@export var extinguish_duration: float = 0.15
 
 @export_group("State")
-@export var is_lit: bool = false  ## Starts OFF, auto-lights in dark levels
+@export var is_lit: bool = false  ## Current torch state
 
 ## Child node references
 @onready var torch_sprite: AnimatedSprite2D = $TorchSprite
@@ -21,60 +38,171 @@ extends Node2D
 @onready var torch_sparks: GPUParticles2D = $TorchSparks
 
 var _flicker_tween: Tween
+var _ignition_tween: Tween
 var _base_energy: float
+var _is_igniting: bool = false
 
 
 func _ready() -> void:
 	_base_energy = torch_light.energy
 	
+	# Start completely OFF - hidden, no light, no particles
+	_set_completely_off()
+	
 	# Setup particles if not configured
 	if torch_sparks.process_material == null:
 		_setup_spark_material()
 	
-	# Defer darkness detection - current_scene isn't set until root's _ready() completes
-	# PlayerTorch._ready() runs before scene root (children before parents), so we must wait
-	if not is_lit:
-		call_deferred("_deferred_darkness_check")
+	# If exported as lit, ignite immediately (no delay)
+	if is_lit:
+		_instant_light()
 	else:
-		_apply_lit_state()
+		# Check for darkness and ignite with effect
+		call_deferred("_check_and_ignite")
 
 
-func _deferred_darkness_check() -> void:
-	## Called after scene tree is fully ready so current_scene is valid
-	_auto_detect_darkness()
-	_apply_lit_state()
-
-
-func _auto_detect_darkness() -> void:
-	## Auto-light torch if level has darkness (DarknessModulate or CanvasModulate)
-	var scene_root = get_tree().current_scene
-	if not scene_root:
-		return
+func _check_and_ignite() -> void:
+	## Wait for scene to be ready, then check for darkness and ignite with effect
 	
+	# Wait until current_scene is valid
+	var max_attempts := 10
+	var attempts := 0
+	
+	while get_tree().current_scene == null and attempts < max_attempts:
+		await get_tree().process_frame
+		attempts += 1
+	
+	var scene_root = get_tree().current_scene
+	
+	if scene_root == null:
+		return  # Stay off
+	
+	# Check for darkness
 	var darkness = scene_root.get_node_or_null("DarknessModulate")
+	
 	if not darkness:
 		darkness = scene_root.get_node_or_null("CanvasModulate")
 	
 	if darkness and darkness is CanvasModulate:
-		is_lit = true
+		# Dark level detected - ignite the torch with delay and fade
+		if debug_logging:
+			print("[PlayerTorch] Dark level detected in ", scene_root.name, " - igniting")
+		ignite()
 
 
-func _apply_lit_state() -> void:
-	## Apply current is_lit state to all child nodes
-	torch_light.enabled = is_lit
-	torch_light.energy = _base_energy if is_lit else 0.0
+func ignite() -> void:
+	## Light the torch with a satisfying ignition effect
+	## Brief delay → flame appears and grows → sparks begin
 	
-	torch_sprite.visible = is_lit
-	if is_lit:
-		torch_sprite.play("default")
+	if is_lit or _is_igniting:
+		return
 	
-	torch_sparks.emitting = is_lit
+	_is_igniting = true
 	
-	if is_lit and flicker_enabled:
+	# Kill any existing animation
+	if _ignition_tween:
+		_ignition_tween.kill()
+	
+	# Brief delay - feels like the torch "notices" the darkness
+	await get_tree().create_timer(ignition_delay).timeout
+	
+	# Safety check in case we were extinguished during delay
+	if not _is_igniting:
+		return
+	
+	is_lit = true
+	
+	# Make sprite visible and start animation
+	torch_sprite.visible = true
+	torch_sprite.modulate.a = 0.0
+	torch_sprite.play("default")
+	
+	# Enable light at zero energy
+	torch_light.enabled = true
+	torch_light.energy = 0.0
+	
+	# Create the ignition animation
+	_ignition_tween = create_tween()
+	_ignition_tween.set_parallel(true)
+	
+	# Flame sprite fades in
+	_ignition_tween.tween_property(torch_sprite, "modulate:a", 1.0, ignition_duration)\
+		.set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_QUAD)
+	
+	# Light grows from zero to full
+	# Slightly longer than sprite for a "warmth spreading" feel
+	_ignition_tween.tween_property(torch_light, "energy", _base_energy, ignition_duration * 1.2)\
+		.set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_QUAD)
+	
+	await _ignition_tween.finished
+	
+	# Start sparks after flame is mostly visible (sparks fly as flame stabilizes)
+	torch_sparks.emitting = true
+	
+	# Begin flicker effect
+	if flicker_enabled:
+		_start_flicker()
+	
+	_is_igniting = false
+
+
+func extinguish() -> void:
+	## Turn off the torch with a fade-out effect
+	if not is_lit and not _is_igniting:
+		return
+	
+	_is_igniting = false
+	is_lit = false
+	
+	# Stop flicker
+	if _flicker_tween:
+		_flicker_tween.kill()
+	
+	# Stop sparks immediately (they die out naturally)
+	torch_sparks.emitting = false
+	
+	# Kill any ignition in progress
+	if _ignition_tween:
+		_ignition_tween.kill()
+	
+	# Fade out
+	var tween = create_tween()
+	tween.set_parallel(true)
+	tween.tween_property(torch_light, "energy", 0.0, extinguish_duration)\
+		.set_ease(Tween.EASE_IN).set_trans(Tween.TRANS_QUAD)
+	tween.tween_property(torch_sprite, "modulate:a", 0.0, extinguish_duration)\
+		.set_ease(Tween.EASE_IN).set_trans(Tween.TRANS_QUAD)
+	
+	await tween.finished
+	
+	_set_completely_off()
+
+
+func _set_completely_off() -> void:
+	## Set torch to completely invisible/off state
+	torch_light.enabled = false
+	torch_light.energy = 0.0
+	torch_sprite.visible = false
+	torch_sprite.modulate.a = 1.0  # Reset modulate for next ignite
+	torch_sparks.emitting = false
+
+
+func _instant_light() -> void:
+	## Immediately light without animation (for exported is_lit = true)
+	is_lit = true
+	torch_light.enabled = true
+	torch_light.energy = _base_energy
+	torch_sprite.visible = true
+	torch_sprite.modulate.a = 1.0
+	torch_sprite.play("default")
+	torch_sparks.emitting = true
+	
+	if flicker_enabled:
 		_start_flicker()
 
 
 func _start_flicker() -> void:
+	## Begin the organic light flicker effect
 	if _flicker_tween:
 		_flicker_tween.kill()
 	
@@ -92,42 +220,8 @@ func _start_flicker() -> void:
 		.set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
 
 
-func light_torch() -> void:
-	## Turn on the torch with fade-in effect
-	is_lit = true
-	
-	torch_light.enabled = true
-	torch_light.energy = 0
-	var tween = create_tween()
-	tween.tween_property(torch_light, "energy", _base_energy, 0.3)
-	
-	torch_sprite.visible = true
-	torch_sprite.play("default")
-	
-	torch_sparks.emitting = true
-	
-	if flicker_enabled:
-		_start_flicker()
-
-
-func extinguish_torch() -> void:
-	## Turn off the torch with fade-out effect
-	is_lit = false
-	
-	torch_sparks.emitting = false
-	
-	if _flicker_tween:
-		_flicker_tween.kill()
-	
-	var tween = create_tween()
-	tween.tween_property(torch_light, "energy", 0.0, 0.2)
-	await tween.finished
-	torch_light.enabled = false
-	torch_sprite.visible = false
-
-
 func _setup_spark_material() -> void:
-	## Configure spark particles
+	## Configure spark particles for a warm, organic fire feel
 	var mat = ParticleProcessMaterial.new()
 	mat.emission_shape = ParticleProcessMaterial.EMISSION_SHAPE_SPHERE
 	mat.emission_sphere_radius = 3.0
@@ -135,13 +229,13 @@ func _setup_spark_material() -> void:
 	mat.spread = 40.0
 	mat.initial_velocity_min = 25.0
 	mat.initial_velocity_max = 35.0
-	mat.gravity = Vector3(0, 15, 0)  # Fall down
+	mat.gravity = Vector3(0, 15, 0)  # Slight gravity to arc
 	mat.damping_min = 8.0
 	mat.damping_max = 12.0
 	mat.scale_min = 1.5
 	mat.scale_max = 2.5
 	
-	# Fade curve
+	# Fade curve for sparks
 	var alpha_curve = Curve.new()
 	alpha_curve.add_point(Vector2(0, 1))
 	alpha_curve.add_point(Vector2(0.6, 0.7))
@@ -150,7 +244,7 @@ func _setup_spark_material() -> void:
 	curve_tex.curve = alpha_curve
 	mat.alpha_curve = curve_tex
 	
-	# Color gradient
+	# Color gradient - warm orange to transparent
 	var grad = Gradient.new()
 	grad.add_point(0.0, Color(1.0, 0.8, 0.5))
 	grad.add_point(0.7, Color(1.0, 0.5, 0.2, 0.5))
@@ -160,3 +254,5 @@ func _setup_spark_material() -> void:
 	mat.color_ramp = gradient_texture
 	
 	torch_sparks.process_material = mat
+	torch_sparks.amount = 6
+	torch_sparks.lifetime = 0.5

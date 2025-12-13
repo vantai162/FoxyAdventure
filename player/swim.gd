@@ -7,7 +7,7 @@ func _enter():
 	# Extinguish torch when entering water (can't hold torch while swimming!)
 	var torch = obj.get_node_or_null("Direction/PlayerTorch")
 	if torch and torch.is_lit:
-		torch.extinguish_torch()
+		torch.extinguish()
 
 func _update(delta: float):
 	control_swimming()
