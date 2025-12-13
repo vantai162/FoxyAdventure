@@ -1,8 +1,7 @@
-[gd_scene load_steps=15 format=3 uid="uid://bsqdqcru1xnem"]
+[gd_scene load_steps=14 format=3 uid="uid://bsqdqcru1xnem"]
 
 [ext_resource type="Script" uid="uid://cjyh8krka5y7x" path="res://player/torch/player_torch.gd" id="1_script"]
 [ext_resource type="Texture2D" uid="uid://babg60horlhsh" path="res://assets/objects/torch/torches.png" id="2_q46r5"]
-[ext_resource type="Texture2D" uid="uid://6qd3pdlxcu43" path="res://assets/effects/player_torch.tres" id="3_dos75"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_dos75"]
 atlas = ExtResource("2_q46r5")

@@ -1,7 +1,7 @@
 [gd_scene load_steps=4 format=3 uid="uid://d1twwiutipd8r"]
 
 [ext_resource type="Script" uid="uid://dwbq3xeo1lhu5" path="res://objects/pressure_plate/pressure_plate.gd" id="1_script"]
-[ext_resource type="Texture2D" uid="uid://csoft_radial_light" path="res://assets/effects/soft_radial_light.tres" id="2_glow"]
+[ext_resource type="Texture2D" uid="uid://bodwtyoud2741" path="res://assets/effects/soft_radial_light.tres" id="2_glow"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_plate"]
 size = Vector2(32, 8)

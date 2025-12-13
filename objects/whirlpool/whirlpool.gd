@@ -21,6 +21,14 @@ class_name Whirlpool
 @export_group("Visuals")
 @export var enable_visuals: bool = true  ## Show foam and spiral effect
 
+@export_group("Glow Light (Optional)")
+@export var emit_light: bool = false  ## Eerie underwater glow
+@export var light_color: Color = Color(0.2, 0.6, 0.9, 0.8)  ## Deep blue vortex glow
+@export var light_energy: float = 0.5  ## Glow brightness
+@export var light_texture_scale: float = 2.5  ## Glow radius
+@export var light_pulse_enabled: bool = true  ## Pulsing synchronized with oscillation
+@export var light_pulse_amount: float = 0.3  ## Pulse intensity
+
 const OSCILLATION_STRENGTH: float = 1500.0        ## Horizontal bobbing force
 const OSCILLATION_FREQUENCY: float = 3.0           ## Oscillation speed (Hz)
 const DOWNWARD_SUCTION: float = 2500.0             ## Vertical pull into V
@@ -50,6 +58,8 @@ var depression_applied: bool = false
 var water_particles: GPUParticles2D = null
 var vortex_visual: Line2D = null
 var inner_vortex: Line2D = null
+var _vortex_light: PointLight2D = null
+var _base_light_energy: float = 0.5
 
 func _ready() -> void:
 	center_x = global_position.x
@@ -86,6 +96,10 @@ func _ready() -> void:
 		# Get visual lines for rotation animation
 		vortex_visual = get_node_or_null("VortexVisual") as Line2D
 		inner_vortex = get_node_or_null("InnerVortex") as Line2D
+	
+	# Optional vortex glow
+	if emit_light:
+		_create_vortex_light()
 
 func _physics_process(delta: float) -> void:
 	oscillation_phase += delta * OSCILLATION_FREQUENCY * TAU
@@ -95,6 +109,11 @@ func _physics_process(delta: float) -> void:
 		vortex_visual.rotation += delta * 1.5  # Slower outer rotation
 	if inner_vortex:
 		inner_vortex.rotation -= delta * 2.5  # Faster counter-rotation
+	
+	# Vortex light pulsing synchronized with oscillation
+	if emit_light and _vortex_light and light_pulse_enabled:
+		var pulse = sin(oscillation_phase * 0.5) * light_pulse_amount
+		_vortex_light.energy = _base_light_energy * (1.0 + pulse)
 	
 	if damage_cooldown_timer > 0:
 		damage_cooldown_timer -= delta
@@ -449,3 +468,35 @@ func _on_water_disappeared() -> void:
 	## Gracefully despawn to prevent air whirlpools
 	_restore_water_rest_heights()
 	queue_free()
+
+
+func _create_vortex_light() -> void:
+	## Creates an eerie underwater glow at the vortex center
+	_vortex_light = PointLight2D.new()
+	_vortex_light.enabled = true
+	_vortex_light.color = light_color
+	_vortex_light.energy = light_energy
+	_vortex_light.texture_scale = light_texture_scale
+	_vortex_light.blend_mode = Light2D.BLEND_MODE_ADD
+	_vortex_light.shadow_enabled = false
+	_vortex_light.range_z_min = -100
+	_vortex_light.range_z_max = 100
+	_vortex_light.position = Vector2.ZERO  # Center of vortex
+	_vortex_light.z_index = ZLayers.LIGHT_EFFECT
+	
+	# Radial gradient texture
+	var gradient := Gradient.new()
+	gradient.set_color(0, Color(1.0, 1.0, 1.0, 1.0))
+	gradient.set_color(1, Color(1.0, 1.0, 1.0, 0.0))
+	
+	var tex := GradientTexture2D.new()
+	tex.gradient = gradient
+	tex.width = 128
+	tex.height = 128
+	tex.fill = GradientTexture2D.FILL_RADIAL
+	tex.fill_from = Vector2(0.5, 0.5)
+	tex.fill_to = Vector2(0.0, 0.5)
+	_vortex_light.texture = tex
+	
+	_base_light_energy = light_energy
+	add_child(_vortex_light)

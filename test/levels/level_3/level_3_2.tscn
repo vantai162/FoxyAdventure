@@ -71,11 +71,20 @@ timer_duration = 7.0
 [node name="MovingPlatform2" parent="Platforms" instance=ExtResource("26_moving")]
 position = Vector2(541, 892)
 
+[node name="EndPoint" parent="Platforms/MovingPlatform2" index="2"]
+position = Vector2(200, 200)
+
 [node name="MovingPlatform3" parent="Platforms" instance=ExtResource("26_moving")]
 position = Vector2(293, 976)
 
+[node name="EndPoint" parent="Platforms/MovingPlatform3" index="2"]
+position = Vector2(200, -200)
+
 [node name="MovingPlatform4" parent="Platforms" instance=ExtResource("26_moving")]
 position = Vector2(630, 953)
+
+[node name="EndPoint" parent="Platforms/MovingPlatform4" index="2"]
+position = Vector2(0, 200)
 
 [node name="MovingPlatform5" parent="Platforms" instance=ExtResource("26_moving")]
 position = Vector2(393, 859)
@@ -105,6 +114,11 @@ lava_size = Vector2(284, 228)
 [node name="Lavafall" parent="Hazards" instance=ExtResource("20_bo748")]
 position = Vector2(1806, -1)
 lavafall_size = Vector2(32, 140)
+light_color = null
+light_energy = null
+light_pulse_enabled = null
+light_pulse_speed = null
+light_pulse_amount = null
 
 [node name="LavaPool3" parent="Hazards" instance=ExtResource("19_b55ue")]
 position = Vector2(61, 267)
@@ -198,6 +212,11 @@ orientation = 2
 [node name="Lavafall2" parent="Hazards" instance=ExtResource("20_bo748")]
 position = Vector2(1904, 343)
 lavafall_size = Vector2(32, 180)
+light_color = null
+light_energy = null
+light_pulse_enabled = null
+light_pulse_speed = null
+light_pulse_amount = null
 
 [node name="LavaPool4" parent="Hazards" instance=ExtResource("19_b55ue")]
 position = Vector2(1884, 485)
@@ -484,4 +503,7 @@ spawn_offset = Vector2(-48, 0)
 z_index = 1
 position = Vector2(77, 466)
 
+[editable path="Platforms/MovingPlatform2"]
+[editable path="Platforms/MovingPlatform3"]
+[editable path="Platforms/MovingPlatform4"]
 [editable path="Platforms/MovingPlatform6"]

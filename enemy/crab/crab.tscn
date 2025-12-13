@@ -92,7 +92,7 @@ target_position = Vector2(14, 0)
 
 [node name="DownRayCast2D" type="RayCast2D" parent="Direction"]
 position = Vector2(14, -4)
-target_position = Vector2(0, 36)
+target_position = Vector2(0, 24)
 
 [node name="HitArea2D" type="Area2D" parent="Direction"]
 collision_layer = 0

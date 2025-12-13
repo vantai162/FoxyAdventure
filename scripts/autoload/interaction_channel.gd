@@ -204,14 +204,20 @@ func register_receiver(receiver: Node, channel: StringName, on_activate: Callabl
 	if channel.is_empty():
 		return
 	
-	# Create wrapper that checks channel and validates receiver
+	# Create wrapper that checks channel and validates receiver AND callable target
 	var activate_wrapper := func(ch: StringName, source: Node) -> void:
-		if ch == channel and is_instance_valid(receiver):
-			on_activate.call(source)
+		if ch == channel and is_instance_valid(receiver) and receiver.is_inside_tree():
+			# Also verify the callable's target object is valid
+			var callable_target = on_activate.get_object()
+			if is_instance_valid(callable_target):
+				on_activate.call(source)
 	
 	var deactivate_wrapper := func(ch: StringName, source: Node) -> void:
-		if ch == channel and is_instance_valid(receiver):
-			on_deactivate.call(source)
+		if ch == channel and is_instance_valid(receiver) and receiver.is_inside_tree():
+			# Also verify the callable's target object is valid
+			var callable_target = on_deactivate.get_object()
+			if is_instance_valid(callable_target):
+				on_deactivate.call(source)
 	
 	# Connect with CONNECT_REFERENCE_COUNTED so Godot can track the object
 	channel_activated.connect(activate_wrapper)
@@ -244,14 +250,18 @@ func _on_receiver_exiting(receiver: Node, activate_wrapper: Callable, deactivate
 func register_listener(channel: StringName, on_activate: Callable, on_deactivate: Callable) -> void:
 	if channel.is_empty():
 		return
-	# Connect with channel filtering wrapper
+	# Connect with channel filtering wrapper and validity check
 	channel_activated.connect(func(ch: StringName, source: Node):
 		if ch == channel:
-			on_activate.call(source)
+			var target = on_activate.get_object()
+			if is_instance_valid(target):
+				on_activate.call(source)
 	)
 	channel_deactivated.connect(func(ch: StringName, source: Node):
 		if ch == channel:
-			on_deactivate.call(source)
+			var target = on_deactivate.get_object()
+			if is_instance_valid(target):
+				on_deactivate.call(source)
 	)
 
 

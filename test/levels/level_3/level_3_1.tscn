@@ -65,11 +65,10 @@ tile_set = ExtResource("2_a6ecy")
 
 [node name="MovingPlatform1" parent="Platforms" instance=ExtResource("4_moving")]
 position = Vector2(1415, 309)
-speed = 150.0
+speed = 200.0
 
-[node name="MovingPlatform2" parent="Platforms" instance=ExtResource("4_moving")]
-position = Vector2(1415, 1043)
-speed = 150.0
+[node name="EndPoint" parent="Platforms/MovingPlatform1" index="2"]
+position = Vector2(0, 1108)
 
 [node name="MovingPlatform3" parent="Platforms" instance=ExtResource("4_moving")]
 position = Vector2(324, 1210)
@@ -268,7 +267,7 @@ orientation = 2
 [node name="WaterZones" type="Node2D" parent="."]
 
 [node name="water" parent="WaterZones" instance=ExtResource("3_is5y3")]
-position = Vector2(165, 2181)
+position = Vector2(165, 2166)
 water_size = Vector2(1126, 165)
 emit_light = true
 
@@ -578,5 +577,7 @@ z_index = 1
 position = Vector2(67, 235)
 
 [connection signal="area_entered" from="Terrain/TileMapLayer/HealthPotion" to="Terrain/TileMapLayer/HealthPotion" method="_on_area_entered"]
-[connection signal="area_entered" from="Terrain/TileMapLayer/@Area2D@38648" to="Terrain/TileMapLayer/@Area2D@38648" method="_on_area_entered"]
-[connection signal="area_entered" from="Terrain/TileMapLayer/@Area2D@38649" to="Terrain/TileMapLayer/@Area2D@38649" method="_on_area_entered"]
+[connection signal="area_entered" from="Terrain/TileMapLayer/@Area2D@55592" to="Terrain/TileMapLayer/@Area2D@55592" method="_on_area_entered"]
+[connection signal="area_entered" from="Terrain/TileMapLayer/@Area2D@55593" to="Terrain/TileMapLayer/@Area2D@55593" method="_on_area_entered"]
+
+[editable path="Platforms/MovingPlatform1"]

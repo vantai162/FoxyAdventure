@@ -1,4 +1,4 @@
-[gd_resource type="GradientTexture2D" load_steps=2 format=3 uid="uid://csoft_radial_light"]
+[gd_resource type="GradientTexture2D" load_steps=2 format=3 uid="uid://bodwtyoud2741"]
 
 [sub_resource type="Gradient" id="Gradient_soft"]
 offsets = PackedFloat32Array(0, 0.4, 0.75, 1)
