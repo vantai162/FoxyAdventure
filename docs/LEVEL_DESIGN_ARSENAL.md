@@ -135,12 +135,22 @@ All elites have: **Red glowing eyes**, **hue-shifted color**, **aggressive pursu
 | Platform | Scene | Mechanic |
 |----------|-------|----------|
 | **One-Way** | `objects/platform/one_way_platform.tscn` | Fall through, can't jump through |
-| **Moving (Horizontal)** | `objects/platform/horizontal_moving_platform.tscn` | Left-right movement |
-| **Moving (Vertical)** | `objects/platform/vertical_moving_platform.tscn` | Up-down movement |
+| **Moving Platform** | `objects/platform/moving_platform.tscn` | **Unified designer-friendly platform** - works for horizontal, vertical, diagonal, or any direction. Drag the `EndPoint` marker in editor to set destination. Shows green trajectory line preview. |
 | **Circular** | `objects/platform/circular_moving_platform.tscn` | Circular path |
 | **Breakable** | `objects/platform/breakable_platform.tscn` | Breaks when stood on |
 | **Breakable (Slow)** | `objects/platform/breakable_platform_slow.tscn` | Breaks slower |
 | **Floating Boat** | `objects/platform/floating_boat_platform.tscn` | Floats on water, bobs with waves |
+
+### Moving Platform Features (NEW!)
+The new unified `MovingPlatform` replaces the old horizontal/vertical variants:
+- **Visual Preview**: Green trajectory line shows exact path in editor
+- **Any Direction**: Horizontal, vertical, diagonal - just drag the EndPoint
+- **Movement Types**: `PING_PONG`, `ONE_WAY`, `LOOP`
+- **Easing Options**: Linear, Ease In/Out
+- **Channel Support**: Can be controlled via lever/pressure plate
+- **Properties**: `speed`, `pause_at_endpoints`, `start_at_end`, `start_paused`
+
+> ⚠️ **DEPRECATED**: `horizontal_moving_platform.tscn` and `vertical_moving_platform.tscn` are legacy. Use `moving_platform.tscn` for all new levels.
 
 ---
 

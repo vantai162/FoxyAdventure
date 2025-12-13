@@ -4,7 +4,7 @@
 [ext_resource type="TileSet" uid="uid://0yf5cmwk6u1i" path="res://assets/island/terrain/ice_tile_set.tres" id="2_a6ecy"]
 [ext_resource type="PackedScene" uid="uid://giogr7michck" path="res://objects/water/water.tscn" id="3_is5y3"]
 [ext_resource type="PackedScene" uid="uid://dqdstpxycbomj" path="res://effect_Item/BladeItem/blade.tscn" id="3_vnnrn"]
-[ext_resource type="PackedScene" uid="uid://buygo1gficx5m" path="res://objects/platform/horizontal_moving_platform.tscn" id="4_343a2"]
+[ext_resource type="PackedScene" uid="uid://platform_moving_unified" path="res://objects/platform/moving_platform.tscn" id="4_moving"]
 [ext_resource type="PackedScene" uid="uid://rhntp41ai45p" path="res://environment/cave/stalactite.tscn" id="4_b7ip3"]
 [ext_resource type="PackedScene" uid="uid://cqjqdbyd7mqfr" path="res://environment/cave/glowing_crystal.tscn" id="4_crystal"]
 [ext_resource type="PackedScene" uid="uid://c5m8vno0qh3xy" path="res://objects/whirlpool/whirlpool.tscn" id="4_vnnrn"]
@@ -32,7 +32,7 @@
 [ext_resource type="PackedScene" uid="uid://y7p8q2kh8teb" path="res://objects/flame/flame_hazard.tscn" id="27_alf78"]
 [ext_resource type="PackedScene" uid="uid://b0h8a022mpy26" path="res://objects/spike/spike_retractable/spike_retractable.tscn" id="28_fcwnb"]
 [ext_resource type="PackedScene" path="res://environment/lava/lavafall.tscn" id="29_qrwfa"]
-[ext_resource type="PackedScene" uid="uid://bp4fcvlg5b31p" path="res://objects/platform/vertical_moving_platform.tscn" id="30_p5pao"]
+
 
 [node name="Level_3_1" type="Node2D"]
 script = ExtResource("1_stage_script")
@@ -63,23 +63,33 @@ tile_set = ExtResource("2_a6ecy")
 
 [node name="Platforms" type="Node2D" parent="."]
 
-[node name="VerticalMovingPlatform" parent="Platforms" instance=ExtResource("30_p5pao")]
+[node name="MovingPlatform1" parent="Platforms" instance=ExtResource("4_moving")]
 position = Vector2(1415, 309)
-move_speed = 150.0
-move_distance = 1200.0
+speed = 150.0
 
-[node name="VerticalMovingPlatform2" parent="Platforms" instance=ExtResource("30_p5pao")]
+[node name="EndPoint" parent="Platforms/MovingPlatform1" index="2"]
+position = Vector2(0, 375)
+
+[node name="MovingPlatform2" parent="Platforms" instance=ExtResource("4_moving")]
 position = Vector2(1415, 1043)
-move_speed = 150.0
-move_distance = 1200.0
+speed = 150.0
 
-[node name="HorizontalMovingPlatform" parent="Platforms" instance=ExtResource("4_343a2")]
+[node name="EndPoint" parent="Platforms/MovingPlatform2" index="2"]
+position = Vector2(0, 375)
+
+[node name="MovingPlatform3" parent="Platforms" instance=ExtResource("4_moving")]
 position = Vector2(324, 1210)
-move_distance = 600.0
+speed = 100.0
 
-[node name="HorizontalMovingPlatform2" parent="Platforms" instance=ExtResource("4_343a2")]
+[node name="EndPoint" parent="Platforms/MovingPlatform3" index="2"]
+position = Vector2(250, 0)
+
+[node name="MovingPlatform4" parent="Platforms" instance=ExtResource("4_moving")]
 position = Vector2(494, 2016)
-move_distance = 600.0
+speed = 100.0
+
+[node name="EndPoint" parent="Platforms/MovingPlatform4" index="2"]
+position = Vector2(250, 0)
 
 [node name="Hazards" type="Node2D" parent="."]
 

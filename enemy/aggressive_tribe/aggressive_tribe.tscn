@@ -173,7 +173,7 @@ collision_mask = 2
 
 [node name="DetectPlayerRayCast2D2" type="RayCast2D" parent="Direction"]
 position = Vector2(0, 16)
-target_position = Vector2(400, 20)
+target_position = Vector2(400, 30)
 collision_mask = 2
 
 [node name="DetectPlayerRayCast2D3" type="RayCast2D" parent="Direction"]

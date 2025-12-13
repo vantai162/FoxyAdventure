@@ -1,3 +1,4 @@
+@tool
 # Pressure Plate - Activates while player/object stands on it
 # Uses Channel System: set a channel name, receivers (Gate, Flame, etc.) listen on the same channel
 extends Area2D
@@ -6,7 +7,10 @@ class_name PressurePlate
 @export_group("Channel System")
 ## Channel to broadcast on when pressed/released
 ## Set same channel on receiver objects (Gate, Flame, etc.) to connect them
-@export var channel: StringName = &""
+@export var channel: StringName = &"":
+	set(value):
+		channel = value
+		queue_redraw()
 
 @export_group("Plate Settings")
 @export var stay_activated: bool = false  ## If true, stays ON after first press
@@ -15,6 +19,13 @@ class_name PressurePlate
 @export_group("Visual Feedback")
 @export var pressed_offset: Vector2 = Vector2(0, 2)  ## How much plate sinks when pressed
 @export var press_duration: float = 0.1  ## Animation time
+
+@export_group("Editor Preview")
+@export var show_channel_label: bool = true:
+	set(value):
+		show_channel_label = value
+		queue_redraw()
+@export var label_color: Color = Color(0.2, 0.9, 0.4, 0.9)
 
 signal plate_pressed
 signal plate_released
@@ -28,6 +39,10 @@ var _permanently_activated: bool = false
 var _original_sprite_pos: Vector2 = Vector2.ZERO
 
 func _ready() -> void:
+	# Skip gameplay in editor
+	if Engine.is_editor_hint():
+		return
+	
 	body_entered.connect(_on_body_entered)
 	body_exited.connect(_on_body_exited)
 	area_entered.connect(_on_area_entered)
@@ -42,6 +57,30 @@ func _ready() -> void:
 		if plate_visual:
 			sprite = plate_visual
 			_original_sprite_pos = sprite.position
+
+## Editor draw - show channel label
+func _draw() -> void:
+	if not Engine.is_editor_hint():
+		return
+	if not show_channel_label or channel.is_empty():
+		return
+	
+	# Draw channel name label above the plate
+	var font := ThemeDB.fallback_font
+	var label_text := str(channel)
+	var font_size := 12
+	var text_size := font.get_string_size(label_text, HORIZONTAL_ALIGNMENT_CENTER, -1, font_size)
+	var label_pos := Vector2(-text_size.x / 2, -24)
+	
+	# Background for readability
+	var bg_rect := Rect2(label_pos - Vector2(4, font_size), text_size + Vector2(8, 4))
+	draw_rect(bg_rect, Color(0.1, 0.1, 0.1, 0.7))
+	
+	# Draw text
+	draw_string(font, label_pos, label_text, HORIZONTAL_ALIGNMENT_CENTER, -1, font_size, label_color)
+	
+	# Draw indicator icon (P for Plate)
+	draw_circle(Vector2(0, -32), 8, label_color * Color(1, 1, 1, 0.6))
 
 func _on_body_entered(body: Node2D) -> void:
 	# Filter by weight requirement
