@@ -2,7 +2,7 @@
 
 [ext_resource type="Texture2D" uid="uid://t3cktfmhcitn" path="res://assets/island/terrain/ice level demo.png" id="1_lvvyk"]
 [ext_resource type="PackedScene" uid="uid://cqjqdbyd7mqfr" path="res://environment/cave/glowing_crystal.tscn" id="3_crystal"]
-[ext_resource type="PackedScene" path="res://environment/cave/dripping_water.tscn" id="4_drip"]
+[ext_resource type="PackedScene" uid="uid://bc78438yhr3na" path="res://environment/cave/dripping_water.tscn" id="4_drip"]
 [ext_resource type="PackedScene" uid="uid://lrdkn2gv1v1m" path="res://effect_Item/coin/coin.tscn" id="15_coin"]
 [ext_resource type="PackedScene" uid="uid://b3cbk6lmh2cc3" path="res://effect_Item/heal_potion/health_potion.tscn" id="16_potion"]
 

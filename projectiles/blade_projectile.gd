@@ -285,16 +285,27 @@ func _transition_to_arc_down() -> void:
 	velocity.x *= speed_after_max_distance
 	velocity.y = 0
 
-func _transition_to_ricochet(_impact_normal: Vector2) -> void:
+func _transition_to_ricochet() -> void:
+	## The fox is a master blade-thrower. Every throw is intentional.
+	## When the blade ricochets, it arcs BACK toward the thrower — not away.
+	## This creates game feel: the fox doesn't chase his weapon; it returns to him.
+	## Magnetism in BOUNCED state further guides the blade home.
+	
 	current_state = State.BOUNCED
 	bounced_time = 0.0
 	
+	# Calculate bounce arc based on distance traveled (further = wider arc)
 	var distance_ratio = distance_traveled / max_flight_distance
-	var backward_direction = Vector2(-throw_direction, first_bounce_upward_angle).normalized()
-	var bounce_speed = initial_throw_speed * bounce_energy_retention * (close_bounce_speed_multiplier + distance_ratio * far_bounce_speed_multiplier)
+	var bounce_speed = initial_throw_speed * bounce_energy_retention * (
+		close_bounce_speed_multiplier + distance_ratio * far_bounce_speed_multiplier
+	)
 	
+	# Backward arc: blade reverses direction and arcs upward
+	# -throw_direction = back toward thrower
+	# first_bounce_upward_angle = upward bias (-0.5 = 30° up from horizontal)
+	var backward_direction = Vector2(-throw_direction, first_bounce_upward_angle).normalized()
 	velocity = backward_direction * bounce_speed
-	velocity.y -= first_bounce_upward_force
+	velocity.y -= first_bounce_upward_force  # Extra upward kick for satisfying arc
 
 func _transition_to_grounded() -> void:
 	current_state = State.GROUNDED
@@ -319,8 +330,9 @@ func _on_body_entered(body: Node) -> void:
 		return
 	
 	# Ricochet off ANY solid body during flight (walls, ground, enemies, shields)
+	# The blade arcs back toward the fox — mastery, not physics
 	if current_state == State.FLYING:
-		_transition_to_ricochet(Vector2.ZERO)
+		_transition_to_ricochet()
 
 func _on_area_entered(area: Area2D) -> void:
 	# Pickup by player's HurtArea or other areas
@@ -328,9 +340,13 @@ func _on_area_entered(area: Area2D) -> void:
 		_pickup_by_player()
 		return
 	
-	# Trigger interactable objects (levers, etc.)
+	# Trigger interactable objects (levers, etc.) and ricochet
 	if area.is_in_group("blade_interactable"):
 		_trigger_interactable(area)
+		# Ricochet: blade arcs back to thrower (mastery, not Newtonian physics)
+		# The fox threw at this lever ON PURPOSE. He knows it'll come back.
+		if current_state == State.FLYING:
+			_transition_to_ricochet()
 
 func _trigger_interactable(area: Area2D) -> void:
 	## Activate levers and other blade-interactable objects

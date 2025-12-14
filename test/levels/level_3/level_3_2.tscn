@@ -27,7 +27,7 @@
 [ext_resource type="PackedScene" uid="uid://cm32wkmjlw1rq" path="res://effect_Item/chest/trap_chest.tscn" id="19_trap_chest"]
 [ext_resource type="PackedScene" path="res://environment/lava/lavafall.tscn" id="20_bo748"]
 [ext_resource type="PackedScene" uid="uid://nuq050gwbwqt" path="res://objects/spike/spike.tscn" id="21_d273m"]
-[ext_resource type="PackedScene" path="res://environment/cave/stalactite.tscn" id="22_fb13w"]
+[ext_resource type="PackedScene" uid="uid://rhntp41ai45p" path="res://environment/cave/stalactite.tscn" id="22_fb13w"]
 [ext_resource type="PackedScene" uid="uid://y7p8q2kh8teb" path="res://objects/flame/flame_hazard.tscn" id="23_aawq6"]
 [ext_resource type="PackedScene" path="res://objects/water/waterfall.tscn" id="24_ytmni"]
 [ext_resource type="PackedScene" uid="uid://ctr1b8p1h6p8y" path="res://objects/gate/gate.tscn" id="25_raubr"]
@@ -292,8 +292,8 @@ direction = 2
 
 [node name="Gate4" parent="Puzzle" instance=ExtResource("25_raubr")]
 position = Vector2(982, 1152)
-listen_channel = &"ThrowForExit "
-move_distance = 200.0
+listen_channel = &"ThrowForExit"
+move_distance = 300.0
 
 [node name="Gate3" parent="Puzzle" instance=ExtResource("25_raubr")]
 position = Vector2(1601, 1046)
