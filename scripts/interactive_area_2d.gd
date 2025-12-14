@@ -13,12 +13,28 @@ signal interaction_unavailable  ## Emitted when player leaves interaction range
 
 ## Track whether THIS specific area has the player inside
 var _player_inside: bool = false
+var _current_player: Node2D = null  ## Track actual player reference for cleanup
 
 
 func _ready() -> void:
 	set_process_unhandled_input(false)
 	body_entered.connect(_on_body_entered)
 	body_exited.connect(_on_body_exited)
+	# Track node removals to clean stale references (player death scenario)
+	get_tree().node_removed.connect(_on_any_node_removed)
+
+
+func _exit_tree() -> void:
+	if get_tree() and get_tree().node_removed.is_connected(_on_any_node_removed):
+		get_tree().node_removed.disconnect(_on_any_node_removed)
+
+
+func _on_any_node_removed(node: Node) -> void:
+	# Reset state if the tracked player is freed (e.g., player death)
+	if _current_player == node:
+		_player_inside = false
+		_current_player = null
+		set_process_unhandled_input(false)
 
 
 func _unhandled_input(event: InputEvent) -> void:
@@ -39,6 +55,7 @@ func _on_body_entered(body: Node2D) -> void:
 		return
 	
 	_player_inside = true
+	_current_player = body
 	set_process_unhandled_input(true)
 	interaction_available.emit()
 
@@ -49,5 +66,6 @@ func _on_body_exited(body: Node2D) -> void:
 		return
 	
 	_player_inside = false
+	_current_player = null
 	set_process_unhandled_input(false)
 	interaction_unavailable.emit()

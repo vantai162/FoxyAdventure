@@ -42,5 +42,6 @@ func _perform_water_action() -> void:
 	# Wait for animation + water transition to complete
 	await get_tree().create_timer(obj.water_raise_duration).timeout
 	if fsm.states.has("summonwhirlpool"):
-		fsm.change_state(fsm.states.summonwhirlpool)
-	change_state(fsm.states.idle)
+		change_state(fsm.states.summonwhirlpool)
+	else:
+		change_state(fsm.states.idle)

@@ -59,14 +59,36 @@ enum SurfaceMode {
 @export var damage_per_second: float = 50.0  ## If not instant kill
 
 @export_group("Effects")
-@export var emit_light: bool = true  ## Lava glows!
 @export var emit_embers: bool = true  ## Rising embers
 @export var impact_heat_enabled: bool = true  ## Heat glow at bottom
+
+@export_group("Glow Light")
+@export var emit_light: bool = true:  ## Lava glows!
+	set(value):
+		emit_light = value
+		if is_inside_tree():
+			_rebuild_lights()
+@export var light_color: Color = Color(1.0, 0.5, 0.1, 1.0):  ## Orange-red glow
+	set(value):
+		light_color = value
+		for light in _lava_lights:
+			if is_instance_valid(light):
+				light.color = value
+@export var light_energy: float = 0.8:  ## Glow brightness
+	set(value):
+		light_energy = value
+		for light in _lava_lights:
+			if is_instance_valid(light):
+				light.energy = value
+@export var light_pulse_enabled: bool = true  ## Flickering animation
+@export var light_pulse_speed: float = 3.0  ## Flicker rate
+@export var light_pulse_amount: float = 0.3  ## Flicker intensity
 
 ## === INTERNAL STATE ===
 var _wave_time: float = 0.0
 var _flow_offset: float = 0.0
 var _light_pulse_time: float = 0.0
+var _base_light_energy: float = 0.8
 var _damage_timers: Dictionary = {}
 var _detected_pool: Node2D = null
 var _blend_registered: bool = false
@@ -117,13 +139,13 @@ func _process(delta: float) -> void:
 	if _flow_offset > lavafall_size.y * 2:
 		_flow_offset -= lavafall_size.y * 2
 	
-	# Light pulse
-	if _lava_lights.size() > 0:
-		_light_pulse_time += delta * 3.0
-		var pulse = sin(_light_pulse_time) * 0.15 + 0.85
+	# Light pulse animation (works in editor for preview)
+	if emit_light and _lava_lights.size() > 0 and light_pulse_enabled:
+		_light_pulse_time += delta * light_pulse_speed
+		var pulse = sin(_light_pulse_time) * light_pulse_amount
 		for light in _lava_lights:
-			if light:
-				light.energy = 0.8 * pulse
+			if is_instance_valid(light):
+				light.energy = _base_light_energy * (1.0 + pulse)
 	
 	_update_visuals()
 	
@@ -240,10 +262,11 @@ func _create_lights() -> void:
 	# Only 2 lights, positioned in upper portion (away from blend zone)
 	for i in range(2):
 		var light = PointLight2D.new()
-		light.color = Color(1.0, 0.5, 0.1, 1.0)
-		light.energy = 0.8
+		light.color = light_color
+		light.energy = light_energy
 		light.texture_scale = 1.5
 		light.blend_mode = Light2D.BLEND_MODE_ADD
+		light.shadow_enabled = false
 		light.z_index = ZLayers.LIGHT_EFFECT
 		
 		var gradient = GradientTexture2D.new()
@@ -264,6 +287,19 @@ func _create_lights() -> void:
 		
 		add_child(light)
 		_lava_lights.append(light)
+	
+	_base_light_energy = light_energy
+
+
+func _rebuild_lights() -> void:
+	## Rebuild lights when emit_light is toggled in editor
+	for light in _lava_lights:
+		if is_instance_valid(light):
+			light.queue_free()
+	_lava_lights.clear()
+	
+	if emit_light:
+		_create_lights()
 
 func _create_embers() -> void:
 	_ember_particles = GPUParticles2D.new()

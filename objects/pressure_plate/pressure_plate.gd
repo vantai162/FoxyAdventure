@@ -48,6 +48,10 @@ func _ready() -> void:
 	area_entered.connect(_on_area_entered)
 	area_exited.connect(_on_area_exited)
 	
+	# Listen for scene tree changes to clean up stale body references
+	# This handles player death/respawn where body is freed without exiting
+	get_tree().node_removed.connect(_on_any_node_removed)
+	
 	# Store original sprite position for tween animation
 	if sprite:
 		_original_sprite_pos = sprite.position
@@ -57,6 +61,27 @@ func _ready() -> void:
 		if plate_visual:
 			sprite = plate_visual
 			_original_sprite_pos = sprite.position
+
+
+func _exit_tree() -> void:
+	# Clean up global signal connection when plate is removed
+	if Engine.is_editor_hint():
+		return
+	
+	if get_tree() and get_tree().node_removed.is_connected(_on_any_node_removed):
+		get_tree().node_removed.disconnect(_on_any_node_removed)
+
+
+func _on_any_node_removed(node: Node) -> void:
+	## Called when ANY node is removed from tree - check if it was on the plate
+	## This handles the case where a body is queue_free'd (e.g., player death)
+	## without triggering body_exited
+	if _bodies_on_plate.has(node):
+		_bodies_on_plate.erase(node)
+		
+		# If plate is now empty and was pressed, release it
+		if is_pressed and _bodies_on_plate.is_empty() and not stay_activated and not _permanently_activated:
+			_release()
 
 ## Editor draw - show channel label
 func _draw() -> void:

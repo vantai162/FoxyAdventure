@@ -299,6 +299,10 @@ func _ready() -> void:
 	# Always enable processing for ambient wave animation (editor + runtime)
 	set_process(true)
 	
+	# Listen for node removal to clean up stale body references (player death)
+	if not Engine.is_editor_hint():
+		get_tree().node_removed.connect(_on_any_node_removed)
+	
 	# Runtime-only: subscribe to channel system
 	if not Engine.is_editor_hint():
 		if not listen_channel.is_empty():
@@ -306,6 +310,40 @@ func _ready() -> void:
 			if channel_manager:
 				channel_manager.channel_activated.connect(_on_channel_activated)
 				channel_manager.channel_deactivated.connect(_on_channel_deactivated)
+				
+				# Check if channel is already active (player respawned with lever still on)
+				if channel_manager.is_channel_active(listen_channel):
+					call_deferred("_on_channel_activated", listen_channel, null)
+
+
+func _exit_tree() -> void:
+	## Clean up signal connections when water is removed from tree
+	## Prevents stale callbacks to freed objects
+	if Engine.is_editor_hint():
+		return
+	
+	var channel_manager = get_node_or_null("/root/InteractionChannel")
+	if channel_manager:
+		if channel_manager.channel_activated.is_connected(_on_channel_activated):
+			channel_manager.channel_activated.disconnect(_on_channel_activated)
+		if channel_manager.channel_deactivated.is_connected(_on_channel_deactivated):
+			channel_manager.channel_deactivated.disconnect(_on_channel_deactivated)
+	
+	# Clean up node_removed connection
+	if get_tree() and get_tree().node_removed.is_connected(_on_any_node_removed):
+		get_tree().node_removed.disconnect(_on_any_node_removed)
+
+
+func _on_any_node_removed(node: Node) -> void:
+	## Called when ANY node is removed from tree - clean up stale body references
+	## Handles player death where body is queue_free'd without triggering body_exited
+	if _bodies_in_water.has(node):
+		_bodies_in_water.erase(node)
+		_swim_disturbance_timers.erase(node)
+	
+	if _boats_in_water.has(node):
+		_boats_in_water.erase(node)
+		_boats_moved = true
 
 
 func _on_channel_activated(channel: StringName, _source: Node) -> void:
@@ -818,6 +856,11 @@ func lower_water(target_height: float, duration: float = 2.0) -> void:
 	## @param target_height: New surface_pos_y value (negative = higher, positive = lower)
 	## @param duration: Time in seconds for transition
 	raise_water(target_height, duration)  # Same implementation
+
+func is_level_transitioning() -> bool:
+	## Returns true if water level is actively changing (raise/lower in progress)
+	## Whirlpools should wait for this to be false before applying depressions
+	return _water_raise_active
 
 func set_water_level_instant(target_height: float) -> void:
 	## Instantly set water level without animation

@@ -18,6 +18,7 @@
 [ext_resource type="PackedScene" uid="uid://h568k604b62r" path="res://effect_Item/BladeContainer/blade_container.tscn" id="17_blade_container"]
 [ext_resource type="PackedScene" uid="uid://dy2go6q81lmqg" path="res://effect_Item/TrapCoin/trap_coin.tscn" id="18_trap_coin"]
 [ext_resource type="PackedScene" uid="uid://cm32wkmjlw1rq" path="res://effect_Item/chest/trap_chest.tscn" id="19_trap_chest"]
+[ext_resource type="PackedScene" path="res://objects/scene_transition/scene_transition.tscn" id="20_scene_transition"]
 
 [node name="Level_3_3" type="Node2D"]
 script = ExtResource("1_stage_script")
@@ -254,6 +255,20 @@ color_preset = 4
 [node name="Objects" type="Node2D" parent="."]
 
 [node name="ExitZone" type="Node2D" parent="."]
+
+[node name="FromLevel3_2" parent="ExitZone" instance=ExtResource("20_scene_transition")]
+position = Vector2(40, 1472)
+target_scene = "res://test/levels/level_3/level_3_2.tscn"
+target_spawn_name = "ToLevel3_3"
+exit_direction = 0
+spawn_offset = Vector2(48, 0)
+
+[node name="ToLevel3_4" parent="ExitZone" instance=ExtResource("20_scene_transition")]
+position = Vector2(700, 40)
+target_scene = "res://test/levels/level_3/level_3_4.tscn"
+target_spawn_name = "FromLevel3_3"
+exit_direction = 2
+spawn_offset = Vector2(0, 48)
 
 [node name="Foxy" parent="." instance=ExtResource("10_foxy")]
 position = Vector2(140, 180)

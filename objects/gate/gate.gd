@@ -60,12 +60,33 @@ func _ready() -> void:
 	if Engine.is_editor_hint():
 		return
 	
-	# Subscribe to channel
+	# Subscribe to channel with automatic cleanup on tree exit
 	if not listen_channel.is_empty():
 		var channel_manager = get_node_or_null("/root/InteractionChannel")
 		if channel_manager:
+			# Connect directly - these connections are automatically cleaned
+			# when the Gate is freed because we're connecting instance methods
 			channel_manager.channel_activated.connect(_on_channel_activated)
 			channel_manager.channel_deactivated.connect(_on_channel_deactivated)
+			
+			# Also check initial state - channel might already be active
+			if channel_manager.is_channel_active(listen_channel):
+				# Defer so the gate is fully ready
+				call_deferred("_on_channel_activated", listen_channel, null)
+
+
+func _exit_tree() -> void:
+	# Clean up signal connections when gate is removed from tree
+	# This prevents stale callbacks to freed objects
+	if Engine.is_editor_hint():
+		return
+	
+	var channel_manager = get_node_or_null("/root/InteractionChannel")
+	if channel_manager:
+		if channel_manager.channel_activated.is_connected(_on_channel_activated):
+			channel_manager.channel_activated.disconnect(_on_channel_activated)
+		if channel_manager.channel_deactivated.is_connected(_on_channel_deactivated):
+			channel_manager.channel_deactivated.disconnect(_on_channel_deactivated)
 
 func _on_channel_activated(channel: StringName, _source: Node) -> void:
 	if channel != listen_channel:

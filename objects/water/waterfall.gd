@@ -60,11 +60,38 @@ enum SurfaceMode {
 @export_group("Effects")
 @export var impact_spray_enabled: bool = true  ## Mist at bottom
 @export var splash_on_enter: bool = true  ## Splash when player enters
-@export var emit_light: bool = false  ## Optional glow
+
+@export_group("Glow Light (Optional)")
+@export var emit_light: bool = false:  ## Bioluminescent/magical glow
+	set(value):
+		emit_light = value
+		if is_inside_tree():
+			_rebuild_light()
+@export var light_color: Color = Color(0.3, 0.8, 1.0, 0.8):  ## Glow color (cyan default, change for bioluminescent)
+	set(value):
+		light_color = value
+		if _water_light:
+			_water_light.color = value
+			_rebuild_light_texture()
+@export var light_energy: float = 0.6:  ## Glow brightness
+	set(value):
+		light_energy = value
+		if _water_light:
+			_water_light.energy = value
+@export var light_texture_scale: float = 2.0:  ## Glow radius
+	set(value):
+		light_texture_scale = value
+		if _water_light:
+			_water_light.texture_scale = value
+@export var light_pulse_enabled: bool = true  ## Gentle pulsing animation
+@export var light_pulse_speed: float = 1.5  ## Pulse rate
+@export var light_pulse_amount: float = 0.25  ## Pulse intensity
 
 ## === INTERNAL STATE ===
 var _wave_time: float = 0.0
 var _flow_offset: float = 0.0
+var _light_pulse_time: float = 0.0
+var _base_light_energy: float = 0.6
 var _bodies_in_water: Array = []
 var _detected_pool: Node2D = null
 var _blend_registered: bool = false
@@ -83,9 +110,25 @@ func _ready() -> void:
 	_rebuild()
 	set_process(true)
 	
+	# Track node removals to clean stale body references (player death scenario)
+	if not Engine.is_editor_hint():
+		get_tree().node_removed.connect(_on_any_node_removed)
+	
 	# Auto-detect pool below at runtime
 	if not Engine.is_editor_hint() and auto_blend_with_pool:
 		call_deferred("_auto_blend_setup")
+
+
+func _exit_tree() -> void:
+	# Disconnect node removal tracking
+	if get_tree() and get_tree().node_removed.is_connected(_on_any_node_removed):
+		get_tree().node_removed.disconnect(_on_any_node_removed)
+
+
+func _on_any_node_removed(node: Node) -> void:
+	# Clean stale body references when nodes are freed (e.g., player death)
+	if _bodies_in_water.has(node):
+		_bodies_in_water.erase(node)
 
 func _rebuild() -> void:
 	for child in get_children():
@@ -94,15 +137,18 @@ func _rebuild() -> void:
 	_bodies_in_water.clear()
 	surface_line_left = null
 	surface_line_right = null
+	_water_light = null
 	_blend_registered = false
 	
 	_create_visuals()
 	_create_collision()
 	
+	# Particles only at runtime (performance in editor)
 	if impact_spray_enabled and not Engine.is_editor_hint():
 		_create_impact_spray()
 	
-	if emit_light and not Engine.is_editor_hint():
+	# Light works in EDITOR for designer visibility
+	if emit_light:
 		_create_light()
 	
 	_update_visuals()
@@ -114,6 +160,12 @@ func _process(delta: float) -> void:
 		_flow_offset -= waterfall_size.y * 2
 	
 	_update_visuals()
+	
+	# Light pulsing animation (works in editor too for preview)
+	if emit_light and _water_light and light_pulse_enabled:
+		_light_pulse_time += delta * light_pulse_speed
+		var pulse = sin(_light_pulse_time) * light_pulse_amount
+		_water_light.energy = _base_light_energy * (1.0 + pulse)
 	
 	if Engine.is_editor_hint():
 		return
@@ -290,21 +342,60 @@ func _create_impact_spray() -> void:
 
 func _create_light() -> void:
 	_water_light = PointLight2D.new()
-	_water_light.color = Color(0.3, 0.8, 1.0, 0.8)
-	_water_light.energy = 0.5
-	_water_light.texture_scale = 1.5
-	_water_light.position = Vector2(waterfall_size.x / 2.0, waterfall_size.y * 0.3)
-	_water_light.z_index = ZLayers.LIGHT_EFFECT  # Light above water
+	_water_light.enabled = true
+	_water_light.color = light_color
+	_water_light.energy = light_energy
+	_water_light.texture_scale = light_texture_scale
+	_water_light.blend_mode = Light2D.BLEND_MODE_ADD
+	_water_light.shadow_enabled = false
+	_water_light.range_z_min = -100
+	_water_light.range_z_max = 100
+	# Position at center-top of waterfall (glow spreads down)
+	_water_light.position = Vector2(waterfall_size.x / 2.0, waterfall_size.y * 0.35)
+	_water_light.z_index = ZLayers.LIGHT_EFFECT
 	
-	var img = Image.create(64, 64, false, Image.FORMAT_RGBA8)
-	var center = Vector2(32, 32)
-	for x in range(64):
-		for y in range(64):
-			var dist = Vector2(x, y).distance_to(center) / 32.0
-			img.set_pixel(x, y, Color(1, 1, 1, clamp(1.0 - dist, 0.0, 1.0)))
-	_water_light.texture = ImageTexture.create_from_image(img)
+	# Use proper radial gradient texture
+	_water_light.texture = _create_light_gradient_texture()
+	
+	# Store base energy for pulse animation
+	_base_light_energy = light_energy
 	
 	add_child(_water_light)
+
+
+func _create_light_gradient_texture() -> GradientTexture2D:
+	## Creates soft radial gradient for waterfall glow
+	var gradient := Gradient.new()
+	
+	# Bright center fading to transparent
+	gradient.set_color(0, Color(1.0, 1.0, 1.0, 1.0))  # White center (color tinted by light.color)
+	gradient.set_color(1, Color(1.0, 1.0, 1.0, 0.0))  # Transparent edges
+	
+	var tex := GradientTexture2D.new()
+	tex.gradient = gradient
+	tex.width = 128
+	tex.height = 128
+	tex.fill = GradientTexture2D.FILL_RADIAL
+	tex.fill_from = Vector2(0.5, 0.5)  # Center
+	tex.fill_to = Vector2(0.0, 0.5)     # Radial outward
+	
+	return tex
+
+
+func _rebuild_light() -> void:
+	## Rebuild light when emit_light is toggled in editor
+	if _water_light:
+		_water_light.queue_free()
+		_water_light = null
+	
+	if emit_light:
+		_create_light()
+
+
+func _rebuild_light_texture() -> void:
+	## Rebuild texture when color changes
+	if _water_light:
+		_water_light.texture = _create_light_gradient_texture()
 
 ## ============================================
 ## VISUAL UPDATE (per frame)

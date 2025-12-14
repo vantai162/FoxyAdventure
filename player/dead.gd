@@ -5,10 +5,10 @@ func _enter() -> void:
 	obj.velocity = Vector2.ZERO
 	obj.change_animation("dead")
 	
-	# Extinguish torch when player dies
+	# Extinguish torch when player dies (no re-ignition - player is dead!)
 	var torch = obj.get_node_or_null("Direction/PlayerTorch")
 	if torch and torch.is_lit:
-		torch.extinguish_torch()
+		torch.extinguish("death")
 	
 	AudioManager.play_sound("game_over",15.0)
 	await obj.animated_sprite.animation_finished
