@@ -33,6 +33,7 @@
 script = ExtResource("1_stage_script")
 
 [node name="DarknessModulate" type="CanvasModulate" parent="."]
+visible = false
 color = Color(0.1, 0.08, 0.12, 1)
 
 [node name="PlayerSpawn" type="Marker2D" parent="."]
@@ -223,7 +224,7 @@ emit_light = true
 [node name="Puzzle" type="Node2D" parent="."]
 
 [node name="Gate" parent="Puzzle" instance=ExtResource("25_raubr")]
-position = Vector2(1123, 918)
+position = Vector2(1122, 922)
 listen_channel = &"ThrowForExit"
 direction = 3
 
@@ -481,6 +482,7 @@ position = Vector2(57, 456)
 target_scene = "res://test/levels/level_3/level_3_1.tscn"
 target_spawn_name = "ToLevel3_2"
 exit_direction = 0
+spawn_offset = Vector2(48, 0)
 
 [node name="ToLevel3_3" parent="ExitZone" instance=ExtResource("28_scene_transition")]
 position = Vector2(1925, 1002)
@@ -490,7 +492,7 @@ wipe_duration = 0.15
 
 [node name="Foxy" parent="." instance=ExtResource("10_foxy")]
 z_index = 1
-position = Vector2(77, 466)
+position = Vector2(1199, 881)
 
 [editable path="Platforms/MovingPlatform2"]
 [editable path="Platforms/MovingPlatform3"]

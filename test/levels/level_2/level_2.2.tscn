@@ -1,6 +1,6 @@
 [gd_scene load_steps=26 format=4 uid="uid://5my2pujg1oqp"]
 
-[ext_resource type="Script" path="res://test/levels/level_2/level_2.2.gd" id="1_3q18u"]
+[ext_resource type="Script" uid="uid://63ou6uas0aex" path="res://test/levels/level_2/level_2.2.gd" id="1_3q18u"]
 [ext_resource type="PackedScene" uid="uid://dm741hii7d5nv" path="res://scenes/game_screen/health_bar.tscn" id="2_l0ym8"]
 [ext_resource type="PackedScene" uid="uid://k1cvcu80rfmm" path="res://scenes/game_screen/coin_ui.tscn" id="3_q8vad"]
 [ext_resource type="PackedScene" uid="uid://cstfpndmrkms3" path="res://scenes/game_screen/key_ui.tscn" id="4_t4mgd"]
@@ -155,8 +155,11 @@ tile_set = ExtResource("18_f2t4q")
 
 [node name="water" parent="." instance=ExtResource("19_5dpsv")]
 z_index = 2
-position = Vector2(154, 409)
-water_size = Vector2(1500, 200)
+position = Vector2(154, 140)
+water_size = Vector2(1500, 469)
+surface_level = 269.0
+raised_level = 0.0
+lowered_level = 269.0
 
 [node name="Enemy" type="Node2D" parent="."]
 

@@ -1,7 +1,7 @@
 extends EnemyState
 
 ## Phase 2 water manipulation attack
-## Raises water to flood level or lowers it back, then returns to Idle
+## Raises water to flood level (using water's raised_level) or lowers it back, then returns to Idle
 
 
 func _enter():
@@ -20,23 +20,16 @@ func _perform_water_action() -> void:
 		change_state(fsm.states.idle)
 		return
 	
-	# Calculate target height relative to water node position
-	var water_global_pos = water_node.global_position
-	var target_surface_y: float
-	
 	if obj.water_raised:
-		# Lower water back to normal
-		target_surface_y = 0.5
+		# Lower water back to normal surface_level
+		water_node.return_to_normal(obj.water_raise_duration)
 		obj.water_raised = false
 	else:
-		# Raise water to configured target height
-		# target_global_y = water_global_pos.y + target_surface_y
-		# Solve for target_surface_y: target_surface_y = target_global_y - water_global_pos.y
-		target_surface_y = obj.water_raise_target_y - water_global_pos.y
+		# Raise water to the configured raised_level on the water node
+		# The water's raised_level should be set by the level designer
+		water_node.raise_water(water_node.raised_level, obj.water_raise_duration)
 		obj.water_raised = true
 	
-	# Trigger water level change
-	water_node.raise_water(target_surface_y, obj.water_raise_duration)
 	obj.last_water_action_time = Time.get_ticks_msec() / 1000.0
 	
 	# Wait for animation + water transition to complete

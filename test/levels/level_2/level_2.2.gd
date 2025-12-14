@@ -187,13 +187,13 @@ func _on_dialogic_signal_event(argument: String):
 		# 1. Tìm node nước (Thay "WaterArea" bằng tên thật của node nước trong Scene của bạn)
 	var water_node = find_child("water", true, false) 
 		
-		# 2. Gọi hàm reset (Thay "ten_ham_reset_cua_ban" bằng tên hàm thật bạn đã viết)
+		# 2. Reset water to normal level
 	if water_node:
-		if water_node.has_method("lower_water"): # Ví dụ tên hàm là reset_water
-			water_node.lower_water(0.5, 2)
+		if water_node.has_method("return_to_normal"):
+			water_node.return_to_normal(2.0)
 			print("Đã cho nước rúttt")
 		else:
-			print("Lỗi: Tìm thấy node nước nhưng không thấy hàm reset!")
+			print("Lỗi: Tìm thấy node nước nhưng không thấy hàm return_to_normal!")
 			
 	if argument == "kill_warlord":
 		boss.die()

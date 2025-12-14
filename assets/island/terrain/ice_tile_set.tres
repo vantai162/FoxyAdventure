@@ -1,4 +1,4 @@
-[gd_resource type="TileSet" load_steps=9 format=3 uid="uid://0yf5cmwk6u1i"]
+[gd_resource type="TileSet" load_steps=17 format=3 uid="uid://0yf5cmwk6u1i"]
 
 [ext_resource type="Texture2D" uid="uid://t3cktfmhcitn" path="res://assets/island/terrain/ice level demo.png" id="1_lvvyk"]
 [ext_resource type="PackedScene" uid="uid://cqjqdbyd7mqfr" path="res://environment/cave/glowing_crystal.tscn" id="3_crystal"]
@@ -6,8 +6,32 @@
 [ext_resource type="PackedScene" uid="uid://lrdkn2gv1v1m" path="res://effect_Item/coin/coin.tscn" id="15_coin"]
 [ext_resource type="PackedScene" uid="uid://b3cbk6lmh2cc3" path="res://effect_Item/heal_potion/health_potion.tscn" id="16_potion"]
 
+[sub_resource type="OccluderPolygon2D" id="OccluderPolygon2D_g0u3w"]
+polygon = PackedVector2Array(-8, -8, -8, 8, 8, 8, 8, -8)
+
+[sub_resource type="OccluderPolygon2D" id="OccluderPolygon2D_nf0e5"]
+polygon = PackedVector2Array(-8, -8, -8, 8, 8, 8, 8, -8)
+
+[sub_resource type="OccluderPolygon2D" id="OccluderPolygon2D_jpgnl"]
+polygon = PackedVector2Array(-8, -8, -8, 8, 8, 8, 8, -8)
+
+[sub_resource type="OccluderPolygon2D" id="OccluderPolygon2D_esbht"]
+polygon = PackedVector2Array(-8, -8, -8, 8, 8, 8, 8, -8)
+
 [sub_resource type="OccluderPolygon2D" id="OccluderPolygon2D_lvvyk"]
 polygon = PackedVector2Array(-8, -8, 8, -8, 8, 8, -8, 8)
+
+[sub_resource type="OccluderPolygon2D" id="OccluderPolygon2D_kapsi"]
+polygon = PackedVector2Array(-8, -8, -8, 8, 8, 8, 8, -8)
+
+[sub_resource type="OccluderPolygon2D" id="OccluderPolygon2D_0620o"]
+polygon = PackedVector2Array(-8, -8, -8, 8, 8, 8, 8, -8)
+
+[sub_resource type="OccluderPolygon2D" id="OccluderPolygon2D_gxew1"]
+polygon = PackedVector2Array(-8, -8, -8, 8, 8, 8, 8, -8)
+
+[sub_resource type="OccluderPolygon2D" id="OccluderPolygon2D_23828"]
+polygon = PackedVector2Array(-8, -8, -8, 8, 8, 8, 8, -8)
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_ws4v0"]
 texture = ExtResource("1_lvvyk")
@@ -99,6 +123,7 @@ texture = ExtResource("1_lvvyk")
 29:4/0 = 0
 1:5/0 = 0
 2:5/0 = 0
+2:5/0/occlusion_layer_0/polygon_0/polygon = SubResource("OccluderPolygon2D_esbht")
 3:5/0 = 0
 8:5/0 = 0
 9:5/0 = 0
@@ -256,8 +281,15 @@ texture = ExtResource("1_lvvyk")
 2:13/0 = 0
 3:13/0 = 0
 8:13/0 = 0
+8:13/0/occlusion_layer_0/polygon_0/polygon = SubResource("OccluderPolygon2D_kapsi")
+8:13/0/physics_layer_0/polygon_0/points = PackedVector2Array(-8, -8, -8, 8, 8, 8, 8, -8)
 9:13/0 = 0
+9:13/0/occlusion_layer_0/polygon_0/polygon = SubResource("OccluderPolygon2D_gxew1")
+9:13/0/physics_layer_0/polygon_0/points = PackedVector2Array(-8, -8, -8, -8, -8, -8)
+9:13/0/physics_layer_0/polygon_1/points = PackedVector2Array(-8, 8, 8, 8, 8, -8, -8, -8)
 10:13/0 = 0
+10:13/0/occlusion_layer_0/polygon_0/polygon = SubResource("OccluderPolygon2D_g0u3w")
+10:13/0/physics_layer_0/polygon_0/points = PackedVector2Array(-8, -8, -8, 8, 8, 8, 8, -8)
 11:13/0 = 0
 12:13/0 = 0
 13:13/0 = 0
@@ -275,9 +307,17 @@ texture = ExtResource("1_lvvyk")
 5:14/0 = 0
 6:14/0 = 0
 8:14/0 = 0
+8:14/0/occlusion_layer_0/polygon_0/polygon = SubResource("OccluderPolygon2D_0620o")
+8:14/0/physics_layer_0/polygon_0/points = PackedVector2Array(-8, -8, -8, 8, 8, 8, 8, -8)
 9:14/0 = 0
+9:14/0/occlusion_layer_0/polygon_0/polygon = SubResource("OccluderPolygon2D_23828")
+9:14/0/physics_layer_0/polygon_0/points = PackedVector2Array(-8, -8, -8, 8, 8, 8, 8, -8)
 10:14/0 = 0
+10:14/0/occlusion_layer_0/polygon_0/polygon = SubResource("OccluderPolygon2D_nf0e5")
+10:14/0/physics_layer_0/polygon_0/points = PackedVector2Array(-8, -8, -8, 8, 8, 8, 8, -8)
 11:14/0 = 0
+11:14/0/occlusion_layer_0/polygon_0/polygon = SubResource("OccluderPolygon2D_jpgnl")
+11:14/0/physics_layer_0/polygon_0/points = PackedVector2Array(-8, -8, -8, 8, 8, 8, 8, -8)
 16:14/0 = 0
 19:14/0 = 0
 20:14/0 = 0
