@@ -90,6 +90,7 @@ grow_horizontal = 1
 grow_vertical = 1
 
 [node name="DarknessModulate" type="CanvasModulate" parent="."]
+visible = false
 color = Color(0.1, 0.08, 0.12, 1)
 
 [node name="PlayerSpawn" type="Marker2D" parent="."]
@@ -280,7 +281,7 @@ emit_light = true
 [node name="Puzzle" type="Node2D" parent="."]
 
 [node name="Gate" parent="Puzzle" instance=ExtResource("25_raubr")]
-position = Vector2(1123, 918)
+position = Vector2(1122, 922)
 listen_channel = &"ThrowForExit"
 direction = 3
 
@@ -548,7 +549,7 @@ wipe_duration = 0.15
 
 [node name="Foxy" parent="." instance=ExtResource("10_foxy")]
 z_index = 1
-position = Vector2(77, 466)
+position = Vector2(1199, 881)
 
 [node name="Checkpoint" parent="." instance=ExtResource("35_0ao1h")]
 position = Vector2(169, 463)

@@ -1,9 +1,15 @@
+@tool
 extends Area2D
 class_name SectionTransition
 
 ## Seamless transition trigger for moving between level sections
 ## Place at edges of sections - player walks through to transition
 ## Designer-friendly: set direction, target, and it just works
+##
+## IMPORTANT: The collision shape automatically adjusts based on direction!
+## - LEFT/RIGHT transitions use a VERTICAL zone (tall and thin)
+## - UP/DOWN transitions use a HORIZONTAL zone (wide and short)
+## DO NOT rotate this node - change the direction property instead!
 
 signal transition_started
 signal transition_completed
@@ -11,7 +17,16 @@ signal transition_completed
 enum Direction { LEFT, RIGHT, UP, DOWN }
 
 @export_group("Transition Setup")
-@export var direction: Direction = Direction.RIGHT  ## Which edge this transition is on
+## Which direction the player exits through this transition.
+## Shape automatically adjusts: LEFT/RIGHT = vertical, UP/DOWN = horizontal.
+@export var direction: Direction = Direction.RIGHT:
+	set(v):
+		direction = v
+		_update_shape_for_direction()
+		_update_spawn_offset_for_direction()
+		notify_property_list_changed()
+		update_configuration_warnings()
+
 @export var target_transition_name: String = ""  ## Name of matching transition in target (optional)
 @export var target_section: NodePath  ## Optional: path to target LevelSection
 
@@ -21,10 +36,25 @@ enum Direction { LEFT, RIGHT, UP, DOWN }
 @export var trigger_threshold: float = 10.0  ## Minimum velocity to trigger
 
 @export_group("Player Spawn")
-@export var spawn_offset: Vector2 = Vector2(48, 0)  ## Offset from matching transition
+## Offset from matching transition where player spawns.
+## Auto-suggested based on direction, but can be customized.
+@export var spawn_offset: Vector2 = Vector2(48, 0)
 
 @export_group("Camera")
 @export var update_camera_bounds: bool = true  ## Update camera to new section bounds
+
+@export_group("Zone Size")
+## Thickness of the trigger zone (perpendicular to transition direction)
+@export var zone_thickness: float = 16.0:
+	set(v):
+		zone_thickness = v
+		_update_shape_for_direction()
+
+## Length of the trigger zone (parallel to transition direction)
+@export var zone_length: float = 128.0:
+	set(v):
+		zone_length = v
+		_update_shape_for_direction()
 
 @export_group("Debug")
 @export var show_debug: bool = false  ## Show trigger zone in editor
@@ -32,46 +62,106 @@ enum Direction { LEFT, RIGHT, UP, DOWN }
 var is_transitioning: bool = false
 var player_in_zone: bool = false
 
-@onready var collision_shape: CollisionShape2D = $CollisionShape2D if has_node("CollisionShape2D") else null
+var _collision_shape: CollisionShape2D = null
+
+
+func _get_configuration_warnings() -> PackedStringArray:
+	var warnings: PackedStringArray = []
+	
+	# Warn if node has rotation - this breaks direction logic!
+	if not is_zero_approx(rotation) or not is_zero_approx(rotation_degrees):
+		warnings.append("⚠️ This node has ROTATION applied!\nDO NOT rotate SectionTransition - change the 'direction' property instead.\nRotation breaks velocity detection and spawn offset calculations.")
+	
+	# Warn if scale is not uniform
+	if not is_equal_approx(scale.x, 1.0) or not is_equal_approx(scale.y, 1.0):
+		warnings.append("⚠️ This node has SCALE applied!\nUse 'zone_thickness' and 'zone_length' properties instead of scaling.")
+	
+	# Warn about spawn_offset mismatch with direction
+	var expected_offset = _get_expected_spawn_offset()
+	if spawn_offset.sign() != expected_offset.sign() and spawn_offset != Vector2.ZERO:
+		warnings.append("ℹ️ spawn_offset direction may not match transition direction.\nExpected offset direction: %s\nCurrent: %s" % [expected_offset.sign(), spawn_offset.sign()])
+	
+	return warnings
+
 
 func _ready() -> void:
-	body_entered.connect(_on_body_entered)
-	body_exited.connect(_on_body_exited)
+	# Cache collision shape reference
+	_collision_shape = $CollisionShape2D if has_node("CollisionShape2D") else null
 	
-	# Ensure collision layer setup
-	collision_layer = 0
-	collision_mask = 2  # Player layer
+	# Runtime-only connections
+	if not Engine.is_editor_hint():
+		body_entered.connect(_on_body_entered)
+		body_exited.connect(_on_body_exited)
+		
+		# Ensure collision layer setup
+		collision_layer = 0
+		collision_mask = 2  # Player layer
 	
-	_setup_collision_shape()
+	_update_shape_for_direction()
 	
 	if show_debug and has_node("DebugSprite"):
 		$DebugSprite.visible = true
 
-func _setup_collision_shape() -> void:
-	if collision_shape == null or collision_shape.shape == null:
+
+func _update_shape_for_direction() -> void:
+	## Update collision shape size based on direction (works in editor and runtime)
+	if _collision_shape == null:
+		if has_node("CollisionShape2D"):
+			_collision_shape = $CollisionShape2D
+		else:
+			return
+	
+	if _collision_shape.shape == null:
 		return
 	
-	var shape = collision_shape.shape as RectangleShape2D
+	var shape = _collision_shape.shape as RectangleShape2D
 	if shape == null:
 		shape = RectangleShape2D.new()
-		collision_shape.shape = shape
+		_collision_shape.shape = shape
 	else:
-		# SAFETY: Make shape unique to prevent cross-instance pollution
-		# (even though this isn't @tool, multiple instances could share the scene resource)
+		# Make shape unique to prevent cross-instance pollution
 		if not shape.resource_local_to_scene:
 			var unique_shape = shape.duplicate()
 			unique_shape.resource_local_to_scene = true
-			collision_shape.shape = unique_shape
+			_collision_shape.shape = unique_shape
 			shape = unique_shape
 	
-	# Auto-size based on direction
+	# Size based on direction:
+	# LEFT/RIGHT = vertical zone (thin width, tall height)
+	# UP/DOWN = horizontal zone (wide width, thin height)
 	match direction:
 		Direction.LEFT, Direction.RIGHT:
-			shape.size = Vector2(16, 128)
+			shape.size = Vector2(zone_thickness, zone_length)
 		Direction.UP, Direction.DOWN:
-			shape.size = Vector2(128, 16)
+			shape.size = Vector2(zone_length, zone_thickness)
+
+
+func _update_spawn_offset_for_direction() -> void:
+	## Suggest appropriate spawn offset based on direction
+	## Only auto-update if it looks like the default value
+	var current_magnitude = spawn_offset.length()
+	if current_magnitude < 1.0 or is_equal_approx(current_magnitude, 48.0):
+		spawn_offset = _get_expected_spawn_offset()
+
+
+func _get_expected_spawn_offset() -> Vector2:
+	## Get the expected spawn offset for current direction
+	match direction:
+		Direction.RIGHT:
+			return Vector2(48, 0)   # Spawn to the right of exit
+		Direction.LEFT:
+			return Vector2(-48, 0)  # Spawn to the left of exit
+		Direction.DOWN:
+			return Vector2(0, 48)   # Spawn below the exit
+		Direction.UP:
+			return Vector2(0, -48)  # Spawn above the exit
+	return Vector2(48, 0)
 
 func _physics_process(_delta: float) -> void:
+	# Skip physics in editor
+	if Engine.is_editor_hint():
+		return
+	
 	if not auto_trigger or not player_in_zone or is_transitioning:
 		return
 	

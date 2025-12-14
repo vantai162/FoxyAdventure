@@ -160,8 +160,11 @@ tile_set = ExtResource("18_f2t4q")
 
 [node name="water" parent="." instance=ExtResource("19_5dpsv")]
 z_index = 11
-position = Vector2(154, 409)
-water_size = Vector2(1500, 200)
+position = Vector2(154, 140)
+water_size = Vector2(1500, 469)
+surface_level = 269.0
+raised_level = 0.0
+lowered_level = 269.0
 
 [node name="Enemy" type="Node2D" parent="."]
 

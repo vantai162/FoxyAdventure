@@ -9,7 +9,6 @@ extends EnemyCharacter
 @export var phase_transition_roar_delay: float = 0.3  ## Delay before roar animation
 
 @export_group("Phase 2 - Water Mechanics")
-@export var water_raise_target_y: float = 140  ## Global Y position for raised water (negative = higher)
 @export var water_raise_duration: float = 4.0    ## Duration for water to raise/lower (seconds)
 @export var water_action_cooldown: float = 8.0   ## Cooldown between water raises/lowers (seconds)
 

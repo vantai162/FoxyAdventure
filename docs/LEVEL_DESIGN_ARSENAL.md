@@ -399,9 +399,33 @@ Receivers can be configured to do different things on activate/deactivate:
 | **SpikeRetractable** | Receiver | `listen_channel` (mode = CHANNEL) | `on_activate`/`on_deactivate` (EXTEND/RETRACT/TOGGLE) |
 | **WindArea** | Receiver | `listen_channel` | `on_activate`/`on_deactivate` (ENABLE/DISABLE/TOGGLE), `start_enabled` |
 | **Stalactite** | Receiver | `listen_channel` (mode = CHANNEL) | Falls on activate (one-shot trap) |
-| **Water** | Receiver | `listen_channel` | `raised_level`, `lowered_level`, `level_transition_time` |
-| **LavaPool** | Receiver | `listen_channel` | Uses `drain_target_y`, `fill_target_y`, `default_drain_duration`, `default_fill_duration` |
+| **Water** | Receiver | `listen_channel` | `on_activate`/`on_deactivate` (RAISE/LOWER/STAY/OPPOSITE), `surface_level`, `raised_level`, `lowered_level`, `raise_duration`, `lower_duration` |
+| **LavaPool** | Receiver | `listen_channel` | `on_activate`/`on_deactivate` (DRAIN/FILL/STAY/OPPOSITE), `surface_level`, `drained_level`, `filled_level`, `drain_duration`, `fill_duration` |
 | **FlameHazard** | Receiver | `listen_channel` | `on_activate`/`on_deactivate` (IGNITE/EXTINGUISH/TOGGLE) |
+
+### Water & Lava Level Configuration
+
+Both **Water** and **LavaPool** use an intuitive **absolute level-based** API:
+
+| Property | Description | Example |
+|----------|-------------|---------|
+| `surface_level` | Normal resting position (pixels from top of pool) | `20.0` |
+| `raised_level` / `filled_level` | Where surface goes when RAISED/FILLED | `8.0` (higher up) |
+| `lowered_level` / `drained_level` | Where surface goes when LOWERED/DRAINED | `80.0` (further down) |
+| `on_activate` | What happens on channel activation | `RAISE`/`LOWER` or `DRAIN`/`FILL` |
+| `on_deactivate` | What happens on channel deactivation | `RETURN_TO_SURFACE`/`STAY`/`OPPOSITE` |
+| `start_empty` | Start with fluid at bottom (empty pool) | ✅ for rising traps |
+| `start_full` | Start with fluid at top (full pool) | ✅ for drain puzzles |
+| `show_level_guides` | Editor-only: draw visual guide lines | ✅ for debugging |
+
+**Designer-friendly features:**
+- All values are "pixels from TOP" — intuitive Y coordinate system
+- `show_level_guides` draws colored lines in editor showing all three levels
+- `start_empty`/`start_full` convenience toggles — no math needed!
+- `on_deactivate = STAY` for one-way permanent puzzles
+- `on_deactivate = OPPOSITE` for alternating behavior
+- Editor warnings for illogical configurations (drained < surface, etc.)
+- `return_to_normal()` function to reset surface to resting position
 
 ---
 
