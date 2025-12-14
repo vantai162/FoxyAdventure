@@ -89,7 +89,7 @@ enum attack_direction {
 }
 
 @export var InitCoolDown = {
-	"Dash": 2
+	"Dash": 1
 }
 
 var attack_cooldown: int = 1

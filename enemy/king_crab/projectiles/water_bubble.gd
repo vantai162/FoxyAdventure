@@ -6,13 +6,15 @@ extends RigidBody2D
 @export var grow_time: float = 1.0   
 
 @onready var sprite = $AnimatedSprite2D
-
 var trapped_player: Player = null
 var trap_timer: float = 0
 var launch_direction := Vector2.ZERO
 
 func _ready():
 	trap_timer = 0
+	if has_node("life_timer"):
+		$life_timer.wait_time = life_time
+		$life_timer.start()
 	sprite.play("idle")
 	scale = Vector2(0.2, 0.2)  
 	_start_grow_effect()
@@ -42,7 +44,7 @@ func _process(delta):
 	global_position += linear_velocity * delta
 
 	if trapped_player:
-		global_position = trapped_player.global_position
+		trapped_player.global_position = global_position
 
 func _on_life_timer_timeout():
 	explode()
@@ -56,7 +58,9 @@ func explode():
 
 
 func _on_area_2d_body_entered(body: Node2D) -> void:
+	if body.Effect["Stun"]>0:
+		return
 	trap_timer = trap_duration
 	trapped_player = body
-	body.apply_bubble_trap(trap_duration)
+	body._applyeffect("Stun",trap_duration)
 	linear_velocity = Vector2.ZERO

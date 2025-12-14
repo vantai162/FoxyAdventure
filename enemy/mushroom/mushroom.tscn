@@ -6,7 +6,7 @@
 [ext_resource type="Texture2D" uid="uid://cnffiueq84mw3" path="res://assets/monsters/mushroom/mushroom_hurt_01.png" id="4_ky03m"]
 [ext_resource type="Texture2D" uid="uid://3618lytb7nnv" path="res://assets/monsters/mushroom/mushroom_01.png" id="5_wkm5k"]
 [ext_resource type="Texture2D" uid="uid://bqgmklofxv0qi" path="res://assets/monsters/mushroom/mushroom_02.png" id="6_nf052"]
-[ext_resource type="Script" uid="uid://tyxyrjlixj58" path="res://enemy/mushroom/run.gd" id="7_lprww"]
+[ext_resource type="Script" uid="uid://vrqe6nhdbpvu" path="res://enemy/mushroom/run.gd" id="7_lprww"]
 [ext_resource type="Texture2D" uid="uid://cghgcxg1pvwd6" path="res://assets/monsters/mushroom/mushroom_03.png" id="7_of5h1"]
 [ext_resource type="Script" uid="uid://bec5oo64fsxp5" path="res://enemy/mushroom/explode.gd" id="8_jlpow"]
 [ext_resource type="Texture2D" uid="uid://b251p3vy88f5o" path="res://assets/monsters/mushroom/sleep.png" id="8_wkm5k"]
@@ -113,7 +113,6 @@ animation = &"hurt"
 [node name="FrontRayCast2D" type="RayCast2D" parent="Direction"]
 position = Vector2(8, 9)
 target_position = Vector2(14, 0)
-collision_mask = 1
 
 [node name="DownRayCast2D" type="RayCast2D" parent="Direction"]
 position = Vector2(14, -4)
