@@ -61,7 +61,7 @@
 [ext_resource type="AudioStream" uid="uid://b8tju1hs1dwa8" path="res://assets/sounds/jump.wav" id="51_a4g31"]
 [ext_resource type="PackedScene" uid="uid://bsqdqcru1xnem" path="res://player/torch/player_torch.tscn" id="53_torch_scene"]
 [ext_resource type="Script" uid="uid://itto4t514erb" path="res://player/stun.gd" id="56_dkaj1"]
-[ext_resource type="Script" uid="uid://co4h0j7dbevid" path="res://player/player_targeting.gd" id="57_targeting"]
+[ext_resource type="Script" path="res://player/player_targeting.gd" id="57_targeting"]
 [ext_resource type="PackedScene" uid="uid://cb0oeg7am8tuj" path="res://player/target_indicator.tscn" id="58_indicator"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_8r8n2"]

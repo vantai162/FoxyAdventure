@@ -1,11 +1,17 @@
-[gd_scene load_steps=29 format=4 uid="uid://dk8wc2s582aoq"]
+[gd_scene load_steps=36 format=4 uid="uid://dk8wc2s582aoq"]
 
 [ext_resource type="Script" uid="uid://bdma0gw32yfke" path="res://test/levels/level_3/stage_3_2.gd" id="1_stage_script"]
+[ext_resource type="PackedScene" uid="uid://dm741hii7d5nv" path="res://scenes/game_screen/health_bar.tscn" id="2_ji2g6"]
 [ext_resource type="TileSet" uid="uid://0yf5cmwk6u1i" path="res://assets/island/terrain/ice_tile_set.tres" id="2_ob2gj"]
+[ext_resource type="PackedScene" uid="uid://dvpguoojkycep" path="res://scenes/game_screen/oxy_bar.tscn" id="3_0ao1h"]
 [ext_resource type="PackedScene" uid="uid://cqjqdbyd7mqfr" path="res://environment/cave/glowing_crystal.tscn" id="4_crystal"]
+[ext_resource type="PackedScene" uid="uid://ydwm5fvrvrmr" path="res://scenes/game_screen/damage_over_lay.tscn" id="4_yeejn"]
 [ext_resource type="PackedScene" uid="uid://bmgv5cgan4yt" path="res://enemy/mushroom/mushroom.tscn" id="5_mushroom"]
+[ext_resource type="PackedScene" uid="uid://k1cvcu80rfmm" path="res://scenes/game_screen/coin_ui.tscn" id="5_pxv3f"]
 [ext_resource type="PackedScene" uid="uid://b1a2s3d4f5g6h" path="res://enemy/aggressive_tribe/aggressive_tribe.tscn" id="6_aggressive"]
+[ext_resource type="PackedScene" uid="uid://cstfpndmrkms3" path="res://scenes/game_screen/key_ui.tscn" id="6_wr5qh"]
 [ext_resource type="PackedScene" uid="uid://c1bijw8i8erx5" path="res://enemy/turtle/turtle.tscn" id="7_turtle"]
+[ext_resource type="PackedScene" uid="uid://8koby8md4sgg" path="res://scenes/game_screen/blade_ui.tscn" id="7_yy4tu"]
 [ext_resource type="PackedScene" uid="uid://ufmc2gkfnv58" path="res://enemy/crab/crab.tscn" id="8_crab"]
 [ext_resource type="PackedScene" uid="uid://bxfs4fsx7ot6m" path="res://enemy/starfish/starfish.tscn" id="9_starfish"]
 [ext_resource type="PackedScene" uid="uid://bs816w0pr8all" path="res://player/foxy.tscn" id="10_foxy"]
@@ -21,16 +27,67 @@
 [ext_resource type="PackedScene" uid="uid://cm32wkmjlw1rq" path="res://effect_Item/chest/trap_chest.tscn" id="19_trap_chest"]
 [ext_resource type="PackedScene" path="res://environment/lava/lavafall.tscn" id="20_bo748"]
 [ext_resource type="PackedScene" uid="uid://nuq050gwbwqt" path="res://objects/spike/spike.tscn" id="21_d273m"]
-[ext_resource type="PackedScene" uid="uid://rhntp41ai45p" path="res://environment/cave/stalactite.tscn" id="22_fb13w"]
+[ext_resource type="PackedScene" path="res://environment/cave/stalactite.tscn" id="22_fb13w"]
 [ext_resource type="PackedScene" uid="uid://y7p8q2kh8teb" path="res://objects/flame/flame_hazard.tscn" id="23_aawq6"]
 [ext_resource type="PackedScene" path="res://objects/water/waterfall.tscn" id="24_ytmni"]
 [ext_resource type="PackedScene" uid="uid://ctr1b8p1h6p8y" path="res://objects/gate/gate.tscn" id="25_raubr"]
 [ext_resource type="PackedScene" path="res://objects/platform/moving_platform.tscn" id="26_moving"]
 [ext_resource type="PackedScene" uid="uid://ca1f6r665b1nr" path="res://objects/lever/lever.tscn" id="27_1bm0d"]
 [ext_resource type="PackedScene" path="res://objects/scene_transition/scene_transition.tscn" id="28_scene_transition"]
+[ext_resource type="PackedScene" uid="uid://bmic0j4cnluey" path="res://objects/checkpoint/checkpoint.tscn" id="35_0ao1h"]
 
 [node name="Level_3_2" type="Node2D"]
 script = ExtResource("1_stage_script")
+
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+layer = 100
+
+[node name="TextureProgressBar" parent="CanvasLayer" instance=ExtResource("2_ji2g6")]
+offset_left = 5.0
+offset_right = 176.0
+mouse_filter = 2
+
+[node name="OxyBar" parent="CanvasLayer" instance=ExtResource("3_0ao1h")]
+offset_left = 200.0
+offset_right = 344.0
+mouse_filter = 2
+
+[node name="DamageOverLay" parent="CanvasLayer" instance=ExtResource("4_yeejn")]
+
+[node name="CoinUI" parent="CanvasLayer" instance=ExtResource("5_pxv3f")]
+anchors_preset = 0
+anchor_right = 0.0
+anchor_bottom = 0.0
+offset_left = 20.0
+offset_top = 60.0
+offset_right = 20.0
+offset_bottom = 60.0
+grow_horizontal = 1
+grow_vertical = 1
+mouse_filter = 2
+
+[node name="KeyUI" parent="CanvasLayer" instance=ExtResource("6_wr5qh")]
+anchors_preset = 0
+anchor_right = 0.0
+anchor_bottom = 0.0
+offset_left = 20.0
+offset_top = 100.0
+offset_right = 20.0
+offset_bottom = 100.0
+grow_horizontal = 1
+grow_vertical = 1
+mouse_filter = 2
+
+[node name="BladeUI" parent="CanvasLayer" instance=ExtResource("7_yy4tu")]
+anchors_preset = 0
+anchor_right = 0.0
+anchor_bottom = 0.0
+offset_left = 20.0
+offset_top = 145.0
+offset_right = 20.0
+offset_bottom = 145.0
+grow_horizontal = 1
+grow_vertical = 1
 
 [node name="DarknessModulate" type="CanvasModulate" parent="."]
 color = Color(0.1, 0.08, 0.12, 1)
@@ -481,6 +538,7 @@ position = Vector2(57, 456)
 target_scene = "res://test/levels/level_3/level_3_1.tscn"
 target_spawn_name = "ToLevel3_2"
 exit_direction = 0
+spawn_offset = Vector2(48, 0)
 
 [node name="ToLevel3_3" parent="ExitZone" instance=ExtResource("28_scene_transition")]
 position = Vector2(1925, 1002)
@@ -491,6 +549,9 @@ wipe_duration = 0.15
 [node name="Foxy" parent="." instance=ExtResource("10_foxy")]
 z_index = 1
 position = Vector2(77, 466)
+
+[node name="Checkpoint" parent="." instance=ExtResource("35_0ao1h")]
+position = Vector2(169, 463)
 
 [editable path="Platforms/MovingPlatform2"]
 [editable path="Platforms/MovingPlatform3"]
