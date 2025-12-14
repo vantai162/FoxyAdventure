@@ -22,12 +22,16 @@ enum Direction { LEFT, RIGHT, UP, DOWN }
 @export var target_spawn_name: String = ""
 
 @export_group("Transition Behavior")
-## Direction player is moving when transitioning (auto-detected if AUTO)
+## Direction player is moving when transitioning.
+## Shape automatically adjusts: LEFT/RIGHT = vertical | zone, UP/DOWN = horizontal — zone.
 @export var exit_direction: Direction = Direction.RIGHT:
 	set(value):
 		exit_direction = value
+		_update_shape_for_direction()
 		if auto_spawn_offset:
 			spawn_offset = _calculate_spawn_offset(value)
+		update_configuration_warnings()
+		queue_redraw()
 ## Spawn offset from the target transition position
 ## Default matches exit_direction=RIGHT: spawn to the LEFT (inside level)
 @export var spawn_offset: Vector2 = Vector2(-48, 0)
@@ -78,25 +82,64 @@ var _preload_started: bool = false
 ## Particle color (subtle dust/mist)
 @export var particle_color: Color = Color(1.0, 1.0, 0.9, 0.3)
 
+@export_group("Zone Size")
+## Thickness of the trigger zone (perpendicular to exit direction)
+@export var zone_thickness: float = 24.0:
+	set(v):
+		zone_thickness = v
+		_update_shape_for_direction()
+
+## Length of the trigger zone (parallel to exit direction)
+@export var zone_length: float = 160.0:
+	set(v):
+		zone_length = v
+		_update_shape_for_direction()
+
 var _exit_light: PointLight2D = null
 var _exit_particles: GPUParticles2D = null
+var _collision_shape: CollisionShape2D = null  # Cached, not @onready
 
 var is_transitioning: bool = false
 var player_in_zone: bool = false
 var _preloaded_scene: PackedScene = null
 var _player_ref: Node2D = null  # Cache player reference
 
-@onready var collision_shape: CollisionShape2D = $CollisionShape2D if has_node("CollisionShape2D") else null
+
+func _get_configuration_warnings() -> PackedStringArray:
+	var warnings: PackedStringArray = []
+	
+	# Critical: no target scene
+	if target_scene.is_empty():
+		warnings.append("⚠️ No target_scene set!\nThis transition won't go anywhere.")
+	
+	# Critical: no spawn name
+	if target_spawn_name.is_empty():
+		warnings.append("⚠️ No target_spawn_name set!\nPlayer may spawn at origin in target scene.")
+	
+	# Warn if node has rotation
+	if not is_zero_approx(rotation) or not is_zero_approx(rotation_degrees):
+		warnings.append("⚠️ This node has ROTATION applied!\nChange 'exit_direction' property instead of rotating.")
+	
+	# Warn if scale is not uniform
+	if not is_equal_approx(scale.x, 1.0) or not is_equal_approx(scale.y, 1.0):
+		warnings.append("⚠️ This node has SCALE applied!\nThis may cause unexpected collision behavior.")
+	
+	return warnings
+
 
 func _ready() -> void:
-	# CRITICAL: Ensure spawn_offset is correctly calculated on load.
+	# Cache collision shape reference FIRST (needed for editor and runtime)
+	_collision_shape = $CollisionShape2D if has_node("CollisionShape2D") else null
+	
+	# Update shape for direction (works in editor too)
+	_update_shape_for_direction()
+	
+	# Ensure spawn_offset is correctly calculated on load.
 	# Godot does NOT run setters for default values, only for explicit assignments.
-	# So if exit_direction uses default (RIGHT) and auto_spawn_offset is true,
-	# the setter never runs and spawn_offset stays at its wrong default (+48, 0).
-	# We force recalculation here to guarantee correctness.
 	if auto_spawn_offset:
 		spawn_offset = _calculate_spawn_offset(exit_direction)
 	
+	# Editor mode: stop here (no runtime setup)
 	if Engine.is_editor_hint():
 		return
 	
@@ -128,20 +171,41 @@ func _ready() -> void:
 	set_process(true)  # Enable _process for proximity checking and preload status
 
 func _setup_collision_shape() -> void:
-	if collision_shape == null:
+	## DEPRECATED: Use _update_shape_for_direction() instead
+	_update_shape_for_direction()
+
+
+func _update_shape_for_direction() -> void:
+	## Update collision shape size based on direction (works in editor and runtime)
+	if _collision_shape == null:
+		if has_node("CollisionShape2D"):
+			_collision_shape = $CollisionShape2D
+		else:
+			return
+	
+	if _collision_shape.shape == null:
 		return
 	
-	var shape = collision_shape.shape as RectangleShape2D
+	var shape = _collision_shape.shape as RectangleShape2D
 	if shape == null:
 		shape = RectangleShape2D.new()
-		collision_shape.shape = shape
+		_collision_shape.shape = shape
+	else:
+		# Make shape unique to prevent cross-instance pollution
+		if not shape.resource_local_to_scene:
+			var unique_shape = shape.duplicate()
+			unique_shape.resource_local_to_scene = true
+			_collision_shape.shape = unique_shape
+			shape = unique_shape
 	
-	# Auto-size based on direction
+	# Size based on direction:
+	# LEFT/RIGHT = vertical zone (thin width, tall height) = |
+	# UP/DOWN = horizontal zone (wide width, thin height) = —
 	match exit_direction:
 		Direction.LEFT, Direction.RIGHT:
-			shape.size = Vector2(24, 160)
+			shape.size = Vector2(zone_thickness, zone_length)
 		Direction.UP, Direction.DOWN:
-			shape.size = Vector2(160, 24)
+			shape.size = Vector2(zone_length, zone_thickness)
 
 
 func _setup_exit_visuals() -> void:

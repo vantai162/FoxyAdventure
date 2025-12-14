@@ -3,6 +3,7 @@
 [ext_resource type="Script" uid="uid://840h4fyoh7fn" path="res://objects/section_transition/section_transition.gd" id="1_trans"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_edge"]
+resource_local_to_scene = true
 size = Vector2(16, 128)
 
 [node name="SectionTransition" type="Area2D"]
