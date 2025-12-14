@@ -1,7 +1,7 @@
-[gd_scene load_steps=28 format=3 uid="uid://bodccm7jppcjv"]
+[gd_scene load_steps=29 format=3 uid="uid://bodccm7jppcjv"]
 
 [ext_resource type="Script" uid="uid://b1pbnwjcmh1c8" path="res://enemy/barrel/elite_sniper.gd" id="1_elite_sniper"]
-[ext_resource type="PackedScene" path="res://enemy/elite_eye_trail.tscn" id="2_eye_trail"]
+[ext_resource type="PackedScene" uid="uid://dxcnl8fucu5je" path="res://enemy/elite_eye_trail.tscn" id="2_eye_trail"]
 [ext_resource type="Shader" uid="uid://q33y13b56v1g" path="res://enemy/elite_enemy.gdshader" id="2_shader"]
 [ext_resource type="Texture2D" uid="uid://ch0hp25m7evv1" path="res://assets/monsters/barrel/barrel_hurt_01.png" id="3_5djrk"]
 [ext_resource type="Texture2D" uid="uid://8usoreyem8l6" path="res://assets/foxy/smoke/jump_smoke_1.png" id="4_qo5wi"]
@@ -24,8 +24,7 @@
 [ext_resource type="Script" uid="uid://budybf78cqjcn" path="res://enemy/barrel/hurt.gd" id="21_5djrk"]
 [ext_resource type="Script" uid="uid://ceivkbcn2nfiw" path="res://enemy/barrel/dead.gd" id="22_nles5"]
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_pdnpt"]
-size = Vector2(24, 24)
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_d2upt"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_elite"]
 shader = ExtResource("2_shader")
@@ -98,16 +97,20 @@ animations = [{
 "speed": 5.0
 }]
 
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_pdnpt"]
+size = Vector2(24, 24)
+
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_detect"]
 size = Vector2(600, 200)
 
 [node name="EliteSniperBarrel" type="CharacterBody2D"]
+z_index = 8
 collision_layer = 8
 script = ExtResource("1_elite_sniper")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 position = Vector2(0, 6)
-shape = SubResource("RectangleShape2D_pdnpt")
+shape = SubResource("RectangleShape2D_d2upt")
 
 [node name="Direction" type="Node2D" parent="."]
 

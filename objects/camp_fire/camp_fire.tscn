@@ -1,7 +1,8 @@
-[gd_scene load_steps=44 format=3 uid="uid://chfe3xrvw4004"]
+[gd_scene load_steps=45 format=3 uid="uid://chfe3xrvw4004"]
 
 [ext_resource type="Script" uid="uid://dgi8rc0xo1loo" path="res://objects/camp_fire/camp_fire.gd" id="1_f54s0"]
 [ext_resource type="Texture2D" uid="uid://disbpqrjikns6" path="res://assets/GandalfHardcore FREE Platformer Assets/GandalfHardcore FREE Platformer Assets/Animated Sprites/Campfire with food sheet.png" id="1_v8g6n"]
+[ext_resource type="Texture2D" uid="uid://6qd3pdlxcu43" path="res://assets/effects/player_torch.tres" id="2_fire_light"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_f54s0"]
 atlas = ExtResource("1_v8g6n")
@@ -292,6 +293,7 @@ animations = [{
 }]
 
 [node name="CampFire" type="Node2D"]
+z_index = 0
 position = Vector2(0, 8)
 script = ExtResource("1_f54s0")
 
@@ -302,4 +304,6 @@ frame_progress = 0.257231
 [node name="FireLight" type="PointLight2D" parent="."]
 position = Vector2(0, -12)
 color = Color(1, 0.6, 0.2, 1)
+energy = 1.5
+texture = ExtResource("2_fire_light")
 texture_scale = 1.4

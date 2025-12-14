@@ -6,23 +6,114 @@ class_name LavaPool
 ## Uses water-like wave physics for fluid surface animation
 ## Emits light for cave darkness and spawns ember particles
 ##
-## PUZZLE INTEGRATION:
-## - drain(duration) - Lowers lava, player can cross
-## - fill(duration) - Raises lava back
-## - Connect to Lever with LAVA_LEVEL target type
+## ═══════════════════════════════════════════════════════════════════════════════
+## DESIGNER GUIDE: LAVA PUZZLE SETUP
+## ═══════════════════════════════════════════════════════════════════════════════
+##
+## VISUAL REFERENCE (side view of lava pool):
+##
+##     ┌─────────────────────────┐  ← Pool TOP (0 pixels from top)
+##     │                         │
+##     │   ════ FILLED ════      │  ← filled_level (when trigger DEACTIVATES)
+##     │                         │
+##     │  ~~~~ SURFACE ~~~~      │  ← surface_level (NORMAL resting state)
+##     │                         │
+##     │   ════ DRAINED ════     │  ← drained_level (when trigger ACTIVATES)
+##     │                         │
+##     └─────────────────────────┘  ← Pool BOTTOM (lava_size.y pixels from top)
+##
+## COORDINATE SYSTEM:
+##   - All levels are in PIXELS FROM TOP of pool
+##   - SMALLER number = HIGHER surface (closer to top)
+##   - BIGGER number = LOWER surface (closer to bottom)
+##
+## BASIC SETUP (lever drains lava to cross):
+##   1. Set lava_size (width, height)
+##   2. Set surface_level (where lava normally sits, e.g. 16)
+##   3. Set drained_level (where it goes when drained, e.g. 100 - below floor!)
+##   4. Set listen_channel, put same channel on Lever
+##   5. Trigger ON = drains, Trigger OFF = refills to surface_level
+##
+## RISING LAVA TRAP (pressure plate floods room):
+##   1. Set surface_level LOW (e.g. 80 - lava starts low)
+##   2. Set filled_level HIGH (e.g. 10 - almost to top!)
+##   3. Set listen_channel, put same channel on PressurePlate
+##   4. Trigger ON = fills UP, Trigger OFF = drains back down
+##
+## ═══════════════════════════════════════════════════════════════════════════════
 
 signal lava_drained  ## Emitted when drain animation completes
 signal lava_filled   ## Emitted when fill animation completes
 
 @export var lava_size: Vector2 = Vector2(128.0, 64.0)
-@export var surface_pos_y: float = 0.5
 @export_range(2, 256) var segment_count: int = 32
 
-@export_group("Drain/Fill Settings")
-@export var drain_target_y: float = 60.0  ## Where lava drains to (lower = more visible)
-@export var fill_target_y: float = 0.5  ## Where lava fills to (surface level)
-@export var default_drain_duration: float = 2.0
-@export var default_fill_duration: float = 3.0  ## Slower fill = more tension
+@export_group("Surface Levels")
+## Where lava surface normally rests (pixels from TOP of pool).
+## 0 = at very top, lava_size.y = at very bottom.
+## Example: 16 means surface is 16px below the top edge.
+@export var surface_level: float = 16.0:
+	set(v):
+		surface_level = v
+		if Engine.is_editor_hint():
+			queue_redraw()
+
+## Where lava surface goes when DRAINED (pixels from TOP).
+## Should be LARGER than surface_level (lower in the pool).
+## Set to lava_size.y or more to drain completely out of view.
+@export var drained_level: float = 80.0:
+	set(v):
+		drained_level = v
+		if Engine.is_editor_hint():
+			queue_redraw()
+
+## Where lava surface goes when FILLED (pixels from TOP).
+## Should be SMALLER than surface_level (higher in the pool).
+## Set to 0 for completely full (flood to pool top).
+## For dramatic rising lava, extend the pool upward to cover the flood zone!
+@export var filled_level: float = 16.0:
+	set(v):
+		filled_level = v
+		if Engine.is_editor_hint():
+			queue_redraw()
+
+@export_group("Quick Setup")
+## Start with lava at BOTTOM of pool (empty). 
+## When enabled, overrides surface_level to pool height on ready.
+## Perfect for rising lava traps - just set filled_level!
+@export var start_empty: bool = false
+
+## Start with lava at TOP of pool (full).
+## When enabled, overrides surface_level to 0 on ready.
+## Perfect for drain puzzles - just set drained_level!
+@export var start_full: bool = false
+
+@export_group("Channel System")
+## Channel to listen to for lava drain/fill control.
+## Set same channel on trigger objects (Lever, PressurePlate) to connect them.
+@export var listen_channel: StringName = &""
+
+## What happens when trigger ACTIVATES (lever pulled, plate pressed)
+@export_enum("DRAIN", "FILL") var on_activate: int = 0  # 0 = DRAIN, 1 = FILL
+
+## What happens when trigger DEACTIVATES (lever released, plate unpressed)
+## RETURN_TO_SURFACE: Returns to surface_level (default, reversible puzzles)
+## STAY: Stays at current level (one-way puzzles, permanent changes)
+## OPPOSITE: Does the opposite of on_activate (drain→fill or fill→drain)
+@export_enum("RETURN_TO_SURFACE", "STAY", "OPPOSITE") var on_deactivate: int = 0
+
+@export_group("Timing")
+## How long (seconds) for lava to drain
+@export var drain_duration: float = 2.0
+## How long (seconds) for lava to fill
+@export var fill_duration: float = 3.0
+
+@export_group("Editor Preview")
+## Show level indicators in editor (surface, drained, filled lines)
+@export var show_level_guides: bool = true:
+	set(v):
+		show_level_guides = v
+		queue_redraw()
 
 @export_group("Visuals")
 @export var surface_line_thickness: float = 3.0  ## Thicker glowing edge
@@ -45,6 +136,7 @@ signal lava_filled   ## Emitted when fill animation completes
 @export var ambient_wave_amplitude: float = 2.5  ## Lava is more viscous, bigger waves
 @export var ambient_wave_speed: float = 0.8  ## Slower than water (thicker)
 @export var ambient_wave_length: float = 0.35
+@export_range(-1.0, 1.0) var ambient_wave_direction: float = 1.0  ## -1 = left, 0 = standing, 1 = right
 
 @export_group("Physics Simulation")
 @export var lava_restoring_force: float = 24.0  ## Spring constant (recalibrated from 0.015×40²)
@@ -81,8 +173,25 @@ signal lava_filled   ## Emitted when fill animation completes
 @export var damage_per_second: float = 50.0  ## If not instant kill, DPS
 @export var damage_interval: float = 0.25  ## Damage tick rate
 
+@export_group("Lavafall Blending")
+## Just ONE toggle - lavafalls handle everything else automatically
+@export var allow_lavafall_blend: bool = true  ## Allow lavafalls to blend into this pool
+
+## ═══════════════════════════════════════════════════════════════════════════════
+## INTERNAL RUNTIME STATE (don't touch these in inspector!)
+## ═══════════════════════════════════════════════════════════════════════════════
+
+## Current surface Y position (pixels from top of pool). Changes during drain/fill.
+## Initialized from surface_level, animated during drain/fill.
+var surface_pos_y: float = 0.0
+
+## Track current state for is_drained()/is_filled() checks
+enum LavaState { NORMAL, DRAINING, DRAINED, FILLING, FILLED }
+var _lava_state: LavaState = LavaState.NORMAL
+
 var segment_data: Array = []
 var segment_rest_height: Array = []  ## Per-segment equilibrium height (future: lava geysers/vents)
+var _surface_suppression_zones: Array = []  ## Runtime: auto-populated by lavafalls
 var _ambient_wave_time: float = 0.0
 var _light_pulse_time: float = 0.0
 var _damage_timers: Dictionary = {}  ## Per-body damage cooldown
@@ -104,8 +213,152 @@ var lava_lights: Array[PointLight2D] = []  ## Multiple light sources for distrib
 var ember_gpu_particles: GPUParticles2D
 var bubble_gpu_particles: GPUParticles2D
 
+## ==========================================
+## AUTONOMOUS LAVAFALL BLEND RECEIVER
+## Lavafalls call this automatically - you don't need to do anything!
+## ==========================================
+
+## Called by Lavafall when it detects this pool below it
+func _receive_lavafall_blend(x_min: float, x_max: float, lavafall: Node2D) -> void:
+	if not allow_lavafall_blend:
+		return
+	
+	# 1. Surface line suppression (subtle fade, not invisible)
+	_surface_suppression_zones.append({
+		"x_min": x_min,
+		"x_max": x_max,
+		"fade_width": 10.0
+	})
+	_rebuild_surface_gradient()
+	
+	# 2. PHYSICS: Depress the pool surface where fall impacts
+	#    Real fluid: falling column pushes surface down, curves away at edges
+	#    This creates the "dip" that matches the lavafall's flare
+	_apply_lavafall_depression(x_min, x_max)
+	
+	# 3. CONTINUOUS BUBBLING: Store impact zone for ongoing disturbance
+	#    Real lava: constant bubbling/roiling from falling lava
+	_lavafall_impact_zones.append({
+		"x_min": x_min,
+		"x_max": x_max,
+		"lavafall": lavafall,
+		"last_bubble_time": 0.0
+	})
+
+## Track lavafall impact zones for continuous bubbling
+var _lavafall_impact_zones: Array = []
+
+## Apply a permanent surface depression where lavafall impacts
+## The falling lava pushes the surface down - edges curve up smoothly
+func _apply_lavafall_depression(x_min: float, x_max: float) -> void:
+	if segment_rest_height.is_empty():
+		return
+	
+	var seg_width = lava_size.x / float(segment_count - 1)
+	var depression_depth: float = 5.0  # Lava is heavier, deeper depression
+	var edge_fade: float = 18.0  # Wider smooth transition (viscous)
+	
+	for i in range(segment_count):
+		var seg_x = i * seg_width
+		
+		# Calculate distance from impact zone
+		var dist_from_center: float = 0.0
+		if seg_x < x_min:
+			dist_from_center = x_min - seg_x
+		elif seg_x > x_max:
+			dist_from_center = seg_x - x_max
+		else:
+			dist_from_center = 0.0  # Inside impact zone
+		
+		# Inside the impact zone: full depression
+		# Near edges: smooth fade using smoothstep
+		var depression: float = 0.0
+		if dist_from_center <= 0.0:
+			# Inside: full depression
+			depression = depression_depth
+		elif dist_from_center < edge_fade:
+			# Edge fade: smooth curve up
+			var t = dist_from_center / edge_fade
+			t = 1.0 - (t * t * (3.0 - 2.0 * t))  # inverse smoothstep
+			depression = t * depression_depth
+		
+		# Apply depression (raise the rest height = lower the surface visually)
+		if depression > 0.0:
+			segment_rest_height[i] += depression
+
+## Called every physics frame to apply continuous lavafall bubbling
+func _apply_lavafall_bubbles(time: float) -> void:
+	if _lavafall_impact_zones.is_empty():
+		return
+	
+	var seg_width = lava_size.x / float(segment_count - 1)
+	var bubble_interval: float = 0.25  # Slower than water (viscous lava)
+	var bubble_strength: float = 2.0  # Bigger bubbles (dense fluid)
+	
+	for zone in _lavafall_impact_zones:
+		if not is_instance_valid(zone["lavafall"]):
+			continue
+		
+		# Check if it's time for another bubble
+		if time - zone["last_bubble_time"] >= bubble_interval:
+			zone["last_bubble_time"] = time
+			
+			# Pick a random segment within the impact zone
+			var zone_center_x = (zone["x_min"] + zone["x_max"]) / 2.0
+			var zone_width = zone["x_max"] - zone["x_min"]
+			var random_x = zone_center_x + (randf() - 0.5) * zone_width
+			var seg_idx = int(random_x / seg_width)
+			seg_idx = clamp(seg_idx, 0, segment_count - 1)
+			
+			# Apply upward impulse (lava bubble popping)
+			if seg_idx < segment_data.size():
+				segment_data[seg_idx]["velocity"] -= bubble_strength * (0.7 + randf() * 0.6)
+				_settled_segments[seg_idx] = 0  # Mark as active
+
+## Rebuild the Line2D gradient based on suppression zones (internal)
+func _rebuild_surface_gradient() -> void:
+	if not surface_line or _surface_suppression_zones.is_empty():
+		if surface_line:
+			surface_line.gradient = null
+		return
+	
+	var grad = Gradient.new()
+	var stops: Array = []
+	stops.append({"offset": 0.0, "color": surface_color})
+	
+	for zone in _surface_suppression_zones:
+		var x_min = zone["x_min"]
+		var x_max = zone["x_max"]
+		var fade = zone["fade_width"]
+		
+		var t_fade_start = clamp((x_min - fade) / lava_size.x, 0.0, 1.0)
+		var t_zone_start = clamp(x_min / lava_size.x, 0.0, 1.0)
+		var t_zone_end = clamp(x_max / lava_size.x, 0.0, 1.0)
+		var t_fade_end = clamp((x_max + fade) / lava_size.x, 0.0, 1.0)
+		
+		if t_fade_start > 0.01:
+			stops.append({"offset": t_fade_start, "color": surface_color})
+		stops.append({"offset": t_zone_start, "color": Color(surface_color.r, surface_color.g, surface_color.b, 0.0)})
+		stops.append({"offset": t_zone_end, "color": Color(surface_color.r, surface_color.g, surface_color.b, 0.0)})
+		if t_fade_end < 0.99:
+			stops.append({"offset": t_fade_end, "color": surface_color})
+	
+	stops.append({"offset": 1.0, "color": surface_color})
+	stops.sort_custom(func(a, b): return a["offset"] < b["offset"])
+	
+	grad.offsets = PackedFloat32Array()
+	grad.colors = PackedColorArray()
+	var last_offset = -1.0
+	for stop in stops:
+		if stop["offset"] > last_offset + 0.001:
+			grad.add_point(stop["offset"], stop["color"])
+			last_offset = stop["offset"]
+	
+	surface_line.gradient = grad
+
 @export_tool_button("Update Lava") var update_lava_button: Callable = func():
 	_ready()
+	_update_visuals()
 
 func _ready() -> void:
 	# Clean up existing children
@@ -116,6 +369,13 @@ func _ready() -> void:
 	segment_rest_height.clear()
 	_settled_segments.clear()
 	_damage_timers.clear()
+	
+	# Apply quick setup conveniences (runtime only)
+	if not Engine.is_editor_hint():
+		if start_empty:
+			surface_level = lava_size.y  # Start at bottom (empty)
+		elif start_full:
+			surface_level = 0.0  # Start at top (full)
 	
 	_initiate_lava()
 	
@@ -129,10 +389,141 @@ func _ready() -> void:
 		if emit_bubbles:
 			_setup_bubble_gpu_particles()
 	
+	# Always enable processing for visuals (editor + runtime)
+	set_process(true)
+	
+	# Runtime-only: subscribe to channel system
 	if not Engine.is_editor_hint():
-		set_process(true)
+		if not listen_channel.is_empty():
+			var channel_manager = get_node_or_null("/root/InteractionChannel")
+			if channel_manager:
+				channel_manager.channel_activated.connect(_on_channel_activated)
+				channel_manager.channel_deactivated.connect(_on_channel_deactivated)
+				
+				# Check if channel is already active (respawn with lever still on)
+				if channel_manager.is_channel_active(listen_channel):
+					call_deferred("_on_channel_activated", listen_channel, null)
+
+
+func _get_configuration_warnings() -> PackedStringArray:
+	## Show warnings in editor for illogical configurations
+	var warnings: PackedStringArray = []
+	
+	# Check for illogical level configurations
+	if drained_level < surface_level:
+		warnings.append("⚠️ drained_level (%.0f) is ABOVE surface_level (%.0f)!\nDraining will move lava UP, which is probably not intended.\nSet drained_level > surface_level." % [drained_level, surface_level])
+	
+	if filled_level > surface_level:
+		warnings.append("⚠️ filled_level (%.0f) is BELOW surface_level (%.0f)!\nFilling will move lava DOWN, which is probably not intended.\nSet filled_level < surface_level for rising lava." % [filled_level, surface_level])
+	
+	if drained_level > lava_size.y:
+		warnings.append("ℹ️ drained_level (%.0f) exceeds pool height (%.0f).\nLava will drain completely out of view. This is fine if intended!" % [drained_level, lava_size.y])
+	
+	if filled_level < 0:
+		warnings.append("⚠️ filled_level (%.0f) is NEGATIVE!\nExtend the pool upward instead. Set pool position higher, increase pool height, then use filled_level = 0." % filled_level)
+	
+	if start_empty and start_full:
+		warnings.append("⚠️ Both start_empty AND start_full are enabled!\nOnly one can apply. start_empty takes priority.")
+	
+	if listen_channel.is_empty() and (on_activate != 0 or on_deactivate != 0):
+		warnings.append("ℹ️ on_activate/on_deactivate are set but listen_channel is empty.\nNo channel means no triggers will affect this lava.")
+	
+	return warnings
+
+
+func _exit_tree() -> void:
+	## Clean up signal connections when lava is removed from tree
+	if Engine.is_editor_hint():
+		return
+	
+	var channel_manager = get_node_or_null("/root/InteractionChannel")
+	if channel_manager:
+		if channel_manager.channel_activated.is_connected(_on_channel_activated):
+			channel_manager.channel_activated.disconnect(_on_channel_activated)
+		if channel_manager.channel_deactivated.is_connected(_on_channel_deactivated):
+			channel_manager.channel_deactivated.disconnect(_on_channel_deactivated)
+
+
+func _on_channel_activated(channel: StringName, _source: Node) -> void:
+	if channel != listen_channel:
+		return
+	# Channel activated - check on_activate setting
+	if on_activate == 0:  # DRAIN
+		drain()
+	else:  # FILL
+		fill()
+
+
+func _on_channel_deactivated(channel: StringName, _source: Node) -> void:
+	if channel != listen_channel:
+		return
+	
+	# Channel deactivated - check on_deactivate setting
+	match on_deactivate:
+		0:  # RETURN_TO_SURFACE
+			return_to_normal()
+		1:  # STAY
+			pass  # Do nothing, keep current level
+		2:  # OPPOSITE
+			# Do the opposite of on_activate
+			if on_activate == 0:  # Was DRAIN, now FILL
+				fill()
+			else:  # Was FILL, now DRAIN
+				drain()
+
+
+func _draw() -> void:
+	# EDITOR ONLY: Draw level guides for designer visibility
+	if not Engine.is_editor_hint() or not show_level_guides:
+		return
+	
+	var guide_width = lava_size.x + 20  # Extend past pool edges
+	var start_x = -10.0
+	
+	# Draw pool boundary (white dashed)
+	draw_rect(Rect2(0, 0, lava_size.x, lava_size.y), Color(1, 1, 1, 0.3), false, 1.0)
+	
+	# Draw SURFACE level (current/normal) - CYAN solid line
+	var surface_color_guide = Color(0, 1, 1, 0.9)
+	draw_line(Vector2(start_x, surface_level), Vector2(start_x + guide_width, surface_level), surface_color_guide, 2.0)
+	draw_string(ThemeDB.fallback_font, Vector2(start_x + guide_width + 5, surface_level + 4), "SURFACE", HORIZONTAL_ALIGNMENT_LEFT, -1, 10, surface_color_guide)
+	
+	# Draw DRAINED level - GREEN dashed line (safe!)
+	var drained_color = Color(0.2, 1.0, 0.2, 0.8)
+	_draw_dashed_line(Vector2(start_x, drained_level), Vector2(start_x + guide_width, drained_level), drained_color, 2.0, 8.0)
+	draw_string(ThemeDB.fallback_font, Vector2(start_x + guide_width + 5, drained_level + 4), "DRAINED", HORIZONTAL_ALIGNMENT_LEFT, -1, 10, drained_color)
+	
+	# Draw FILLED level - RED dashed line (danger!)
+	var filled_color = Color(1.0, 0.3, 0.3, 0.8)
+	_draw_dashed_line(Vector2(start_x, filled_level), Vector2(start_x + guide_width, filled_level), filled_color, 2.0, 8.0)
+	draw_string(ThemeDB.fallback_font, Vector2(start_x + guide_width + 5, filled_level + 4), "FILLED", HORIZONTAL_ALIGNMENT_LEFT, -1, 10, filled_color)
+
+
+func _draw_dashed_line(from: Vector2, to: Vector2, color: Color, width: float = 1.0, dash_length: float = 5.0) -> void:
+	## Draw a dashed line for editor guides
+	var direction = (to - from).normalized()
+	var total_length = from.distance_to(to)
+	var drawn = 0.0
+	var drawing = true
+	
+	while drawn < total_length:
+		var segment_end = min(drawn + dash_length, total_length)
+		if drawing:
+			draw_line(from + direction * drawn, from + direction * segment_end, color, width)
+		drawn = segment_end
+		drawing = not drawing
+
 
 func _process(delta: float) -> void:
+	# Ambient wave animation (runs in BOTH editor and runtime for visual life)
+	if ambient_wave_enabled:
+		_ambient_wave_time += delta
+	
+	# EDITOR MODE: Only update visuals (no physics, particles, or gameplay)
+	if Engine.is_editor_hint():
+		_update_visuals()
+		return
+	
 	# Debug diagnostics
 	if enable_debug_diagnostics:
 		debug_timer += delta
@@ -144,13 +535,12 @@ func _process(delta: float) -> void:
 	if _drain_active:
 		_update_drain_fill(delta)
 	
-	# Ambient wave animation
-	if ambient_wave_enabled:
-		_ambient_wave_time += delta
-	
 	# Light pulsing
 	if light_pulse_enabled and lava_lights.size() > 0:
 		_update_light_pulse(delta)
+	
+	# Continuous lavafall bubbling (creates "damn that's smooth" effect)
+	_apply_lavafall_bubbles(_ambient_wave_time)
 	
 	# Wave physics (KEEP - this is gameplay interaction)
 	_update_physics(delta)
@@ -198,6 +588,10 @@ func _process(delta: float) -> void:
 		bubble_gpu_particles.emitting = not (_drain_active and _is_draining)
 
 func _initiate_lava() -> void:
+	# Initialize runtime surface position from designer-set surface level
+	surface_pos_y = surface_level
+	_lava_state = LavaState.NORMAL
+	
 	# Initialize segment data
 	for i in range(segment_count):
 		segment_data.append({
@@ -218,12 +612,16 @@ func _initiate_lava() -> void:
 	surface_line.begin_cap_mode = Line2D.LINE_CAP_ROUND
 	surface_line.end_cap_mode = Line2D.LINE_CAP_ROUND
 	surface_line.joint_mode = Line2D.LINE_JOINT_ROUND
+	surface_line.z_as_relative = false  # Use absolute z_index
+	surface_line.z_index = ZLayers.FLUID_SURFACE  # IN FRONT of player (rippling top edge)
 	add_child(surface_line)
 	
 	# Create fill polygon
 	fill_polygon = Polygon2D.new()
 	fill_polygon.color = lava_fill_color
-	surface_line.add_child(fill_polygon)
+	fill_polygon.z_as_relative = false  # Use absolute z_index
+	fill_polygon.z_index = ZLayers.FLUID_BODY  # IN FRONT of player (semi-transparent submersion)
+	add_child(fill_polygon)  # Add directly, not to line
 	
 	# Create damage area
 	lava_area = Area2D.new()
@@ -255,7 +653,7 @@ func _setup_light() -> void:
 		light.energy = light_energy / float(num_lights) * 1.5  # Distribute energy, slight boost
 		light.texture_scale = 2.0  # Radius per light
 		light.shadow_enabled = false  # Shadows only on first light to save performance
-		light.z_index = 10
+		light.z_index = ZLayers.LIGHT_EFFECT
 		light.blend_mode = Light2D.BLEND_MODE_ADD  # Additive blend for overlapping glows
 		
 		# Create radial gradient texture (shared across lights for efficiency)
@@ -291,6 +689,7 @@ func _setup_ember_gpu_particles() -> void:
 	ember_gpu_particles.lifetime = particle_lifetime
 	ember_gpu_particles.randomness = 0.5
 	ember_gpu_particles.emitting = true
+	ember_gpu_particles.z_index = ZLayers.EFFECT_FRONT  # Embers above lava
 	
 	# Configure particle material
 	var mat = ParticleProcessMaterial.new()
@@ -338,6 +737,7 @@ func _setup_bubble_gpu_particles() -> void:
 	bubble_gpu_particles.lifetime = bubble_spawn_interval * bubble_count
 	bubble_gpu_particles.randomness = 0.6
 	bubble_gpu_particles.emitting = true
+	bubble_gpu_particles.z_index = ZLayers.EFFECT_FRONT  # Bubbles above lava
 	
 	# Configure particle material
 	var mat = ParticleProcessMaterial.new()
@@ -538,7 +938,10 @@ func _update_visuals() -> void:
 		# Add ambient wave offset
 		var ambient_offset = 0.0
 		if ambient_wave_enabled:
-			var wave_phase = _ambient_wave_time * ambient_wave_speed + (float(i) / segment_count) * TAU / ambient_wave_length
+			# direction: -1 = waves travel left, 0 = standing wave, 1 = waves travel right
+			var direction = ambient_wave_direction if ambient_wave_direction != null else 1.0
+			var position_term = (float(i) / segment_count) * TAU / ambient_wave_length
+			var wave_phase = _ambient_wave_time * ambient_wave_speed - position_term * direction
 			ambient_offset = sin(wave_phase) * ambient_wave_amplitude
 		
 		points.append(Vector2(i * segment_width, base_height + ambient_offset))
@@ -659,17 +1062,18 @@ var _drain_elapsed: float = 0.0
 var _is_draining: bool = true  ## true = draining down, false = filling up
 
 func drain(duration: float = -1.0) -> void:
-	## Lower lava level - player can cross safely
-	## @param duration: Transition time in seconds (-1 = use default)
+	## Lower lava surface to drained_level.
+	## @param duration: Transition time in seconds (-1 = use drain_duration)
 	if duration < 0:
-		duration = default_drain_duration
+		duration = drain_duration
 	
 	_drain_start_y = surface_pos_y
-	_drain_target_y = drain_target_y
+	_drain_target_y = drained_level  # Go to designer-specified drained level
 	_drain_duration = duration
 	_drain_elapsed = 0.0
 	_drain_active = true
 	_is_draining = true
+	_lava_state = LavaState.DRAINING
 	
 	# Disable collision during drain (safe to cross)
 	_set_damage_enabled(false)
@@ -677,17 +1081,34 @@ func drain(duration: float = -1.0) -> void:
 	set_process(true)
 
 func fill(duration: float = -1.0) -> void:
-	## Raise lava level back up - danger returns!
-	## @param duration: Transition time in seconds (-1 = use default)
+	## Raise lava surface to filled_level.
+	## @param duration: Transition time in seconds (-1 = use fill_duration)
 	if duration < 0:
-		duration = default_fill_duration
+		duration = fill_duration
 	
 	_drain_start_y = surface_pos_y
-	_drain_target_y = fill_target_y
+	_drain_target_y = filled_level  # Go to designer-specified filled level
 	_drain_duration = duration
 	_drain_elapsed = 0.0
 	_drain_active = true
 	_is_draining = false
+	_lava_state = LavaState.FILLING
+	
+	set_process(true)
+
+func return_to_normal(duration: float = -1.0) -> void:
+	## Return lava surface to normal surface_level.
+	## Useful for resetting after drain or fill.
+	## @param duration: Transition time in seconds (-1 = use fill_duration)
+	if duration < 0:
+		duration = fill_duration
+	
+	_drain_start_y = surface_pos_y
+	_drain_target_y = surface_level  # Go back to normal
+	_drain_duration = duration
+	_drain_elapsed = 0.0
+	_drain_active = true
+	_is_draining = surface_pos_y < surface_level  # Draining if currently above normal
 	
 	set_process(true)
 
@@ -741,8 +1162,10 @@ func _update_drain_fill(delta: float) -> void:
 		_drain_active = false
 		
 		if _is_draining:
+			_lava_state = LavaState.DRAINED
 			lava_drained.emit()
 		else:
+			_lava_state = LavaState.FILLED
 			# Re-enable damage when filled
 			_set_damage_enabled(true)
 			# Restore light energy after fill
@@ -765,12 +1188,20 @@ func _set_damage_enabled(enabled: bool) -> void:
 			_damage_timers.clear()
 
 func is_drained() -> bool:
-	## Check if lava is currently drained (safe to cross)
-	return surface_pos_y >= drain_target_y - 5.0
+	## Check if lava is currently at or near drained_level (safe to cross)
+	return surface_pos_y >= drained_level - 5.0
 
 func is_filled() -> bool:
-	## Check if lava is at full level (dangerous)
-	return surface_pos_y <= fill_target_y + 5.0
+	## Check if lava is currently at or near filled_level (danger!)
+	return surface_pos_y <= filled_level + 5.0
+
+func is_at_normal_level() -> bool:
+	## Check if lava is at normal surface_level
+	return abs(surface_pos_y - surface_level) < 5.0
+
+func get_lava_state() -> LavaState:
+	## Get current lava state
+	return _lava_state
 
 ## ============================================================================
 ## DEBUG DIAGNOSTICS

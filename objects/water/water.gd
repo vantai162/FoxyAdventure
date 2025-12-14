@@ -2,9 +2,118 @@
 extends Node2D
 class_name water
 
+## ═══════════════════════════════════════════════════════════════════════════════
+## DESIGNER GUIDE: WATER PUZZLE SETUP
+## ═══════════════════════════════════════════════════════════════════════════════
+##
+## VISUAL REFERENCE (side view of water pool):
+##
+##     ┌─────────────────────────┐  ← Pool TOP (0 pixels from top)
+##     │                         │
+##     │   ════ RAISED ════      │  ← raised_level (when trigger ACTIVATES)
+##     │                         │
+##     │  ~~~~ SURFACE ~~~~      │  ← surface_level (NORMAL resting state)
+##     │                         │
+##     │   ════ LOWERED ════     │  ← lowered_level (when trigger DEACTIVATES)
+##     │                         │
+##     └─────────────────────────┘  ← Pool BOTTOM (water_size.y pixels from top)
+##
+## COORDINATE SYSTEM:
+##   - All levels are in PIXELS FROM TOP of pool
+##   - SMALLER number = HIGHER surface (closer to top)
+##   - BIGGER number = LOWER surface (closer to bottom)
+##
+## BASIC SETUP (lever raises water to reach higher area):
+##   1. Set water_size (width, height)
+##   2. Set surface_level (where water normally sits, e.g. 60)
+##   3. Set raised_level (where it goes when raised, e.g. 10 - almost full!)
+##   4. Set listen_channel, put same channel on Lever
+##   5. Trigger ON = raises, Trigger OFF = returns to surface_level
+##
+## DRAINING PUZZLE (lever drains water to reveal passage):
+##   1. Set surface_level HIGH (e.g. 20 - water starts full)
+##   2. Set lowered_level (e.g. 100 - drains below floor)
+##   3. Set on_activate = "LOWER"
+##   4. Trigger ON = lowers, Trigger OFF = refills
+##
+## ═══════════════════════════════════════════════════════════════════════════════
+
+## Z-INDEX LAYERING - SIMPLE STACKING:
+## Player (z=10) → Water (z=12) → Terrain (z=15)
+## - Water is IN FRONT of player, so player looks submerged
+## - Terrain is IN FRONT of water, so terrain masks rectangle edges
+## Result: Non-rectangular pool shapes, player appears underwater. No overlay needed.
+## See scripts/z_layers.gd for the full system
+
 @export var water_size: Vector2 = Vector2(8.0,16.0)
-@export var surface_pos_y: float = 0.5
 @export_range(2,512) var segment_count: int = 64
+
+@export_group("Surface Levels")
+## Where water surface normally rests (pixels from TOP of pool).
+## 0 = at very top, water_size.y = at very bottom.
+## Example: 20 means surface is 20px below the top edge.
+@export var surface_level: float = 20.0:
+	set(v):
+		surface_level = v
+		if Engine.is_editor_hint():
+			queue_redraw()
+
+## Where water surface goes when RAISED (pixels from TOP).
+## Should be SMALLER than surface_level (higher in the pool).
+## Set to 0 for completely full (flood to pool top).
+## For dramatic flooding, extend the pool upward to cover the flood zone!
+@export var raised_level: float = 8.0:
+	set(v):
+		raised_level = v
+		if Engine.is_editor_hint():
+			queue_redraw()
+
+## Where water surface goes when LOWERED (pixels from TOP).
+## Should be LARGER than surface_level (lower in the pool).
+## Set to water_size.y or more to drain completely.
+@export var lowered_level: float = 80.0:
+	set(v):
+		lowered_level = v
+		if Engine.is_editor_hint():
+			queue_redraw()
+
+@export_group("Quick Setup")
+## Start with water at BOTTOM of pool (empty). 
+## When enabled, overrides surface_level to pool height on ready.
+## Perfect for filling puzzles - just set raised_level!
+@export var start_empty: bool = false
+
+## Start with water at TOP of pool (full).
+## When enabled, overrides surface_level to 0 on ready.
+## Perfect for drain puzzles - just set lowered_level!
+@export var start_full: bool = false
+
+@export_group("Channel System")
+## Channel to listen to for water level control.
+## Set same channel on trigger objects (Lever, PressurePlate) to connect them.
+@export var listen_channel: StringName = &""
+
+## What happens when trigger ACTIVATES (lever pulled, plate pressed)
+@export_enum("RAISE", "LOWER") var on_activate: int = 0  # 0 = RAISE, 1 = LOWER
+
+## What happens when trigger DEACTIVATES (lever released, plate unpressed)
+## RETURN_TO_SURFACE: Returns to surface_level (default, reversible puzzles)
+## STAY: Stays at current level (one-way puzzles, permanent changes)
+## OPPOSITE: Does the opposite of on_activate (raise→lower or lower→raise)
+@export_enum("RETURN_TO_SURFACE", "STAY", "OPPOSITE") var on_deactivate: int = 0
+
+@export_group("Timing")
+## How long (seconds) for water to raise
+@export var raise_duration: float = 2.0
+## How long (seconds) for water to lower
+@export var lower_duration: float = 2.0
+
+@export_group("Editor Preview")
+## Show level indicators in editor (surface, raised, lowered lines)
+@export var show_level_guides: bool = true:
+	set(v):
+		show_level_guides = v
+		queue_redraw()
 
 @export_group("Visuals")
 @export var surface_line_thickness: float = 2.0  ## Thicker for visibility
@@ -17,9 +126,9 @@ class_name water
 @export var ambient_wave_amplitude: float = 2.0  ## How high/low waves go (pixels) - more visible
 @export var ambient_wave_speed: float = 1.5  ## Wave frequency - slightly faster
 @export var ambient_wave_length: float = 0.25  ## Wavelength (0.1-1.0, lower = more waves)
+@export_range(-1.0, 1.0) var ambient_wave_direction: float = 1.0  ## -1 = left, 0 = standing, 1 = right
 
 @export_group("Physics Simulation")
-@export_range(0.0,1000.0) var water_physics_speed: float = 80.0  ## DEPRECATED: Legacy parameter, no longer used
 @export var water_restoring_force: float = 300.0  ## Spring constant pulling toward rest_height (higher = faster response)
 @export var wave_energy_loss: float = 35.0  ## Linear damping coefficient (base resistance)
 @export var quadratic_damping: float = 0.15  ## Quadratic damping (v²) - prevents overshoot at high velocities
@@ -50,7 +159,11 @@ class_name water
 @export var splash_color: Color = Color(0.8, 0.95, 1.0, 0.9)  ## Light blue-white
 
 @export_group("Glow Light (Optional)")
-@export var emit_light: bool = false  ## Water glows (bioluminescent/magical for dark caves)
+@export var emit_light: bool = false:  ## Water glows (bioluminescent/magical for dark caves)
+	set(value):
+		emit_light = value
+		if is_inside_tree():
+			_rebuild_water_lights()
 @export var light_color: Color = Color(0.3, 0.8, 1.0, 0.8)  ## Soft cyan glow
 @export var light_energy: float = 0.6  ## Subtle illumination
 @export var light_sample_points: int = 4  ## Distributed light sources (1-8)
@@ -61,7 +174,24 @@ class_name water
 @export_group("Debug")
 @export var enable_debug_diagnostics: bool = false  ## Enable water stability monitoring (prints every second)
 
+@export_group("Waterfall Blending")
+## Just ONE toggle - waterfalls handle everything else automatically
+@export var allow_waterfall_blend: bool = true  ## Allow waterfalls to blend into this pool
+
+## ═══════════════════════════════════════════════════════════════════════════════
+## INTERNAL RUNTIME STATE (don't touch these in inspector!)
+## ═══════════════════════════════════════════════════════════════════════════════
+
+## Current surface Y position (pixels from top of pool). Changes during raise/lower.
+## Initialized from surface_level, animated during level transitions.
+var surface_pos_y: float = 0.0
+
+## Track current state
+enum WaterState { NORMAL, RAISING, RAISED, LOWERING, LOWERED }
+var _water_state: WaterState = WaterState.NORMAL
+
 var segment_data: Array = []
+var _surface_suppression_zones: Array = []  ## Runtime: auto-populated by waterfalls
 var segment_rest_height: Array = []  ## Per-segment equilibrium height (allows external depression control)
 var recently_splashed: bool = false
 
@@ -107,6 +237,149 @@ var water_collision_shape: CollisionShape2D  ## Reference to collision shape for
 signal player_entered_water(body)
 signal player_exited_water(body)
 
+## ==========================================
+## AUTONOMOUS WATERFALL BLEND RECEIVER
+## Waterfalls call this automatically - you don't need to do anything!
+## ==========================================
+
+## Called by Waterfall when it detects this pool below it
+func _receive_waterfall_blend(x_min: float, x_max: float, waterfall: Node2D) -> void:
+	if not allow_waterfall_blend:
+		return
+	
+	# 1. Surface line suppression (subtle fade, not invisible)
+	_surface_suppression_zones.append({
+		"x_min": x_min,
+		"x_max": x_max,
+		"fade_width": 10.0
+	})
+	_rebuild_surface_gradient()
+	
+	# 2. PHYSICS: Depress the pool surface where fall impacts
+	#    Real fluid: falling column pushes surface down, curves away at edges
+	#    This creates the "dip" that matches the waterfall's flare
+	_apply_waterfall_depression(x_min, x_max)
+	
+	# 3. CONTINUOUS RIPPLES: Store impact zone for ongoing disturbance
+	#    Real water: constant small splashing/rippling from falling water
+	_waterfall_impact_zones.append({
+		"x_min": x_min,
+		"x_max": x_max,
+		"waterfall": waterfall,
+		"last_ripple_time": 0.0
+	})
+
+## Track waterfall impact zones for continuous rippling
+var _waterfall_impact_zones: Array = []
+
+## Apply a permanent surface depression where waterfall impacts
+## The falling water pushes the surface down - edges curve up smoothly
+func _apply_waterfall_depression(x_min: float, x_max: float) -> void:
+	if segment_rest_height.is_empty():
+		return
+	
+	var seg_width = water_size.x / float(segment_count - 1)
+	var depression_depth: float = 4.0  # How much the surface dips (pixels)
+	var edge_fade: float = 16.0  # Smooth transition at edges
+	
+	for i in range(segment_count):
+		var seg_x = i * seg_width
+		
+		# Calculate distance from impact zone
+		var dist_from_center: float = 0.0
+		if seg_x < x_min:
+			dist_from_center = x_min - seg_x
+		elif seg_x > x_max:
+			dist_from_center = seg_x - x_max
+		else:
+			dist_from_center = 0.0  # Inside impact zone
+		
+		# Inside the impact zone: full depression
+		# Near edges: smooth fade using smoothstep
+		var depression: float = 0.0
+		if dist_from_center <= 0.0:
+			# Inside: full depression
+			depression = depression_depth
+		elif dist_from_center < edge_fade:
+			# Edge fade: smooth curve up
+			var t = dist_from_center / edge_fade
+			t = 1.0 - (t * t * (3.0 - 2.0 * t))  # inverse smoothstep
+			depression = t * depression_depth
+		
+		# Apply depression (raise the rest height = lower the surface visually)
+		if depression > 0.0:
+			segment_rest_height[i] += depression
+
+## Called every physics frame to apply continuous waterfall disturbance
+func _apply_waterfall_ripples(time: float) -> void:
+	if _waterfall_impact_zones.is_empty():
+		return
+	
+	var seg_width = water_size.x / float(segment_count - 1)
+	var ripple_interval: float = 0.15  # Create ripple every 150ms
+	var ripple_strength: float = 1.5  # Small continuous disturbance
+	
+	for zone in _waterfall_impact_zones:
+		if not is_instance_valid(zone["waterfall"]):
+			continue
+		
+		# Check if it's time for another ripple
+		if time - zone["last_ripple_time"] >= ripple_interval:
+			zone["last_ripple_time"] = time
+			
+			# Pick a random segment within the impact zone
+			var zone_center_x = (zone["x_min"] + zone["x_max"]) / 2.0
+			var zone_width = zone["x_max"] - zone["x_min"]
+			var random_x = zone_center_x + (randf() - 0.5) * zone_width
+			var seg_idx = int(random_x / seg_width)
+			seg_idx = clamp(seg_idx, 0, segment_count - 1)
+			
+			# Apply small downward impulse (waterfall pushing down)
+			if seg_idx < segment_data.size():
+				segment_data[seg_idx]["velocity"] += ripple_strength * (0.8 + randf() * 0.4)
+				_settled_segments[seg_idx] = 0  # Mark as active
+
+## Rebuild the Line2D gradient based on suppression zones (internal)
+func _rebuild_surface_gradient() -> void:
+	if not surface_line or _surface_suppression_zones.is_empty():
+		if surface_line:
+			surface_line.gradient = null
+		return
+	
+	var grad = Gradient.new()
+	var stops: Array = []
+	stops.append({"offset": 0.0, "color": surface_color})
+	
+	for zone in _surface_suppression_zones:
+		var x_min = zone["x_min"]
+		var x_max = zone["x_max"]
+		var fade = zone["fade_width"]
+		
+		var t_fade_start = clamp((x_min - fade) / water_size.x, 0.0, 1.0)
+		var t_zone_start = clamp(x_min / water_size.x, 0.0, 1.0)
+		var t_zone_end = clamp(x_max / water_size.x, 0.0, 1.0)
+		var t_fade_end = clamp((x_max + fade) / water_size.x, 0.0, 1.0)
+		
+		if t_fade_start > 0.01:
+			stops.append({"offset": t_fade_start, "color": surface_color})
+		stops.append({"offset": t_zone_start, "color": Color(surface_color.r, surface_color.g, surface_color.b, 0.0)})
+		stops.append({"offset": t_zone_end, "color": Color(surface_color.r, surface_color.g, surface_color.b, 0.0)})
+		if t_fade_end < 0.99:
+			stops.append({"offset": t_fade_end, "color": surface_color})
+	
+	stops.append({"offset": 1.0, "color": surface_color})
+	stops.sort_custom(func(a, b): return a["offset"] < b["offset"])
+	
+	grad.offsets = PackedFloat32Array()
+	grad.colors = PackedColorArray()
+	var last_offset = -1.0
+	for stop in stops:
+		if stop["offset"] > last_offset + 0.001:
+			grad.add_point(stop["offset"], stop["color"])
+			last_offset = stop["offset"]
+	
+	surface_line.gradient = grad
+
 ## Debug monitoring
 var debug_timer: float = 0.0
 var debug_interval: float = 1.0
@@ -124,12 +397,176 @@ func _ready() -> void:
 	_bodies_in_water.clear()
 	_swim_disturbance_timers.clear()
 	_boats_in_water.clear()
-	_initiate_water()
+	
+	# Apply quick setup conveniences (runtime only)
 	if not Engine.is_editor_hint():
-		set_process(true)
+		if start_empty:
+			surface_level = water_size.y  # Start at bottom (empty)
+		elif start_full:
+			surface_level = 0.0  # Start at top (full)
+	
+	_initiate_water()
+	
+	# Always enable processing for ambient wave animation (editor + runtime)
+	set_process(true)
+	
+	# Listen for node removal to clean up stale body references (player death)
+	if not Engine.is_editor_hint():
+		get_tree().node_removed.connect(_on_any_node_removed)
+	
+	# Runtime-only: subscribe to channel system
+	if not Engine.is_editor_hint():
+		if not listen_channel.is_empty():
+			var channel_manager = get_node_or_null("/root/InteractionChannel")
+			if channel_manager:
+				channel_manager.channel_activated.connect(_on_channel_activated)
+				channel_manager.channel_deactivated.connect(_on_channel_deactivated)
+				
+				# Check if channel is already active (player respawned with lever still on)
+				if channel_manager.is_channel_active(listen_channel):
+					call_deferred("_on_channel_activated", listen_channel, null)
+
+
+func _get_configuration_warnings() -> PackedStringArray:
+	## Show warnings in editor for illogical configurations
+	var warnings: PackedStringArray = []
+	
+	# Check for illogical level configurations
+	if raised_level > surface_level:
+		warnings.append("⚠️ raised_level (%.0f) is BELOW surface_level (%.0f)!\nRaising will move water DOWN, which is probably not intended.\nSet raised_level < surface_level." % [raised_level, surface_level])
+	
+	if lowered_level < surface_level:
+		warnings.append("⚠️ lowered_level (%.0f) is ABOVE surface_level (%.0f)!\nLowering will move water UP, which is probably not intended.\nSet lowered_level > surface_level." % [lowered_level, surface_level])
+	
+	if lowered_level > water_size.y:
+		warnings.append("ℹ️ lowered_level (%.0f) exceeds pool height (%.0f).\nWater will drain completely out of view. This is fine if intended!" % [lowered_level, water_size.y])
+	
+	if raised_level < 0:
+		warnings.append("⚠️ raised_level (%.0f) is NEGATIVE!\nExtend the pool upward instead. Set pool position higher, increase pool height, then use raised_level = 0." % raised_level)
+	
+	if start_empty and start_full:
+		warnings.append("⚠️ Both start_empty AND start_full are enabled!\nOnly one can apply. start_empty takes priority.")
+	
+	if listen_channel.is_empty() and (on_activate != 0 or on_deactivate != 0):
+		warnings.append("ℹ️ on_activate/on_deactivate are set but listen_channel is empty.\nNo channel means no triggers will affect this water.")
+	
+	return warnings
+
+
+func _exit_tree() -> void:
+	## Clean up signal connections when water is removed from tree
+	## Prevents stale callbacks to freed objects
+	if Engine.is_editor_hint():
+		return
+	
+	var channel_manager = get_node_or_null("/root/InteractionChannel")
+	if channel_manager:
+		if channel_manager.channel_activated.is_connected(_on_channel_activated):
+			channel_manager.channel_activated.disconnect(_on_channel_activated)
+		if channel_manager.channel_deactivated.is_connected(_on_channel_deactivated):
+			channel_manager.channel_deactivated.disconnect(_on_channel_deactivated)
+	
+	# Clean up node_removed connection
+	if get_tree() and get_tree().node_removed.is_connected(_on_any_node_removed):
+		get_tree().node_removed.disconnect(_on_any_node_removed)
+
+
+func _on_any_node_removed(node: Node) -> void:
+	## Called when ANY node is removed from tree - clean up stale body references
+	## Handles player death where body is queue_free'd without triggering body_exited
+	if _bodies_in_water.has(node):
+		_bodies_in_water.erase(node)
+		_swim_disturbance_timers.erase(node)
+	
+	if _boats_in_water.has(node):
+		_boats_in_water.erase(node)
+		_boats_moved = true
+
+
+func _on_channel_activated(channel: StringName, _source: Node) -> void:
+	if channel != listen_channel:
+		return
+	# Channel activated - check on_activate setting
+	if on_activate == 0:  # RAISE
+		raise_water(raised_level, raise_duration)
+	else:  # LOWER
+		lower_water(lowered_level, lower_duration)
+
+
+func _on_channel_deactivated(channel: StringName, _source: Node) -> void:
+	if channel != listen_channel:
+		return
+	
+	# Channel deactivated - check on_deactivate setting
+	match on_deactivate:
+		0:  # RETURN_TO_SURFACE
+			return_to_normal(raise_duration if on_activate == 1 else lower_duration)
+		1:  # STAY
+			pass  # Do nothing, keep current level
+		2:  # OPPOSITE
+			# Do the opposite of on_activate
+			if on_activate == 0:  # Was RAISE, now LOWER
+				lower_water(lowered_level, lower_duration)
+			else:  # Was LOWER, now RAISE
+				raise_water(raised_level, raise_duration)
+
+
+func _draw() -> void:
+	# EDITOR ONLY: Draw level guides for designer visibility
+	if not Engine.is_editor_hint() or not show_level_guides:
+		return
+	
+	var guide_width = water_size.x + 20  # Extend past pool edges
+	var start_x = -10.0
+	
+	# Draw pool boundary (white dashed)
+	draw_rect(Rect2(0, 0, water_size.x, water_size.y), Color(1, 1, 1, 0.3), false, 1.0)
+	
+	# Draw SURFACE level (current/normal) - CYAN solid line
+	var surface_guide_color = Color(0, 1, 1, 0.9)
+	draw_line(Vector2(start_x, surface_level), Vector2(start_x + guide_width, surface_level), surface_guide_color, 2.0)
+	draw_string(ThemeDB.fallback_font, Vector2(start_x + guide_width + 5, surface_level + 4), "SURFACE", HORIZONTAL_ALIGNMENT_LEFT, -1, 10, surface_guide_color)
+	
+	# Draw RAISED level - BLUE dashed line (water rises here)
+	var raised_color = Color(0.3, 0.5, 1.0, 0.8)
+	_draw_dashed_line(Vector2(start_x, raised_level), Vector2(start_x + guide_width, raised_level), raised_color, 2.0, 8.0)
+	draw_string(ThemeDB.fallback_font, Vector2(start_x + guide_width + 5, raised_level + 4), "RAISED", HORIZONTAL_ALIGNMENT_LEFT, -1, 10, raised_color)
+	
+	# Draw LOWERED level - GREEN dashed line (water lowers here)
+	var lowered_color = Color(0.2, 1.0, 0.2, 0.8)
+	_draw_dashed_line(Vector2(start_x, lowered_level), Vector2(start_x + guide_width, lowered_level), lowered_color, 2.0, 8.0)
+	draw_string(ThemeDB.fallback_font, Vector2(start_x + guide_width + 5, lowered_level + 4), "LOWERED", HORIZONTAL_ALIGNMENT_LEFT, -1, 10, lowered_color)
+
+
+func _draw_dashed_line(from: Vector2, to: Vector2, color: Color, width: float = 1.0, dash_length: float = 5.0) -> void:
+	## Draw a dashed line for editor guides
+	var direction = (to - from).normalized()
+	var total_length = from.distance_to(to)
+	var drawn = 0.0
+	var drawing = true
+	
+	while drawn < total_length:
+		var segment_end = min(drawn + dash_length, total_length)
+		if drawing:
+			draw_line(from + direction * drawn, from + direction * segment_end, color, width)
+		drawn = segment_end
+		drawing = not drawing
 
 
 func _process(delta:float)->void:
+	# Ambient wave animation (runs in BOTH editor and runtime for visual life)
+	if ambient_wave_enabled:
+		_ambient_wave_time += delta
+	
+	# Light pulsing (runs in BOTH editor and runtime so designers see the glow)
+	if emit_light and _water_lights.size() > 0:
+		_update_water_lights(delta)
+	
+	# EDITOR MODE: Only update visuals (no physics, particles, or gameplay)
+	if Engine.is_editor_hint():
+		update_visuals()
+		return
+	
 	if enable_debug_diagnostics:
 		debug_timer += delta
 		if debug_timer >= debug_interval:
@@ -139,10 +576,6 @@ func _process(delta:float)->void:
 	# Update water raising animation
 	if _water_raise_active:
 		_update_water_raise(delta)
-	
-	# Ambient wave animation (always runs for visual life)
-	if ambient_wave_enabled:
-		_ambient_wave_time += delta
 	
 	# Swim disturbance: create periodic ripples for bodies in water
 	if swim_disturbance_enabled:
@@ -161,15 +594,18 @@ func _process(delta:float)->void:
 	if emit_splash_particles:
 		_update_splash_droplets(delta)
 	
-	# Update optional lighting (bioluminescent glow)
-	if emit_light and _water_lights.size() > 0:
-		_update_water_lights(delta)
+	# Continuous waterfall ripples (creates "damn that's smooth" effect)
+	_apply_waterfall_ripples(_ambient_wave_time)
 	
 	update_physics(delta)
 	update_visuals()
 	_update_collision_shape()  # Update collision shape to match water level
 	
 func _initiate_water() -> void:
+	# Initialize runtime surface position from designer-set surface level
+	surface_pos_y = surface_level
+	_water_state = WaterState.NORMAL
+	
 	segment_data.clear()
 	segment_rest_height.clear()
 	_boat_depression_offsets.clear()
@@ -194,13 +630,18 @@ func _initiate_water() -> void:
 	new_line.begin_cap_mode = Line2D.LINE_CAP_ROUND
 	new_line.end_cap_mode = Line2D.LINE_CAP_ROUND
 	new_line.joint_mode = Line2D.LINE_JOINT_ROUND
+	new_line.z_as_relative = false  # Use absolute z_index
+	new_line.z_index = ZLayers.FLUID_SURFACE  # IN FRONT of player (11)
 	add_child(new_line)
 	surface_line = new_line
 	
+	# Main water body - IN FRONT of player so player looks submerged
+	# Terrain is IN FRONT of water to mask rectangle edges
 	var new_polygon: Polygon2D = Polygon2D.new()
 	new_polygon.color = water_fill_color
-	# Don't use show_behind_parent - we want water to overlay the player
-	surface_line.add_child(new_polygon)
+	new_polygon.z_as_relative = false  # Use absolute z_index
+	new_polygon.z_index = ZLayers.FLUID_BODY  # IN FRONT of player (12)
+	add_child(new_polygon)
 	fill_polygon = new_polygon
 	
 	var new_area: Area2D = Area2D.new()
@@ -224,7 +665,8 @@ func _initiate_water() -> void:
 	water_collision_shape = new_collisionshape  # Store reference
 	
 	# Optional lighting setup (bioluminescent/magical water)
-	if emit_light and not Engine.is_editor_hint():
+	# Works in editor so designers can see the glow
+	if emit_light:
 		_setup_water_lights()
 
 
@@ -432,7 +874,10 @@ func update_visuals() -> void:
 		# Add ambient wave offset (purely visual, doesn't affect physics)
 		var ambient_offset = 0.0
 		if ambient_wave_enabled:
-			var wave_phase = _ambient_wave_time * ambient_wave_speed + (float(i) / segment_count) * TAU / ambient_wave_length
+			# direction: -1 = waves travel left, 0 = standing wave, 1 = waves travel right
+			var direction = ambient_wave_direction if ambient_wave_direction != null else 1.0
+			var position_term = (float(i) / segment_count) * TAU / ambient_wave_length
+			var wave_phase = _ambient_wave_time * ambient_wave_speed - position_term * direction
 			ambient_offset = sin(wave_phase) * ambient_wave_amplitude
 		
 		points.append(Vector2(i * segment_width, base_height + ambient_offset))
@@ -455,7 +900,7 @@ func update_visuals() -> void:
 	final_points.append(Vector2(water_size.x, bottom_y))
 	final_points.append(Vector2(0, bottom_y))
 	fill_polygon.polygon = final_points
-
+	
 func splash(splash_pos:Vector2, splash_velocity:float) -> void:
 	var local_x_pos: float = to_local(splash_pos).x
 	var segment_width: float = water_size.x / (segment_count - 1)
@@ -526,8 +971,9 @@ func get_water_height_at_global_x(global_x: float) -> float:
 	return global_position.y + segment_data[index]["height"]
 
 func _update_collision_shape() -> void:
-	## Dynamically update collision shape SIZE and POSITION to match water level
-	## The water should expand from bottom up, not move as a whole
+	## Dynamically update collision shape SIZE and POSITION to match VISUAL water level
+	## CRITICAL: Must match what players SEE, not the tween target
+	## Uses average segment height to stay synchronized with update_visuals()
 	if not water_collision_shape or not water_collision_shape.shape:
 		return
 	
@@ -535,23 +981,29 @@ func _update_collision_shape() -> void:
 	if not shape:
 		return
 	
-	# Calculate new size: from bottom (water_size.y) to current surface (surface_pos_y)
-	# surface_pos_y is offset from origin, negative = higher up
-	var new_height = water_size.y - surface_pos_y  # Total height from surface to bottom
-	var old_size = shape.size
-	shape.size = Vector2(water_size.x, new_height)
+	# Calculate average visual surface height from actual segment data
+	# This is what update_visuals() uses, so collision matches visuals exactly
+	var avg_surface_height: float = 0.0
+	for seg in segment_data:
+		avg_surface_height += seg["height"]
+	avg_surface_height /= segment_count
 	
-	var center_y = surface_pos_y + new_height / 2.0
+	# Calculate new size: from bottom (water_size.y) to current visual surface
+	var new_height = water_size.y - avg_surface_height  # Total height from surface to bottom
+	shape.size = Vector2(water_size.x, max(new_height, 1.0))  # Ensure positive height
+	
+	var center_y = avg_surface_height + new_height / 2.0
 	water_collision_shape.position = Vector2(water_size.x / 2.0, center_y)
 
 ## Water level control for boss fights and scripted events
 func raise_water(target_height: float, duration: float = 2.0) -> void:
-	## Smoothly raise water surface to target height
-	## @param target_height: New surface_pos_y value (negative = higher, positive = lower)
+	## Smoothly raise water surface to target height (raised_level)
+	## @param target_height: Target Y position (pixels from top of pool)
 	## @param duration: Time in seconds for transition
 	if segment_rest_height.size() != segment_count:
 		_initiate_water()
-	print("🌊 Water raise_water() called: target=%.2f, duration=%.1f" % [target_height, duration])
+	
+	_water_state = WaterState.RAISING
 	
 	# Store initial rest heights for smooth interpolation
 	_water_raise_start_heights.clear()
@@ -597,13 +1049,30 @@ func _update_water_raise(delta: float) -> void:
 	
 	if progress >= 1.0:
 		_water_raise_active = false
-		print("🌊 Water raise complete! Final rest heights at: %.2f" % _water_raise_target)
+		# Update state based on where we ended up
+		if abs(_water_raise_target - raised_level) < 1.0:
+			_water_state = WaterState.RAISED
+		elif abs(_water_raise_target - lowered_level) < 1.0:
+			_water_state = WaterState.LOWERED
+		else:
+			_water_state = WaterState.NORMAL
 
 func lower_water(target_height: float, duration: float = 2.0) -> void:
-	## Smoothly lower water surface to target height
-	## @param target_height: New surface_pos_y value (negative = higher, positive = lower)
+	## Smoothly lower water surface to target height (lowered_level)
+	## @param target_height: Target Y position (pixels from top of pool)
 	## @param duration: Time in seconds for transition
-	raise_water(target_height, duration)  # Same implementation
+	_water_state = WaterState.LOWERING
+	raise_water(target_height, duration)  # Same implementation, just different state tracking
+
+func return_to_normal(duration: float = 2.0) -> void:
+	## Return water surface to normal surface_level
+	## @param duration: Time in seconds for transition
+	raise_water(surface_level, duration)
+
+func is_level_transitioning() -> bool:
+	## Returns true if water level is actively changing (raise/lower in progress)
+	## Whirlpools should wait for this to be false before applying depressions
+	return _water_raise_active
 
 func set_water_level_instant(target_height: float) -> void:
 	## Instantly set water level without animation
@@ -825,6 +1294,7 @@ func _spawn_splash_particles(splash_global_pos: Vector2, impact_strength: float)
 	for i in range(droplet_count):
 		var droplet = Node2D.new()
 		droplet.name = "Droplet"
+		droplet.z_index = ZLayers.EFFECT_FRONT  # Splash droplets above water
 		
 		# Start at surface
 		droplet.position = Vector2(local_pos.x + randf_range(-8, 8), surface_pos_y)
@@ -910,6 +1380,19 @@ func _update_splash_droplets(delta: float) -> void:
 ## Disabled by default for backward compatibility with existing levels
 ## ============================================================================
 
+func _rebuild_water_lights() -> void:
+	## Rebuild lights when emit_light is toggled in editor
+	# Clear existing lights
+	for light in _water_lights:
+		if is_instance_valid(light):
+			light.queue_free()
+	_water_lights.clear()
+	
+	# Create new lights if enabled
+	if emit_light:
+		_setup_water_lights()
+
+
 func _setup_water_lights() -> void:
 	## Create distributed lights along water surface (1-8 configurable)
 	## Each light tracks local segment heights for realistic wave illumination
@@ -933,6 +1416,7 @@ func _setup_water_lights() -> void:
 		light.range_z_min = -100
 		light.range_z_max = 100
 		light.shadow_enabled = false  # Water doesn't cast shadows
+		light.z_index = ZLayers.LIGHT_EFFECT  # Light effect layer
 		
 		# First light creates texture, others share it
 		if i == 0:

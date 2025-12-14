@@ -71,6 +71,7 @@ size = Vector2(35, 27)
 size = Vector2(527, 237)
 
 [node name="Crab" type="CharacterBody2D"]
+z_index = 8
 collision_layer = 8
 script = ExtResource("1_wf64l")
 metadata/_custom_type_script = "uid://s4xx82espxdt"
@@ -91,7 +92,7 @@ target_position = Vector2(14, 0)
 
 [node name="DownRayCast2D" type="RayCast2D" parent="Direction"]
 position = Vector2(14, -4)
-target_position = Vector2(0, 36)
+target_position = Vector2(0, 20)
 
 [node name="HitArea2D" type="Area2D" parent="Direction"]
 collision_layer = 0

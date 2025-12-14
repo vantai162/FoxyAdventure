@@ -166,6 +166,7 @@ size = Vector2(67, 18)
 size = Vector2(18, 36)
 
 [node name="ShieldTribe" type="CharacterBody2D"]
+z_index = 8
 collision_layer = 8
 script = ExtResource("1_shield_gd")
 spear_thrust_distance = 72.0

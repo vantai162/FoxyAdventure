@@ -21,6 +21,7 @@ var paused=false
 var skin_manager:SkinManager=SkinManager.new()
 var kill_count: int = 0
 
+
 func _ready() -> void:
 	load_checkpoint_data()
 	key_manager.load_key()
@@ -155,15 +156,17 @@ func clear_checkpoint_data() -> void:
 	checkpoint_data.clear()
 	SaveSystem.delete_save_file(SaveSystem.SAVE_FILE)
 
-func fade_to_black(duration: float = 1.0):
+func fade_to_black(duration: float = 0.35):
 	var tween = create_tween()
-	tween.tween_property(fade_rect, "modulate:a", 1.0, duration)
+	# EASE_OUT: Responsive start, smooth settle to black
+	tween.tween_property(fade_rect, "modulate:a", 1.0, duration).set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_QUAD)
 	await tween.finished
 
 
-func fade_from_black(duration: float = 1.0):
+func fade_from_black(duration: float = 0.35):
 	var tween = create_tween()
-	tween.tween_property(fade_rect, "modulate:a", 0.0, duration)
+	# EASE_IN_OUT: Smooth reveal - breathes rather than snaps
+	tween.tween_property(fade_rect, "modulate:a", 0.0, duration).set_ease(Tween.EASE_IN_OUT).set_trans(Tween.TRANS_SINE)
 	await tween.finished
 
 func _collect_blade():

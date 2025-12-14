@@ -59,17 +59,16 @@ _data = {
 }
 
 [node name="Gate" type="Node2D"]
+z_index = 0
 script = ExtResource("1_lak10")
 
 [node name="Gate" type="AnimatableBody2D" parent="."]
-script = ExtResource("1_lak10")
 
 [node name="Sprite2D" type="Sprite2D" parent="Gate"]
 scale = Vector2(0.219, 0.406)
 texture = ExtResource("1_5f8fv")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Gate"]
-position = Vector2(0.5, 0)
 shape = SubResource("RectangleShape2D_5f8fv")
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]

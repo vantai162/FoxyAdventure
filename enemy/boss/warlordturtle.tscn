@@ -226,6 +226,7 @@ size = Vector2(75, 67)
 size = Vector2(74, 67)
 
 [node name="WarlordTurtle" type="CharacterBody2D" groups=["boss"]]
+z_index = 13
 scale = Vector2(1.5, 1.5)
 collision_layer = 8
 script = ExtResource("1_ef40p")
@@ -233,6 +234,7 @@ boomb_scene = ExtResource("2_wuglq")
 rocket_scene = ExtResource("3_tvqld")
 whirlpool_scene = ExtResource("4_4m7bq")
 knockback_force = 0.0
+direction = -1
 max_health = 26
 max_invincible = 3.0
 oxygen_decrease_rate = 0.0

@@ -6,7 +6,7 @@ extends EnemyState
 
 @export var min_whirlpools: int = 1
 @export var max_whirlpools: int = 3
-@export var spawn_depth_below_surface: float = 90.0  ## Distance below water surface
+@export var spawn_depth_below_surface: float = 50.0  ## Distance below water surface
 @export var edge_margin: float = 200.0                ## Keep away from water edges
 @export var min_spacing: float = 250.0                ## Minimum distance between whirlpools
 

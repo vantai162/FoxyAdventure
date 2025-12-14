@@ -92,6 +92,7 @@ animations = [{
 [sub_resource type="FontVariation" id="FontVariation_oaidb"]
 
 [node name="Cat" type="Node2D"]
+z_index = 8
 script = ExtResource("1_oaidb")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]

@@ -1,19 +1,21 @@
 class_name SpikeProjectile
 extends Area2D
 ## Spike projectile for elite turtle spike burst
-## PRODUCTION: Use sprite texture (GPU rendering, batchable)
-## FALLBACK: Procedural Polygon2D if no texture assigned (prototyping only)
+##
+## SETUP: Assign texture to the Sprite2D child node in the editor.
+## If no texture is assigned, a procedural fallback will be used (for prototyping).
 ## NOTE: Works with Node2DFactory for centralized spawning
 
-@export var spike_texture: Texture2D  ## ASSIGN SPRITE ASSET HERE (draw it pointing UP ↑)
 @export var damage: int = 1
 @export var speed: float = 180.0
 @export var lifetime: float = 2.5
-@export var spike_color: Color = Color(0.85, 0.85, 0.85, 1.0)  ## Only used if no texture
+@export var spike_color: Color = Color(0.85, 0.85, 0.85, 1.0)  ## Only used if no texture on Sprite2D
 @export var gravity_multiplier: float = 0.3  ## 30% of normal gravity for arc
 
 var direction: Vector2  ## Set before adding to scene
 var velocity: Vector2
+
+@onready var sprite: Sprite2D = $Sprite2D if has_node("Sprite2D") else null
 
 func _ready():
 	if direction == Vector2.ZERO:
@@ -23,15 +25,12 @@ func _ready():
 	
 	velocity = direction.normalized() * speed
 	
-	# PRODUCTION: Use sprite texture (GPU rendering)
-	if spike_texture:
-		var sprite = Sprite2D.new()
-		sprite.texture = spike_texture
+	# Check if Sprite2D child has texture assigned
+	if sprite and sprite.texture:
 		sprite.centered = true
-		add_child(sprite)
-	else:
+	elif sprite:
 		# FALLBACK: Procedural visual for prototyping (CPU-rendered)
-		push_warning("SpikeProjectile: No texture assigned, using procedural fallback (NOT production-ready!)")
+		push_warning("SpikeProjectile: No texture on Sprite2D child, using procedural fallback (assign Texture2D to Sprite2D for production)")
 		var spike = Polygon2D.new()
 		spike.polygon = PackedVector2Array([
 			Vector2(0, -5),   # Tip
@@ -39,20 +38,13 @@ func _ready():
 			Vector2(2, 0)     # Base right
 		])
 		spike.color = spike_color
+		spike.z_index = ZLayers.PROJECTILE  # Match projectile layer
 		add_child(spike)
+		sprite.visible = false  # Hide empty sprite
 	
 	# Point spike in direction of travel
 	# Sprite should be drawn pointing UP ↑, this rotates it to match direction
 	rotation = direction.angle() + PI/2
-	
-	# Collision shape (small circle for tip)
-	var shape = CircleShape2D.new()
-	shape.radius = 3.0
-	var collision = CollisionShape2D.new()
-	collision.shape = shape
-	add_child(collision)
-	
-	# Collision layers set in scene file (layer 16, mask 4)
 	
 	# Auto-destroy after lifetime
 	get_tree().create_timer(lifetime).timeout.connect(queue_free)

@@ -59,6 +59,14 @@ var attack_cooldown_remaining: float = 0.0  ## Tracks current cooldown countdown
 ## Runtime state for wall jump air restriction (managed by jump state)
 var wall_jump_restriction_timer: float = -1.0  ## -1 = not active, >=0 = active countdown
 
+@export_group("Impulse Momentum")
+@export var impulse_momentum_duration: float = 0.4  ## Time (seconds) horizontal impulse momentum is preserved without air braking
+@export var impulse_momentum_fade_duration: float = 0.3  ## Time to fade from full momentum preservation to normal air control
+
+## Runtime state for impulse momentum preservation (springs, shockwaves, explosions, etc.)
+var impulse_momentum_timer: float = -1.0  ## -1 = not active, >=0 = time since impulse applied
+var impulse_momentum_direction: int = 0  ## -1 = launched left, 1 = launched right, 0 = no horizontal impulse
+
 var current_water: Node2D = null  ## Reference to current water body player is in
 signal health_changed
 signal coin_changed
@@ -70,6 +78,20 @@ signal max_health_changed
 @export_group("Blade")
 @export var blade_projectile_scene: PackedScene
 @export var air_slash_scene: PackedScene
+@export var has_unlocked_flame_blade: bool = false
+var blade_count: int = 0
+var max_blade_capacity: int = 1
+var has_unlocked_blade: bool = false
+
+@export_group("Throw")
+@export var throw_offset_x: float = 40.0  ## Horizontal offset from player center
+@export var throw_offset_y: float = -14.0  ## Vertical offset (negative = above feet)
+
+@export_group("Targeting")
+@export var targeting_enabled: bool = true  ## Enable smart aim-assist for throws
+
+## Targeting system (Area2D in scene under Direction)
+@onready var targeting: PlayerTargeting = $Direction/TargetingArea if has_node("Direction/TargetingArea") else null
 
 @onready var stun_ani: = $Direction/Stun_Effect
 
@@ -99,9 +121,7 @@ var timeline: float = 0.0
 var last_jumppress_onair: float = -1211.0
 var last_ground_time: float = -1211.0
 
-var blade_count: int = 0
-var max_blade_capacity: int = 1
-var has_unlocked_blade: bool = false
+
 
 ## Get current air acceleration value based on wall jump restriction state
 func get_current_air_acceleration() -> float:
@@ -119,6 +139,41 @@ func get_current_air_acceleration() -> float:
 	
 	# Fully restored
 	return air_acceleration
+
+## Get the air deceleration multiplier for impulse momentum preservation
+## Returns 0.0 = full momentum preservation (no braking)
+## Returns 1.0 = normal air deceleration
+## Values between = fading from preserved to normal
+func get_impulse_momentum_multiplier(input_direction: int) -> float:
+	# Not in impulse momentum state
+	if impulse_momentum_timer < 0:
+		return 1.0
+	
+	# Player is actively steering AGAINST the impulse direction - allow normal control
+	# This lets player "fight" the impulse if they want to
+	if input_direction != 0 and input_direction != impulse_momentum_direction:
+		return 1.0
+	
+	# Momentum preservation phase: no air braking at all
+	if impulse_momentum_timer < impulse_momentum_duration:
+		return 0.0
+	
+	# Fade phase: gradually restore normal air deceleration
+	var fade_time = impulse_momentum_timer - impulse_momentum_duration
+	if fade_time < impulse_momentum_fade_duration:
+		return fade_time / impulse_momentum_fade_duration
+	
+	# Fully expired - reset timer and return normal deceleration
+	impulse_momentum_timer = -1.0
+	impulse_momentum_direction = 0
+	return 1.0
+
+## Apply impulse momentum preservation (called by springs, shockwaves, explosions, etc.)
+## This prevents air deceleration from immediately braking externally-applied velocity
+func apply_impulse_momentum(horizontal_direction: int) -> void:
+	if horizontal_direction != 0:
+		impulse_momentum_timer = 0.0
+		impulse_momentum_direction = horizontal_direction
 
 func can_attack() -> bool:
 	return blade_count > 0 and Effect["Stun"] <= 0 and attack_cooldown_remaining <= 0
@@ -159,9 +214,17 @@ func throw_blade_projectile() -> void:
 	var blade = blade_projectile_scene.instantiate()
 	get_tree().current_scene.add_child(blade)
 	
-	var throw_offset = Vector2(40 * direction, -10)
+	var throw_offset := Vector2(throw_offset_x * direction, throw_offset_y)
 	blade.global_position = global_position + throw_offset
-	blade.launch(direction, self)
+	
+	# Check if we have a locked target for aimed throw
+	if targeting != null and targeting.has_locked_target():
+		# Aimed throw - clamped angle toward target (±25° prevents ground ricochet)
+		var throw_angle := targeting.get_throw_angle(direction)
+		blade.launch_aimed(throw_angle, self)
+	else:
+		# Mindless throw - straight horizontal in facing direction
+		blade.launch(direction, self)
 	
 	consume_blade()
 	
@@ -198,6 +261,10 @@ func _ready() -> void:
 	stun_ani.visible=false
 	call_deferred("_connect_water_signals")
 	emit_signal("health_changed")
+	
+	# Setup targeting system (Area2D already in scene under Direction)
+	if targeting_enabled and targeting != null:
+		targeting.setup(self)
 	
 	# Sync sprite to blade inventory state after base initialization
 	# This handles respawn scenarios where blade state persists but sprite resets
@@ -247,7 +314,17 @@ func _process(delta: float) -> void:
 	_updateeffect(delta)
 	_update_timeline(delta)
 	_updatecooldown(delta)
+	_update_impulse_momentum(delta)
 	oxy_changed.emit()
+
+func _update_impulse_momentum(delta: float) -> void:
+	# Update impulse momentum timer if active
+	if impulse_momentum_timer >= 0:
+		impulse_momentum_timer += delta
+		# Cancel impulse momentum when landing on floor (momentum transfer complete)
+		if is_on_floor():
+			impulse_momentum_timer = -1.0
+			impulse_momentum_direction = 0
 	
 		
 
@@ -316,7 +393,20 @@ func _applyeffect(name: String, time: float) -> void:
 			sprite.visible = not sprite.visible
 		)
 		blink_timer.start()
-		await get_tree().create_timer(time).timeout
+		
+		# Guard: tree may become null if player dies during blink
+		var tree = get_tree()
+		if tree == null:
+			blink_timer.stop()
+			blink_timer.queue_free()
+			return
+		
+		await tree.create_timer(time).timeout
+		
+		# Guard: player may have been freed during await
+		if not is_instance_valid(self) or not is_instance_valid(blink_timer):
+			return
+		
 		blink_timer.stop()
 		blink_timer.queue_free()
 		sprite.visible = true
@@ -372,7 +462,8 @@ func save_state() -> Dictionary:
 		"has_unlocked_blade": has_unlocked_blade,
 		"health": health,
 		"Inventory":inventory._save_inventory(),
-		"max_health": max_health
+		"max_health": max_health,
+		"has_unlocked_flame_blade": has_unlocked_flame_blade
 	}
 
 func load_state(data: Dictionary) -> void:
@@ -398,6 +489,8 @@ func load_state(data: Dictionary) -> void:
 		inventory._load_inventory(data["Inventory"])
 	if data.has("max_health"):
 		max_health = data["max_health"]
+	if data.has("has_unlocked_flame_blade"):
+		has_unlocked_flame_blade = data["has_unlocked_flame_blade"]
 	# Đã loại bỏ logic: if data.has("has_blade") and data["has_blade"] == true:
 	
 

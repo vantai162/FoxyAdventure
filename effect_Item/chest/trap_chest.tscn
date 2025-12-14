@@ -1,0 +1,65 @@
+[gd_scene load_steps=12 format=3 uid="uid://cm32wkmjlw1rq"]
+
+[ext_resource type="Texture2D" uid="uid://bidl5brkimhxo" path="res://assets/objects/chest/chest_close_01.png" id="1_close1"]
+[ext_resource type="Script" uid="uid://dt0r0abteuxnv" path="res://effect_Item/chest/trap_chest.gd" id="1_script"]
+[ext_resource type="Texture2D" uid="uid://bjcqjfm23puad" path="res://assets/objects/chest/chest_close_02.png" id="2_close2"]
+[ext_resource type="Texture2D" uid="uid://dqrogefu4p788" path="res://assets/objects/chest/chest_close_03.png" id="3_close3"]
+[ext_resource type="Texture2D" uid="uid://btnwd6wmuxmda" path="res://assets/objects/chest/chest_open_01.png" id="4_open1"]
+[ext_resource type="Texture2D" uid="uid://dkn0i1fahffwr" path="res://assets/objects/chest/chest_open_02.png" id="5_open2"]
+[ext_resource type="Texture2D" uid="uid://br8hwwry0gxvd" path="res://assets/objects/chest/chest_open_03.png" id="6_open3"]
+[ext_resource type="Texture2D" uid="uid://b67b2vn864ieo" path="res://assets/objects/chest/chest_open_04.png" id="7_open4"]
+[ext_resource type="Texture2D" uid="uid://bwcclik4ny1ry" path="res://assets/objects/chest/chest_open_05.png" id="8_open5"]
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_trap"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("1_close1")
+}, {
+"duration": 1.0,
+"texture": ExtResource("2_close2")
+}, {
+"duration": 1.0,
+"texture": ExtResource("3_close3")
+}],
+"loop": true,
+"name": &"close",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("4_open1")
+}, {
+"duration": 1.0,
+"texture": ExtResource("5_open2")
+}, {
+"duration": 1.0,
+"texture": ExtResource("6_open3")
+}, {
+"duration": 1.0,
+"texture": ExtResource("7_open4")
+}, {
+"duration": 1.0,
+"texture": ExtResource("8_open5")
+}],
+"loop": false,
+"name": &"open",
+"speed": 5.0
+}]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_trap"]
+size = Vector2(31, 28)
+
+[node name="TrapChest" type="Area2D"]
+z_index = 5
+collision_layer = 0
+collision_mask = 2
+script = ExtResource("1_script")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+sprite_frames = SubResource("SpriteFrames_trap")
+animation = &"close"
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(-0.5, 10)
+shape = SubResource("RectangleShape2D_trap")

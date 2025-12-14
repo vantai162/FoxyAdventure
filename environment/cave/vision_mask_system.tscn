@@ -1,7 +1,0 @@
-[gd_scene load_steps=2 format=3 uid="uid://cq7vjkp8n2mf0"]
-
-[ext_resource type="Script" uid="uid://be5m5e4v3fs0c" path="res://environment/cave/vision_mask_system.gd" id="1_vision"]
-
-[node name="VisionMaskSystem" type="CanvasModulate"]
-color = Color(0.1, 0.1, 0.15, 1)
-script = ExtResource("1_vision")

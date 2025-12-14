@@ -35,7 +35,19 @@ func control_moving() -> bool:
 			return true
 		else:
 			# Air movement: player has input, steering against momentum
-			obj.velocity.x = lerp(obj.velocity.x, target_velocity_x, obj.get_current_air_acceleration())
+			# Check if player is moving WITH an impulse (same direction)
+			var input_dir = int(dir)
+			var impulse_mult = obj.get_impulse_momentum_multiplier(input_dir)
+			
+			if impulse_mult < 1.0 and sign(obj.velocity.x) == sign(dir):
+				# Player is steering with the impulse and momentum is preserved
+				# Only accelerate if target is faster than current (don't brake)
+				if abs(target_velocity_x) > abs(obj.velocity.x):
+					obj.velocity.x = lerp(obj.velocity.x, target_velocity_x, obj.get_current_air_acceleration())
+				# else: keep current impulse velocity, don't slow down
+			else:
+				# Normal air control (no impulse, or player fighting against impulse)
+				obj.velocity.x = lerp(obj.velocity.x, target_velocity_x, obj.get_current_air_acceleration())
 	
 	# NOT MOVING - deceleration paths
 	elif not is_moving:
@@ -59,7 +71,10 @@ func control_moving() -> bool:
 			obj.current_speed = 0
 		else:
 			# Air drag: no input, natural momentum coast
-			obj.velocity.x = lerp(obj.velocity.x, 0.0, obj.air_deceleration)
+			# Apply impulse momentum preservation (reduces/eliminates braking during impulse)
+			var impulse_mult = obj.get_impulse_momentum_multiplier(0)  # 0 = no input direction
+			var effective_decel = obj.air_deceleration * impulse_mult
+			obj.velocity.x = lerp(obj.velocity.x, 0.0, effective_decel)
 	
 	return false
 func control_jump() -> bool:

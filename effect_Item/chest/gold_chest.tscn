@@ -55,6 +55,7 @@ animations = [{
 size = Vector2(31, 33)
 
 [node name="GoldChest" type="Area2D"]
+z_index = 5
 collision_layer = 0
 collision_mask = 2
 script = ExtResource("1_yraig")
@@ -66,6 +67,3 @@ animation = &"open"
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 position = Vector2(-0.5, 6.5)
 shape = SubResource("RectangleShape2D_rvdi5")
-
-[connection signal="body_entered" from="." to="." method="_on_body_entered"]
-[connection signal="body_exited" from="." to="." method="_on_body_exited"]

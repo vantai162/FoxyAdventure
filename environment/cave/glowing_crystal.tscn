@@ -1,12 +1,20 @@
-[gd_scene load_steps=2 format=3 uid="uid://cqjqdbyd7mqfr"]
+[gd_scene load_steps=3 format=3 uid="uid://cqjqdbyd7mqfr"]
 
 [ext_resource type="Script" uid="uid://dxyyl80bbof3c" path="res://environment/cave/glowing_crystal.gd" id="1_crystal"]
+[ext_resource type="Texture2D" uid="uid://csoft_radial_light" path="res://assets/effects/soft_radial_light.tres" id="2_glow"]
 
 [node name="GlowingCrystal" type="Node2D"]
+z_index = 20
 script = ExtResource("1_crystal")
+pulse_amount = 0.136
+pulse_speed = 0.36
+
+[node name="CrystalSprite" type="Sprite2D" parent="."]
 
 [node name="CrystalLight" type="PointLight2D" parent="."]
 color = Color(0.3, 1, 0.5, 1)
+energy = 1.2
+texture = ExtResource("2_glow")
 texture_scale = 2.5
 
 [node name="Sparkles" type="GPUParticles2D" parent="."]

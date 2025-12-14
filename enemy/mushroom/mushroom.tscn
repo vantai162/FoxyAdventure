@@ -59,7 +59,7 @@ animations = [{
 "duration": 1.0,
 "texture": ExtResource("2_lprww")
 }],
-"loop": true,
+"loop": false,
 "name": &"hurt",
 "speed": 3.0
 }, {
@@ -81,21 +81,22 @@ animations = [{
 "duration": 1.0,
 "texture": ExtResource("6_nf052")
 }],
-"loop": true,
+"loop": false,
 "name": &"sleep",
 "speed": 1.0
 }]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_nf052"]
-size = Vector2(93.5, 82.5)
+size = Vector2(80, 80)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_dcy5h"]
-size = Vector2(120, 80)
+size = Vector2(240, 80)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_l6gd7"]
-size = Vector2(27, 24)
+size = Vector2(37, 34)
 
 [node name="Mushroom" type="CharacterBody2D"]
+z_index = 8
 collision_layer = 8
 script = ExtResource("1_jlpow")
 metadata/_custom_type_script = "uid://s4xx82espxdt"
@@ -108,7 +109,7 @@ shape = SubResource("RectangleShape2D_vwwmg")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="Direction"]
 sprite_frames = SubResource("SpriteFrames_dcy5h")
-animation = &"hurt"
+animation = &"sleep"
 
 [node name="FrontRayCast2D" type="RayCast2D" parent="Direction"]
 position = Vector2(8, 9)
@@ -155,6 +156,8 @@ product_packed_scene = ExtResource("11_wkm5k")
 target_container_name = &"Enemies"
 
 [node name="HurtArea2D" type="Area2D" parent="Direction"]
+collision_layer = 16
+collision_mask = 0
 script = ExtResource("10_7hsqw")
 metadata/_custom_type_script = "uid://csu2b21cwchqw"
 
@@ -180,3 +183,4 @@ script = ExtResource("14_vwwmg")
 script = ExtResource("15_dcy5h")
 
 [connection signal="body_entered" from="Direction/ExplodeArea2D" to="." method="_on_detect_player_area_body_entered"]
+[connection signal="hurt" from="Direction/HurtArea2D" to="." method="_on_hurt_area_2d_hurt"]

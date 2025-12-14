@@ -28,6 +28,9 @@ extends StageBase
 ##
 ## TEACHING: Shield Tribe - blocks front, turn delay exploitable
 ## Player applies positioning skills learned from aggressive tribe dodging
+##
+## CONNECTION: ExitLever and ExitGate use Channel System
+## Set in scene: ExitLever.channel = "exit", ExitGate.listen_channel = "exit"
 ## ═══════════════════════════════════════════════════════════════════════════
 
 
@@ -40,15 +43,7 @@ func _init() -> void:
 
 func _ready() -> void:
 	super._ready()
-	_connect_lever_to_gate()
-
-
-func _connect_lever_to_gate() -> void:
-	var lever = get_node_or_null("Puzzles/ExitLever")
-	var gate = get_node_or_null("Puzzles/ExitGate")
-	if lever and gate:
-		lever.lever_activated.connect(gate.open_gate)
-		lever.lever_deactivated.connect(gate.close_gate)
+	# Lever/Gate connection now handled by Channel System in inspector
 
 
 func _on_stage_ready() -> void:

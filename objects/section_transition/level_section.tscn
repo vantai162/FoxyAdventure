@@ -1,4 +1,4 @@
-[gd_scene load_steps=2 format=3 uid="uid://blevel_section"]
+[gd_scene load_steps=2 format=3 uid="uid://caeupr4iv261v"]
 
 [ext_resource type="Script" uid="uid://bctd4fl18o6ku" path="res://objects/section_transition/level_section.gd" id="1_section"]
 

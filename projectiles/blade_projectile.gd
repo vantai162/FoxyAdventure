@@ -23,6 +23,13 @@ var damage: int = 1
 @export_group("Visual")
 @export var rotation_speed_flying: float = 10.0
 @export var rotation_speed_bouncing: float = 20.0
+@onready var fire_particles = $FireParticles
+@onready var blade_light: PointLight2D = $Light
+var light_base_energy := 0.0
+var light_flicker_tween: Tween
+@export var light_flicker_enabled := true
+@export var light_flicker_speed := 12.0
+@export var light_flicker_intensity := 0.12
 
 @export_subgroup("Motion Blur Trail")
 @export var trail_enabled: bool = true
@@ -33,10 +40,10 @@ var damage: int = 1
 
 @export_group("Grounded")
 @export var pickup_delay_seconds: float = 6.5
-@export var grounded_glow_color: Color = Color(1.5, 1.3, 0.5, 1.0)  ## Highlight color for grounded blade (bright yellow)
-@export var glow_blink_speed: float = 4.0  ## Speed of blink effect
+@export var grounded_glow_color: Color = Color(1.2, 1.1, 0.7, 1.0)  ## Subtle warm highlight (was 1.5, 1.3, 0.5 - too saturated)
+@export var glow_blink_speed: float = 3.0  ## Speed of blink effect (was 4.0)
 @export var glow_off_brightness: float = 1.0  ## Brightness when "off" (normal sprite)
-@export var glow_on_brightness: float = 2.5  ## Brightness when "on" (super bright)
+@export var glow_on_brightness: float = 1.3  ## Brightness when "on" (was 2.5 - flashbang territory)
 
 @export_group("Safety")
 @export var void_y_threshold: float = 2000.0  ## Return blade if it falls below this Y position
@@ -62,11 +69,17 @@ var bounced_time: float = 0.0  # Time spent in BOUNCED state
 @onready var hit_area: Area2D = $HitArea2D
 @onready var spinning_sprite: Sprite2D = $Sprite2D
 @onready var landed_sprite: Sprite2D = $Sprite2D2
+@onready var grounded_light: PointLight2D = $GroundedGlow if has_node("GroundedGlow") else null
 
 func _ready() -> void:
 	body_entered.connect(_on_body_entered)
 	area_entered.connect(_on_area_entered)
+	fire_particles.emitting = GameManager.player.has_unlocked_flame_blade
 	
+	light_base_energy = blade_light.energy
+	blade_light.enabled = GameManager.player.has_unlocked_flame_blade
+	if GameManager.player.has_unlocked_flame_blade:
+		_start_light_flicker()
 	# Only set if not already configured in editor
 	if ground_timer.wait_time == 0:
 		ground_timer.wait_time = pickup_delay_seconds
@@ -84,7 +97,32 @@ func launch(direction: int, from_player: Player) -> void:
 	scale.x = direction
 	current_state = State.FLYING
 	trail_spawn_timer = 0
+	if GameManager.player.has_unlocked_flame_blade:
+		blade_light.enabled = true
+		_start_light_flicker()
 	AudioManager.play_sound("blade_spinning",15.0)
+
+
+## Aimed throw - launches blade at a specific angle (radians)
+## Used by targeting system for smart throws at enemies
+func launch_aimed(angle: float, from_player: Player) -> void:
+	thrower = from_player
+	
+	# Determine throw direction from angle (left or right hemisphere)
+	if angle > PI / 2 or angle < -PI / 2:
+		throw_direction = -1  # Left
+	else:
+		throw_direction = 1  # Right
+	
+	# Calculate velocity vector from angle
+	velocity = Vector2.from_angle(angle) * initial_throw_speed
+	scale.x = throw_direction
+	current_state = State.FLYING
+	trail_spawn_timer = 0
+	if GameManager.player.has_unlocked_flame_blade:
+		blade_light.enabled = true
+		_start_light_flicker()
+	AudioManager.play_sound("blade_spinning", 15.0)
 
 func _physics_process(delta: float) -> void:
 	match current_state:
@@ -215,6 +253,8 @@ func _apply_magnetism(delta: float, pull_range: float, pull_strength: float) -> 
 		velocity += pull_force * 60.0  # Scale up for velocity-based movement
 
 func _update_grounded_visual(delta: float) -> void:
+	## Blade is ~16px. Glow should be a subtle "pick me up" hint, not a beacon.
+	## Using 16px texture at 0.8 scale = 12.8px glow, energy 0.15-0.4.
 	if not landed_sprite.visible:
 		return
 	
@@ -224,13 +264,20 @@ func _update_grounded_visual(delta: float) -> void:
 	
 	# Sharp square wave blink (50% on, 50% off)
 	var brightness: float
+	var light_energy: float
 	if blink_cycle < 0.5:
-		brightness = glow_on_brightness  # BRIGHT
+		brightness = glow_on_brightness  # Slightly bright
+		light_energy = 0.4  # Was 1.2 - way too bright
 	else:
 		brightness = glow_off_brightness  # Normal
+		light_energy = 0.15  # Was 0.3 - still visible but subtle
 	
 	# Apply glow color with blinking brightness
 	landed_sprite.modulate = grounded_glow_color * brightness
+	
+	# GPU light glow
+	if grounded_light:
+		grounded_light.energy = light_energy
 
 func _transition_to_arc_down() -> void:
 	current_state = State.BOUNCED
@@ -260,6 +307,10 @@ func _transition_to_grounded() -> void:
 	spinning_sprite.visible = false
 	landed_sprite.visible = true
 	glow_time = 0.0  # Reset glow animation
+	
+	# Enable grounded glow light
+	if grounded_light:
+		grounded_light.visible = true
 
 func _on_body_entered(body: Node) -> void:
 	# Pickup by player
@@ -276,6 +327,17 @@ func _on_area_entered(area: Area2D) -> void:
 	if area.get_parent() == thrower:
 		_pickup_by_player()
 		return
+	
+	# Trigger interactable objects (levers, etc.)
+	if area.is_in_group("blade_interactable"):
+		_trigger_interactable(area)
+
+func _trigger_interactable(area: Area2D) -> void:
+	## Activate levers and other blade-interactable objects
+	## Note: TimerLever was merged into Lever (use mode = TIMED)
+	if area is Lever:
+		area.activate()
+	# Future: other interactables can be added here
 
 func _pickup_by_player() -> void:
 	if thrower and thrower.has_method("return_blade"):
@@ -284,3 +346,34 @@ func _pickup_by_player() -> void:
 
 func _on_ground_timer_timeout() -> void:
 	_pickup_by_player()
+	
+func _start_light_flicker():
+	if not light_flicker_enabled:
+		return
+
+	if light_flicker_tween:
+		light_flicker_tween.kill()
+
+	light_flicker_tween = create_tween().set_loops()
+
+	var duration = 1.0 / max(light_flicker_speed, 0.1)
+	var high := light_base_energy + light_flicker_intensity
+	var low := light_base_energy - light_flicker_intensity
+
+	light_flicker_tween.tween_property(blade_light, "energy", high, duration * 0.4)\
+		.set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+
+	light_flicker_tween.tween_property(blade_light, "energy", low, duration * 0.3)\
+		.set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+
+	light_flicker_tween.tween_property(blade_light, "energy", light_base_energy, duration * 0.3)\
+		.set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+
+
+func _extinguish_light():
+	if light_flicker_tween:
+		light_flicker_tween.kill()
+
+	var t = create_tween()
+	t.tween_property(blade_light, "energy", 0.0, 0.1)
+	blade_light.enabled = false

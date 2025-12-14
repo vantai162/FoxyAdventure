@@ -7,6 +7,7 @@
 size = Vector2(11, 32)
 
 [node name="RightSpike" type="Node2D"]
+z_index = 0
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 rotation = -1.5708

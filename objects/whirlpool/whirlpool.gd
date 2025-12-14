@@ -21,6 +21,14 @@ class_name Whirlpool
 @export_group("Visuals")
 @export var enable_visuals: bool = true  ## Show foam and spiral effect
 
+@export_group("Glow Light (Optional)")
+@export var emit_light: bool = false  ## Eerie underwater glow
+@export var light_color: Color = Color(0.2, 0.6, 0.9, 0.8)  ## Deep blue vortex glow
+@export var light_energy: float = 0.5  ## Glow brightness
+@export var light_texture_scale: float = 2.5  ## Glow radius
+@export var light_pulse_enabled: bool = true  ## Pulsing synchronized with oscillation
+@export var light_pulse_amount: float = 0.3  ## Pulse intensity
+
 const OSCILLATION_STRENGTH: float = 1500.0        ## Horizontal bobbing force
 const OSCILLATION_FREQUENCY: float = 3.0           ## Oscillation speed (Hz)
 const DOWNWARD_SUCTION: float = 2500.0             ## Vertical pull into V
@@ -48,11 +56,18 @@ var depression_applied: bool = false
 
 ## GPU Particle reference
 var water_particles: GPUParticles2D = null
+var vortex_visual: Line2D = null
+var inner_vortex: Line2D = null
+var _vortex_light: PointLight2D = null
+var _base_light_energy: float = 0.5
 
 func _ready() -> void:
 	center_x = global_position.x
 	center_y = global_position.y
 	lifetime_timer = lifetime
+	
+	# Track node removals to clean stale body references (player death scenario)
+	get_tree().node_removed.connect(_on_any_node_removed)
 	
 	# Get collision shape size from scene
 	var collision_shape = $PullRadius as CollisionShape2D
@@ -71,14 +86,34 @@ func _ready() -> void:
 	body_entered.connect(_on_body_entered)
 	body_exited.connect(_on_body_exited)
 	
-	# Setup GPU particles
+	# Setup GPU particles for V-shaped midsection view
 	if enable_visuals:
 		water_particles = get_node_or_null("WaterParticles") as GPUParticles2D
 		if water_particles:
+			_configure_vortex_particles()
 			water_particles.emitting = true
+		
+		# Get visual lines for rotation animation
+		vortex_visual = get_node_or_null("VortexVisual") as Line2D
+		inner_vortex = get_node_or_null("InnerVortex") as Line2D
+	
+	# Optional vortex glow
+	if emit_light:
+		_create_vortex_light()
 
 func _physics_process(delta: float) -> void:
 	oscillation_phase += delta * OSCILLATION_FREQUENCY * TAU
+	
+	# Animate vortex visual lines rotation
+	if vortex_visual:
+		vortex_visual.rotation += delta * 1.5  # Slower outer rotation
+	if inner_vortex:
+		inner_vortex.rotation -= delta * 2.5  # Faster counter-rotation
+	
+	# Vortex light pulsing synchronized with oscillation
+	if emit_light and _vortex_light and light_pulse_enabled:
+		var pulse = sin(oscillation_phase * 0.5) * light_pulse_amount
+		_vortex_light.energy = _base_light_energy * (1.0 + pulse)
 	
 	if damage_cooldown_timer > 0:
 		damage_cooldown_timer -= delta
@@ -93,7 +128,10 @@ func _physics_process(delta: float) -> void:
 	water_check_timer -= delta
 	if water_check_timer <= 0:
 		water_check_timer = WATER_CHECK_INTERVAL
-		if not _is_in_water():
+		# Retry finding water node if not found initially (timing issue workaround)
+		if not water_node:
+			_find_water_node()
+		elif not _is_in_water():
 			# Water level dropped, despawn gracefully
 			_on_water_disappeared()
 			return
@@ -117,6 +155,21 @@ func _on_body_exited(body: Node2D) -> void:
 	elif body.is_in_group("player"):
 		if player_in_range == body:
 			player_in_range = null
+
+
+func _exit_tree() -> void:
+	# Disconnect node removal tracking
+	if get_tree() and get_tree().node_removed.is_connected(_on_any_node_removed):
+		get_tree().node_removed.disconnect(_on_any_node_removed)
+
+
+func _on_any_node_removed(node: Node) -> void:
+	# Clean stale body references when nodes are freed (e.g., player death)
+	if boats_in_range.has(node):
+		boats_in_range.erase(node)
+	if player_in_range == node:
+		player_in_range = null
+
 
 func _update_boat_pulls(delta: float) -> void:
 	for boat in boats_in_range:
@@ -290,6 +343,12 @@ func _apply_water_depression() -> void:
 	if not water_node or depression_applied:
 		return
 	
+	# CRITICAL: Wait for water level transition to complete before applying depression
+	# Otherwise the water's _update_water_raise() will overwrite our segment modifications
+	if water_node.is_level_transitioning():
+		# Don't apply yet - will retry in _physics_process
+		return
+	
 	var segment_info = _get_affected_segment_range()
 	if segment_info["center_index"] < 0:
 		return
@@ -333,6 +392,46 @@ func _apply_water_depression() -> void:
 	water_node.recently_splashed = true
 	water_node.set_process(true)
 
+func _configure_vortex_particles() -> void:
+	## Configure particles for vertical V-shaped vortex (midsection view)
+	if not water_particles or not water_particles.process_material:
+		return
+	
+	var mat = water_particles.process_material as ParticleProcessMaterial
+	if not mat:
+		return
+	
+	# CRITICAL: Vertical line emission for midsection V-shape, not horizontal circle
+	# Particles spawn along center vertical line and spiral outward
+	mat.emission_shape = ParticleProcessMaterial.EMISSION_SHAPE_BOX
+	mat.emission_box_extents = Vector3(8, depression_depth * 0.7, 0)  # Narrow X, tall Y for vertical line
+	
+	# Horizontal spread (left/right from center line)
+	mat.direction = Vector3(1, 0, 0)  # Primarily horizontal spread
+	mat.spread = 180.0  # Full horizontal spread
+	
+	# Add upward drift for foam floating up from vortex
+	mat.gravity = Vector3(0, -30, 0)  # Slight upward float
+	
+	# Circular motion around center
+	mat.angular_velocity_min = -180.0
+	mat.angular_velocity_max = 180.0
+	
+	# Turbulent motion
+	mat.initial_velocity_min = 25.0
+	mat.initial_velocity_max = 60.0
+	mat.linear_accel_min = -20.0
+	mat.linear_accel_max = 20.0
+	
+	# Visual - white foam swirls
+	mat.color = Color(0.95, 0.98, 1.0, 0.9)
+	
+	# Scale and fade
+	mat.scale_min = 1.5
+	mat.scale_max = 3.5
+	mat.damping_min = 1.5
+	mat.damping_max = 3.0
+
 func _find_water_node() -> void:
 	var water_nodes = get_tree().get_nodes_in_group("water")
 	
@@ -369,3 +468,35 @@ func _on_water_disappeared() -> void:
 	## Gracefully despawn to prevent air whirlpools
 	_restore_water_rest_heights()
 	queue_free()
+
+
+func _create_vortex_light() -> void:
+	## Creates an eerie underwater glow at the vortex center
+	_vortex_light = PointLight2D.new()
+	_vortex_light.enabled = true
+	_vortex_light.color = light_color
+	_vortex_light.energy = light_energy
+	_vortex_light.texture_scale = light_texture_scale
+	_vortex_light.blend_mode = Light2D.BLEND_MODE_ADD
+	_vortex_light.shadow_enabled = false
+	_vortex_light.range_z_min = -100
+	_vortex_light.range_z_max = 100
+	_vortex_light.position = Vector2.ZERO  # Center of vortex
+	_vortex_light.z_index = ZLayers.LIGHT_EFFECT
+	
+	# Radial gradient texture
+	var gradient := Gradient.new()
+	gradient.set_color(0, Color(1.0, 1.0, 1.0, 1.0))
+	gradient.set_color(1, Color(1.0, 1.0, 1.0, 0.0))
+	
+	var tex := GradientTexture2D.new()
+	tex.gradient = gradient
+	tex.width = 128
+	tex.height = 128
+	tex.fill = GradientTexture2D.FILL_RADIAL
+	tex.fill_from = Vector2(0.5, 0.5)
+	tex.fill_to = Vector2(0.0, 0.5)
+	_vortex_light.texture = tex
+	
+	_base_light_energy = light_energy
+	add_child(_vortex_light)

@@ -47,6 +47,7 @@ animations = [{
 }]
 
 [node name="WarningRocket" type="Node2D"]
+z_index = 14
 script = ExtResource("1_ygu3m")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]

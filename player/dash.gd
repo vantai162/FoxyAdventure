@@ -43,6 +43,7 @@ func create_ghost_trail():
 	ghost.global_position = original.global_position
 	ghost.scale = original.get_parent().scale
 	ghost.modulate = Color(1, 1, 1, 0.4)
+	ghost.z_index = ZLayers.EFFECT_BEHIND  # Ghost trails behind player
 	
 	# Add to the scene root so it doesn't move with the player
 	get_tree().root.add_child(ghost)

@@ -65,3 +65,8 @@ func _on_hit_area_2d_body_entered(body: Node2D) -> void:
 		elif body.has_method("take_damage"):
 			body.take_damage(damage)
 			body.velocity = knockback_dir * knockback_force
+		
+		# Apply impulse momentum preservation so knockback isn't immediately braked
+		if body.has_method("apply_impulse_momentum"):
+			var horizontal_dir = sign(knockback_dir.x) as int
+			body.apply_impulse_momentum(horizontal_dir)

@@ -80,6 +80,7 @@ animations = [{
 radius = 16.0
 
 [node name="Turtle" type="CharacterBody2D" groups=["can_interact_with_water"]]
+z_index = 8
 collision_layer = 8
 script = ExtResource("1_raxgc")
 max_health = 2
@@ -101,7 +102,7 @@ target_position = Vector2(0, 29)
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="Direction"]
 sprite_frames = SubResource("SpriteFrames_v3mmh")
-animation = &"dead"
+animation = &"run"
 
 [node name="HitArea2D" parent="Direction" instance=ExtResource("3_raxgc")]
 collision_layer = 0
