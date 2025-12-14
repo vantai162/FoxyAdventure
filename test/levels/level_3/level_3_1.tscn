@@ -1,22 +1,28 @@
-[gd_scene load_steps=34 format=4 uid="uid://cownslw7ms6s4"]
+[gd_scene load_steps=41 format=4 uid="uid://cownslw7ms6s4"]
 
 [ext_resource type="Script" uid="uid://cblkjof8tqn71" path="res://test/levels/level_3/stage_3_1.gd" id="1_stage_script"]
 [ext_resource type="TileSet" uid="uid://0yf5cmwk6u1i" path="res://assets/island/terrain/ice_tile_set.tres" id="2_a6ecy"]
+[ext_resource type="PackedScene" uid="uid://dm741hii7d5nv" path="res://scenes/game_screen/health_bar.tscn" id="2_ir5li"]
+[ext_resource type="PackedScene" uid="uid://dvpguoojkycep" path="res://scenes/game_screen/oxy_bar.tscn" id="3_3j2yj"]
 [ext_resource type="PackedScene" uid="uid://giogr7michck" path="res://objects/water/water.tscn" id="3_is5y3"]
 [ext_resource type="PackedScene" uid="uid://dqdstpxycbomj" path="res://effect_Item/BladeItem/blade.tscn" id="3_vnnrn"]
-[ext_resource type="PackedScene" uid="uid://rhntp41ai45p" path="res://environment/cave/stalactite.tscn" id="4_b7ip3"]
+[ext_resource type="PackedScene" path="res://environment/cave/stalactite.tscn" id="4_b7ip3"]
 [ext_resource type="PackedScene" uid="uid://cqjqdbyd7mqfr" path="res://environment/cave/glowing_crystal.tscn" id="4_crystal"]
 [ext_resource type="PackedScene" path="res://objects/platform/moving_platform.tscn" id="4_moving"]
+[ext_resource type="PackedScene" uid="uid://ydwm5fvrvrmr" path="res://scenes/game_screen/damage_over_lay.tscn" id="4_oilfl"]
 [ext_resource type="PackedScene" uid="uid://c5m8vno0qh3xy" path="res://objects/whirlpool/whirlpool.tscn" id="4_vnnrn"]
+[ext_resource type="PackedScene" uid="uid://k1cvcu80rfmm" path="res://scenes/game_screen/coin_ui.tscn" id="5_1cg3m"]
 [ext_resource type="PackedScene" uid="uid://cc07u3qfgccmq" path="res://objects/spring/spring.tscn" id="5_2y2ek"]
 [ext_resource type="PackedScene" uid="uid://c1bijw8i8erx5" path="res://enemy/turtle/turtle.tscn" id="5_turtle"]
 [ext_resource type="PackedScene" uid="uid://clavapool001" path="res://environment/lava/lava_pool.tscn" id="6_4aydh"]
 [ext_resource type="PackedScene" uid="uid://nuq050gwbwqt" path="res://objects/spike/spike.tscn" id="6_alf78"]
+[ext_resource type="PackedScene" uid="uid://cstfpndmrkms3" path="res://scenes/game_screen/key_ui.tscn" id="6_hvyph"]
 [ext_resource type="PackedScene" uid="uid://bmgv5cgan4yt" path="res://enemy/mushroom/mushroom.tscn" id="6_mushroom"]
+[ext_resource type="PackedScene" uid="uid://8koby8md4sgg" path="res://scenes/game_screen/blade_ui.tscn" id="7_cdhsq"]
 [ext_resource type="PackedScene" uid="uid://ufmc2gkfnv58" path="res://enemy/crab/crab.tscn" id="7_crab"]
 [ext_resource type="PackedScene" uid="uid://bxfs4fsx7ot6m" path="res://enemy/starfish/starfish.tscn" id="8_starfish"]
 [ext_resource type="PackedScene" uid="uid://bs816w0pr8all" path="res://player/foxy.tscn" id="9_foxy"]
-[ext_resource type="PackedScene" uid="uid://d1twwiutipd8r" path="res://objects/pressure_plate/pressure_plate.tscn" id="9_sb7o5"]
+[ext_resource type="PackedScene" path="res://objects/pressure_plate/pressure_plate.tscn" id="9_sb7o5"]
 [ext_resource type="PackedScene" uid="uid://ctr1b8p1h6p8y" path="res://objects/gate/gate.tscn" id="10_343a2"]
 [ext_resource type="PackedScene" uid="uid://jm5jjtt5tfsj" path="res://enemy/crab/elite_hunter_crab.tscn" id="10_elite_crab"]
 [ext_resource type="PackedScene" uid="uid://dumayxma7am7b" path="res://enemy/turtle/elite_spiny_turtle.tscn" id="11_elite_turtle"]
@@ -33,9 +39,60 @@
 [ext_resource type="PackedScene" uid="uid://b0h8a022mpy26" path="res://objects/spike/spike_retractable/spike_retractable.tscn" id="28_fcwnb"]
 [ext_resource type="PackedScene" path="res://environment/lava/lavafall.tscn" id="29_qrwfa"]
 [ext_resource type="PackedScene" path="res://objects/scene_transition/scene_transition.tscn" id="30_scene_transition"]
+[ext_resource type="PackedScene" uid="uid://bmic0j4cnluey" path="res://objects/checkpoint/checkpoint.tscn" id="40_3j2yj"]
 
 [node name="Level_3_1" type="Node2D"]
 script = ExtResource("1_stage_script")
+
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+layer = 100
+
+[node name="TextureProgressBar" parent="CanvasLayer" instance=ExtResource("2_ir5li")]
+offset_left = 5.0
+offset_right = 176.0
+mouse_filter = 2
+
+[node name="OxyBar" parent="CanvasLayer" instance=ExtResource("3_3j2yj")]
+offset_left = 200.0
+offset_right = 344.0
+mouse_filter = 2
+
+[node name="DamageOverLay" parent="CanvasLayer" instance=ExtResource("4_oilfl")]
+
+[node name="CoinUI" parent="CanvasLayer" instance=ExtResource("5_1cg3m")]
+anchors_preset = 0
+anchor_right = 0.0
+anchor_bottom = 0.0
+offset_left = 20.0
+offset_top = 60.0
+offset_right = 20.0
+offset_bottom = 60.0
+grow_horizontal = 1
+grow_vertical = 1
+mouse_filter = 2
+
+[node name="KeyUI" parent="CanvasLayer" instance=ExtResource("6_hvyph")]
+anchors_preset = 0
+anchor_right = 0.0
+anchor_bottom = 0.0
+offset_left = 20.0
+offset_top = 100.0
+offset_right = 20.0
+offset_bottom = 100.0
+grow_horizontal = 1
+grow_vertical = 1
+mouse_filter = 2
+
+[node name="BladeUI" parent="CanvasLayer" instance=ExtResource("7_cdhsq")]
+anchors_preset = 0
+anchor_right = 0.0
+anchor_bottom = 0.0
+offset_left = 20.0
+offset_top = 145.0
+offset_right = 20.0
+offset_bottom = 145.0
+grow_horizontal = 1
+grow_vertical = 1
 
 [node name="DarknessModulate" type="CanvasModulate" parent="."]
 color = Color(0.0558769, 0.0395219, 0.0722072, 1)
@@ -573,6 +630,13 @@ position = Vector2(1543, 2120)
 target_scene = "res://test/levels/level_3/level_3_2.tscn"
 target_spawn_name = "FromLevel3_1"
 
+[node name="FromLevel2_2" parent="ExitZone" instance=ExtResource("30_scene_transition")]
+position = Vector2(41, 232)
+target_scene = "res://test/levels/level_3/level_3_2.tscn"
+target_spawn_name = "FromLevel3_1"
+exit_direction = 0
+spawn_offset = Vector2(48, 0)
+
 [node name="Foxy" parent="." instance=ExtResource("9_foxy")]
 z_index = 1
 position = Vector2(317, 107)
@@ -580,5 +644,21 @@ position = Vector2(317, 107)
 [connection signal="area_entered" from="Terrain/TileMapLayer/@Area2D@138426" to="Terrain/TileMapLayer/@Area2D@138426" method="_on_area_entered"]
 [connection signal="area_entered" from="Terrain/TileMapLayer/@Area2D@138427" to="Terrain/TileMapLayer/@Area2D@138427" method="_on_area_entered"]
 [connection signal="area_entered" from="Terrain/TileMapLayer/@Area2D@138428" to="Terrain/TileMapLayer/@Area2D@138428" method="_on_area_entered"]
+
+[node name="Checkpoint" parent="." instance=ExtResource("40_3j2yj")]
+position = Vector2(177, 242)
+
+[node name="Checkpoint2" parent="." instance=ExtResource("40_3j2yj")]
+position = Vector2(1346, 320)
+
+[node name="Checkpoint3" parent="." instance=ExtResource("40_3j2yj")]
+position = Vector2(969, 1008)
+
+[node name="Checkpoint4" parent="." instance=ExtResource("40_3j2yj")]
+position = Vector2(334, 1935)
+
+[connection signal="area_entered" from="Terrain/TileMapLayer/HealthPotion" to="Terrain/TileMapLayer/HealthPotion" method="_on_area_entered"]
+[connection signal="area_entered" from="Terrain/TileMapLayer/@Area2D@54197" to="Terrain/TileMapLayer/@Area2D@54197" method="_on_area_entered"]
+[connection signal="area_entered" from="Terrain/TileMapLayer/@Area2D@54198" to="Terrain/TileMapLayer/@Area2D@54198" method="_on_area_entered"]
 
 [editable path="Platforms/MovingPlatform1"]

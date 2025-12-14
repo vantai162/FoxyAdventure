@@ -19,6 +19,7 @@ var boss_phase2_healthbar: TextureProgressBar
 var boss
 var can_pause = true
 @onready var door = $DugeonGate
+@onready var door_2 = $DugeonGate2
 @onready var camera_target_boss =$CameraTarget
 
 func _enter_tree() -> void:
@@ -199,3 +200,4 @@ func _on_dialogic_signal_event(argument: String):
 		boss.die()
 	if argument == "spare_warlord":
 		boss.queue_free()
+	door_2.close()
