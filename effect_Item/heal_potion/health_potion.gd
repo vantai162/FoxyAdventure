@@ -23,7 +23,7 @@ var _glow: PointLight2D = null
 var _bubbles: GPUParticles2D = null
 
 @onready var audio: AudioStreamPlayer = $AudioStreamPlayer if has_node("AudioStreamPlayer") else null
-@onready var sprite: Sprite2D = $Sprite2D if has_node("Sprite2D") else null
+@onready var sprite = $AnimatedSprite2D
 
 func _ready() -> void:
 	_original_y = position.y
@@ -34,6 +34,7 @@ func _ready() -> void:
 	
 	if bubbles_enabled:
 		_setup_bubbles()
+	sprite.play("default")
 
 func _process(delta: float) -> void:
 	if _collected:

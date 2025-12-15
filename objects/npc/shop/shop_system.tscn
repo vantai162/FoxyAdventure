@@ -3,7 +3,6 @@
 [ext_resource type="Script" uid="uid://oqr3dtwtmnoq" path="res://objects/npc/shop/shop_system.gd" id="1_kfmm4"]
 
 [node name="ShopSystem" type="Node2D"]
-z_index = 0
 script = ExtResource("1_kfmm4")
 shop_name = "alo"
 Stock = {}

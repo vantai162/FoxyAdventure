@@ -30,6 +30,7 @@ TransitionEffects="*res://scripts/autoload/transition_effects.tscn"
 directories/dch_directory={
 "Albert": "res://dialog/character/Albert.dch",
 "Captain": "res://dialog/character/Captain.dch",
+"Cucumber": "res://dialog/character/Cucumber.dch",
 "Foxy": "res://dialog/character/Foxy.dch",
 "Warlord": "res://dialog/character/Warlord.dch",
 "cat": "res://dialog/character/cat.dch"
@@ -39,6 +40,8 @@ directories/dtl_directory={
 "bad_ending_timeline": "res://dialog/timelines/bad_ending_timeline.dtl",
 "captain_timeline": "res://dialog/timelines/captain_timeline.dtl",
 "cat_timeline": "res://dialog/timelines/cat_timeline.dtl",
+"cucumber_timeline": "res://dialog/timelines/cucumber_timeline.dtl",
+"foxy_timeline_level2": "res://dialog/timelines/foxy_timeline_level2.dtl",
 "good_ending_timeline": "res://dialog/timelines/good_ending_timeline.dtl",
 "jack_timeline": "res://dialog/timelines/jack_timeline.dtl",
 "timeline": "res://dialog/timelines/timeline.dtl",
