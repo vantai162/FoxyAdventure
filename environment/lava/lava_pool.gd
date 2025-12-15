@@ -45,8 +45,16 @@ class_name LavaPool
 signal lava_drained  ## Emitted when drain animation completes
 signal lava_filled   ## Emitted when fill animation completes
 
-@export var lava_size: Vector2 = Vector2(128.0, 64.0)
-@export_range(2, 256) var segment_count: int = 32
+@export var lava_size: Vector2 = Vector2(128.0, 64.0):
+	set(value):
+		lava_size = value
+		if Engine.is_editor_hint() and is_inside_tree():
+			_rebuild_lava()  # Size change requires rebuild
+@export_range(2, 256) var segment_count: int = 32:
+	set(value):
+		segment_count = value
+		if Engine.is_editor_hint() and is_inside_tree():
+			_rebuild_lava()  # Segment count change requires rebuild
 
 @export_group("Surface Levels")
 ## Where lava surface normally rests (pixels from TOP of pool).
@@ -116,9 +124,21 @@ signal lava_filled   ## Emitted when fill animation completes
 		queue_redraw()
 
 @export_group("Visuals")
-@export var surface_line_thickness: float = 3.0  ## Thicker glowing edge
-@export var surface_color: Color = Color(1.0, 0.6, 0.1, 1.0)  ## Bright orange edge
-@export var lava_fill_color: Color = Color(0.9, 0.3, 0.05, 0.95)  ## Deep orange-red
+@export var surface_line_thickness: float = 3.0:  ## Thicker glowing edge
+	set(value):
+		surface_line_thickness = value
+		if surface_line:
+			surface_line.width = surface_line_thickness
+@export var surface_color: Color = Color(1.0, 0.6, 0.1, 1.0):  ## Bright orange edge
+	set(value):
+		surface_color = value
+		if surface_line:
+			surface_line.default_color = surface_color
+@export var lava_fill_color: Color = Color(0.9, 0.3, 0.05, 0.95):  ## Deep orange-red
+	set(value):
+		lava_fill_color = value
+		if fill_polygon:
+			fill_polygon.color = lava_fill_color
 @export var enable_antialiasing: bool = true
 
 @export_group("Glow Light")
@@ -586,6 +606,38 @@ func _process(delta: float) -> void:
 		bubble_gpu_particles.position.y = avg_height + 10
 		# Enable particles only when lava is active
 		bubble_gpu_particles.emitting = not (_drain_active and _is_draining)
+
+
+## Rebuild lava visuals when structural properties change (size, segment count).
+## Called by setters in editor mode to provide live preview.
+func _rebuild_lava() -> void:
+	# Clean up existing children
+	for child in get_children():
+		child.queue_free()
+	
+	# Clear runtime state
+	surface_line = null
+	fill_polygon = null
+	lava_area = null
+	lava_lights.clear()
+	ember_gpu_particles = null
+	bubble_gpu_particles = null
+	
+	segment_data.clear()
+	segment_rest_height.clear()
+	_settled_segments.clear()
+	_damage_timers.clear()
+	_surface_suppression_zones.clear()
+	_lavafall_impact_zones.clear()
+	
+	# Rebuild
+	_initiate_lava()
+	
+	if emit_light:
+		_setup_light()
+	
+	queue_redraw()
+
 
 func _initiate_lava() -> void:
 	# Initialize runtime surface position from designer-set surface level

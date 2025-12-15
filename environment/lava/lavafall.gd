@@ -44,10 +44,30 @@ enum SurfaceMode {
 @export var auto_blend_with_pool: bool = true  ## Automatically blend with pool below
 
 @export_group("Visuals")
-@export var surface_color: Color = Color(1.0, 0.6, 0.1, 1.0)  ## Bright orange edge
-@export var lava_fill_color: Color = Color(0.9, 0.3, 0.05, 0.95)  ## Deep orange-red
-@export var surface_line_thickness: float = 3.0  ## Thicker (viscous)
-@export_range(8, 48) var segment_count: int = 20  ## Fewer segments (goopy)
+@export var surface_color: Color = Color(1.0, 0.6, 0.1, 1.0):  ## Bright orange edge
+	set(value):
+		surface_color = value
+		if surface_line_left:
+			surface_line_left.default_color = surface_color
+		if surface_line_right:
+			surface_line_right.default_color = surface_color
+@export var lava_fill_color: Color = Color(0.9, 0.3, 0.05, 0.95):  ## Deep orange-red
+	set(value):
+		lava_fill_color = value
+		if fill_polygon:
+			fill_polygon.color = lava_fill_color
+@export var surface_line_thickness: float = 3.0:  ## Thicker (viscous)
+	set(value):
+		surface_line_thickness = value
+		if surface_line_left:
+			surface_line_left.width = surface_line_thickness
+		if surface_line_right:
+			surface_line_right.width = surface_line_thickness
+@export_range(8, 48) var segment_count: int = 20:  ## Fewer segments (goopy)
+	set(value):
+		segment_count = value
+		if is_inside_tree():
+			_rebuild()  # Segment count change requires structural rebuild
 
 @export_group("Wave Animation")
 @export var wave_speed: float = 1.0  ## Slower than water (viscous)
