@@ -1,6 +1,6 @@
-[gd_scene load_steps=31 format=4 uid="uid://5my2pujg1oqp"]
+[gd_scene load_steps=31 format=4 uid="uid://dlvvvmpqd7goe"]
 
-[ext_resource type="Script" uid="uid://63ou6uas0aex" path="res://test/levels/level_2/level_2.2.gd" id="1_3q18u"]
+[ext_resource type="Script" path="res://test/levels/level_2/level_2.2.gd" id="1_3q18u"]
 [ext_resource type="PackedScene" uid="uid://dm741hii7d5nv" path="res://scenes/game_screen/health_bar.tscn" id="2_l0ym8"]
 [ext_resource type="PackedScene" uid="uid://k1cvcu80rfmm" path="res://scenes/game_screen/coin_ui.tscn" id="3_q8vad"]
 [ext_resource type="PackedScene" uid="uid://cstfpndmrkms3" path="res://scenes/game_screen/key_ui.tscn" id="4_t4mgd"]
@@ -20,7 +20,7 @@
 [ext_resource type="TileSet" uid="uid://0yf5cmwk6u1i" path="res://assets/island/terrain/ice_tile_set.tres" id="18_f2t4q"]
 [ext_resource type="PackedScene" uid="uid://giogr7michck" path="res://objects/water/water.tscn" id="19_5dpsv"]
 [ext_resource type="PackedScene" uid="uid://dqdstpxycbomj" path="res://effect_Item/BladeItem/blade.tscn" id="20_iskdy"]
-[ext_resource type="PackedScene" uid="uid://g83nl1ihtg6h" path="res://objects/gate/dugeon_gate.tscn" id="25_3bl4e"]
+[ext_resource type="PackedScene" path="res://objects/gate/dugeon_gate.tscn" id="25_3bl4e"]
 [ext_resource type="PackedScene" path="res://objects/scene_transition/scene_transition.tscn" id="25_jfg0o"]
 [ext_resource type="PackedScene" uid="uid://demnh2f4ooy6n" path="res://objects/platform/floating_boat_platform.tscn" id="25_rbb0x"]
 [ext_resource type="PackedScene" uid="uid://bs816w0pr8all" path="res://player/foxy.tscn" id="26_3bl4e"]
@@ -28,7 +28,7 @@
 [ext_resource type="PackedScene" uid="uid://b3rfttffyg1qj" path="res://effect_Item/key/key.tscn" id="28_klqlj"]
 [ext_resource type="TileSet" uid="uid://xt3l8n15jbfm" path="res://assets/island/tileset.tres" id="29_klqlj"]
 [ext_resource type="Script" uid="uid://d33ee5tueerss" path="res://test/levels/level_2/meet_boss_area_2d.gd" id="35_2jlac"]
-[ext_resource type="PackedScene" uid="uid://diraf0q6ndu7y" path="res://objects/door/dark_entrance.tscn" id="36_3q18u"]
+[ext_resource type="PackedScene" path="res://objects/door/dark_entrance.tscn" id="36_3q18u"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_40lrn"]
 size = Vector2(53.5, 181)

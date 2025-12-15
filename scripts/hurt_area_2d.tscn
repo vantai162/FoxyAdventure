@@ -3,6 +3,5 @@
 [ext_resource type="Script" uid="uid://csu2b21cwchqw" path="res://scripts/hurt_area_2d.gd" id="1_b0nt0"]
 
 [node name="HurtArea2d" type="Area2D"]
-z_index = 0
 script = ExtResource("1_b0nt0")
 metadata/_custom_type_script = "uid://csu2b21cwchqw"

@@ -1,8 +1,7 @@
-[gd_scene load_steps=18 format=4 uid="uid://b5mowcfymabkv"]
+[gd_scene load_steps=17 format=4 uid="uid://b5mowcfymabkv"]
 
 [ext_resource type="TileSet" uid="uid://bmuxyu21ya31y" path="res://assets/tileset.tres" id="1_18vte"]
 [ext_resource type="PackedScene" uid="uid://dm741hii7d5nv" path="res://scenes/game_screen/health_bar.tscn" id="1_foqxb"]
-[ext_resource type="PackedScene" uid="uid://demnh2f4ooy6n" path="res://objects/platform/floating_boat_platform.tscn" id="2_boat"]
 [ext_resource type="PackedScene" uid="uid://k1cvcu80rfmm" path="res://scenes/game_screen/coin_ui.tscn" id="2_l5ucy"]
 [ext_resource type="PackedScene" uid="uid://cstfpndmrkms3" path="res://scenes/game_screen/key_ui.tscn" id="3_d1ish"]
 [ext_resource type="PackedScene" uid="uid://bs816w0pr8all" path="res://player/foxy.tscn" id="4_player"]
@@ -45,15 +44,6 @@ tile_set = ExtResource("1_18vte")
 position = Vector2(27, 100)
 attack_damage = 3
 max_health = 30
-
-[node name="FloatingBoatPlatform" parent="." instance=ExtResource("2_boat")]
-position = Vector2(-259, 114)
-
-[node name="FloatingBoatPlatform2" parent="." instance=ExtResource("2_boat")]
-position = Vector2(-21, 116)
-
-[node name="FloatingBoatPlatform3" parent="." instance=ExtResource("2_boat")]
-position = Vector2(359, 120)
 
 [node name="Blade" parent="." instance=ExtResource("6_m1dob")]
 position = Vector2(-40, -418)
@@ -126,4 +116,4 @@ position = Vector2(-59, -104)
 position = Vector2(138, 103)
 
 [node name="KingCrab" parent="." instance=ExtResource("14_p1j52")]
-position = Vector2(-209, 62)
+position = Vector2(-320, 94)

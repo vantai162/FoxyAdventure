@@ -5833,21 +5833,6 @@ use_parent_material = true
 position = Vector2(210, 233)
 instruction_text = "Bấm [Q] để tương tác"
 
-[connection signal="area_entered" from="Layer1/Coin" to="Layer1/Coin" method="_on_area_entered"]
-[connection signal="area_entered" from="Layer1/@Area2D@86734" to="Layer1/@Area2D@86734" method="_on_area_entered"]
-[connection signal="area_entered" from="Layer1/@Area2D@86735" to="Layer1/@Area2D@86735" method="_on_area_entered"]
-[connection signal="area_entered" from="Layer1/@Area2D@86736" to="Layer1/@Area2D@86736" method="_on_area_entered"]
-[connection signal="area_entered" from="Layer1/@Area2D@86737" to="Layer1/@Area2D@86737" method="_on_area_entered"]
-[connection signal="area_entered" from="Layer1/@Area2D@86738" to="Layer1/@Area2D@86738" method="_on_area_entered"]
-[connection signal="area_entered" from="Layer1/@Area2D@86739" to="Layer1/@Area2D@86739" method="_on_area_entered"]
-[connection signal="area_entered" from="Layer1/@Area2D@86740" to="Layer1/@Area2D@86740" method="_on_area_entered"]
-[connection signal="area_entered" from="Layer1/@Area2D@86741" to="Layer1/@Area2D@86741" method="_on_area_entered"]
-[connection signal="area_entered" from="Layer1/@Area2D@86742" to="Layer1/@Area2D@86742" method="_on_area_entered"]
-[connection signal="area_entered" from="Layer1/@Area2D@86743" to="Layer1/@Area2D@86743" method="_on_area_entered"]
-[connection signal="area_entered" from="Layer1/@Area2D@86744" to="Layer1/@Area2D@86744" method="_on_area_entered"]
-[connection signal="area_entered" from="Layer1/@Area2D@86745" to="Layer1/@Area2D@86745" method="_on_area_entered"]
-[connection signal="area_entered" from="Layer1/@Area2D@86746" to="Layer1/@Area2D@86746" method="_on_area_entered"]
-[connection signal="area_entered" from="Layer1/Key" to="Layer1/Key" method="_on_area_entered"]
 [connection signal="body_entered" from="Objects/Lever" to="Objects/Gate" method="open_gate"]
 [connection signal="body_exited" from="Objects/Lever" to="Objects/Gate" method="close_gate"]
 [connection signal="lever_activated" from="Objects/Lever" to="Objects/Gate" method="open_gate"]

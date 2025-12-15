@@ -36,7 +36,7 @@
 [ext_resource type="PackedScene" uid="uid://fwuimc71t468" path="res://objects/npc/shop/shop_item/shop_vendor.tscn" id="34_5l4f7"]
 [ext_resource type="PackedScene" uid="uid://bs816w0pr8all" path="res://player/foxy.tscn" id="36_wn3ka"]
 [ext_resource type="PackedScene" uid="uid://bp4fcvlg5b31p" path="res://objects/platform/vertical_moving_platform.tscn" id="37_q2kgt"]
-[ext_resource type="PackedScene" uid="uid://diraf0q6ndu7y" path="res://objects/door/dark_entrance.tscn" id="38_q2kgt"]
+[ext_resource type="PackedScene" path="res://objects/door/dark_entrance.tscn" id="38_q2kgt"]
 [ext_resource type="PackedScene" uid="uid://dvjr8elgnjvcw" path="res://objects/platform/circular_moving_platform.tscn" id="39_dmtgj"]
 [ext_resource type="PackedScene" uid="uid://lrdkn2gv1v1m" path="res://effect_Item/coin/coin.tscn" id="39_uhkhi"]
 
