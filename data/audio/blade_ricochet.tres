@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="AudioClip" load_steps=3 format=3 uid="uid://blade_ricochet_001"]
+
+[ext_resource type="Script" uid="uid://chlphbiuq1gay" path="res://scripts/audio/audio_clip.gd" id="1_clip"]
+[ext_resource type="AudioStream" uid="uid://b10oac38pffa3" path="res://assets/sounds/attack.mp3" id="2_stream"]
+
+[resource]
+script = ExtResource("1_clip")
+clip_id = "blade_ricochet"
+stream = ExtResource("2_stream")
+volume_db = -3.0
+randomize_pitch = true
+pitch_min = 1.4
+pitch_max = 1.7
+description = "Metallic ping when blade ricochets off surface"
+metadata/_custom_type_script = "uid://chlphbiuq1gay"

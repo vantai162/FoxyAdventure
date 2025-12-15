@@ -87,6 +87,12 @@ var is_active: bool = true  ## Only active blade auto-returns; orphans expire on
 const LOYAL_GLOW_SCENE: PackedScene = preload("res://assets/effects/loyal_glow.tscn")
 var loyal_glow: PointLight2D = null  ## Ethereal glow for the blood-bound blade
 
+## === SATISFACTION FEEDBACK SCENES (GPU-native, preloaded) ===
+const RICOCHET_SPARKS_SCENE: PackedScene = preload("res://assets/effects/ricochet_sparks.tscn")
+const STEAM_BURST_SCENE: PackedScene = preload("res://assets/effects/steam_burst.tscn")
+const DUST_PUFF_SCENE: PackedScene = preload("res://assets/effects/dust_puff.tscn")
+const RUST_FLAKES_SCENE: PackedScene = preload("res://assets/effects/rust_flakes.tscn")
+
 @onready var ground_timer: Timer = $GroundTimer
 @onready var hit_area: Area2D = $HitArea2D
 @onready var spinning_sprite: Sprite2D = $Sprite2D
@@ -361,6 +367,9 @@ func _transition_to_ricochet() -> void:
 	## This creates game feel: the fox doesn't chase his weapon; it returns to him.
 	## Magnetism in BOUNCED state further guides the blade home.
 	
+	# === IMPACT FEEDBACK: The moment of contact MATTERS ===
+	_spawn_ricochet_feedback()
+	
 	current_state = State.BOUNCED
 	bounced_time = 0.0
 	
@@ -378,6 +387,9 @@ func _transition_to_ricochet() -> void:
 	velocity.y -= first_bounce_upward_force  # Extra upward kick for satisfying arc
 
 func _transition_to_grounded() -> void:
+	# === LANDING FEEDBACK: Blade embeds with weight ===
+	_spawn_landing_feedback()
+	
 	current_state = State.GROUNDED
 	velocity = Vector2.ZERO
 	rotation = 0  # Orient blade upright
@@ -438,21 +450,27 @@ func _trigger_interactable(area: Area2D) -> void:
 func _pickup_by_player() -> void:
 	## Player physically touches the blade — ALWAYS returns it to inventory.
 	## This rewards the player for actively retrieving their blade.
+	
+	# === REWARD FEEDBACK: Satisfying blade return ===
+	AudioManager.play_sound("blade_pickup", 12.0)
+	_flash_and_shrink()
+	
 	if thrower and thrower.has_method("return_blade"):
 		thrower.return_blade()
-	queue_free()
+	# Note: queue_free happens after shrink tween completes
 
 func _on_ground_timer_timeout() -> void:
 	## Blade sat on ground too long without being picked up.
 	## Loyal blade: blood-bound, magically returns to the fox.
 	## Scrap blade: just metal. No magic. Lost forever if not picked up.
 	if is_loyal:
-		# The blood-bound blade finds its way back
+		# The blood-bound blade finds its way back (silent, magical)
 		if thrower and thrower.has_method("return_blade"):
 			thrower.return_blade()
-	# Scraps rust away — the fox loses this expendable blade
-	# No return_blade() call = blade count stays reduced
-	queue_free()
+		queue_free()
+	else:
+		# === LOSS FEEDBACK: Expendable blade rusts away ===
+		_rust_and_fade()
 
 func _auto_return_from_void() -> void:
 	## Safety net: blade fell into void or bounced too long.
@@ -524,8 +542,9 @@ func extinguish() -> void:
 	fire_particles.emitting = false
 	_extinguish_light()
 	
-	# Steam hiss effect could go here (audio)
-	# AudioManager.play_sound("steam_hiss", 10.0)
+	# === EXTINGUISH FEEDBACK: Steam hiss + visual burst ===
+	AudioManager.play_sound("steam_hiss", 10.0)
+	_spawn_steam_burst()
 
 ## Re-ignite when leaving water (if player has flame upgrade)
 func reignite() -> void:
@@ -536,6 +555,10 @@ func reignite() -> void:
 	fire_particles.emitting = true
 	blade_light.enabled = true
 	_start_light_flicker()
+	
+	# === REIGNITE FEEDBACK: Fwoosh + flash ===
+	AudioManager.play_sound("flame_ignite", 8.0)
+	_flash_sprite()
 
 
 ## === LOYAL BLADE VISUAL ===
@@ -566,3 +589,106 @@ func _remove_loyal_visual() -> void:
 		spinning_sprite.modulate = Color.WHITE
 	if landed_sprite:
 		landed_sprite.modulate = Color.WHITE
+
+
+## === SATISFACTION FEEDBACK FUNCTIONS ===
+## These create the "juice" that makes blade combat feel satisfying.
+## All visuals use Godot-native primitives and preloaded GPU particle scenes.
+
+## Ricochet: Sparks fly, metallic ping, world acknowledges impact
+func _spawn_ricochet_feedback() -> void:
+	# Metallic ricochet sound
+	AudioManager.play_sound("blade_ricochet", 12.0)
+	
+	# Spawn animated spark effect (AnimatedSprite2D with 11-frame animation)
+	# Spawn 2-3 at random rotations for visual variety
+	for i in range(randi_range(2, 3)):
+		var sparks = RICOCHET_SPARKS_SCENE.instantiate() as AnimatedSprite2D
+		sparks.global_position = global_position + Vector2(randf_range(-4, 4), randf_range(-4, 4))
+		sparks.rotation = randf() * TAU  # Random rotation for variety
+		sparks.scale = Vector2.ONE * randf_range(0.3, 0.6)  # Slight size variation
+		get_tree().current_scene.add_child(sparks)
+		
+		# Auto-cleanup when animation finishes
+		sparks.animation_finished.connect(sparks.queue_free)
+	
+	# Brief sprite flash — blade glints on impact
+	_flash_sprite()
+
+## Landing: Dust puff, soft thud, blade embeds with weight
+func _spawn_landing_feedback() -> void:
+	# Soft thud sound
+	AudioManager.play_sound("blade_land", 8.0)
+	
+	# Spawn dust puff at blade position
+	var dust = DUST_PUFF_SCENE.instantiate()
+	dust.global_position = global_position + Vector2(0, 4)  # Slightly below blade
+	dust.emitting = true
+	get_tree().current_scene.add_child(dust)
+	
+	# Auto-cleanup
+	get_tree().create_timer(0.5).timeout.connect(dust.queue_free)
+
+## Pickup: Flash white, shrink to nothing, satisfying "got it" feel
+func _flash_and_shrink() -> void:
+	# Flash to white
+	var active_sprite = landed_sprite if landed_sprite.visible else spinning_sprite
+	var original_modulate = active_sprite.modulate
+	active_sprite.modulate = Color(2.5, 2.5, 2.5, 1.0)  # Bright flash
+	
+	# Shrink and fade simultaneously
+	var tween = create_tween()
+	tween.set_parallel(true)
+	tween.tween_property(active_sprite, "modulate", Color(1.5, 1.5, 1.5, 0.0), 0.12)
+	tween.tween_property(self, "scale", Vector2.ZERO, 0.12).set_ease(Tween.EASE_IN)
+	
+	# Queue free after animation
+	tween.chain().tween_callback(queue_free)
+
+## Loss: Blade rusts, sad ting, flakes drift away
+func _rust_and_fade() -> void:
+	# Sad hollow sound
+	AudioManager.play_sound("blade_lost", 10.0)
+	
+	# Spawn rust flakes
+	var rust = RUST_FLAKES_SCENE.instantiate()
+	rust.global_position = global_position
+	rust.emitting = true
+	get_tree().current_scene.add_child(rust)
+	get_tree().create_timer(0.8).timeout.connect(rust.queue_free)
+	
+	# Blade turns rust-brown and shrinks
+	var active_sprite = landed_sprite if landed_sprite.visible else spinning_sprite
+	var tween = create_tween()
+	tween.set_parallel(true)
+	tween.tween_property(active_sprite, "modulate", Color(0.5, 0.3, 0.2, 0.0), 0.4)
+	tween.tween_property(self, "scale", scale * 0.3, 0.4).set_ease(Tween.EASE_IN)
+	
+	# Disable glow during fade
+	if grounded_light:
+		grounded_light.visible = false
+	
+	# Queue free after animation
+	tween.chain().tween_callback(queue_free)
+
+## Steam burst: Visual feedback when flame enters water
+func _spawn_steam_burst() -> void:
+	var steam = STEAM_BURST_SCENE.instantiate()
+	steam.global_position = global_position
+	steam.emitting = true
+	get_tree().current_scene.add_child(steam)
+	
+	# Auto-cleanup
+	get_tree().create_timer(0.6).timeout.connect(steam.queue_free)
+
+## Flash sprite: Quick white flash for impact moments
+func _flash_sprite() -> void:
+	var active_sprite = spinning_sprite if spinning_sprite.visible else landed_sprite
+	var original_modulate = active_sprite.modulate
+	
+	# Flash to bright white
+	active_sprite.modulate = Color(2.0, 2.0, 2.0, 1.0)
+	
+	# Return to original
+	var tween = create_tween()
+	tween.tween_property(active_sprite, "modulate", original_modulate, 0.08)
