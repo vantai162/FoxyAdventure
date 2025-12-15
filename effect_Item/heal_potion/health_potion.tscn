@@ -1,10 +1,45 @@
-[gd_scene load_steps=4 format=3 uid="uid://b3cbk6lmh2cc3"]
+[gd_scene load_steps=11 format=3 uid="uid://b3cbk6lmh2cc3"]
 
 [ext_resource type="Script" uid="uid://b8g6qai065mv6" path="res://effect_Item/heal_potion/health_potion.gd" id="1_1dh8x"]
-[ext_resource type="Texture2D" uid="uid://q5autwfaog1f" path="res://assets/objects/Potion01.png" id="2_1dh8x"]
+[ext_resource type="Texture2D" uid="uid://y5sepnxxoenf" path="res://assets/objects/Red Potion/01.png" id="2_epji2"]
+[ext_resource type="Texture2D" uid="uid://r3l4n1tu7tvr" path="res://assets/objects/Red Potion/02.png" id="3_4ksec"]
+[ext_resource type="Texture2D" uid="uid://bt38g0ib23jis" path="res://assets/objects/Red Potion/03.png" id="4_lsfn1"]
+[ext_resource type="Texture2D" uid="uid://dy6yengjtsypx" path="res://assets/objects/Red Potion/04.png" id="5_a43uk"]
+[ext_resource type="Texture2D" uid="uid://dn0fliklu6wf1" path="res://assets/objects/Red Potion/05.png" id="6_o61nh"]
+[ext_resource type="Texture2D" uid="uid://edhgromchb30" path="res://assets/objects/Red Potion/07.png" id="7_rd6op"]
+[ext_resource type="Texture2D" uid="uid://bx2mf8asaqeoy" path="res://assets/objects/Red Potion/06.png" id="8_tspdi"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_j48l4"]
 size = Vector2(5.5, 7.125)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_j3g5q"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("2_epji2")
+}, {
+"duration": 1.0,
+"texture": ExtResource("3_4ksec")
+}, {
+"duration": 1.0,
+"texture": ExtResource("4_lsfn1")
+}, {
+"duration": 1.0,
+"texture": ExtResource("5_a43uk")
+}, {
+"duration": 1.0,
+"texture": ExtResource("6_o61nh")
+}, {
+"duration": 1.0,
+"texture": ExtResource("7_rd6op")
+}, {
+"duration": 1.0,
+"texture": ExtResource("8_tspdi")
+}],
+"loop": true,
+"name": &"default",
+"speed": 7.0
+}]
 
 [node name="HealthPotion" type="Area2D"]
 z_index = 5
@@ -17,9 +52,10 @@ script = ExtResource("1_1dh8x")
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 shape = SubResource("RectangleShape2D_j48l4")
 
-[node name="Sprite2D" type="Sprite2D" parent="."]
-position = Vector2(-2.38419e-07, 2.38419e-07)
-scale = Vector2(0.204044, 0.239955)
-texture = ExtResource("2_1dh8x")
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+position = Vector2(0, -0.5)
+scale = Vector2(0.461538, 0.514706)
+sprite_frames = SubResource("SpriteFrames_j3g5q")
+frame_progress = 0.166415
 
 [connection signal="area_entered" from="." to="." method="_on_area_entered"]
