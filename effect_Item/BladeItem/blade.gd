@@ -77,6 +77,11 @@ func _on_area_entered(area: Area2D) -> void:
 
 	var parent = area.get_parent()
 	if parent is Player:
+		# Check if player can actually collect this blade (has room)
+		# If full, leave the blade alone — don't vanish it
+		if not parent.can_collect_blade():
+			return
+		
 		is_collected = true
 		
 		# Collection effect: quick spin + shrink

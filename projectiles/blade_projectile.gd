@@ -456,17 +456,17 @@ func _pickup_by_player() -> void:
 	_flash_and_shrink()
 	
 	if thrower and thrower.has_method("return_blade"):
-		thrower.return_blade()
+		thrower.return_blade(is_loyal)
 	# Note: queue_free happens after shrink tween completes
 
 func _on_ground_timer_timeout() -> void:
 	## Blade sat on ground too long without being picked up.
-	## Loyal blade: blood-bound, magically returns to the fox.
+	## Loyal blade: blood-bound, ALWAYS returns (even if hands full — absorbs a scrap).
 	## Scrap blade: just metal. No magic. Lost forever if not picked up.
 	if is_loyal:
 		# The blood-bound blade finds its way back (silent, magical)
 		if thrower and thrower.has_method("return_blade"):
-			thrower.return_blade()
+			thrower.return_blade(true)  # Force return — loyal blade never stranded
 		queue_free()
 	else:
 		# === LOSS FEEDBACK: Expendable blade rusts away ===
@@ -477,7 +477,7 @@ func _auto_return_from_void() -> void:
 	## Only the loyal blade has the magical bond to return.
 	if is_loyal:
 		if thrower and thrower.has_method("return_blade"):
-			thrower.return_blade()
+			thrower.return_blade(true)  # Force return — loyal blade never lost
 	# Scraps lost to the void are gone forever
 	queue_free()
 	

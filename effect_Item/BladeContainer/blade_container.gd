@@ -45,6 +45,10 @@ func _process(delta: float) -> void:
 func _on_area_entered(area: Area2D) -> void:
 	var parent = area.get_parent()
 	if parent is Player:
+		# Can't pick up if already at max capacity
+		if not parent.can_upgrade_blade_capacity():
+			return
+		
 		# Collection effect - satisfying but not blinding
 		var tween = create_tween().set_parallel(true)
 		if blade_sprite:
