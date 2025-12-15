@@ -1,6 +1,6 @@
 [gd_scene load_steps=41 format=4 uid="uid://bxknbajfocd87"]
 
-[ext_resource type="Script" uid="uid://b6xvcjrh55sd6" path="res://test/levels/level_2/level_2.gd" id="1_5l4f7"]
+[ext_resource type="Script" uid="uid://c5cp6lv5bj1rw" path="res://test/levels/level_2/stage_2_1.gd" id="1_5l4f7"]
 [ext_resource type="PackedScene" uid="uid://dm741hii7d5nv" path="res://scenes/game_screen/health_bar.tscn" id="1_x7kuf"]
 [ext_resource type="PackedScene" uid="uid://k1cvcu80rfmm" path="res://scenes/game_screen/coin_ui.tscn" id="2_7ulr3"]
 [ext_resource type="PackedScene" uid="uid://cstfpndmrkms3" path="res://scenes/game_screen/key_ui.tscn" id="3_2a1r0"]

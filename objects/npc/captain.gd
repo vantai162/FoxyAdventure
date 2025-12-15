@@ -278,4 +278,4 @@ func start_dramatic_ending():
 	water_canvas.queue_free()
 	sky_modulate.queue_free()
 	
-	get_tree().change_scene_to_file("res://test/levels/level_1.tscn")
+	get_tree().change_scene_to_file("res://test/levels/level_1/level_1_1.tscn")

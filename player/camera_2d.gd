@@ -13,6 +13,14 @@ var default_rotation: float = 0.0
 func _ready():
 	randomize()
 	default_rotation = rotation
+	
+	# Reset camera limits to Godot defaults (effectively infinite)
+	# Stage scripts will override these via set_level_bounds()
+	# This prevents any accidentally saved scene values from persisting
+	limit_left = -10000000
+	limit_right = 10000000
+	limit_top = -10000000
+	limit_bottom = 10000000
 
 func _process(delta: float) -> void:
 	# 1. Xử lý RUNG VỊ TRÍ (Offset)

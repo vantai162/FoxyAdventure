@@ -308,7 +308,6 @@ metadata/_custom_type_script = "uid://w7xdmsdvf5vd"
 
 [node name="Camera2D" type="Camera2D" parent="."]
 zoom = Vector2(2, 2)
-limit_bottom = 500
 script = ExtResource("2_rsc2w")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
