@@ -6,7 +6,7 @@
 [ext_resource type="PackedScene" uid="uid://dvpguoojkycep" path="res://scenes/game_screen/oxy_bar.tscn" id="3_3j2yj"]
 [ext_resource type="PackedScene" uid="uid://giogr7michck" path="res://objects/water/water.tscn" id="3_is5y3"]
 [ext_resource type="PackedScene" uid="uid://dqdstpxycbomj" path="res://effect_Item/BladeItem/blade.tscn" id="3_vnnrn"]
-[ext_resource type="PackedScene" path="res://environment/cave/stalactite.tscn" id="4_b7ip3"]
+[ext_resource type="PackedScene" uid="uid://rhntp41ai45p" path="res://environment/cave/stalactite.tscn" id="4_b7ip3"]
 [ext_resource type="PackedScene" uid="uid://cqjqdbyd7mqfr" path="res://environment/cave/glowing_crystal.tscn" id="4_crystal"]
 [ext_resource type="PackedScene" path="res://objects/platform/moving_platform.tscn" id="4_moving"]
 [ext_resource type="PackedScene" uid="uid://ydwm5fvrvrmr" path="res://scenes/game_screen/damage_over_lay.tscn" id="4_oilfl"]
@@ -22,7 +22,7 @@
 [ext_resource type="PackedScene" uid="uid://ufmc2gkfnv58" path="res://enemy/crab/crab.tscn" id="7_crab"]
 [ext_resource type="PackedScene" uid="uid://bxfs4fsx7ot6m" path="res://enemy/starfish/starfish.tscn" id="8_starfish"]
 [ext_resource type="PackedScene" uid="uid://bs816w0pr8all" path="res://player/foxy.tscn" id="9_foxy"]
-[ext_resource type="PackedScene" path="res://objects/pressure_plate/pressure_plate.tscn" id="9_sb7o5"]
+[ext_resource type="PackedScene" uid="uid://d1twwiutipd8r" path="res://objects/pressure_plate/pressure_plate.tscn" id="9_sb7o5"]
 [ext_resource type="PackedScene" uid="uid://ctr1b8p1h6p8y" path="res://objects/gate/gate.tscn" id="10_343a2"]
 [ext_resource type="PackedScene" uid="uid://jm5jjtt5tfsj" path="res://enemy/crab/elite_hunter_crab.tscn" id="10_elite_crab"]
 [ext_resource type="PackedScene" uid="uid://dumayxma7am7b" path="res://enemy/turtle/elite_spiny_turtle.tscn" id="11_elite_turtle"]
@@ -95,7 +95,6 @@ grow_horizontal = 1
 grow_vertical = 1
 
 [node name="DarknessModulate" type="CanvasModulate" parent="."]
-visible = false
 color = Color(0.0558769, 0.0395219, 0.0722072, 1)
 
 [node name="PlayerSpawn" type="Marker2D" parent="."]
@@ -136,7 +135,6 @@ position = Vector2(324, 1210)
 position = Vector2(494, 2016)
 
 [node name="Hazards" type="Node2D" parent="."]
-visible = false
 
 [node name="Stalactite" parent="Hazards" instance=ExtResource("4_b7ip3")]
 position = Vector2(905, 174)
@@ -325,7 +323,6 @@ position = Vector2(768, 1653)
 orientation = 2
 
 [node name="WaterZones" type="Node2D" parent="."]
-visible = false
 
 [node name="water" parent="WaterZones" instance=ExtResource("3_is5y3")]
 position = Vector2(165, 2166)
@@ -343,7 +340,6 @@ lifetime = 0.0
 auto_despawn = false
 
 [node name="Puzzle" type="Node2D" parent="."]
-visible = false
 
 [node name="PressurePlate" parent="Puzzle" instance=ExtResource("9_sb7o5")]
 z_index = 0
@@ -356,7 +352,6 @@ listen_channel = &"trapdoor"
 direction = 3
 
 [node name="Enemies" type="Node2D" parent="."]
-visible = false
 
 [node name="Turtle1" parent="Enemies" instance=ExtResource("5_turtle")]
 position = Vector2(600, 464)
@@ -383,7 +378,6 @@ position = Vector2(1200, 1219)
 position = Vector2(700, 1360)
 
 [node name="Collectibles" type="Node2D" parent="."]
-visible = false
 
 [node name="GoldChest" parent="Collectibles" instance=ExtResource("15_gold_chest")]
 position = Vector2(1071, 105)
@@ -542,7 +536,6 @@ position = Vector2(450, 1257)
 position = Vector2(824, 1648)
 
 [node name="LightSources" type="Node2D" parent="."]
-visible = false
 
 [node name="Crystal_Entry1" parent="LightSources" instance=ExtResource("4_crystal")]
 position = Vector2(280, 150)
@@ -606,7 +599,6 @@ crystal_type = 0
 color_preset = 4
 
 [node name="Objects" type="Node2D" parent="."]
-visible = false
 
 [node name="Spring2" parent="Objects" instance=ExtResource("5_2y2ek")]
 position = Vector2(917, 1810)
@@ -632,7 +624,6 @@ rotation = 1.5708
 orientation = 2
 
 [node name="ExitZone" type="Node2D" parent="."]
-visible = false
 
 [node name="ToLevel3_2" parent="ExitZone" instance=ExtResource("30_scene_transition")]
 position = Vector2(1543, 2120)
@@ -661,9 +652,5 @@ position = Vector2(969, 1008)
 
 [node name="Checkpoint4" parent="." instance=ExtResource("40_3j2yj")]
 position = Vector2(334, 1935)
-
-[connection signal="area_entered" from="Terrain/TileMapLayer/HealthPotion" to="Terrain/TileMapLayer/HealthPotion" method="_on_area_entered"]
-[connection signal="area_entered" from="Terrain/TileMapLayer/@Area2D@257153" to="Terrain/TileMapLayer/@Area2D@257153" method="_on_area_entered"]
-[connection signal="area_entered" from="Terrain/TileMapLayer/@Area2D@257154" to="Terrain/TileMapLayer/@Area2D@257154" method="_on_area_entered"]
 
 [editable path="Platforms/MovingPlatform1"]

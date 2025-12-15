@@ -2,6 +2,8 @@ extends Node2D
 
 @onready var settings_ui = preload("res://scenes/game_screen/settings_popup.tscn")
 @onready var stage_music_id = "level_1_music"
+@export var foxy_timeline_level2: String = "foxy_timeline_level2"
+var foxy_timeline_level2_played = false
 var cursetting=null
 var can_pause = true
 
@@ -57,4 +59,13 @@ func _on_dialog_finished():
 	player.set_physics_process(true)
 	can_pause = true
 
+		
+
+
+func _on_dialog_area_body_entered(body: Node2D) -> void:
+	if not foxy_timeline_level2_played and body is Player:
+		foxy_timeline_level2_played = true
+		Dialogic.start(foxy_timeline_level2)
+		await Dialogic.timeline_ended
+		can_pause = true
 		
