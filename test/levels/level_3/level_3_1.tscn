@@ -136,7 +136,6 @@ position = Vector2(324, 1210)
 position = Vector2(494, 2016)
 
 [node name="Hazards" type="Node2D" parent="."]
-visible = false
 
 [node name="Stalactite" parent="Hazards" instance=ExtResource("4_b7ip3")]
 position = Vector2(905, 174)
@@ -325,7 +324,6 @@ position = Vector2(768, 1653)
 orientation = 2
 
 [node name="WaterZones" type="Node2D" parent="."]
-visible = false
 
 [node name="water" parent="WaterZones" instance=ExtResource("3_is5y3")]
 position = Vector2(165, 2166)
@@ -654,16 +652,9 @@ position = Vector2(317, 107)
 position = Vector2(177, 242)
 
 [node name="Checkpoint2" parent="." instance=ExtResource("40_3j2yj")]
-position = Vector2(1346, 320)
+position = Vector2(86, 672)
 
 [node name="Checkpoint3" parent="." instance=ExtResource("40_3j2yj")]
-position = Vector2(969, 1008)
-
-[node name="Checkpoint4" parent="." instance=ExtResource("40_3j2yj")]
-position = Vector2(334, 1935)
-
-[connection signal="area_entered" from="Terrain/TileMapLayer/HealthPotion" to="Terrain/TileMapLayer/HealthPotion" method="_on_area_entered"]
-[connection signal="area_entered" from="Terrain/TileMapLayer/@Area2D@257153" to="Terrain/TileMapLayer/@Area2D@257153" method="_on_area_entered"]
-[connection signal="area_entered" from="Terrain/TileMapLayer/@Area2D@257154" to="Terrain/TileMapLayer/@Area2D@257154" method="_on_area_entered"]
+position = Vector2(986, 1206)
 
 [editable path="Platforms/MovingPlatform1"]

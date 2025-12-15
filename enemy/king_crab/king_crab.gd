@@ -43,7 +43,6 @@ extends EnemyCharacter
 @export var roll_max_bounces: int = 3
 
 @export_group("Bubble Attack")
-@export var bubble_scene: PackedScene
 @export var bubble_attack_interval: float = 3.5
 @export var bubble_speed: float = 300.0
 @export var bubble_trap_duration: float = 2.0

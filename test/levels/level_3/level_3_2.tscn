@@ -539,7 +539,6 @@ color_preset = 4
 visible = false
 
 [node name="ExitZone" type="Node2D" parent="."]
-visible = false
 
 [node name="FromLevel3_1" parent="ExitZone" instance=ExtResource("28_scene_transition")]
 position = Vector2(57, 456)
