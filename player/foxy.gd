@@ -83,6 +83,13 @@ var blade_count: int = 0
 var max_blade_capacity: int = 1
 var has_unlocked_blade: bool = false
 
+## === BLADE LOYALTY SYSTEM ===
+## The fox's first blade is blood-bound — it ALWAYS returns.
+## Expendable blades (slots 2 & 3) only return if they're the LAST thrown.
+## Orphaned blades expire if not manually picked up.
+var loyal_blade_in_flight: bool = false  ## Is the blood-bound blade currently thrown?
+var active_blade: BladeProjectile = null  ## Reference to last-thrown blade (only this one auto-returns)
+
 @export_group("Throw")
 @export var throw_offset_x: float = 40.0  ## Horizontal offset from player center
 @export var throw_offset_y: float = -14.0  ## Vertical offset (negative = above feet)
@@ -195,6 +202,10 @@ func consume_blade() -> void:
 		# Hoặc: inventory.adjust_amount_item("Blade", -1)
 
 func return_blade() -> void:
+	## A blade is returning to the fox's inventory.
+	## This is called by BladeProjectile when:
+	## 1. Player physically picks up the blade (always returns)
+	## 2. Blade times out and is loyal/active (auto-returns)
 	if blade_count < max_blade_capacity:
 		blade_count += 1
 		#inventory.adjust_amount_item("Blade", 1) 
@@ -202,6 +213,13 @@ func return_blade() -> void:
 		# Switch back to blade sprite when getting a blade back
 		if has_unlocked_blade and blade_count > 0:
 			set_animated_sprite($Direction/BladeAnimatedSprite2D)
+	
+	# Reset loyalty tracking when loyal blade returns
+	loyal_blade_in_flight = false
+	
+	# Clear active blade reference if it's being returned
+	# (The blade calls return_blade then queue_free, so it's about to die)
+	# We don't clear active_blade here because it might be a different blade returning
 
 func increase_blade_capacity() -> void:
 	max_blade_capacity = min(max_blade_capacity + 1, 3)
@@ -211,11 +229,29 @@ func throw_blade_projectile() -> void:
 	if not can_throw_blade() or not blade_projectile_scene:
 		return
 	
-	var blade = blade_projectile_scene.instantiate()
+	var blade: BladeProjectile = blade_projectile_scene.instantiate()
 	get_tree().current_scene.add_child(blade)
 	
 	var throw_offset := Vector2(throw_offset_x * direction, throw_offset_y)
 	blade.global_position = global_position + throw_offset
+	
+	# === BLADE LOYALTY SYSTEM ===
+	# Orphan the previous active blade (it will expire if not picked up manually)
+	if is_instance_valid(active_blade):
+		active_blade.is_active = false
+	
+	# This new blade becomes the active one (will auto-return)
+	active_blade = blade
+	blade.is_active = true
+	
+	# Determine if this is the loyal (blood-bound) blade
+	# The loyal blade is thrown when we're down to our last blade AND we have the unlock
+	# Logic: blade_count == 1 means this is the first/loyal blade being thrown
+	if blade_count == 1:
+		blade.is_loyal = true
+		loyal_blade_in_flight = true
+	else:
+		blade.is_loyal = false
 	
 	# Check if we have a locked target for aimed throw
 	if targeting != null and targeting.has_locked_target():

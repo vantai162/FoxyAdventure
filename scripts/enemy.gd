@@ -1,7 +1,19 @@
 class_name EnemyCharacter
 extends BaseCharacter
 
+## === BURN STATUS ===
+## Enemies hit by flame blade burn for damage over time.
+## Simple, no-fuss implementation: timer + tick damage.
+var is_burning: bool = false
+var burn_timer: float = 0.0
+var burn_tick_timer: float = 0.0
+const BURN_DURATION: float = 3.0      ## Seconds of burning
+const BURN_TICK_RATE: float = 0.5     ## Damage every X seconds
+const BURN_DAMAGE: int = 1            ## Damage per tick
 
+## GPU-native burn particles — preloaded, not procedurally built
+const BURN_PARTICLES_SCENE: PackedScene = preload("res://assets/effects/burn_particles.tscn")
+var burn_particles: GPUParticles2D = null  ## Visual effect (instantiated on first burn)
 
 # Raycast check wall and fall
 var front_ray_cast: RayCast2D;
@@ -62,6 +74,8 @@ func _physics_process(delta: float) -> void:
 	super._physics_process(delta)
 	# only add this lightweight detection pass
 	_check_player_in_sight()
+	# Burn status tick
+	_update_burn(delta)
 
 # init hurt area
 func _init_hurt_area():
@@ -202,6 +216,7 @@ func _check_player_in_sight() -> void:
 	var player_detected = false
 	var detected_player: Player = null
 	
+	
 	for ray in detect_ray_casts:
 		if ray == null or not ray.enabled:
 			continue
@@ -222,3 +237,49 @@ func _check_player_in_sight() -> void:
 		if found_player != null:
 			found_player = null
 			_on_player_not_in_sight()
+
+
+## === BURN STATUS EFFECTS ===
+
+## Set this enemy on fire. Called by flame blade projectile.
+func ignite() -> void:
+	is_burning = true
+	burn_timer = BURN_DURATION
+	burn_tick_timer = 0.0  # Immediate first tick
+	
+	# Create burn particles if not already present
+	if burn_particles == null:
+		_create_burn_particles()
+	burn_particles.emitting = true
+
+## Update burn status each frame
+func _update_burn(delta: float) -> void:
+	if not is_burning:
+		return
+	
+	burn_timer -= delta
+	burn_tick_timer -= delta
+	
+	# Apply burn damage on tick
+	if burn_tick_timer <= 0:
+		burn_tick_timer = BURN_TICK_RATE
+		# Use base take_damage to avoid triggering hurt state repeatedly
+		health -= BURN_DAMAGE
+		if health <= 0:
+			# Let the FSM handle death properly
+			if fsm and fsm.current_state:
+				fsm.current_state.take_damage(Vector2.ZERO, 0)
+	
+	# Burn expired
+	if burn_timer <= 0:
+		is_burning = false
+		if burn_particles:
+			burn_particles.emitting = false
+
+## Create GPU-native fire particles for burning effect
+## Uses preloaded scene — zero runtime construction, GPU-rendered
+func _create_burn_particles() -> void:
+	burn_particles = BURN_PARTICLES_SCENE.instantiate()
+	burn_particles.name = "BurnParticles"
+	burn_particles.emitting = false
+	add_child(burn_particles)

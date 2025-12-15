@@ -1,4 +1,6 @@
 extends Control
+## Blade UI — Shows current blade count and max capacity
+## Format: "2/3" means 2 blades held, 3 max capacity
 
 var player: Player
 @onready var blade_label = $Label
@@ -9,10 +11,14 @@ func _ready():
 func setup():
 	player = GameManager.player
 	if player:
-		var initial_blade = player.blade_count
-		blade_label.text = str(initial_blade)
-		player.blade_changed.connect(_on_item_amount_changed)
+		_update_display()
+		player.blade_changed.connect(_on_blade_changed)
 
-func _on_item_amount_changed(new_amount: int):
-	# Chỉ cập nhật Label nếu vật phẩm bị thay đổi là "blade"
-	blade_label.text = str(new_amount)
+func _on_blade_changed(_new_amount: int):
+	_update_display()
+
+func _update_display():
+	if not player:
+		return
+	# Show current/max for clarity (e.g., "2/3")
+	blade_label.text = "%d/%d" % [player.blade_count, player.max_blade_capacity]

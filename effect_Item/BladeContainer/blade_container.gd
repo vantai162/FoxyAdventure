@@ -56,6 +56,9 @@ func _on_area_entered(area: Area2D) -> void:
 		if item_glow:
 			tween.tween_property(item_glow, "energy", 0.8, 0.15)  # Was 2.5 - flashbang
 		
+		# Audio feedback — this is an upgrade, should sound special
+		AudioManager.play_sound("power_up", 12.0)
+		
 		parent.increase_blade_capacity()
 		
 		await tween.finished

@@ -33,10 +33,16 @@ var light_flicker_tween: Tween
 
 @export_subgroup("Motion Blur Trail")
 @export var trail_enabled: bool = true
-@export var trail_texture: Texture2D
-@export var trail_spawn_rate: float = 0.05
-@export var trail_ghost_fade_time: float = 0.25
-@export var trail_minimum_speed: float = 50.0
+@export var trail_texture: Texture2D  ## The blade sprite for trail ghosts
+@export var trail_spawn_rate: float = 0.05  ## Seconds between ghost spawns
+@export var trail_ghost_fade_time: float = 0.25  ## Fade out duration
+@export var trail_minimum_speed: float = 50.0  ## Minimum speed to show trail
+@export var trail_pool_size: int = 8  ## Pre-allocated ghost sprites
+
+## Trail system: Object pool of ghost sprites (no runtime allocation)
+var trail_pool: Array[Sprite2D] = []
+var trail_pool_index: int = 0
+var trail_spawn_timer: float = 0.0
 
 @export_group("Grounded")
 @export var pickup_delay_seconds: float = 6.5
@@ -61,9 +67,25 @@ var light_flicker_tween: Tween
 var distance_traveled: float = 0.0
 var thrower: Player = null
 var throw_direction: int = 1
-var trail_spawn_timer: float = 0.0
 var glow_time: float = 0.0  # For pulsing glow effect
 var bounced_time: float = 0.0  # Time spent in BOUNCED state
+
+## === LOYALTY SYSTEM ===
+## The fox's first blade is blood-bound — it ALWAYS returns to him.
+## Subsequent blades are expendable — only the LAST thrown one returns.
+## Orphaned blades (thrown before the current active) expire if not manually picked up.
+var is_loyal: bool = false:  ## Blood-bound blade: always returns, never lost
+	set(value):
+		is_loyal = value
+		if is_loyal:
+			_apply_loyal_visual()
+		else:
+			_remove_loyal_visual()
+var is_active: bool = true  ## Only active blade auto-returns; orphans expire on timeout
+
+## GPU-native loyal glow — preloaded, not procedurally built
+const LOYAL_GLOW_SCENE: PackedScene = preload("res://assets/effects/loyal_glow.tscn")
+var loyal_glow: PointLight2D = null  ## Ethereal glow for the blood-bound blade
 
 @onready var ground_timer: Timer = $GroundTimer
 @onready var hit_area: Area2D = $HitArea2D
@@ -71,15 +93,30 @@ var bounced_time: float = 0.0  # Time spent in BOUNCED state
 @onready var landed_sprite: Sprite2D = $Sprite2D2
 @onready var grounded_light: PointLight2D = $GroundedGlow if has_node("GroundedGlow") else null
 
+## Flame blade state - can be extinguished by water
+var is_flame_active: bool = false
+
 func _ready() -> void:
 	body_entered.connect(_on_body_entered)
 	area_entered.connect(_on_area_entered)
-	fire_particles.emitting = GameManager.player.has_unlocked_flame_blade
+	area_exited.connect(_on_area_exited)
+	
+	# Initialize trail ghost pool (no runtime allocation)
+	_init_trail_pool()
+	
+	# Initialize flame state from player unlock
+	is_flame_active = GameManager.player.has_unlocked_flame_blade
+	fire_particles.emitting = is_flame_active
 	
 	light_base_energy = blade_light.energy
-	blade_light.enabled = GameManager.player.has_unlocked_flame_blade
-	if GameManager.player.has_unlocked_flame_blade:
+	blade_light.enabled = is_flame_active
+	if is_flame_active:
 		_start_light_flicker()
+	
+	# Connect hit_area signal to apply burn on hit
+	if hit_area.has_signal("hitted"):
+		hit_area.hitted.connect(_on_hit_area_hit)
+	
 	# Only set if not already configured in editor
 	if ground_timer.wait_time == 0:
 		ground_timer.wait_time = pickup_delay_seconds
@@ -90,13 +127,38 @@ func _ready() -> void:
 	if hit_area.damage == 0:
 		hit_area.damage = damage
 
+## Initialize trail ghost pool — all allocation happens once at spawn
+func _init_trail_pool() -> void:
+	if not trail_enabled or not trail_texture:
+		return
+	
+	for i in range(trail_pool_size):
+		var ghost = Sprite2D.new()
+		ghost.texture = trail_texture
+		ghost.visible = false
+		ghost.z_index = z_index - 1
+		# Add to scene tree (not as child — ghosts stay in world space)
+		get_tree().current_scene.call_deferred("add_child", ghost)
+		trail_pool.append(ghost)
+
+## Cleanup trail pool when blade is destroyed
+func _exit_tree() -> void:
+	for ghost in trail_pool:
+		if is_instance_valid(ghost):
+			# Kill any running tween to prevent orphan callbacks
+			if ghost.has_meta("_trail_tween"):
+				var tween = ghost.get_meta("_trail_tween")
+				if tween and tween.is_valid():
+					tween.kill()
+			ghost.queue_free()
+	trail_pool.clear()
+
 func launch(direction: int, from_player: Player) -> void:
 	thrower = from_player
 	throw_direction = direction
 	velocity = Vector2(direction * initial_throw_speed, 0)
 	scale.x = direction
 	current_state = State.FLYING
-	trail_spawn_timer = 0
 	if GameManager.player.has_unlocked_flame_blade:
 		blade_light.enabled = true
 		_start_light_flicker()
@@ -118,7 +180,6 @@ func launch_aimed(angle: float, from_player: Player) -> void:
 	velocity = Vector2.from_angle(angle) * initial_throw_speed
 	scale.x = throw_direction
 	current_state = State.FLYING
-	trail_spawn_timer = 0
 	if GameManager.player.has_unlocked_flame_blade:
 		blade_light.enabled = true
 		_start_light_flicker()
@@ -153,7 +214,7 @@ func _update_bounced(delta: float) -> void:
 	# Safety: return blade if it's been bouncing too long or fell into void
 	bounced_time += delta
 	if bounced_time >= max_bounced_time or global_position.y > void_y_threshold:
-		_pickup_by_player()
+		_auto_return_from_void()
 		return
 	
 	var gravity = ProjectSettings.get_setting("physics/2d/default_gravity")
@@ -191,6 +252,11 @@ func _update_bounced(delta: float) -> void:
 	rotation += rotation_speed_bouncing * delta * throw_direction
 
 func _update_trail(delta: float) -> void:
+	## Object-pooled trail: crisp blade sprite ghosts with rotation
+	## No allocation, no queue_free — pool recycles automatically
+	if not trail_enabled or trail_pool.is_empty():
+		return
+	
 	var speed = velocity.length()
 	if speed < trail_minimum_speed:
 		return
@@ -198,29 +264,31 @@ func _update_trail(delta: float) -> void:
 	trail_spawn_timer -= delta
 	if trail_spawn_timer <= 0:
 		trail_spawn_timer = trail_spawn_rate
-		_spawn_trail()
+		_spawn_trail_ghost()
 
-func _spawn_trail() -> void:
-	if not trail_texture:
-		return
+func _spawn_trail_ghost() -> void:
+	## Grab next ghost from pool (circular buffer)
+	var ghost = trail_pool[trail_pool_index]
+	trail_pool_index = (trail_pool_index + 1) % trail_pool_size
 	
-	var parent = get_parent()
-	if not parent:
-		return
+	## Kill any existing tween to prevent conflicts (ghost reused before fade complete)
+	if ghost.has_meta("_trail_tween"):
+		var old_tween = ghost.get_meta("_trail_tween")
+		if old_tween and old_tween.is_valid():
+			old_tween.kill()
 	
-	var trail = Sprite2D.new()
-	trail.texture = trail_texture
-	trail.global_position = global_position
-	trail.global_rotation = global_rotation
-	trail.scale = scale
-	trail.modulate = Color(1, 1, 1, 0.6)
-	trail.z_index = z_index - 1
+	## Snapshot current blade state — this is what makes the trail look RIGHT
+	ghost.global_position = global_position
+	ghost.global_rotation = global_rotation  ## Captures spinning rotation!
+	ghost.scale = scale
+	ghost.modulate = Color(1, 1, 1, 0.6)
+	ghost.visible = true
 	
-	parent.add_child(trail)
-	
-	var tween = trail.create_tween()
-	tween.tween_property(trail, "modulate:a", 0.0, trail_ghost_fade_time)
-	tween.tween_callback(trail.queue_free)
+	## Fade out using tween (efficient — no per-frame script)
+	var tween = ghost.create_tween()
+	ghost.set_meta("_trail_tween", tween)
+	tween.tween_property(ghost, "modulate:a", 0.0, trail_ghost_fade_time)
+	tween.tween_callback(func(): ghost.visible = false)
 
 func _apply_magnetism(delta: float, pull_range: float, pull_strength: float) -> void:
 	if not magnet_enabled or not thrower:
@@ -273,7 +341,9 @@ func _update_grounded_visual(delta: float) -> void:
 		light_energy = 0.15  # Was 0.3 - still visible but subtle
 	
 	# Apply glow color with blinking brightness
-	landed_sprite.modulate = grounded_glow_color * brightness
+	# Preserve loyal blade tint by multiplying rather than overwriting
+	var base_tint = Color(0.9, 0.95, 1.0, 1.0) if is_loyal else Color.WHITE
+	landed_sprite.modulate = grounded_glow_color * brightness * base_tint
 	
 	# GPU light glow
 	if grounded_light:
@@ -340,6 +410,11 @@ func _on_area_entered(area: Area2D) -> void:
 		_pickup_by_player()
 		return
 	
+	# Water extinguishes flame blade
+	if area.is_in_group("water"):
+		extinguish()
+		return
+	
 	# Trigger interactable objects (levers, etc.) and ricochet
 	if area.is_in_group("blade_interactable"):
 		_trigger_interactable(area)
@@ -347,6 +422,11 @@ func _on_area_entered(area: Area2D) -> void:
 		# The fox threw at this lever ON PURPOSE. He knows it'll come back.
 		if current_state == State.FLYING:
 			_transition_to_ricochet()
+
+func _on_area_exited(area: Area2D) -> void:
+	# Re-ignite flame when blade leaves water
+	if area.is_in_group("water"):
+		reignite()
 
 func _trigger_interactable(area: Area2D) -> void:
 	## Activate levers and other blade-interactable objects
@@ -356,12 +436,32 @@ func _trigger_interactable(area: Area2D) -> void:
 	# Future: other interactables can be added here
 
 func _pickup_by_player() -> void:
+	## Player physically touches the blade — ALWAYS returns it to inventory.
+	## This rewards the player for actively retrieving their blade.
 	if thrower and thrower.has_method("return_blade"):
 		thrower.return_blade()
 	queue_free()
 
 func _on_ground_timer_timeout() -> void:
-	_pickup_by_player()
+	## Blade sat on ground too long without being picked up.
+	## Loyal blade: blood-bound, magically returns to the fox.
+	## Scrap blade: just metal. No magic. Lost forever if not picked up.
+	if is_loyal:
+		# The blood-bound blade finds its way back
+		if thrower and thrower.has_method("return_blade"):
+			thrower.return_blade()
+	# Scraps rust away — the fox loses this expendable blade
+	# No return_blade() call = blade count stays reduced
+	queue_free()
+
+func _auto_return_from_void() -> void:
+	## Safety net: blade fell into void or bounced too long.
+	## Only the loyal blade has the magical bond to return.
+	if is_loyal:
+		if thrower and thrower.has_method("return_blade"):
+			thrower.return_blade()
+	# Scraps lost to the void are gone forever
+	queue_free()
 	
 func _start_light_flicker():
 	if not light_flicker_enabled:
@@ -390,6 +490,79 @@ func _extinguish_light():
 	if light_flicker_tween:
 		light_flicker_tween.kill()
 
+
 	var t = create_tween()
 	t.tween_property(blade_light, "energy", 0.0, 0.1)
 	blade_light.enabled = false
+
+
+## === FLAME BLADE MECHANICS ===
+
+## Called when blade hits an enemy's HurtArea2D
+func _on_hit_area_hit(area: Area2D) -> void:
+	if not is_flame_active:
+		return
+	
+	# Find the enemy that owns this hurt area
+	var parent = area.get_parent()
+	if parent == null:
+		parent = area.owner
+	
+	# Walk up to find EnemyCharacter
+	while parent != null:
+		if parent is EnemyCharacter:
+			parent.ignite()
+			return
+		parent = parent.get_parent()
+
+## Extinguish flame when entering water (temporary, visual feedback)
+func extinguish() -> void:
+	if not is_flame_active:
+		return
+	
+	is_flame_active = false
+	fire_particles.emitting = false
+	_extinguish_light()
+	
+	# Steam hiss effect could go here (audio)
+	# AudioManager.play_sound("steam_hiss", 10.0)
+
+## Re-ignite when leaving water (if player has flame upgrade)
+func reignite() -> void:
+	if not GameManager.player.has_unlocked_flame_blade:
+		return
+	
+	is_flame_active = true
+	fire_particles.emitting = true
+	blade_light.enabled = true
+	_start_light_flicker()
+
+
+## === LOYAL BLADE VISUAL ===
+
+## Apply subtle ethereal glow to the blood-bound blade
+## Uses preloaded scene — zero runtime construction, GPU-rendered
+func _apply_loyal_visual() -> void:
+	if loyal_glow != null:
+		return  # Already applied
+	
+	# Instantiate pre-authored loyal glow from scene
+	loyal_glow = LOYAL_GLOW_SCENE.instantiate()
+	add_child(loyal_glow)
+	
+	# Subtle sprite tint to match
+	if spinning_sprite:
+		spinning_sprite.modulate = Color(0.9, 0.95, 1.0, 1.0)  # Very subtle cool tint
+	if landed_sprite:
+		landed_sprite.modulate = Color(0.9, 0.95, 1.0, 1.0)
+
+## Remove loyal visual when blade is no longer loyal (edge case)
+func _remove_loyal_visual() -> void:
+	if loyal_glow != null:
+		loyal_glow.queue_free()
+		loyal_glow = null
+	# Reset sprite tints to default
+	if spinning_sprite:
+		spinning_sprite.modulate = Color.WHITE
+	if landed_sprite:
+		landed_sprite.modulate = Color.WHITE
