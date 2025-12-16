@@ -6,6 +6,11 @@ func _enter() -> void:
 	obj.dashed_on_air = false
 
 func _update(_delta: float):
+	# Check if we're now on an ice wall - can't cling to ice!
+	if obj._is_wall_ice():
+		change_state(fsm.states.fall)
+		return
+	
 	if Input.is_action_just_pressed("jump"):
 		obj.velocity.x = -obj.direction * obj.wall_jump_force
 		obj.velocity.y = -obj.jump_speed

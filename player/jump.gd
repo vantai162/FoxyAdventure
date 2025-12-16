@@ -36,5 +36,6 @@ func _update(delta: float):
 	
 	if obj.velocity.y > 0:
 		change_state(fsm.states.fall)
-	if obj.is_on_wall_only():
+	# Wall cling: only if not on ice wall (can't grip ice!)
+	if obj.is_on_wall_only() and not obj._is_wall_ice():
 		change_state(fsm.states.wallcling)

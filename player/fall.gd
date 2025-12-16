@@ -23,7 +23,8 @@ func _update(_delta: float) -> void:
 	if obj.is_on_floor():
 		obj.jump_count=0
 		obj.dashed_on_air=false
-	if obj.is_on_wall_only():
+	# Wall cling: only if not on ice wall (can't grip ice!)
+	if obj.is_on_wall_only() and not obj._is_wall_ice():
 		fsm.change_state(fsm.states.wallcling)
 	if obj.is_in_water and obj.is_head_underwater():
 		fsm.change_state(fsm.states.swim)
