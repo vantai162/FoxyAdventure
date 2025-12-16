@@ -1,5 +1,6 @@
-[gd_scene load_steps=13 format=3 uid="uid://bequ1v0oi2sg0"]
+[gd_scene load_steps=14 format=3 uid="uid://bequ1v0oi2sg0"]
 
+[ext_resource type="Material" uid="uid://djub48p1bim43" path="res://test/levels/sublime.tres" id="1_gqvb0"]
 [ext_resource type="Script" uid="uid://dgbfaqq7nkubp" path="res://enemy/king_crab/projectiles/water_bubble.gd" id="1_qvlyp"]
 [ext_resource type="Texture2D" uid="uid://ccklqihbfkt5n" path="res://assets/king_crab/water_bubble/3.png" id="2_gqvb0"]
 [ext_resource type="Texture2D" uid="uid://bqck43wv0r14y" path="res://assets/king_crab/water_bubble/4.png" id="3_w2b42"]
@@ -55,12 +56,14 @@ radius = 22.3607
 
 [node name="WaterBubble" type="RigidBody2D"]
 z_index = 9
+material = ExtResource("1_gqvb0")
 collision_layer = 128
 collision_mask = 0
 gravity_scale = 0.0
 script = ExtResource("1_qvlyp")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+use_parent_material = true
 sprite_frames = SubResource("SpriteFrames_wmq47")
 animation = &"idle"
 

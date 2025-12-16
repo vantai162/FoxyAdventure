@@ -5834,13 +5834,13 @@ memory_title = "⭐ Memory 1 – “Lương tâm”"
 
 [node name="Door" parent="." instance=ExtResource("52_lhgvo")]
 position = Vector2(6946, 226)
-target_stage = "uid://bxknbajfocd87"
+target_stage = "uid://bqrnsq4v6ssvi"
 
 [node name="FriendlyTribe" parent="." instance=ExtResource("17_fpaxw")]
 position = Vector2(4412, 326)
 
 [node name="Foxy" parent="." instance=ExtResource("2_xeh7v")]
-position = Vector2(61, 224)
+position = Vector2(35, 243)
 
 [node name="Sign6" parent="." instance=ExtResource("5_symkc")]
 use_parent_material = true
@@ -5852,19 +5852,19 @@ position = Vector2(-104, 200)
 wind_force = Vector2(456, 0)
 
 [connection signal="area_entered" from="Layer1/Coin" to="Layer1/Coin" method="_on_area_entered"]
-[connection signal="area_entered" from="Layer1/@Area2D@23917" to="Layer1/@Area2D@23917" method="_on_area_entered"]
-[connection signal="area_entered" from="Layer1/@Area2D@23918" to="Layer1/@Area2D@23918" method="_on_area_entered"]
-[connection signal="area_entered" from="Layer1/@Area2D@23919" to="Layer1/@Area2D@23919" method="_on_area_entered"]
-[connection signal="area_entered" from="Layer1/@Area2D@23920" to="Layer1/@Area2D@23920" method="_on_area_entered"]
-[connection signal="area_entered" from="Layer1/@Area2D@23921" to="Layer1/@Area2D@23921" method="_on_area_entered"]
-[connection signal="area_entered" from="Layer1/@Area2D@23922" to="Layer1/@Area2D@23922" method="_on_area_entered"]
-[connection signal="area_entered" from="Layer1/@Area2D@23923" to="Layer1/@Area2D@23923" method="_on_area_entered"]
-[connection signal="area_entered" from="Layer1/@Area2D@23924" to="Layer1/@Area2D@23924" method="_on_area_entered"]
-[connection signal="area_entered" from="Layer1/@Area2D@23925" to="Layer1/@Area2D@23925" method="_on_area_entered"]
-[connection signal="area_entered" from="Layer1/@Area2D@23926" to="Layer1/@Area2D@23926" method="_on_area_entered"]
-[connection signal="area_entered" from="Layer1/@Area2D@23927" to="Layer1/@Area2D@23927" method="_on_area_entered"]
-[connection signal="area_entered" from="Layer1/@Area2D@23928" to="Layer1/@Area2D@23928" method="_on_area_entered"]
-[connection signal="area_entered" from="Layer1/@Area2D@23929" to="Layer1/@Area2D@23929" method="_on_area_entered"]
+[connection signal="area_entered" from="Layer1/@Area2D@28013" to="Layer1/@Area2D@28013" method="_on_area_entered"]
+[connection signal="area_entered" from="Layer1/@Area2D@28014" to="Layer1/@Area2D@28014" method="_on_area_entered"]
+[connection signal="area_entered" from="Layer1/@Area2D@28015" to="Layer1/@Area2D@28015" method="_on_area_entered"]
+[connection signal="area_entered" from="Layer1/@Area2D@28016" to="Layer1/@Area2D@28016" method="_on_area_entered"]
+[connection signal="area_entered" from="Layer1/@Area2D@28017" to="Layer1/@Area2D@28017" method="_on_area_entered"]
+[connection signal="area_entered" from="Layer1/@Area2D@28018" to="Layer1/@Area2D@28018" method="_on_area_entered"]
+[connection signal="area_entered" from="Layer1/@Area2D@28019" to="Layer1/@Area2D@28019" method="_on_area_entered"]
+[connection signal="area_entered" from="Layer1/@Area2D@28020" to="Layer1/@Area2D@28020" method="_on_area_entered"]
+[connection signal="area_entered" from="Layer1/@Area2D@28021" to="Layer1/@Area2D@28021" method="_on_area_entered"]
+[connection signal="area_entered" from="Layer1/@Area2D@28022" to="Layer1/@Area2D@28022" method="_on_area_entered"]
+[connection signal="area_entered" from="Layer1/@Area2D@28023" to="Layer1/@Area2D@28023" method="_on_area_entered"]
+[connection signal="area_entered" from="Layer1/@Area2D@28024" to="Layer1/@Area2D@28024" method="_on_area_entered"]
+[connection signal="area_entered" from="Layer1/@Area2D@28025" to="Layer1/@Area2D@28025" method="_on_area_entered"]
 [connection signal="area_entered" from="Layer1/Key" to="Layer1/Key" method="_on_area_entered"]
 [connection signal="body_entered" from="Objects/Lever" to="Objects/Gate" method="open_gate"]
 [connection signal="body_exited" from="Objects/Lever" to="Objects/Gate" method="close_gate"]
