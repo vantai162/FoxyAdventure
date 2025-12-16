@@ -102,6 +102,11 @@ const RUST_FLAKES_SCENE: PackedScene = preload("res://assets/effects/rust_flakes
 ## Flame blade state - can be extinguished by water
 var is_flame_active: bool = false
 
+## Single source of truth for which sprite is currently active
+## Prevents state desync when applying modulate/effects to the wrong sprite
+func _get_active_sprite() -> Sprite2D:
+	return landed_sprite if current_state == State.GROUNDED else spinning_sprite
+
 func _ready() -> void:
 	body_entered.connect(_on_body_entered)
 	area_entered.connect(_on_area_entered)
@@ -134,6 +139,8 @@ func _ready() -> void:
 		hit_area.damage = damage
 
 ## Initialize trail ghost pool — all allocation happens once at spawn
+## Ghosts are parented to the blade with top_level=true for world-space rendering.
+## This ensures automatic cleanup when blade is freed — no orphan risk on scene change.
 func _init_trail_pool() -> void:
 	if not trail_enabled or not trail_texture:
 		return
@@ -143,11 +150,13 @@ func _init_trail_pool() -> void:
 		ghost.texture = trail_texture
 		ghost.visible = false
 		ghost.z_index = z_index - 1
-		# Add to scene tree (not as child — ghosts stay in world space)
-		get_tree().current_scene.call_deferred("add_child", ghost)
+		ghost.top_level = true  # Renders in world space, not relative to blade
+		add_child(ghost)  # Parented to blade — freed automatically with blade
 		trail_pool.append(ghost)
 
 ## Cleanup trail pool when blade is destroyed
+## Note: With top_level parenting, ghosts are children of blade and auto-freed.
+## This explicit cleanup kills any running tweens to prevent orphan callbacks.
 func _exit_tree() -> void:
 	for ghost in trail_pool:
 		if is_instance_valid(ghost):
@@ -156,7 +165,7 @@ func _exit_tree() -> void:
 				var tween = ghost.get_meta("_trail_tween")
 				if tween and tween.is_valid():
 					tween.kill()
-			ghost.queue_free()
+			# No need to queue_free — Godot auto-frees children
 	trail_pool.clear()
 
 func launch(direction: int, from_player: Player) -> void:
@@ -327,31 +336,26 @@ func _apply_magnetism(delta: float, pull_range: float, pull_strength: float) -> 
 		velocity += pull_force * 60.0  # Scale up for velocity-based movement
 
 func _update_grounded_visual(delta: float) -> void:
-	## Blade is ~16px. Glow should be a subtle "pick me up" hint, not a beacon.
-	## Using 16px texture at 0.8 scale = 12.8px glow, energy 0.15-0.4.
+	## Blade is ~16px. The blade BREATHES while grounded — it's waiting, alive.
+	## Organic sine-wave pulse instead of casino square-wave blink.
 	if not landed_sprite.visible:
 		return
 	
-	# Blink effect with sharp on/off transitions
+	# Organic breathing pulse using sine wave
 	glow_time += delta * glow_blink_speed
-	var blink_cycle = fmod(glow_time, 1.0)  # 0 to 1 repeating cycle
+	var breath_cycle = sin(glow_time * TAU)  # -1 to 1 smooth oscillation
+	var breath_normalized = (breath_cycle + 1.0) / 2.0  # 0 to 1
 	
-	# Sharp square wave blink (50% on, 50% off)
-	var brightness: float
-	var light_energy: float
-	if blink_cycle < 0.5:
-		brightness = glow_on_brightness  # Slightly bright
-		light_energy = 0.4  # Was 1.2 - way too bright
-	else:
-		brightness = glow_off_brightness  # Normal
-		light_energy = 0.15  # Was 0.3 - still visible but subtle
+	# Smooth interpolation between dim and bright
+	var brightness = lerpf(glow_off_brightness, glow_on_brightness, breath_normalized)
+	var light_energy = lerpf(0.2, 0.5, breath_normalized)
 	
-	# Apply glow color with blinking brightness
+	# Apply glow color with breathing brightness
 	# Preserve loyal blade tint by multiplying rather than overwriting
-	var base_tint = Color(0.9, 0.95, 1.0, 1.0) if is_loyal else Color.WHITE
+	var base_tint = Color(0.8, 0.9, 1.0, 1.0) if is_loyal else Color.WHITE
 	landed_sprite.modulate = grounded_glow_color * brightness * base_tint
 	
-	# GPU light glow
+	# GPU light glow breathes with the blade
 	if grounded_light:
 		grounded_light.energy = light_energy
 
@@ -563,8 +567,12 @@ func reignite() -> void:
 
 ## === LOYAL BLADE VISUAL ===
 
-## Apply subtle ethereal glow to the blood-bound blade
+## Tween for loyal glow pulsing animation
+var loyal_pulse_tween: Tween = null
+
+## Apply ethereal glow to the blood-bound blade — this blade is SPECIAL
 ## Uses preloaded scene — zero runtime construction, GPU-rendered
+## The loyal blade pulses with life — it's connected to the fox
 func _apply_loyal_visual() -> void:
 	if loyal_glow != null:
 		return  # Already applied
@@ -573,14 +581,32 @@ func _apply_loyal_visual() -> void:
 	loyal_glow = LOYAL_GLOW_SCENE.instantiate()
 	add_child(loyal_glow)
 	
-	# Subtle sprite tint to match
+	# Start pulsing animation — the blade breathes with the fox
+	_start_loyal_pulse()
+	
+	# Visible cool tint — player should SEE this blade is different
 	if spinning_sprite:
-		spinning_sprite.modulate = Color(0.9, 0.95, 1.0, 1.0)  # Very subtle cool tint
+		spinning_sprite.modulate = Color(0.8, 0.9, 1.0, 1.0)  # Noticeable cool tint
 	if landed_sprite:
-		landed_sprite.modulate = Color(0.9, 0.95, 1.0, 1.0)
+		landed_sprite.modulate = Color(0.8, 0.9, 1.0, 1.0)
+
+## Pulsing glow — the loyal blade is alive, connected to its master
+func _start_loyal_pulse() -> void:
+	if loyal_glow == null:
+		return
+	
+	if loyal_pulse_tween:
+		loyal_pulse_tween.kill()
+	
+	loyal_pulse_tween = create_tween().set_loops()
+	loyal_pulse_tween.tween_property(loyal_glow, "energy", 0.9, 0.6).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+	loyal_pulse_tween.tween_property(loyal_glow, "energy", 0.5, 0.6).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
 
 ## Remove loyal visual when blade is no longer loyal (edge case)
 func _remove_loyal_visual() -> void:
+	if loyal_pulse_tween:
+		loyal_pulse_tween.kill()
+		loyal_pulse_tween = null
 	if loyal_glow != null:
 		loyal_glow.queue_free()
 		loyal_glow = null
@@ -632,7 +658,7 @@ func _spawn_landing_feedback() -> void:
 ## Pickup: Flash white, shrink to nothing, satisfying "got it" feel
 func _flash_and_shrink() -> void:
 	# Flash to white
-	var active_sprite = landed_sprite if landed_sprite.visible else spinning_sprite
+	var active_sprite = _get_active_sprite()
 	var original_modulate = active_sprite.modulate
 	active_sprite.modulate = Color(2.5, 2.5, 2.5, 1.0)  # Bright flash
 	
@@ -647,22 +673,29 @@ func _flash_and_shrink() -> void:
 
 ## Loss: Blade rusts, sad ting, flakes drift away
 func _rust_and_fade() -> void:
-	# Sad hollow sound
+	# Sad hollow sound — the blade is dying
 	AudioManager.play_sound("blade_lost", 10.0)
 	
-	# Spawn rust flakes
+	# Spawn rust flakes — they linger, a ghost of what was
 	var rust = RUST_FLAKES_SCENE.instantiate()
 	rust.global_position = global_position
 	rust.emitting = true
 	get_tree().current_scene.add_child(rust)
-	get_tree().create_timer(0.8).timeout.connect(rust.queue_free)
+	get_tree().create_timer(1.2).timeout.connect(rust.queue_free)  # Longer linger
 	
-	# Blade turns rust-brown and shrinks
-	var active_sprite = landed_sprite if landed_sprite.visible else spinning_sprite
+	# Blade turns rust-brown and fades — let the loss BREATHE
+	var active_sprite = _get_active_sprite()
 	var tween = create_tween()
+	
+	# First: a brief shudder — the blade tries to resist
+	tween.tween_property(self, "rotation", rotation + 0.1, 0.08)
+	tween.tween_property(self, "rotation", rotation - 0.1, 0.08)
+	tween.tween_property(self, "rotation", rotation, 0.06)
+	
+	# Then: slow, mournful fade and shrink
 	tween.set_parallel(true)
-	tween.tween_property(active_sprite, "modulate", Color(0.5, 0.3, 0.2, 0.0), 0.4)
-	tween.tween_property(self, "scale", scale * 0.3, 0.4).set_ease(Tween.EASE_IN)
+	tween.tween_property(active_sprite, "modulate", Color(0.5, 0.3, 0.2, 0.0), 0.6).set_ease(Tween.EASE_IN)
+	tween.tween_property(self, "scale", scale * 0.2, 0.6).set_ease(Tween.EASE_IN_OUT)
 	
 	# Disable glow during fade
 	if grounded_light:
@@ -683,7 +716,7 @@ func _spawn_steam_burst() -> void:
 
 ## Flash sprite: Quick white flash for impact moments
 func _flash_sprite() -> void:
-	var active_sprite = spinning_sprite if spinning_sprite.visible else landed_sprite
+	var active_sprite = _get_active_sprite()
 	var original_modulate = active_sprite.modulate
 	
 	# Flash to bright white

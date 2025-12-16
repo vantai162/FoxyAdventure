@@ -2,15 +2,20 @@ extends Player_State
 
 var ghost_interval: float = 0.05
 var ghost_timer: float = 0.0
+var active_ghosts: Array[Sprite2D] = []  ## Track active ghosts for cleanup
 
 func _enter():
 	super._enter()
+	_cleanup_ghosts()  # Clear any lingering ghosts from previous dash
 	obj.change_animation("run")
 	AudioManager.play_sound("player_dash",20.0)
 	obj.velocity.x = obj.dash_speed * obj.direction
 	obj.velocity.y = 0
 	timer = obj.dash_duration
 	obj.Effect["Invicibility"] = obj.dash_duration
+
+func _exit():
+	_cleanup_ghosts()  # Clean up ghosts when leaving dash state
 
 func _update(delta: float):
 	obj.velocity.x = obj.dash_speed * obj.direction
@@ -25,6 +30,13 @@ func _update(delta: float):
 		change_state(fsm.states.fall)
 	if obj.is_on_wall_only():
 		fsm.change_state(fsm.states.wallcling)
+
+## Clean up any active ghost sprites to prevent orphans
+func _cleanup_ghosts() -> void:
+	for ghost in active_ghosts:
+		if is_instance_valid(ghost):
+			ghost.queue_free()
+	active_ghosts.clear()
 
 func create_ghost_trail():
 	# Use the player's current active sprite (normal or blade)
@@ -45,10 +57,14 @@ func create_ghost_trail():
 	ghost.modulate = Color(1, 1, 1, 0.4)
 	ghost.z_index = ZLayers.EFFECT_BEHIND  # Ghost trails behind player
 	
-	# Add to the scene root so it doesn't move with the player
-	get_tree().root.add_child(ghost)
+	# Parent to current scene (not root) — freed on scene change
+	get_tree().current_scene.add_child(ghost)
+	active_ghosts.append(ghost)
 	
-	# Fade out and delete
-	var tween = create_tween()
-	tween.tween_property(ghost, "modulate:a", 0.0, 1)
-	tween.tween_callback(ghost.queue_free)
+	# Fade out and delete — tween owned by GHOST for lifecycle safety
+	var tween = ghost.create_tween()
+	tween.tween_property(ghost, "modulate:a", 0.0, 0.3)  # Faster fade (0.3s vs 1s)
+	tween.tween_callback(func():
+		active_ghosts.erase(ghost)
+		ghost.queue_free()
+	)
