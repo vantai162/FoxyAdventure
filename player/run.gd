@@ -31,8 +31,10 @@ func _update(delta: float):
 
 	if not obj.is_on_floor():
 		change_state(fsm.states.fall)
-	# Wall cling: only if not on ice wall (can't grip ice!)
+	# Wall cling: only if not on ice wall AND player is actively pressing toward wall
+	# This implements "active" wall cling - no input = just fall past the wall
 	if obj.is_on_wall_only() and not obj._is_wall_ice():
-		change_state(fsm.states.wallcling)
+		if not obj.wall_cling_requires_input or obj.is_pressing_toward_wall():
+			change_state(fsm.states.wallcling)
 	if obj.is_in_water and obj.is_head_underwater():
 		change_state(fsm.states.swim)

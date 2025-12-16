@@ -28,9 +28,11 @@ func _update(delta: float):
 		obj.set_cool_down("Dash")
 		## Tin fix chỗ này lại tí nếu có lỗi thì báo lại XDXD
 		change_state(fsm.states.fall)
-	# Wall cling: only if not on ice wall (can't grip ice!)
+	# Wall cling: only if not on ice wall AND player is actively pressing toward wall
+	# This implements "active" wall cling - no input = just fall past the wall
 	if obj.is_on_wall_only() and not obj._is_wall_ice():
-		fsm.change_state(fsm.states.wallcling)
+		if not obj.wall_cling_requires_input or obj.is_pressing_toward_wall():
+			fsm.change_state(fsm.states.wallcling)
 
 ## Clean up any active ghost sprites to prevent orphans
 func _cleanup_ghosts() -> void:

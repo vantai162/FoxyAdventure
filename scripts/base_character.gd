@@ -268,6 +268,46 @@ func _is_on_one_way_platform():
 	if collider.is_in_group("one_way_platform"):
 		return true
 	return collider.name == "OneWayPlatform"
+
+## ============================================================================
+## WALL CLING INPUT CHECK (Used by state transitions)
+## ============================================================================
+## Checks if the player is actively pressing TOWARD the wall they're touching.
+## This is the gatekeeper for "active" wall cling - no input toward wall = no cling.
+
+func is_pressing_toward_wall() -> bool:
+	## Returns true if player is pressing input toward the wall they're touching
+	## Used by state transitions to require active input for wall cling entry
+	
+	if not is_on_wall():
+		return false
+	
+	# Detect wall direction from collision
+	var wall_dir: int = 0
+	for i in get_slide_collision_count():
+		var collision = get_slide_collision(i)
+		var normal = collision.get_normal()
+		
+		# Horizontal collision = wall
+		if abs(normal.x) > 0.5:
+			# Wall normal points AWAY from wall
+			# normal.x > 0 → wall is to the LEFT → wall_dir = -1
+			# normal.x < 0 → wall is to the RIGHT → wall_dir = 1
+			wall_dir = -int(sign(normal.x))
+			break
+	
+	if wall_dir == 0:
+		return false
+	
+	# Check input direction
+	var input_dir = Input.get_action_strength("right") - Input.get_action_strength("left")
+	
+	# Need meaningful input
+	if abs(input_dir) < 0.1:
+		return false
+	
+	# Input direction must match wall direction
+	return sign(input_dir) == wall_dir
 	
 
 func spring():

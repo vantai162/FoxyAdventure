@@ -15,11 +15,20 @@ var skin
 @export var slow_effect_multiplier: float = 0.5  ## Speed multiplier when slow effect is active
 @export var wind_influence_factor: float = 0.1  ## How quickly player adjusts to wind when not moving
 
-@export_group("Wall Jump")
+@export_group("Wall Jump & Cling")
 @export var wall_jump_force: float = 100.0
 @export var wall_jump_control_delay: float = 0.15
 @export var wall_jump_control_fade_duration: float = 0.4
-@export var wall_slide_friction: float = 0.3
+
+## Wall Cling - 3-Phase Accelerating Slide System
+## The player must hold TOWARD the wall to initiate and maintain cling.
+## Releasing input = immediate fall. No more "AFK wall cling".
+@export var wall_cling_requires_input: bool = true  ## If true, must hold toward wall to cling
+@export var wall_grip_phase_duration: float = 0.4  ## Duration of firm grip (near-zero slide)
+@export var wall_fatigue_phase_duration: float = 0.8  ## Duration of accelerating slide before slip
+@export var wall_initial_slide_speed: float = 15.0  ## Slide speed at end of grip phase
+@export var wall_max_slide_speed: float = 200.0  ## Terminal slide velocity (slip phase)
+@export var wall_grip_slide_speed: float = 5.0  ## Very slow slide during grip phase
 
 @export_group("Abilities")
 @export var dash_speed: float = 400.0
