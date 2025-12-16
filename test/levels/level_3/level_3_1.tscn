@@ -327,6 +327,7 @@ orientation = 2
 [node name="water" parent="WaterZones" instance=ExtResource("3_is5y3")]
 position = Vector2(165, 2166)
 water_size = Vector2(1126, 165)
+render_as_background = false
 emit_light = true
 
 [node name="Whirlpool" parent="WaterZones" instance=ExtResource("4_vnnrn")]
@@ -660,7 +661,7 @@ position = Vector2(357, 114)
 position = Vector2(373, 114)
 
 [connection signal="area_entered" from="Terrain/TileMapLayer/HealthPotion" to="Terrain/TileMapLayer/HealthPotion" method="_on_area_entered"]
-[connection signal="area_entered" from="Terrain/TileMapLayer/@Area2D@57890" to="Terrain/TileMapLayer/@Area2D@57890" method="_on_area_entered"]
-[connection signal="area_entered" from="Terrain/TileMapLayer/@Area2D@57891" to="Terrain/TileMapLayer/@Area2D@57891" method="_on_area_entered"]
+[connection signal="area_entered" from="Terrain/TileMapLayer/@Area2D@83794" to="Terrain/TileMapLayer/@Area2D@83794" method="_on_area_entered"]
+[connection signal="area_entered" from="Terrain/TileMapLayer/@Area2D@83795" to="Terrain/TileMapLayer/@Area2D@83795" method="_on_area_entered"]
 
 [editable path="Platforms/MovingPlatform1"]
