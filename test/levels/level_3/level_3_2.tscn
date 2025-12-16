@@ -90,7 +90,6 @@ grow_horizontal = 1
 grow_vertical = 1
 
 [node name="DarknessModulate" type="CanvasModulate" parent="."]
-visible = false
 color = Color(0.1, 0.08, 0.12, 1)
 
 [node name="PlayerSpawn" type="Marker2D" parent="."]
@@ -115,7 +114,6 @@ tile_map_data = PackedByteArray("AAAAAAAAAAACAAYAAAAAAAEAAAACAAYAAAAAAAIAAAACAAY
 tile_set = ExtResource("2_ob2gj")
 
 [node name="Platforms" type="Node2D" parent="."]
-visible = false
 
 [node name="MovingPlatform1" parent="Platforms" instance=ExtResource("26_moving")]
 position = Vector2(744, 918)
@@ -536,7 +534,6 @@ crystal_type = 2
 color_preset = 4
 
 [node name="Objects" type="Node2D" parent="."]
-visible = false
 
 [node name="ExitZone" type="Node2D" parent="."]
 

@@ -471,6 +471,15 @@ var debug_interval: float = 1.0
 func _ready() -> void:
 	for i in get_children():
 		i.queue_free()
+	
+	# Clear stale references before rebuild
+	surface_line = null
+	fill_polygon = null
+	water_area = null
+	water_collision_shape = null
+	_water_lights.clear()
+	_splash_droplets.clear()
+	
 	segment_data.clear()
 	segment_rest_height.clear()
 	_boat_depression_offsets.clear()
@@ -741,9 +750,18 @@ func _initiate_water() -> void:
 	
 	var new_collisionshape : CollisionShape2D = CollisionShape2D.new()
 	var new_shape: RectangleShape2D = RectangleShape2D.new()
-	new_shape.size = water_size
-	new_collisionshape.shape = new_shape
-	new_collisionshape.position = water_size / 2.0 + Vector2(0, surface_pos_y / 2.0)
+	# Calculate actual water height based on surface position (respects start_empty)
+	var actual_water_height = water_size.y - surface_pos_y
+	if actual_water_height > 0:
+		new_shape.size = Vector2(water_size.x, actual_water_height)
+		new_collisionshape.shape = new_shape
+		new_collisionshape.position = Vector2(water_size.x / 2.0, surface_pos_y + actual_water_height / 2.0)
+	else:
+		# Pool is empty - create minimal collision that will be resized when water fills
+		new_shape.size = Vector2(water_size.x, 1.0)
+		new_collisionshape.shape = new_shape
+		new_collisionshape.position = Vector2(water_size.x / 2.0, water_size.y)
+		new_collisionshape.disabled = true  # Disable until pool fills
 	new_area.add_child(new_collisionshape)
 	water_collision_shape = new_collisionshape  # Store reference
 	
@@ -1073,10 +1091,14 @@ func _update_collision_shape() -> void:
 	
 	# Calculate new size: from bottom (water_size.y) to current visual surface
 	var new_height = water_size.y - avg_surface_height  # Total height from surface to bottom
-	shape.size = Vector2(water_size.x, max(new_height, 1.0))  # Ensure positive height
-	
-	var center_y = avg_surface_height + new_height / 2.0
-	water_collision_shape.position = Vector2(water_size.x / 2.0, center_y)
+	if new_height > 0:
+		shape.size = Vector2(water_size.x, new_height)
+		var center_y = avg_surface_height + new_height / 2.0
+		water_collision_shape.position = Vector2(water_size.x / 2.0, center_y)
+		water_collision_shape.disabled = false  # Enable collision when there's water
+	else:
+		# Fully drained - disable collision
+		water_collision_shape.disabled = true
 
 ## Water level control for boss fights and scripted events
 func raise_water(target_height: float, duration: float = 2.0) -> void:
