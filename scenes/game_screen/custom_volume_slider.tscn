@@ -1,0 +1,156 @@
+[gd_scene load_steps=2 format=3 uid="uid://p2e5infcvjaq"]
+
+[sub_resource type="GDScript" id="GDScript_l3or6"]
+script/source = "# custom_volume_slider.gd
+extends Control
+
+# Exported variables - có thể chỉnh trong Inspector
+@export var min_value: float = 0
+@export var max_value: float = 100
+@export var value: float = 50
+@export var tick_count: int = 7  # Số vạch chia
+
+# Màu sắc - tùy chỉnh để giống hình của bạn
+@export var bg_color: Color = Color(\"#8B4444\")  # Màu nền đỏ nâu
+@export var fill_color: Color = Color(\"#D98C8C\")  # Màu fill đỏ sáng
+@export var grabber_color: Color = Color(\"#FFFFFF\")  # Nút trắng
+@export var border_color: Color = Color(\"#5A2F2F\")  # Viền tối
+@export var tick_color: Color = Color(\"#6B3838\")  # Màu vạch chia
+
+signal value_changed(new_value: float)
+
+var dragging := false
+var slider_rect: Rect2
+var grabber_radius := 14.0
+
+func _ready():
+	custom_minimum_size = Vector2(220, 44)
+	mouse_filter = Control.MOUSE_FILTER_STOP
+
+func _draw():
+	var size = get_size()
+	var center_y = size.y / 2
+	var slider_height = 16
+	var slider_y = center_y - slider_height / 2
+	
+	# Tính toán vị trí slider với padding cho grabber
+	var padding = grabber_radius + 6
+	var slider_width = size.x - padding * 2
+	slider_rect = Rect2(padding, slider_y, slider_width, slider_height)
+	
+	# === 1. VẼ VIỀN NGOÀI (Border) ===
+	var border_rect = Rect2(slider_rect.position - Vector2(2, 2), 
+		slider_rect.size + Vector2(4, 4))
+	draw_rect(border_rect, border_color, true, 3)
+	
+	# === 2. VẼ THANH NỀN (Background) ===
+	draw_rect(slider_rect, bg_color, true, 3)
+	
+	# Thêm shadow nhẹ cho thanh nền (depth)
+	var shadow_rect = Rect2(slider_rect.position + Vector2(0, 1), 
+		Vector2(slider_rect.size.x, 2))
+	draw_rect(shadow_rect, Color(0, 0, 0, 0.2), true)
+	
+	# === 3. VẼ CÁC VẠCH CHIA (Ticks) ===
+	if tick_count > 0:
+		for i in range(tick_count + 1):
+			var tick_x = padding + (slider_width / tick_count) * i
+			var tick_height = 10
+			var tick_y1 = center_y - tick_height / 2
+			var tick_y2 = center_y + tick_height / 2
+			draw_line(Vector2(tick_x, tick_y1), Vector2(tick_x, tick_y2), 
+				tick_color, 2, true)
+	
+	# === 4. VẼ THANH FILL (Progress) ===
+	var fill_percent = (value - min_value) / (max_value - min_value)
+	var fill_width = slider_width * fill_percent
+	if fill_width > 4:  # Chỉ vẽ nếu đủ rộng
+		var fill_rect = Rect2(slider_rect.position, Vector2(fill_width, slider_height))
+		draw_rect(fill_rect, fill_color, true, 3)
+		
+		# Thêm highlight cho fill (làm sáng hơn)
+		var highlight_rect = Rect2(fill_rect.position + Vector2(0, 2), 
+			Vector2(fill_rect.size.x, 4))
+		draw_rect(highlight_rect, Color(1, 1, 1, 0.2), true)
+	
+	# === 5. VẼ GRABBER (Nút tròn) ===
+	var grabber_x = padding + slider_width * fill_percent
+	var grabber_pos = Vector2(grabber_x, center_y)
+	
+	# Shadow của grabber (depth)
+	draw_circle(grabber_pos + Vector2(1, 2), grabber_radius + 1, 
+		Color(0, 0, 0, 0.35))
+	
+	# Viền ngoài grabber (dark border)
+	draw_circle(grabber_pos, grabber_radius + 2, border_color)
+	
+	# Nút grabber chính (trắng)
+	draw_circle(grabber_pos, grabber_radius, grabber_color)
+	
+	# Viền mỏng bên trong (subtle detail)
+	draw_arc(grabber_pos, grabber_radius - 1, 0, TAU, 32, 
+		Color(0.9, 0.9, 0.9), 1, true)
+	
+	# Highlight trên grabber (3D effect)
+	var highlight_offset = Vector2(-4, -4)
+	draw_circle(grabber_pos + highlight_offset, 5, Color(1, 1, 1, 0.7))
+	draw_circle(grabber_pos + highlight_offset, 3, Color(1, 1, 1, 0.4))
+
+func _gui_input(event: InputEvent):
+	if event is InputEventMouseButton:
+		if event.button_index == MOUSE_BUTTON_LEFT:
+			if event.pressed:
+				# Kiểm tra click vào vùng slider
+				if is_mouse_in_slider_area(event.position):
+					dragging = true
+					update_value_from_mouse(event.position)
+					accept_event()
+			else:
+				dragging = false
+	
+	elif event is InputEventMouseMotion:
+		if dragging:
+			update_value_from_mouse(event.position)
+			accept_event()
+
+func is_mouse_in_slider_area(mouse_pos: Vector2) -> bool:
+	# Mở rộng vùng click để dễ tương tác hơn
+	var expanded_rect = slider_rect.grow(10)
+	return expanded_rect.has_point(mouse_pos)
+
+func update_value_from_mouse(mouse_pos: Vector2):
+	var padding = grabber_radius + 6
+	var slider_width = get_size().x - padding * 2
+	var local_x = mouse_pos.x - padding
+	var percent = clamp(local_x / slider_width, 0.0, 1.0)
+	
+	var new_value = min_value + (max_value - min_value) * percent
+	
+	# Làm tròn để tránh giá trị lẻ
+	new_value = round(new_value)
+	
+	if new_value != value:
+		value = new_value
+		queue_redraw()
+		value_changed.emit(value)
+
+func set_value(new_value: float):
+	var clamped = clamp(new_value, min_value, max_value)
+	if clamped != value:
+		value = clamped
+		queue_redraw()
+
+func get_value() -> float:
+	return value
+
+# Hàm tiện ích để set từ ngoài
+func set_range(new_min: float, new_max: float):
+	min_value = new_min
+	max_value = new_max
+	value = clamp(value, min_value, max_value)
+	queue_redraw()"
+
+[node name="CustomVolumeSlider" type="Control"]
+layout_mode = 3
+anchors_preset = 0
+script = SubResource("GDScript_l3or6")

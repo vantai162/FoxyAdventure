@@ -1,8 +1,7 @@
-[gd_scene load_steps=18 format=4 uid="uid://b5mowcfymabkv"]
+[gd_scene load_steps=17 format=4 uid="uid://b5mowcfymabkv"]
 
 [ext_resource type="TileSet" uid="uid://bmuxyu21ya31y" path="res://assets/tileset.tres" id="1_18vte"]
 [ext_resource type="PackedScene" uid="uid://dm741hii7d5nv" path="res://scenes/game_screen/health_bar.tscn" id="1_foqxb"]
-[ext_resource type="PackedScene" uid="uid://demnh2f4ooy6n" path="res://objects/platform/floating_boat_platform.tscn" id="2_boat"]
 [ext_resource type="PackedScene" uid="uid://k1cvcu80rfmm" path="res://scenes/game_screen/coin_ui.tscn" id="2_l5ucy"]
 [ext_resource type="PackedScene" uid="uid://cstfpndmrkms3" path="res://scenes/game_screen/key_ui.tscn" id="3_d1ish"]
 [ext_resource type="PackedScene" uid="uid://bs816w0pr8all" path="res://player/foxy.tscn" id="4_player"]
@@ -11,12 +10,11 @@
 [ext_resource type="Texture2D" uid="uid://hlp52x3tx5we" path="res://assets/GandalfHardcore FREE Platformer Assets/GandalfHardcore FREE Platformer Assets/GandalfHardcore Background layers/Normal BG/GandalfHardcore Background layers_layer 5.png" id="12_p1j52"]
 [ext_resource type="Texture2D" uid="uid://dmxq75c4jh82u" path="res://assets/GandalfHardcore FREE Platformer Assets/GandalfHardcore FREE Platformer Assets/GandalfHardcore Background layers/Normal BG/GandalfHardcore Background layers_layer 4.png" id="13_rups3"]
 [ext_resource type="Texture2D" uid="uid://danqmrply2lgh" path="res://assets/GandalfHardcore FREE Platformer Assets/GandalfHardcore FREE Platformer Assets/GandalfHardcore Background layers/Normal BG/GandalfHardcore Background layers_layer 3.png" id="14_lk4yk"]
+[ext_resource type="PackedScene" uid="uid://ctmgnaqjtpp40" path="res://enemy/king_crab/king_crab.tscn" id="14_p1j52"]
 [ext_resource type="Texture2D" uid="uid://bk77qlt12fa3j" path="res://assets/GandalfHardcore FREE Platformer Assets/GandalfHardcore FREE Platformer Assets/GandalfHardcore Background layers/Normal BG/GandalfHardcore Background layers_layer 2.png" id="15_tku26"]
 [ext_resource type="Texture2D" uid="uid://bptbd831rvqdf" path="res://assets/GandalfHardcore FREE Platformer Assets/GandalfHardcore FREE Platformer Assets/GandalfHardcore Background layers/Normal BG/GandalfHardcore Background layers_layer 1.png" id="16_8n78o"]
 [ext_resource type="Texture2D" uid="uid://bw70fwjf0c3y2" path="res://assets/GandalfHardcore FREE Platformer Assets/GandalfHardcore FREE Platformer Assets/cloud3.png" id="17_kuu5a"]
 [ext_resource type="PackedScene" uid="uid://bg3bfewcihuv0" path="res://objects/sign/sign.tscn" id="17_p1j52"]
-[ext_resource type="PackedScene" uid="uid://dl6sw76ff5y3a" path="res://spawner/turtle_spawner.tscn" id="18_rups3"]
-[ext_resource type="PackedScene" uid="uid://um44lmp2s6eq" path="res://spawner/healthpotion_spawner.tscn" id="19_lk4yk"]
 [ext_resource type="PackedScene" uid="uid://dy2go6q81lmqg" path="res://effect_Item/TrapCoin/trap_coin.tscn" id="19_tku26"]
 
 [node name="WhirlpoolTest" type="Node2D"]
@@ -46,15 +44,6 @@ tile_set = ExtResource("1_18vte")
 position = Vector2(27, 100)
 attack_damage = 3
 max_health = 30
-
-[node name="FloatingBoatPlatform" parent="." instance=ExtResource("2_boat")]
-position = Vector2(-259, 114)
-
-[node name="FloatingBoatPlatform2" parent="." instance=ExtResource("2_boat")]
-position = Vector2(-21, 116)
-
-[node name="FloatingBoatPlatform3" parent="." instance=ExtResource("2_boat")]
-position = Vector2(359, 120)
 
 [node name="Blade" parent="." instance=ExtResource("6_m1dob")]
 position = Vector2(-40, -418)
@@ -123,8 +112,9 @@ autoplay = true
 [node name="Node2D" type="Node2D" parent="." groups=["coconut_tree"]]
 position = Vector2(-59, -104)
 
-[node name="KingCrab" parent="." instance=ExtResource("19_tku26")]
-position = Vector2(-205, 124)
-
 [node name="TrapCoin" parent="." instance=ExtResource("19_tku26")]
 position = Vector2(138, 103)
+
+[node name="KingCrab" parent="." instance=ExtResource("14_p1j52")]
+z_index = 8
+position = Vector2(-320, 94)

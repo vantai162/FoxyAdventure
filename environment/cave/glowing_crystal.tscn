@@ -1,7 +1,7 @@
 [gd_scene load_steps=3 format=3 uid="uid://cqjqdbyd7mqfr"]
 
 [ext_resource type="Script" uid="uid://dxyyl80bbof3c" path="res://environment/cave/glowing_crystal.gd" id="1_crystal"]
-[ext_resource type="Texture2D" uid="uid://csoft_radial_light" path="res://assets/effects/soft_radial_light.tres" id="2_glow"]
+[ext_resource type="Texture2D" uid="uid://bodwtyoud2741" path="res://assets/effects/soft_radial_light.tres" id="2_glow"]
 
 [node name="GlowingCrystal" type="Node2D"]
 z_index = 20
