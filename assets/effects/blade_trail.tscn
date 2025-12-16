@@ -30,6 +30,7 @@ scale_curve = SubResource("CurveTexture_scale")
 color_ramp = SubResource("GradientTexture1D_fade")
 
 [node name="BladeTrail" type="GPUParticles2D"]
+z_index = 8
 material = SubResource("CanvasItemMaterial_trail")
 emitting = false
 amount = 20

@@ -54,6 +54,7 @@ animations = [{
 }]
 
 [node name="RicochetSparks" type="AnimatedSprite2D"]
+z_index = 25
 scale = Vector2(0.5, 0.5)
 sprite_frames = SubResource("SpriteFrames_sparks")
 animation = &"spark"

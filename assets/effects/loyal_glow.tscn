@@ -12,6 +12,7 @@ fill_from = Vector2(0.5, 0.5)
 fill_to = Vector2(0.5, 0)
 
 [node name="LoyalGlow" type="PointLight2D"]
+z_index = 20
 color = Color(0.6, 0.8, 1, 1)
 energy = 0.7
 blend_mode = 1
