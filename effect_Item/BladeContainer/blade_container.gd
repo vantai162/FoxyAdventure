@@ -45,6 +45,10 @@ func _process(delta: float) -> void:
 func _on_area_entered(area: Area2D) -> void:
 	var parent = area.get_parent()
 	if parent is Player:
+		# Can't pick up if already at max capacity
+		if not parent.can_upgrade_blade_capacity():
+			return
+		
 		# Collection effect - satisfying but not blinding
 		var tween = create_tween().set_parallel(true)
 		if blade_sprite:
@@ -55,6 +59,9 @@ func _on_area_entered(area: Area2D) -> void:
 			tween.tween_property(container_ring, "modulate:a", 0.0, 0.3)
 		if item_glow:
 			tween.tween_property(item_glow, "energy", 0.8, 0.15)  # Was 2.5 - flashbang
+		
+		# Audio feedback — this is an upgrade, should sound special
+		AudioManager.play_sound("power_up", 12.0)
 		
 		parent.increase_blade_capacity()
 		

@@ -77,6 +77,11 @@ func _on_area_entered(area: Area2D) -> void:
 
 	var parent = area.get_parent()
 	if parent is Player:
+		# Check if player can actually collect this blade (has room)
+		# If full, leave the blade alone — don't vanish it
+		if not parent.can_collect_blade():
+			return
+		
 		is_collected = true
 		
 		# Collection effect: quick spin + shrink
@@ -89,9 +94,13 @@ func _on_area_entered(area: Area2D) -> void:
 			tween.tween_property(_glow, "energy", 0.6, 0.1)  # Was 2.0 - too bright
 			tween.chain().tween_property(_glow, "energy", 0.0, 0.1)
 		
-		# Give blade to player
+		# Give blade to player (false = NOT an upgrade, just filling a slot)
+		# true would increase max capacity, which is wrong for a scrap pickup
 		if parent.has_method("_collect_blade"):
-			parent._collect_blade(true)
+			parent._collect_blade(false)
+		
+		# Audio feedback
+		AudioManager.play_sound("coin_collected", 10.0)
 		
 		await tween.finished
 		queue_free()

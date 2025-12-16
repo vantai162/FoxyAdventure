@@ -1,0 +1,20 @@
+[gd_scene load_steps=3 format=3 uid="uid://loyal_glow_fx"]
+
+[sub_resource type="Gradient" id="Gradient_loyal"]
+colors = PackedColorArray(1, 1, 1, 1, 1, 1, 1, 0)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_loyal"]
+gradient = SubResource("Gradient_loyal")
+width = 16
+height = 16
+fill = 1
+fill_from = Vector2(0.5, 0.5)
+fill_to = Vector2(0.5, 0)
+
+[node name="LoyalGlow" type="PointLight2D"]
+z_index = 20
+color = Color(0.6, 0.8, 1, 1)
+energy = 0.7
+blend_mode = 1
+texture = SubResource("GradientTexture2D_loyal")
+texture_scale = 0.8

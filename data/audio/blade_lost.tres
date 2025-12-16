@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="AudioClip" load_steps=3 format=3 uid="uid://blade_lost_001"]
+
+[ext_resource type="Script" uid="uid://chlphbiuq1gay" path="res://scripts/audio/audio_clip.gd" id="1_clip"]
+[ext_resource type="AudioStream" uid="uid://g5vvqhw7d3xp" path="res://assets/sounds/coin.wav" id="2_stream"]
+
+[resource]
+script = ExtResource("1_clip")
+clip_id = "blade_lost"
+stream = ExtResource("2_stream")
+volume_db = -8.0
+randomize_pitch = false
+pitch_min = 0.35
+pitch_max = 0.45
+description = "Hollow sad ting when expendable blade expires"
+metadata/_custom_type_script = "uid://chlphbiuq1gay"

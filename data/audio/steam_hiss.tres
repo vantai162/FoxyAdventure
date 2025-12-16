@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="AudioClip" load_steps=3 format=3 uid="uid://steam_hiss_001"]
+
+[ext_resource type="Script" uid="uid://chlphbiuq1gay" path="res://scripts/audio/audio_clip.gd" id="1_clip"]
+[ext_resource type="AudioStream" uid="uid://cxk5s8kf1w8kd" path="res://assets/sounds/dash.wav" id="2_stream"]
+
+[resource]
+script = ExtResource("1_clip")
+clip_id = "steam_hiss"
+stream = ExtResource("2_stream")
+volume_db = -4.0
+randomize_pitch = true
+pitch_min = 1.4
+pitch_max = 1.8
+description = "Steam hiss when flame blade enters water"
+metadata/_custom_type_script = "uid://chlphbiuq1gay"

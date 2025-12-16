@@ -302,12 +302,11 @@ air_slash_spawn_delay = 0.1
 swim_acceleration = 0.36
 blade_projectile_scene = ExtResource("3_blade")
 air_slash_scene = ExtResource("3_6e2ll")
-max_health = 4
+max_health = 300
 metadata/_custom_type_script = "uid://w7xdmsdvf5vd"
 
 [node name="Camera2D" type="Camera2D" parent="."]
 zoom = Vector2(2, 2)
-limit_bottom = 500
 script = ExtResource("2_rsc2w")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]

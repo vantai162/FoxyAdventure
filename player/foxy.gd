@@ -15,11 +15,20 @@ var skin
 @export var slow_effect_multiplier: float = 0.5  ## Speed multiplier when slow effect is active
 @export var wind_influence_factor: float = 0.1  ## How quickly player adjusts to wind when not moving
 
-@export_group("Wall Jump")
+@export_group("Wall Jump & Cling")
 @export var wall_jump_force: float = 100.0
 @export var wall_jump_control_delay: float = 0.15
 @export var wall_jump_control_fade_duration: float = 0.4
-@export var wall_slide_friction: float = 0.3
+
+## Wall Cling - 3-Phase Accelerating Slide System
+## The player must hold TOWARD the wall to initiate and maintain cling.
+## Releasing input = immediate fall. No more "AFK wall cling".
+@export var wall_cling_requires_input: bool = true  ## If true, must hold toward wall to cling
+@export var wall_grip_phase_duration: float = 0.4  ## Duration of firm grip (near-zero slide)
+@export var wall_fatigue_phase_duration: float = 0.8  ## Duration of accelerating slide before slip
+@export var wall_initial_slide_speed: float = 15.0  ## Slide speed at end of grip phase
+@export var wall_max_slide_speed: float = 200.0  ## Terminal slide velocity (slip phase)
+@export var wall_grip_slide_speed: float = 5.0  ## Very slow slide during grip phase
 
 @export_group("Abilities")
 @export var dash_speed: float = 400.0
@@ -80,8 +89,25 @@ signal max_health_changed
 @export var air_slash_scene: PackedScene
 @export var has_unlocked_flame_blade: bool = false
 var blade_count: int = 0
-var max_blade_capacity: int = 1
+var max_blade_capacity: int = 3
+
+## === BLADE CAPACITY SYSTEM ===
+## Fox naturally carries up to 3 blades.
+## BladeContainers add extra holster slots (max 3 containers = +3 slots).
+## Absolute maximum: 3 (natural) + 3 (containers) = 6 blades.
+const NATURAL_BLADE_CAPACITY: int = 3
+const MAX_CONTAINER_UPGRADES: int = 3
+const ABSOLUTE_MAX_CAPACITY: int = NATURAL_BLADE_CAPACITY + MAX_CONTAINER_UPGRADES  ## 6
+
 var has_unlocked_blade: bool = false
+
+## === BLADE LOYALTY SYSTEM ===
+## The fox's first blade is blood-bound — it ALWAYS returns.
+## Expendable blades (slots 2+) only return if they're the LAST thrown.
+## Fox throws scraps first, loyal blade last (blade_count == 1 means loyal is being thrown).
+## Orphaned blades expire if not manually picked up.
+var loyal_blade_in_flight: bool = false  ## Is the blood-bound blade currently thrown?
+var active_blade: BladeProjectile = null  ## Reference to last-thrown blade (only this one auto-returns)
 
 @export_group("Throw")
 @export var throw_offset_x: float = 40.0  ## Horizontal offset from player center
@@ -194,28 +220,77 @@ func consume_blade() -> void:
 		#inventory.use_blade(1)
 		# Hoặc: inventory.adjust_amount_item("Blade", -1)
 
-func return_blade() -> void:
+func return_blade(is_loyal_blade: bool = false) -> void:
+	## A blade is returning to the fox's inventory.
+	## Called by BladeProjectile when:
+	## 1. Player physically picks up the blade (always returns)
+	## 2. Blade times out and is loyal/active (auto-returns)
+	## 
+	## The loyal blade ALWAYS returns — if hands are full, it absorbs a scrap
+	## (no net change to count, but loyalty is preserved).
+	
 	if blade_count < max_blade_capacity:
+		# Room available — normal return
 		blade_count += 1
-		#inventory.adjust_amount_item("Blade", 1) 
 		blade_changed.emit(blade_count)
-		# Switch back to blade sprite when getting a blade back
 		if has_unlocked_blade and blade_count > 0:
 			set_animated_sprite($Direction/BladeAnimatedSprite2D)
+	elif is_loyal_blade:
+		# Loyal blade returns even if full — replaces a scrap (no count change)
+		# The blood-bound blade finds its way back, a scrap rusts to nothing
+		blade_changed.emit(blade_count)  # UI refresh (count unchanged)
+	# else: scrap blade with no room — silently lost (shouldn't happen normally)
+	
+	# Reset loyalty tracking when loyal blade returns
+	if is_loyal_blade:
+		loyal_blade_in_flight = false
+
+func can_collect_blade() -> bool:
+	## Check if player can pick up a blade (has room in inventory).
+	return blade_count < max_blade_capacity
+
+func can_upgrade_blade_capacity() -> bool:
+	## Check if player can pick up another BladeContainer.
+	return max_blade_capacity < ABSOLUTE_MAX_CAPACITY
 
 func increase_blade_capacity() -> void:
-	max_blade_capacity = min(max_blade_capacity + 1, 3)
-	return_blade()
+	## Called by BladeContainer pickup — adds a holster slot AND fills inventory.
+	## The container comes with a blade inside, so capacity + fill makes sense.
+	if not can_upgrade_blade_capacity():
+		return  # Already maxed out, can't upgrade further
+	max_blade_capacity += 1
+	blade_count = max_blade_capacity  # Fill to new capacity (container has blade inside)
+	has_unlocked_blade = true  # Container also unlocks blade skill if not already
+	blade_changed.emit(blade_count)
+	set_animated_sprite($Direction/BladeAnimatedSprite2D)
 
 func throw_blade_projectile() -> void:
 	if not can_throw_blade() or not blade_projectile_scene:
 		return
 	
-	var blade = blade_projectile_scene.instantiate()
+	var blade: BladeProjectile = blade_projectile_scene.instantiate()
 	get_tree().current_scene.add_child(blade)
 	
 	var throw_offset := Vector2(throw_offset_x * direction, throw_offset_y)
 	blade.global_position = global_position + throw_offset
+	
+	# === BLADE LOYALTY SYSTEM ===
+	# Orphan the previous active blade (it will expire if not picked up manually)
+	if is_instance_valid(active_blade):
+		active_blade.is_active = false
+	
+	# This new blade becomes the active one (will auto-return)
+	active_blade = blade
+	blade.is_active = true
+	
+	# Determine if this is the loyal (blood-bound) blade
+	# The loyal blade is thrown when we're down to our last blade AND we have the unlock
+	# Logic: blade_count == 1 means this is the first/loyal blade being thrown
+	if blade_count == 1:
+		blade.is_loyal = true
+		loyal_blade_in_flight = true
+	else:
+		blade.is_loyal = false
 	
 	# Check if we have a locked target for aimed throw
 	if targeting != null and targeting.has_locked_target():
@@ -350,16 +425,12 @@ func _collect_blade(is_upgrade_item: bool = false) -> void:
 	
 	# Nếu là Item trên map -> Tăng giới hạn túi đồ (Max Capacity)
 	if is_upgrade_item:
-		max_blade_capacity = min(max_blade_capacity + 1, 3) # Ví dụ max là 3
+		if max_blade_capacity >= ABSOLUTE_MAX_CAPACITY:
+			return  # Already maxed, can't pick up more containers
+		max_blade_capacity = min(max_blade_capacity + 1, ABSOLUTE_MAX_CAPACITY)
 		print("Player: Đã nâng cấp túi đạn lên ", max_blade_capacity)
-		# Tăng giới hạn xong thì hồi đầy đạn luôn (hoặc +1 tùy bạn)
+		# Container comes with blade inside, fill to new capacity
 		blade_count = max_blade_capacity
-		# Lưu ý: Cần xử lý logic cộng inventory tương ứng để khớp số
-		# (Đoạn này hơi phức tạp nếu inventory không có biến max, 
-		# nhưng tạm thời ta cứ cho là cộng thêm blade cho đầy túi)
-		var needed = max_blade_capacity - blade_count
-		if needed > 0:
-			blade_count += needed
 			
 	# Nếu là Dao ném ra -> Chỉ hồi đạn (+1)
 	else:

@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="AudioDatabase" load_steps=22 format=3 uid="uid://c114v4svixhnk"]
+[gd_resource type="Resource" script_class="AudioDatabase" load_steps=28 format=3 uid="uid://c114v4svixhnk"]
 
 [ext_resource type="Script" uid="uid://chlphbiuq1gay" path="res://scripts/audio/audio_clip.gd" id="1_x0dso"]
 [ext_resource type="Script" uid="uid://ovmtn36802i6" path="res://scripts/audio/audio_database.gd" id="2_quhjw"]
@@ -21,8 +21,14 @@
 [ext_resource type="Resource" uid="uid://ci7v80tqi0xbb" path="res://data/audio/coin_collected.tres" id="18_1ae7c"]
 [ext_resource type="Resource" uid="uid://beuv6wwqvf03g" path="res://data/audio/wind_area.tres" id="19_1ae7c"]
 [ext_resource type="Resource" uid="uid://cphcn4hjktd2c" path="res://data/audio/thunder.tres" id="20_p1l5c"]
+[ext_resource type="Resource" uid="uid://blade_ricochet_001" path="res://data/audio/blade_ricochet.tres" id="21_blade"]
+[ext_resource type="Resource" uid="uid://blade_pickup_001" path="res://data/audio/blade_pickup.tres" id="22_blade"]
+[ext_resource type="Resource" uid="uid://blade_land_001" path="res://data/audio/blade_land.tres" id="23_blade"]
+[ext_resource type="Resource" uid="uid://blade_lost_001" path="res://data/audio/blade_lost.tres" id="24_blade"]
+[ext_resource type="Resource" uid="uid://steam_hiss_001" path="res://data/audio/steam_hiss.tres" id="25_blade"]
+[ext_resource type="Resource" uid="uid://flame_ignite_001" path="res://data/audio/flame_ignite.tres" id="26_blade"]
 
 [resource]
 script = ExtResource("2_quhjw")
-clips = Array[ExtResource("1_x0dso")]([ExtResource("2_ut6nb"), ExtResource("3_ut6nb"), ExtResource("4_xjxco"), ExtResource("5_g1k8g"), ExtResource("6_ykssl"), ExtResource("7_g1k8g"), ExtResource("8_ykssl"), ExtResource("9_cw7wr"), ExtResource("10_374as"), ExtResource("11_ugkvd"), ExtResource("12_b71d2"), ExtResource("13_4m8v6"), ExtResource("14_owoq2"), ExtResource("15_1ae7c"), ExtResource("16_b71d2"), ExtResource("17_owoq2"), ExtResource("18_1ae7c"), ExtResource("19_1ae7c"), ExtResource("20_p1l5c")])
+clips = Array[ExtResource("1_x0dso")]([ExtResource("2_ut6nb"), ExtResource("3_ut6nb"), ExtResource("4_xjxco"), ExtResource("5_g1k8g"), ExtResource("6_ykssl"), ExtResource("7_g1k8g"), ExtResource("8_ykssl"), ExtResource("9_cw7wr"), ExtResource("10_374as"), ExtResource("11_ugkvd"), ExtResource("12_b71d2"), ExtResource("13_4m8v6"), ExtResource("14_owoq2"), ExtResource("15_1ae7c"), ExtResource("16_b71d2"), ExtResource("17_owoq2"), ExtResource("18_1ae7c"), ExtResource("19_1ae7c"), ExtResource("20_p1l5c"), ExtResource("21_blade"), ExtResource("22_blade"), ExtResource("23_blade"), ExtResource("24_blade"), ExtResource("25_blade"), ExtResource("26_blade")])
 metadata/_custom_type_script = "uid://ovmtn36802i6"

@@ -238,9 +238,18 @@ The new unified `MovingPlatform` replaces the old horizontal/vertical variants:
 | **Coin** | `effect_Item/coin/coin.tscn` | Currency |
 | **Health Potion** | `effect_Item/heal_potion/health_potion.tscn` | Restores health |
 | **Key** | `effect_Item/key/key.tscn` | Unlocks chests/doors (`key_id` for specific locks) |
-| **Blade** | `effect_Item/BladeItem/blade.tscn` | Unlocks throw ability |
+| **Blade** | `effect_Item/BladeItem/blade.tscn` | +1 blade to inventory (first pickup unlocks throw ability) |
+| **Blade Container** | `effect_Item/BladeContainer/blade_container.tscn` | +1 holster slot AND fills inventory (max 3 containers) |
 | **Trap Coin** | `effect_Item/TrapCoin/trap_coin.tscn` | Looks like coin, applies negative effect |
 | **Chest** | `effect_Item/chest/chest.tscn` | Contains rewards, may need key |
+
+### Blade System Details
+- **Natural capacity**: 3 blades
+- **Max containers**: 3 (each adds +1 slot)
+- **Absolute max**: 6 blades (3 natural + 3 containers)
+- **Loyal blade**: Fox's first/blood-bound blade — always returns, thrown LAST
+- **Scrap blades**: Expendable — only the most recent one auto-returns; orphans expire
+- **Flame Blade**: Shop upgrade — causes burn damage over time, extinguishes in water
 
 ---
 

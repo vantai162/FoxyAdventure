@@ -177,19 +177,88 @@ func _check_changed_direction() -> void:
 # On changed direction
 func _on_changed_direction() -> void:
 	pass
-	
-func _is_on_ice():
-	var collider = floor_ray_cast.get_collider()
-	if not collider: return false
-	
-	# Check if the collider has a PhysicsMaterial2D with low friction (ice-like)
-	if collider is StaticBody2D or collider is CharacterBody2D or collider is RigidBody2D:
-		var physics_material = collider.physics_material_override
-		if physics_material and physics_material.friction < 0.3:  # Ice threshold
+
+## ============================================================================
+## SURFACE TYPE DETECTION (TileMap-native, Kojima-approved)
+## ============================================================================
+## Uses TileSet custom data layer "surface_type" for data-driven detection.
+## Mark tiles in the TileSet editor with surface_type = "ice" for slippery floors.
+## This works with TileMapLayer - no StaticBody2D workarounds needed!
+
+func _is_on_ice() -> bool:
+	## Check if standing on an ice surface using TileMap custom data
+	var tile_data = _get_floor_tile_data()
+	if tile_data:
+		var surface_type = tile_data.get_custom_data("surface_type")
+		if surface_type == "ice":
 			return true
 	
-	# Fallback to name check for backward compatibility
-	return collider.name == "IceBlock"
+	# Fallback: Check if floor collider is in "ice" group (for non-TileMap ice)
+	var collider = floor_ray_cast.get_collider()
+	if collider and collider.is_in_group("ice"):
+		return true
+	
+	return false
+
+func _is_wall_ice() -> bool:
+	## Check if the wall being touched is ice (prevents wall cling)
+	## Uses wall collision normal to determine which side to check
+	if not is_on_wall():
+		return false
+	
+	# Get wall collision info
+	for i in get_slide_collision_count():
+		var collision = get_slide_collision(i)
+		var collider = collision.get_collider()
+		var normal = collision.get_normal()
+		
+		# This is a wall collision (horizontal normal)
+		if abs(normal.x) > 0.5:
+			# Check TileMapLayer custom data
+			if collider is TileMapLayer:
+				var tilemap = collider as TileMapLayer
+				var collision_point = collision.get_position()
+				# Offset slightly into the wall to get the correct tile
+				var check_point = collision_point - normal * 4.0
+				var local_pos = tilemap.to_local(check_point)
+				var tile_coords = tilemap.local_to_map(local_pos)
+				var tile_data = tilemap.get_cell_tile_data(tile_coords)
+				if tile_data:
+					var surface_type = tile_data.get_custom_data("surface_type")
+					if surface_type == "ice":
+						return true
+			
+			# Fallback: check if collider is in "ice" group
+			if collider and collider.is_in_group("ice"):
+				return true
+	
+	return false
+
+func _get_floor_tile_data() -> TileData:
+	## Get the TileData of the tile under the player's feet
+	## Returns null if not standing on a TileMapLayer
+	if not is_on_floor():
+		return null
+	
+	# Use floor collision to find the TileMapLayer
+	for i in get_slide_collision_count():
+		var collision = get_slide_collision(i)
+		var collider = collision.get_collider()
+		var normal = collision.get_normal()
+		
+		# This is a floor collision (upward normal)
+		if normal.y < -0.5:
+			if collider is TileMapLayer:
+				var tilemap = collider as TileMapLayer
+				var collision_point = collision.get_position()
+				# Offset slightly into the tile to ensure we get the right one
+				var check_point = collision_point + Vector2(0, 4)
+				var local_pos = tilemap.to_local(check_point)
+				var tile_coords = tilemap.local_to_map(local_pos)
+				var tile_data = tilemap.get_cell_tile_data(tile_coords)
+				return tile_data
+	
+	return null
 	
 func _is_on_one_way_platform():
 	var collider = floor_ray_cast.get_collider()
@@ -199,6 +268,46 @@ func _is_on_one_way_platform():
 	if collider.is_in_group("one_way_platform"):
 		return true
 	return collider.name == "OneWayPlatform"
+
+## ============================================================================
+## WALL CLING INPUT CHECK (Used by state transitions)
+## ============================================================================
+## Checks if the player is actively pressing TOWARD the wall they're touching.
+## This is the gatekeeper for "active" wall cling - no input toward wall = no cling.
+
+func is_pressing_toward_wall() -> bool:
+	## Returns true if player is pressing input toward the wall they're touching
+	## Used by state transitions to require active input for wall cling entry
+	
+	if not is_on_wall():
+		return false
+	
+	# Detect wall direction from collision
+	var wall_dir: int = 0
+	for i in get_slide_collision_count():
+		var collision = get_slide_collision(i)
+		var normal = collision.get_normal()
+		
+		# Horizontal collision = wall
+		if abs(normal.x) > 0.5:
+			# Wall normal points AWAY from wall
+			# normal.x > 0 → wall is to the LEFT → wall_dir = -1
+			# normal.x < 0 → wall is to the RIGHT → wall_dir = 1
+			wall_dir = -int(sign(normal.x))
+			break
+	
+	if wall_dir == 0:
+		return false
+	
+	# Check input direction
+	var input_dir = Input.get_action_strength("right") - Input.get_action_strength("left")
+	
+	# Need meaningful input
+	if abs(input_dir) < 0.1:
+		return false
+	
+	# Input direction must match wall direction
+	return sign(input_dir) == wall_dir
 	
 
 func spring():

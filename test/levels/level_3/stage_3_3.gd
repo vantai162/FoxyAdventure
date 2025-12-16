@@ -36,7 +36,7 @@ extends StageBase
 
 func _init() -> void:
 	camera_left = 0.0
-	camera_right = 1400.0
+	camera_right = 640.0
 	camera_top = 0.0
 	camera_bottom = 1600.0
 

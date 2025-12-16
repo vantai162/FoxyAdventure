@@ -1,6 +1,6 @@
-[gd_scene load_steps=44 format=4 uid="uid://bxknbajfocd87"]
+[gd_scene load_steps=44 format=4 uid="uid://bqrnsq4v6ssvi"]
 
-[ext_resource type="Script" uid="uid://b6xvcjrh55sd6" path="res://test/levels/level_2/level_2.gd" id="1_5l4f7"]
+[ext_resource type="Script" uid="uid://c5cp6lv5bj1rw" path="res://test/levels/level_2/stage_2_1.gd" id="1_5l4f7"]
 [ext_resource type="PackedScene" uid="uid://dm741hii7d5nv" path="res://scenes/game_screen/health_bar.tscn" id="1_x7kuf"]
 [ext_resource type="PackedScene" uid="uid://k1cvcu80rfmm" path="res://scenes/game_screen/coin_ui.tscn" id="2_7ulr3"]
 [ext_resource type="PackedScene" uid="uid://cstfpndmrkms3" path="res://scenes/game_screen/key_ui.tscn" id="3_2a1r0"]
@@ -230,7 +230,7 @@ position = Vector2(433, 49)
 
 [node name="Door" parent="." instance=ExtResource("19_3noe3")]
 position = Vector2(-439, -191)
-target_stage = "uid://30po03m850f6"
+target_stage = "uid://dfurop71qa3su"
 
 [node name="Checkpoint" parent="." instance=ExtResource("20_x03np")]
 position = Vector2(-194, -208)

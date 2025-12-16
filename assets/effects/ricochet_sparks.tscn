@@ -1,0 +1,63 @@
+[gd_scene load_steps=13 format=3 uid="uid://chc7l26qpxnrp"]
+
+[ext_resource type="Texture2D" uid="uid://cqjptjvuhsunq" path="res://assets/effects/sparks_1.png" id="1_spark"]
+[ext_resource type="Texture2D" uid="uid://b3jesqln62e4a" path="res://assets/effects/sparks_2.png" id="2_spark"]
+[ext_resource type="Texture2D" uid="uid://dm6o2hx76ss4h" path="res://assets/effects/sparks_3.png" id="3_spark"]
+[ext_resource type="Texture2D" uid="uid://ditepkbux682t" path="res://assets/effects/sparks_4.png" id="4_spark"]
+[ext_resource type="Texture2D" uid="uid://cbfk0xveadbv2" path="res://assets/effects/sparks_5.png" id="5_spark"]
+[ext_resource type="Texture2D" uid="uid://drysv8urhyir4" path="res://assets/effects/sparks_6.png" id="6_spark"]
+[ext_resource type="Texture2D" uid="uid://dpchp6yoj1t03" path="res://assets/effects/sparks_7.png" id="7_spark"]
+[ext_resource type="Texture2D" uid="uid://bbm4vf2wub3wh" path="res://assets/effects/sparks_8.png" id="8_spark"]
+[ext_resource type="Texture2D" uid="uid://bkcug1o2nn6w6" path="res://assets/effects/sparks_9.png" id="9_spark"]
+[ext_resource type="Texture2D" uid="uid://bq73srabik8h4" path="res://assets/effects/sparks_10.png" id="10_spark"]
+[ext_resource type="Texture2D" uid="uid://dk86vmtmo2gng" path="res://assets/effects/sparks_11.png" id="11_spark"]
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_sparks"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("1_spark")
+}, {
+"duration": 1.0,
+"texture": ExtResource("2_spark")
+}, {
+"duration": 1.0,
+"texture": ExtResource("3_spark")
+}, {
+"duration": 1.0,
+"texture": ExtResource("4_spark")
+}, {
+"duration": 1.0,
+"texture": ExtResource("5_spark")
+}, {
+"duration": 1.0,
+"texture": ExtResource("6_spark")
+}, {
+"duration": 1.0,
+"texture": ExtResource("7_spark")
+}, {
+"duration": 1.0,
+"texture": ExtResource("8_spark")
+}, {
+"duration": 1.0,
+"texture": ExtResource("9_spark")
+}, {
+"duration": 1.0,
+"texture": ExtResource("10_spark")
+}, {
+"duration": 1.0,
+"texture": ExtResource("11_spark")
+}],
+"loop": false,
+"name": &"spark",
+"speed": 30.0
+}]
+
+[node name="RicochetSparks" type="AnimatedSprite2D"]
+z_index = 25
+scale = Vector2(0.5, 0.5)
+sprite_frames = SubResource("SpriteFrames_sparks")
+animation = &"spark"
+autoplay = "spark"
+frame = 10
+frame_progress = 1.0

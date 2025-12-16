@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="AudioClip" load_steps=3 format=3 uid="uid://blade_pickup_001"]
+
+[ext_resource type="Script" uid="uid://chlphbiuq1gay" path="res://scripts/audio/audio_clip.gd" id="1_clip"]
+[ext_resource type="AudioStream" uid="uid://cg08wr8e3u2ul" path="res://assets/sounds/zapsplat_warfare_sword_medieval_heavy_draw_scabbard_005_12092.mp3" id="2_stream"]
+
+[resource]
+script = ExtResource("1_clip")
+clip_id = "blade_pickup"
+stream = ExtResource("2_stream")
+volume_db = -2.0
+randomize_pitch = true
+pitch_min = 1.1
+pitch_max = 1.3
+description = "Satisfying shink when blade returns to player"
+metadata/_custom_type_script = "uid://chlphbiuq1gay"

@@ -44,9 +44,30 @@ class_name water
 ## - Terrain is IN FRONT of water, so terrain masks rectangle edges
 ## Result: Non-rectangular pool shapes, player appears underwater. No overlay needed.
 ## See scripts/z_layers.gd for the full system
+##
+## BACKGROUND OCEAN MODE:
+## When render_as_background is enabled, water draws BEHIND terrain (z=-50)
+## Use this for distant ocean cutout visuals where water should be behind everything.
 
-@export var water_size: Vector2 = Vector2(8.0,16.0)
-@export_range(2,512) var segment_count: int = 64
+@export var water_size: Vector2 = Vector2(8.0,16.0):
+	set(value):
+		water_size = value
+		if Engine.is_editor_hint():
+			_rebuild_water()  # Size change requires full rebuild
+
+@export_group("Rendering")
+## When enabled, water renders BEHIND terrain as a background ocean cutout.
+## Use for distant ocean visuals where terrain "cuts out" the water shape.
+## When disabled (default), water renders IN FRONT of player for submerged look.
+@export var render_as_background: bool = false:
+	set(value):
+		render_as_background = value
+		_update_z_indices()  # Live update z-index!
+@export_range(2,512) var segment_count: int = 64:
+	set(value):
+		segment_count = value
+		if Engine.is_editor_hint():
+			_rebuild_water()  # Segment count change requires rebuild
 
 @export_group("Surface Levels")
 ## Where water surface normally rests (pixels from TOP of pool).
@@ -116,9 +137,21 @@ class_name water
 		queue_redraw()
 
 @export_group("Visuals")
-@export var surface_line_thickness: float = 2.0  ## Thicker for visibility
-@export var surface_color: Color = Color("3ce1da")
-@export var water_fill_color: Color = Color(0.216, 0.690, 0.773, 0.6)  ## Semi-transparent blue (adjust alpha in editor)
+@export var surface_line_thickness: float = 2.0:  ## Thicker for visibility
+	set(value):
+		surface_line_thickness = value
+		if surface_line:
+			surface_line.width = value
+@export var surface_color: Color = Color("3ce1da"):
+	set(value):
+		surface_color = value
+		if surface_line:
+			surface_line.default_color = value
+@export var water_fill_color: Color = Color(0.216, 0.690, 0.773, 0.6):  ## Semi-transparent blue (adjust alpha in editor)
+	set(value):
+		water_fill_color = value
+		if fill_polygon:
+			fill_polygon.color = value
 @export var enable_antialiasing: bool = true  ## Smooth surface line
 
 @export_group("Ambient Waves")
@@ -236,6 +269,53 @@ var water_collision_shape: CollisionShape2D  ## Reference to collision shape for
 
 signal player_entered_water(body)
 signal player_exited_water(body)
+
+## ==========================================
+## LIVE EDITOR UPDATE HELPERS
+## These ensure Inspector changes are reflected immediately
+## ==========================================
+
+## Update z-index on existing children (called when render_as_background changes)
+func _update_z_indices() -> void:
+	var surface_z: int = ZLayers.FLUID_SURFACE  # IN FRONT of player (11)
+	var body_z: int = ZLayers.FLUID_BODY  # IN FRONT of player (12)
+	if render_as_background:
+		# Background ocean mode: render BEHIND terrain
+		surface_z = ZLayers.BACKGROUND_DECOR  # -50
+		body_z = ZLayers.BACKGROUND_DECOR - 1  # -51
+	
+	if surface_line:
+		surface_line.z_index = surface_z
+	if fill_polygon:
+		fill_polygon.z_index = body_z
+
+## Full rebuild for structural changes (size, segment count)
+func _rebuild_water() -> void:
+	if not is_inside_tree():
+		return
+	# Clean up existing children
+	if surface_line:
+		surface_line.queue_free()
+		surface_line = null
+	if fill_polygon:
+		fill_polygon.queue_free()
+		fill_polygon = null
+	if water_area:
+		water_area.queue_free()
+		water_area = null
+		water_collision_shape = null
+	# Clear splash droplets
+	for droplet in _splash_droplets:
+		if is_instance_valid(droplet):
+			droplet.queue_free()
+	_splash_droplets.clear()
+	# Clear lights
+	for light in _water_lights:
+		if is_instance_valid(light):
+			light.queue_free()
+	_water_lights.clear()
+	# Reinitialize
+	call_deferred("_initiate_water")
 
 ## ==========================================
 ## AUTONOMOUS WATERFALL BLEND RECEIVER
@@ -391,6 +471,15 @@ var debug_interval: float = 1.0
 func _ready() -> void:
 	for i in get_children():
 		i.queue_free()
+	
+	# Clear stale references before rebuild
+	surface_line = null
+	fill_polygon = null
+	water_area = null
+	water_collision_shape = null
+	_water_lights.clear()
+	_splash_droplets.clear()
+	
 	segment_data.clear()
 	segment_rest_height.clear()
 	_boat_depression_offsets.clear()
@@ -623,6 +712,7 @@ func _initiate_water() -> void:
 	_settled_count = segment_count
 	_last_active_min = 0
 	_last_active_max = segment_count - 1
+	
 	var new_line: Line2D = Line2D.new()
 	new_line.width = surface_line_thickness
 	new_line.default_color = surface_color
@@ -631,18 +721,20 @@ func _initiate_water() -> void:
 	new_line.end_cap_mode = Line2D.LINE_CAP_ROUND
 	new_line.joint_mode = Line2D.LINE_JOINT_ROUND
 	new_line.z_as_relative = false  # Use absolute z_index
-	new_line.z_index = ZLayers.FLUID_SURFACE  # IN FRONT of player (11)
 	add_child(new_line)
 	surface_line = new_line
 	
-	# Main water body - IN FRONT of player so player looks submerged
-	# Terrain is IN FRONT of water to mask rectangle edges
+	# Main water body
+	# When render_as_background=false: IN FRONT of player so player looks submerged
+	# When render_as_background=true: BEHIND terrain as background ocean
 	var new_polygon: Polygon2D = Polygon2D.new()
 	new_polygon.color = water_fill_color
 	new_polygon.z_as_relative = false  # Use absolute z_index
-	new_polygon.z_index = ZLayers.FLUID_BODY  # IN FRONT of player (12)
 	add_child(new_polygon)
 	fill_polygon = new_polygon
+	
+	# Apply z-indices based on render mode (also used for live updates)
+	_update_z_indices()
 	
 	var new_area: Area2D = Area2D.new()
 	new_area.monitoring = true     # <--- QUAN TRỌNG
@@ -658,9 +750,18 @@ func _initiate_water() -> void:
 	
 	var new_collisionshape : CollisionShape2D = CollisionShape2D.new()
 	var new_shape: RectangleShape2D = RectangleShape2D.new()
-	new_shape.size = water_size
-	new_collisionshape.shape = new_shape
-	new_collisionshape.position = water_size / 2.0 + Vector2(0, surface_pos_y / 2.0)
+	# Calculate actual water height based on surface position (respects start_empty)
+	var actual_water_height = water_size.y - surface_pos_y
+	if actual_water_height > 0:
+		new_shape.size = Vector2(water_size.x, actual_water_height)
+		new_collisionshape.shape = new_shape
+		new_collisionshape.position = Vector2(water_size.x / 2.0, surface_pos_y + actual_water_height / 2.0)
+	else:
+		# Pool is empty - create minimal collision that will be resized when water fills
+		new_shape.size = Vector2(water_size.x, 1.0)
+		new_collisionshape.shape = new_shape
+		new_collisionshape.position = Vector2(water_size.x / 2.0, water_size.y)
+		new_collisionshape.disabled = true  # Disable until pool fills
 	new_area.add_child(new_collisionshape)
 	water_collision_shape = new_collisionshape  # Store reference
 	
@@ -990,10 +1091,14 @@ func _update_collision_shape() -> void:
 	
 	# Calculate new size: from bottom (water_size.y) to current visual surface
 	var new_height = water_size.y - avg_surface_height  # Total height from surface to bottom
-	shape.size = Vector2(water_size.x, max(new_height, 1.0))  # Ensure positive height
-	
-	var center_y = avg_surface_height + new_height / 2.0
-	water_collision_shape.position = Vector2(water_size.x / 2.0, center_y)
+	if new_height > 0:
+		shape.size = Vector2(water_size.x, new_height)
+		var center_y = avg_surface_height + new_height / 2.0
+		water_collision_shape.position = Vector2(water_size.x / 2.0, center_y)
+		water_collision_shape.disabled = false  # Enable collision when there's water
+	else:
+		# Fully drained - disable collision
+		water_collision_shape.disabled = true
 
 ## Water level control for boss fights and scripted events
 func raise_water(target_height: float, duration: float = 2.0) -> void:

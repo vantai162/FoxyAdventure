@@ -45,8 +45,16 @@ class_name LavaPool
 signal lava_drained  ## Emitted when drain animation completes
 signal lava_filled   ## Emitted when fill animation completes
 
-@export var lava_size: Vector2 = Vector2(128.0, 64.0)
-@export_range(2, 256) var segment_count: int = 32
+@export var lava_size: Vector2 = Vector2(128.0, 64.0):
+	set(value):
+		lava_size = value
+		if Engine.is_editor_hint() and is_inside_tree():
+			_rebuild_lava()  # Size change requires rebuild
+@export_range(2, 256) var segment_count: int = 32:
+	set(value):
+		segment_count = value
+		if Engine.is_editor_hint() and is_inside_tree():
+			_rebuild_lava()  # Segment count change requires rebuild
 
 @export_group("Surface Levels")
 ## Where lava surface normally rests (pixels from TOP of pool).
@@ -116,9 +124,21 @@ signal lava_filled   ## Emitted when fill animation completes
 		queue_redraw()
 
 @export_group("Visuals")
-@export var surface_line_thickness: float = 3.0  ## Thicker glowing edge
-@export var surface_color: Color = Color(1.0, 0.6, 0.1, 1.0)  ## Bright orange edge
-@export var lava_fill_color: Color = Color(0.9, 0.3, 0.05, 0.95)  ## Deep orange-red
+@export var surface_line_thickness: float = 3.0:  ## Thicker glowing edge
+	set(value):
+		surface_line_thickness = value
+		if surface_line:
+			surface_line.width = surface_line_thickness
+@export var surface_color: Color = Color(1.0, 0.6, 0.1, 1.0):  ## Bright orange edge
+	set(value):
+		surface_color = value
+		if surface_line:
+			surface_line.default_color = surface_color
+@export var lava_fill_color: Color = Color(0.9, 0.3, 0.05, 0.95):  ## Deep orange-red
+	set(value):
+		lava_fill_color = value
+		if fill_polygon:
+			fill_polygon.color = lava_fill_color
 @export var enable_antialiasing: bool = true
 
 @export_group("Glow Light")
@@ -209,6 +229,7 @@ var debug_interval: float = 1.0
 var surface_line: Line2D
 var fill_polygon: Polygon2D
 var lava_area: Area2D
+var lava_collision_shape: CollisionShape2D  ## Reference for dynamic updates during fill/drain
 var lava_lights: Array[PointLight2D] = []  ## Multiple light sources for distributed glow
 var ember_gpu_particles: GPUParticles2D
 var bubble_gpu_particles: GPUParticles2D
@@ -364,6 +385,15 @@ func _ready() -> void:
 	# Clean up existing children
 	for child in get_children():
 		child.queue_free()
+	
+	# Clear stale references
+	surface_line = null
+	fill_polygon = null
+	lava_area = null
+	lava_collision_shape = null
+	lava_lights.clear()
+	ember_gpu_particles = null
+	bubble_gpu_particles = null
 	
 	segment_data.clear()
 	segment_rest_height.clear()
@@ -587,6 +617,39 @@ func _process(delta: float) -> void:
 		# Enable particles only when lava is active
 		bubble_gpu_particles.emitting = not (_drain_active and _is_draining)
 
+
+## Rebuild lava visuals when structural properties change (size, segment count).
+## Called by setters in editor mode to provide live preview.
+func _rebuild_lava() -> void:
+	# Clean up existing children
+	for child in get_children():
+		child.queue_free()
+	
+	# Clear runtime state
+	surface_line = null
+	fill_polygon = null
+	lava_area = null
+	lava_collision_shape = null  # Clear stale reference before rebuild
+	lava_lights.clear()
+	ember_gpu_particles = null
+	bubble_gpu_particles = null
+	
+	segment_data.clear()
+	segment_rest_height.clear()
+	_settled_segments.clear()
+	_damage_timers.clear()
+	_surface_suppression_zones.clear()
+	_lavafall_impact_zones.clear()
+	
+	# Rebuild
+	_initiate_lava()
+	
+	if emit_light:
+		_setup_light()
+	
+	queue_redraw()
+
+
 func _initiate_lava() -> void:
 	# Initialize runtime surface position from designer-set surface level
 	surface_pos_y = surface_level
@@ -636,10 +699,20 @@ func _initiate_lava() -> void:
 	
 	var collision_shape = CollisionShape2D.new()
 	var rect_shape = RectangleShape2D.new()
-	rect_shape.size = lava_size
-	collision_shape.shape = rect_shape
-	collision_shape.position = Vector2(lava_size.x / 2.0, surface_pos_y + (lava_size.y - surface_pos_y) / 2.0)
+	# Calculate actual lava height based on surface position (respects start_empty)
+	var actual_lava_height = lava_size.y - surface_pos_y
+	if actual_lava_height > 0:
+		rect_shape.size = Vector2(lava_size.x, actual_lava_height)
+		collision_shape.shape = rect_shape
+		collision_shape.position = Vector2(lava_size.x / 2.0, surface_pos_y + actual_lava_height / 2.0)
+	else:
+		# Pool is empty - create minimal collision that will be resized on fill
+		rect_shape.size = Vector2(lava_size.x, 1.0)
+		collision_shape.shape = rect_shape
+		collision_shape.position = Vector2(lava_size.x / 2.0, lava_size.y)
+		collision_shape.disabled = true  # Disable until pool fills
 	lava_area.add_child(collision_shape)
+	lava_collision_shape = collision_shape  # Store reference for dynamic updates
 
 func _setup_light() -> void:
 	# Create multiple point lights along lava surface for distributed glow
@@ -975,6 +1048,21 @@ func _on_body_entered(body: Node2D) -> void:
 func _on_body_exited(body: Node2D) -> void:
 	_damage_timers.erase(body)
 
+func _check_existing_overlaps() -> void:
+	## Check for bodies already inside lava area when fill starts
+	## Godot's body_entered doesn't fire for pre-existing overlaps
+	if not lava_area:
+		return
+	
+	for body in lava_area.get_overlapping_bodies():
+		if not _damage_timers.has(body):
+			# Body was inside but not being damaged - start damage now
+			if instant_kill:
+				_kill_body(body)
+			else:
+				_damage_timers[body] = 0.0
+				_apply_damage(body)
+
 func _kill_body(body: Node2D) -> void:
 	# Player-specific kill (die method)
 	if body.is_in_group("player"):
@@ -1094,6 +1182,13 @@ func fill(duration: float = -1.0) -> void:
 	_is_draining = false
 	_lava_state = LavaState.FILLING
 	
+	# CRITICAL: Enable damage when filling starts (lava is rising = danger!)
+	_set_damage_enabled(true)
+	
+	# CRITICAL: Check for bodies already overlapping when fill starts
+	# body_entered won't fire for bodies that were inside before monitoring was enabled
+	call_deferred("_check_existing_overlaps")
+	
 	set_process(true)
 
 func return_to_normal(duration: float = -1.0) -> void:
@@ -1109,6 +1204,13 @@ func return_to_normal(duration: float = -1.0) -> void:
 	_drain_elapsed = 0.0
 	_drain_active = true
 	_is_draining = surface_pos_y < surface_level  # Draining if currently above normal
+	
+	# Handle damage based on direction
+	if _is_draining:
+		_set_damage_enabled(false)  # Draining = safe to cross
+	else:
+		_set_damage_enabled(true)   # Filling = danger!
+		call_deferred("_check_existing_overlaps")  # Check for bodies already inside
 	
 	set_process(true)
 
@@ -1134,14 +1236,17 @@ func _update_drain_fill(delta: float) -> void:
 	_last_active_min = 0
 	_last_active_max = segment_count - 1
 	
-	# Update collision shape position AND size
-	if lava_area:
-		var collision = lava_area.get_node_or_null("CollisionShape2D") as CollisionShape2D
-		if collision and collision.shape is RectangleShape2D:
-			var shape = collision.shape as RectangleShape2D
-			var new_height = lava_size.y - surface_pos_y
+	# Update collision shape position AND size using stored reference
+	if lava_collision_shape and lava_collision_shape.shape is RectangleShape2D:
+		var shape = lava_collision_shape.shape as RectangleShape2D
+		var new_height = lava_size.y - surface_pos_y
+		if new_height > 0:
 			shape.size = Vector2(lava_size.x, new_height)
-			collision.position = Vector2(lava_size.x / 2.0, surface_pos_y + new_height / 2.0)
+			lava_collision_shape.position = Vector2(lava_size.x / 2.0, surface_pos_y + new_height / 2.0)
+			lava_collision_shape.disabled = false  # Enable collision when there's lava
+		else:
+			# Fully drained - disable collision
+			lava_collision_shape.disabled = true
 	
 	# Update light and particle positions during animation
 	if lava_lights.size() > 0:

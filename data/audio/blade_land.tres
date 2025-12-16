@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="AudioClip" load_steps=3 format=3 uid="uid://blade_land_001"]
+
+[ext_resource type="Script" uid="uid://chlphbiuq1gay" path="res://scripts/audio/audio_clip.gd" id="1_clip"]
+[ext_resource type="AudioStream" uid="uid://d0rbhw4pnq5uw" path="res://assets/sounds/impactWood_heavy_001.ogg" id="2_stream"]
+
+[resource]
+script = ExtResource("1_clip")
+clip_id = "blade_land"
+stream = ExtResource("2_stream")
+volume_db = -6.0
+randomize_pitch = true
+pitch_min = 1.1
+pitch_max = 1.4
+description = "Soft thud when blade embeds in ground"
+metadata/_custom_type_script = "uid://chlphbiuq1gay"
