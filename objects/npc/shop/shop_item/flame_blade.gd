@@ -2,7 +2,7 @@ extends StatItem
 ## Flame Blade Upgrade — Shop Item
 ## Unlocks fire effect on the fox's blade, causing enemies to burn.
 ## This is a permanent upgrade that persists across saves.
-
+@export var icon:CompressedTexture2D
 ## Called when purchase is successful
 func conduct_effect() -> void:
 	var player = GameManager.player
