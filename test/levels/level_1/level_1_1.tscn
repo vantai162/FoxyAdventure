@@ -5851,21 +5851,6 @@ instruction_text = "Bấm [Q] để tương tác"
 position = Vector2(-104, 200)
 wind_force = Vector2(456, 0)
 
-[connection signal="area_entered" from="Layer1/Coin" to="Layer1/Coin" method="_on_area_entered"]
-[connection signal="area_entered" from="Layer1/@Area2D@28013" to="Layer1/@Area2D@28013" method="_on_area_entered"]
-[connection signal="area_entered" from="Layer1/@Area2D@28014" to="Layer1/@Area2D@28014" method="_on_area_entered"]
-[connection signal="area_entered" from="Layer1/@Area2D@28015" to="Layer1/@Area2D@28015" method="_on_area_entered"]
-[connection signal="area_entered" from="Layer1/@Area2D@28016" to="Layer1/@Area2D@28016" method="_on_area_entered"]
-[connection signal="area_entered" from="Layer1/@Area2D@28017" to="Layer1/@Area2D@28017" method="_on_area_entered"]
-[connection signal="area_entered" from="Layer1/@Area2D@28018" to="Layer1/@Area2D@28018" method="_on_area_entered"]
-[connection signal="area_entered" from="Layer1/@Area2D@28019" to="Layer1/@Area2D@28019" method="_on_area_entered"]
-[connection signal="area_entered" from="Layer1/@Area2D@28020" to="Layer1/@Area2D@28020" method="_on_area_entered"]
-[connection signal="area_entered" from="Layer1/@Area2D@28021" to="Layer1/@Area2D@28021" method="_on_area_entered"]
-[connection signal="area_entered" from="Layer1/@Area2D@28022" to="Layer1/@Area2D@28022" method="_on_area_entered"]
-[connection signal="area_entered" from="Layer1/@Area2D@28023" to="Layer1/@Area2D@28023" method="_on_area_entered"]
-[connection signal="area_entered" from="Layer1/@Area2D@28024" to="Layer1/@Area2D@28024" method="_on_area_entered"]
-[connection signal="area_entered" from="Layer1/@Area2D@28025" to="Layer1/@Area2D@28025" method="_on_area_entered"]
-[connection signal="area_entered" from="Layer1/Key" to="Layer1/Key" method="_on_area_entered"]
 [connection signal="body_entered" from="Objects/Lever" to="Objects/Gate" method="open_gate"]
 [connection signal="body_exited" from="Objects/Lever" to="Objects/Gate" method="close_gate"]
 [connection signal="lever_activated" from="Objects/Lever" to="Objects/Gate" method="open_gate"]
