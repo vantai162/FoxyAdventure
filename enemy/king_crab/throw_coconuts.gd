@@ -22,11 +22,14 @@ var base_interval: float = 0.6
 var coconut_speed: float = 350.0
 var next_interval: float = 0.0
 
+var descent_tween: Tween = null
+
 
 func _enter() -> void:
 	obj.change_animation("throw")
 	throw_count = 0
 	time_since_throw = 0.0
+	descent_tween = null
 	
 	# Phase 2: more throws, faster, more aggressive
 	if obj.current_phase == 2:
@@ -42,6 +45,13 @@ func _enter() -> void:
 	_throw_coconut()
 	throw_count += 1
 	_randomize_next_interval()
+
+
+func _exit() -> void:
+	# Clean up any running tween to prevent crashes
+	if descent_tween and descent_tween.is_valid():
+		descent_tween.kill()
+		descent_tween = null
 
 
 func _update(delta: float) -> void:
@@ -146,9 +156,13 @@ func _descend_and_return() -> void:
 	if obj.has_meta("ground_y"):
 		target_y = obj.get_meta("ground_y")
 	
-	var tween = obj.create_tween()
-	tween.tween_property(obj, "global_position:y", target_y, 0.5)
-	tween.tween_callback(_on_descent_complete)
+	# Clean up any previous tween
+	if descent_tween and descent_tween.is_valid():
+		descent_tween.kill()
+	
+	descent_tween = obj.create_tween()
+	descent_tween.tween_property(obj, "global_position:y", target_y, 0.5)
+	descent_tween.tween_callback(_on_descent_complete)
 
 
 func _on_descent_complete() -> void:

@@ -125,7 +125,8 @@ var active_blade: BladeProjectile = null  ## Reference to last-thrown blade (onl
 	"Stun": 0,
 	"DamAmplify": 0,
 	"Slow": 0,
-	"Invicibility": 0
+	"Invicibility": 0,
+	"BubbleTrap": 0
 }
 
 enum attack_direction {

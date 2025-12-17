@@ -27,8 +27,8 @@ extends EnemyCharacter
 @export var claw_windup_time: float = 0.4
 @export var claw_throw_time: float = 0.2
 @export var claw_catch_time: float = 0.2
-@export var claw_recoil_time: float = 0.5
-@export var claw_recovery_time: float = 0.4
+@export var claw_recoil_time: float = 0.8  ## Extended from 0.5 - gives player breathing room after dodging
+@export var claw_recovery_time: float = 0.6  ## Extended from 0.4 - punish window for skilled players
 @export var claw_speed: float = 600.0
 @export var claw_travel_distance: float = 800.0
 @export var claw_return_threshold: float = 50.0
@@ -54,14 +54,14 @@ extends EnemyCharacter
 @export var minicrab_spawn_radius: float = 120.0
 
 @export_group("Coconut Throw - Phase 1")
-@export var coconut_p1_max_throws: int = 4
-@export var coconut_p1_interval: float = 0.6
-@export var coconut_p1_speed: float = 350.0
+@export var coconut_p1_max_throws: int = 3  ## Reduced from 4 - less overwhelming
+@export var coconut_p1_interval: float = 0.75  ## Slowed from 0.6 - more readable
+@export var coconut_p1_speed: float = 320.0  ## Slowed from 350 - more dodgeable
 
 @export_group("Coconut Throw - Phase 2")
-@export var coconut_p2_max_throws: int = 7
-@export var coconut_p2_interval: float = 0.45
-@export var coconut_p2_speed: float = 420.0
+@export var coconut_p2_max_throws: int = 5  ## Reduced from 7 - still intense but fair
+@export var coconut_p2_interval: float = 0.55  ## Slowed from 0.45 - learnable rhythm
+@export var coconut_p2_speed: float = 380.0  ## Slowed from 420 - fast but trackable
 
 @export_group("Coconut Throw - Timing")
 @export var coconut_interval_variance: float = 0.3
@@ -72,6 +72,7 @@ extends EnemyCharacter
 @export var walk_stuck_timeout: float = 1.0
 
 var current_phase: int = 1
+var last_attack: String = ""  ## Prevents repeating same attack twice
 
 # Factories (for spawning projectiles)
 @onready var coconut_factory = $Direction/CoconutFactory if has_node("Direction/CoconutFactory") else null

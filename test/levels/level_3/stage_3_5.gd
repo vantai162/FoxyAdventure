@@ -56,10 +56,10 @@ extends StageBase
 
 func _init() -> void:
 	# Level size: 1400 x 700 pixels (WIDE, not tall)
-	camera_left = 0.0
-	camera_right = 1400.0
-	camera_top = 0.0
-	camera_bottom = 700.0
+	camera_left = -500.0
+	camera_right = 500.0
+	camera_top = -400.0
+	camera_bottom = 200.0
 
 
 func _ready() -> void:
