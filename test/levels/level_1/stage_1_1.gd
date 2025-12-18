@@ -23,8 +23,6 @@ extends StageBase
 ## Tracks whether wake-up has played (prevents replay on respawn)
 var wake_up_scn_played: bool = false
 
-## Pause is disabled during cinematics
-var can_pause: bool = false
 
 
 func _init() -> void:

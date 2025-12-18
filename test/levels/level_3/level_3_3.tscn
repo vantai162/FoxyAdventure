@@ -32,7 +32,7 @@
 script = ExtResource("1_stage_script")
 
 [node name="DarknessModulate" type="CanvasModulate" parent="."]
-color = Color(0.08, 0.06, 0.1, 1)
+color = Color(0.23756, 0.195034, 0.280189, 1)
 
 [node name="PlayerSpawn" type="Marker2D" parent="."]
 position = Vector2(72, 1481)
@@ -67,7 +67,7 @@ start_empty = true
 listen_channel = &"LavaUp"
 on_activate = 1
 on_deactivate = 1
-fill_duration = 45.0
+fill_duration = 40.0
 
 [node name="WaterZones" type="Node2D" parent="."]
 
@@ -272,13 +272,13 @@ spawn_offset = Vector2(48, 0)
 
 [node name="ToLevel3_4" parent="ExitZone" instance=ExtResource("20_scene_transition")]
 position = Vector2(336, 89)
-target_scene = "uid://caxibxcw4tq32"
+target_scene = "uid://bw3mfex1cr0w3"
 target_spawn_name = "FromLevel3_3"
 exit_direction = 2
 spawn_offset = Vector2(0, 48)
 
 [node name="Foxy" parent="." instance=ExtResource("10_foxy")]
-position = Vector2(126, 1481)
+position = Vector2(333, 194)
 
 [node name="CanvasLayer" type="CanvasLayer" parent="."]
 layer = 100

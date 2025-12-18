@@ -41,8 +41,6 @@ var endgame: bool = false
 var boss_phase1_healthbar: TextureProgressBar
 var boss_phase2_healthbar: TextureProgressBar
 
-## Pause control (disabled during cinematics)
-var can_pause_boss: bool = true
 
 ## Node references (set by @onready after scene loads)
 @onready var door = $DugeonGate
@@ -67,10 +65,7 @@ func _on_stage_ready() -> void:
 func _on_stage_process(_delta: float) -> void:
 	if boss:
 		_update_boss_state()
-	
-	# Override pause behavior when can_pause_boss is false
-	if Input.is_action_just_pressed("pause") and not can_pause_boss:
-		return  # Block pause during cinematics
+
 
 
 func _update_boss_state() -> void:
@@ -106,6 +101,7 @@ func _trigger_victory_sequence() -> void:
 	
 	# Start victory dialogue
 	Dialogic.start(timeline_name_2)
+	can_pause = false
 	Dialogic.signal_event.connect(_on_dialogic_signal_event)
 	Dialogic.timeline_ended.connect(_on_dialog_finished_2)
 	AudioManager.stop_music(0.5)
@@ -138,7 +134,7 @@ func _on_meet_boss_area_2d_body_entered(body: Node2D) -> void:
 
 
 func _boss_entry_cinematic() -> void:
-	can_pause_boss = false
+	can_pause = false
 	
 	var player = GameManager.player
 	var cam = player.get_node("Camera2D")
@@ -169,7 +165,7 @@ func _on_dialog_finished() -> void:
 	
 	# Unfreeze player
 	player.set_physics_process(true)
-	can_pause_boss = true
+	can_pause = true
 	
 	# Spawn support elements
 	var spawner = turtle_spawn_scene.instantiate()
@@ -195,7 +191,7 @@ func _on_dialog_finished() -> void:
 func _on_dialog_finished_2() -> void:
 	var player = GameManager.player
 	player.set_physics_process(true)
-	can_pause_boss = true
+	can_pause = true
 
 
 func _cleanup_after_winning() -> void:
@@ -226,7 +222,27 @@ func _on_dialogic_signal_event(argument: String) -> void:
 	if argument == "kill_warlord":
 		boss.die()
 	elif argument == "spare_warlord":
-		boss.queue_free()
+		_spare_warlord_escape()
 	
 	# Close exit door (for now)
 	door_2.close()
+	
+	
+func _spare_warlord_escape() -> void:
+	if not boss:
+		return
+	boss.change_animation("idle")
+	# Disable boss AI/physics
+	boss.set_physics_process(false)
+	await get_tree().create_timer(2.0).timeout
+	var cam = GameManager.player.get_node("Camera2D")
+	AudioManager.play_sound("earthquake")
+	cam.shake_tsunami()
+	AudioManager.play_sound("")
+	var target_pos = boss.position + Vector2(0, -600) 
+	var tween = create_tween()
+	tween.tween_property(boss, "position", target_pos,2.0  # thời gian dài hơn để thấy rõ giảm tốc
+	).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)  # Ease-out: chậm dần khi 
+	tween.finished.connect(func():
+		boss.queue_free()
+	)

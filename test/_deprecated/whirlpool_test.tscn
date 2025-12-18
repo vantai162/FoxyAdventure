@@ -1,4 +1,4 @@
-[gd_scene load_steps=18 format=4 uid="uid://bw3mfex1cr0w3"]
+[gd_scene load_steps=21 format=4 uid="uid://bw3mfex1cr0w3"]
 
 [ext_resource type="TileSet" uid="uid://bmuxyu21ya31y" path="res://assets/tileset.tres" id="1_18vte"]
 [ext_resource type="PackedScene" uid="uid://dm741hii7d5nv" path="res://scenes/game_screen/health_bar.tscn" id="1_foqxb"]
@@ -16,7 +16,10 @@
 [ext_resource type="Texture2D" uid="uid://bptbd831rvqdf" path="res://assets/GandalfHardcore FREE Platformer Assets/GandalfHardcore FREE Platformer Assets/GandalfHardcore Background layers/Normal BG/GandalfHardcore Background layers_layer 1.png" id="16_8n78o"]
 [ext_resource type="Texture2D" uid="uid://bw70fwjf0c3y2" path="res://assets/GandalfHardcore FREE Platformer Assets/GandalfHardcore FREE Platformer Assets/cloud3.png" id="17_kuu5a"]
 [ext_resource type="PackedScene" uid="uid://bg3bfewcihuv0" path="res://objects/sign/sign.tscn" id="17_p1j52"]
+[ext_resource type="PackedScene" path="res://objects/scene_transition/scene_transition.tscn" id="18_m6wrx"]
+[ext_resource type="Texture2D" uid="uid://cccowqh7kcwbn" path="res://assets/island/front_palm_trees/front_palm_tree_regular.png" id="19_c4ot6"]
 [ext_resource type="PackedScene" uid="uid://dy2go6q81lmqg" path="res://effect_Item/TrapCoin/trap_coin.tscn" id="19_tku26"]
+[ext_resource type="Texture2D" uid="uid://getm5kr68qwe" path="res://assets/island/front_palm_trees/front_palm_tree_top_01.png" id="20_8pr3t"]
 
 [node name="WhirlpoolTest" type="Node2D"]
 script = ExtResource("1_kkyo3")
@@ -124,3 +127,17 @@ max_health = 30
 
 [node name="Blade2" parent="." instance=ExtResource("6_m1dob")]
 position = Vector2(159, 107)
+
+[node name="FromLevel3_3" parent="." instance=ExtResource("18_m6wrx")]
+position = Vector2(20, -446)
+monitoring = false
+
+[node name="FrontPalmTreeRegular" type="Sprite2D" parent="."]
+position = Vector2(-66, 17)
+scale = Vector2(4, 4)
+texture = ExtResource("19_c4ot6")
+
+[node name="FrontPalmTreeTop01" type="Sprite2D" parent="."]
+position = Vector2(-62, -107)
+scale = Vector2(4, 4)
+texture = ExtResource("20_8pr3t")

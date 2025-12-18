@@ -58,7 +58,7 @@ func _init() -> void:
 	# Level size: 1400 x 700 pixels (WIDE, not tall)
 	camera_left = -500.0
 	camera_right = 500.0
-	camera_top = -400.0
+	camera_top = -550.0
 	camera_bottom = 200.0
 
 

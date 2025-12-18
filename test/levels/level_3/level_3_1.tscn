@@ -95,6 +95,7 @@ grow_horizontal = 1
 grow_vertical = 1
 
 [node name="DarknessModulate" type="CanvasModulate" parent="."]
+visible = false
 color = Color(0.0558769, 0.0395219, 0.0722072, 1)
 
 [node name="PlayerSpawn" type="Marker2D" parent="."]

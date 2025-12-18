@@ -16,6 +16,7 @@ extends Node2D
 
 ## Settings UI for pause menu
 @onready var settings_ui = preload("res://scenes/game_screen/settings_popup.tscn")
+var can_pause = true
 
 
 ## CRITICAL: Must set current_stage BEFORE _ready() so checkpoints work
@@ -76,7 +77,7 @@ func _ready() -> void:
 
 func _process(delta: float) -> void:
 	# Pause menu handling
-	if Input.is_action_just_pressed("pause"):
+	if Input.is_action_just_pressed("pause") and can_pause:
 		if GameManager.paused:
 			return
 		_open_pause_menu()

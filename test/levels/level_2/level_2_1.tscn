@@ -1,4 +1,4 @@
-[gd_scene load_steps=44 format=4 uid="uid://bqrnsq4v6ssvi"]
+[gd_scene load_steps=43 format=4 uid="uid://bqrnsq4v6ssvi"]
 
 [ext_resource type="Script" uid="uid://c5cp6lv5bj1rw" path="res://test/levels/level_2/stage_2_1.gd" id="1_5l4f7"]
 [ext_resource type="PackedScene" uid="uid://dm741hii7d5nv" path="res://scenes/game_screen/health_bar.tscn" id="1_x7kuf"]
@@ -34,7 +34,6 @@
 [ext_resource type="PackedScene" uid="uid://cc07u3qfgccmq" path="res://objects/spring/spring.tscn" id="32_chxal"]
 [ext_resource type="PackedScene" uid="uid://duryp3ufmd0be" path="res://enemy/tribe/friendly_tribe.tscn" id="33_40lrn"]
 [ext_resource type="PackedScene" uid="uid://fwuimc71t468" path="res://objects/npc/shop/shop_item/shop_vendor.tscn" id="34_5l4f7"]
-[ext_resource type="PackedScene" uid="uid://bs816w0pr8all" path="res://player/foxy.tscn" id="36_wn3ka"]
 [ext_resource type="PackedScene" uid="uid://bp4fcvlg5b31p" path="res://objects/platform/vertical_moving_platform.tscn" id="37_q2kgt"]
 [ext_resource type="PackedScene" uid="uid://diraf0q6ndu7y" path="res://objects/door/dark_entrance.tscn" id="38_q2kgt"]
 [ext_resource type="PackedScene" uid="uid://dvjr8elgnjvcw" path="res://objects/platform/circular_moving_platform.tscn" id="39_dmtgj"]
@@ -331,9 +330,6 @@ collision_mask = 2
 [node name="CollisionShape2D" type="CollisionShape2D" parent="DialogArea"]
 position = Vector2(1502, 223)
 shape = SubResource("RectangleShape2D_dmtgj")
-
-[node name="Foxy" parent="." instance=ExtResource("36_wn3ka")]
-position = Vector2(1704, 157)
 
 [connection signal="lever_activated" from="Lever" to="Gate" method="open_gate"]
 [connection signal="lever_deactivated" from="Lever" to="Gate" method="close_gate"]

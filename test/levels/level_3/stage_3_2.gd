@@ -43,6 +43,7 @@ func _init() -> void:
 
 func _ready() -> void:
 	super._ready()
+	AudioManager.switch_sfx_bus("SFX_Cave")
 	# Lever/Gate connection now handled by Channel System in inspector
 
 
