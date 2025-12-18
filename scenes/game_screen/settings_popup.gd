@@ -27,7 +27,12 @@ func _exit_tree() -> void:
 	pass	
 
 func _on_sound_check_button_toggled(toggled_on: bool) -> void:
-	AudioServer.set_bus_mute(AudioServer.get_bus_index("SFX"), not toggled_on)
+	var sfx_bus = AudioServer.get_bus_index("SFX")
+	var sfx_cave_bus = AudioServer.get_bus_index("SFX_Cave")
+	
+	# Nếu người dùng tắt check button thì mute cả hai bus
+	AudioServer.set_bus_mute(sfx_bus, not toggled_on)
+	AudioServer.set_bus_mute(sfx_cave_bus, not toggled_on)
 	sound_volume_slider.editable = toggled_on
 
 func _on_music_check_button_toggled(toggled_on: bool) -> void:
@@ -36,13 +41,17 @@ func _on_music_check_button_toggled(toggled_on: bool) -> void:
 
 func _on_music_volume_slider_value_changed(value: float) -> void:
 	AudioServer.set_bus_volume_db(AudioServer.get_bus_index("Music"),value)
-	if music_check_button.button_pressed == false:
-		music_check_button.button_pressed = true
+	#if music_check_button.button_pressed == false:
+		#music_check_button.button_pressed = true
 
 func _on_sound_volume_slider_value_changed(value: float) -> void:
-	AudioServer.set_bus_volume_db(AudioServer.get_bus_index("SFX"), value)
-	if sound_check_button.button_pressed == false:
-		sound_check_button.button_pressed = true
+	var sfx_bus = AudioServer.get_bus_index("SFX")
+	var sfx_cave_bus = AudioServer.get_bus_index("SFX_Cave")
+	
+	AudioServer.set_bus_volume_db(sfx_bus, value)
+	AudioServer.set_bus_volume_db(sfx_cave_bus, value)
+	#if sound_check_button.button_pressed == false:
+		#sound_check_button.button_pressed = true
 
 func hide_popup():
 	GameManager.unpause()

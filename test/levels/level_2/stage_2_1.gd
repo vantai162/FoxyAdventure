@@ -11,8 +11,10 @@ extends StageBase
 ## - Dialog system integration
 
 
+
 ## Music track ID from AudioDatabase
 @export var stage_music_id: String = "level_1_music"
+var timeline_foxy_level2_played = false
 
 
 func _init() -> void:
@@ -34,3 +36,12 @@ func _on_dialog_finished() -> void:
 	var player = GameManager.player
 	if player:
 		player.set_physics_process(true)
+	can_pause = true
+
+
+func _on_dialog_area_body_entered(body: Node2D) -> void:
+	if body is Player and not timeline_foxy_level2_played:
+		Dialogic.start("foxy_timeline_level2")
+		can_pause = false
+		timeline_foxy_level2_played = true
+		Dialogic.timeline_ended.connect(_on_dialog_finished)

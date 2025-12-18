@@ -549,7 +549,7 @@ wipe_duration = 0.15
 
 [node name="Foxy" parent="." instance=ExtResource("10_foxy")]
 z_index = 1
-position = Vector2(1199, 881)
+position = Vector2(370, 401)
 
 [node name="Checkpoint" parent="." instance=ExtResource("35_0ao1h")]
 position = Vector2(169, 463)

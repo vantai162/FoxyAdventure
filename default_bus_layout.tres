@@ -1,4 +1,13 @@
-[gd_resource type="AudioBusLayout" format=3 uid="uid://dcpo1ix7i3ua0"]
+[gd_resource type="AudioBusLayout" load_steps=2 format=3 uid="uid://dcpo1ix7i3ua0"]
+
+[sub_resource type="AudioEffectReverb" id="AudioEffectReverb_j3pel"]
+resource_name = "Reverb"
+predelay_msec = 180.0
+room_size = 0.9
+damping = 0.2
+hipass = 0.2
+dry = 0.5
+wet = 0.7
 
 [resource]
 bus/0/volume_db = -4.24723
@@ -12,5 +21,13 @@ bus/2/name = &"Music"
 bus/2/solo = false
 bus/2/mute = false
 bus/2/bypass_fx = false
-bus/2/volume_db = -4.25003
+bus/2/volume_db = -4.50411
 bus/2/send = &"Master"
+bus/3/name = &"SFX_Cave"
+bus/3/solo = false
+bus/3/mute = false
+bus/3/bypass_fx = false
+bus/3/volume_db = -11.952
+bus/3/send = &"Master"
+bus/3/effect/0/effect = SubResource("AudioEffectReverb_j3pel")
+bus/3/effect/0/enabled = true

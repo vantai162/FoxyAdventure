@@ -1,7 +1,7 @@
-[gd_resource type="Resource" script_class="AudioClip" load_steps=3 format=3 uid="uid://blade_land_001"]
+[gd_resource type="Resource" script_class="AudioClip" load_steps=3 format=3 uid="uid://y38q7dxqatcb"]
 
 [ext_resource type="Script" uid="uid://chlphbiuq1gay" path="res://scripts/audio/audio_clip.gd" id="1_clip"]
-[ext_resource type="AudioStream" uid="uid://d0rbhw4pnq5uw" path="res://assets/sounds/impactWood_heavy_001.ogg" id="2_stream"]
+[ext_resource type="AudioStream" uid="uid://d4druhwdf3ge" path="res://assets/sounds/impactWood_heavy_001.ogg" id="2_stream"]
 
 [resource]
 script = ExtResource("1_clip")

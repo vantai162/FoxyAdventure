@@ -42,7 +42,15 @@ func _input(event):
 		
 		# Bắt đầu Dialogic
 		Dialogic.start(timeline_name)
-		
+		var stage = get_parent()
+		stage.can_pause = false
 		# Chặn input này lại, không cho nó truyền xuống Player
 		# (Tránh việc bấm F vừa mở thoại vừa làm Player nhảy/đánh)
+		if not Dialogic.timeline_ended.is_connected(_on_dialog_finished):
+			Dialogic.timeline_ended.connect(_on_dialog_finished)
 		get_viewport().set_input_as_handled()
+		
+func _on_dialog_finished() -> void:
+	# Khi timeline kết thúc thì bật lại pause
+	var stage = get_parent()
+	stage.can_pause = true
