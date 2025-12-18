@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="AudioClip" load_steps=3 format=3 uid="uid://wqia3ekpnra2"]
+
+[ext_resource type="Script" uid="uid://chlphbiuq1gay" path="res://scripts/audio/audio_clip.gd" id="1_4drtl"]
+[ext_resource type="AudioStream" uid="uid://knu6xfgsxggo" path="res://assets/sounds/water-splash.mp3" id="2_314pj"]
+
+[resource]
+script = ExtResource("1_4drtl")
+clip_id = "water_splash"
+stream = ExtResource("2_314pj")
+volume_db = 0.0
+randomize_pitch = true
+pitch_min = 0.8
+pitch_max = 1.4
+description = ""
+metadata/_custom_type_script = "uid://chlphbiuq1gay"

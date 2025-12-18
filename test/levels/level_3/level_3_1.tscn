@@ -37,7 +37,7 @@
 [ext_resource type="PackedScene" uid="uid://coqrny0yf5swy" path="res://objects/wind/WindArea.tscn" id="26_2y2ek"]
 [ext_resource type="PackedScene" uid="uid://y7p8q2kh8teb" path="res://objects/flame/flame_hazard.tscn" id="27_alf78"]
 [ext_resource type="PackedScene" uid="uid://b0h8a022mpy26" path="res://objects/spike/spike_retractable/spike_retractable.tscn" id="28_fcwnb"]
-[ext_resource type="PackedScene" path="res://environment/lava/lavafall.tscn" id="29_qrwfa"]
+[ext_resource type="PackedScene" uid="uid://dxa1gc3xiner8" path="res://environment/lava/lavafall.tscn" id="29_qrwfa"]
 [ext_resource type="PackedScene" path="res://objects/scene_transition/scene_transition.tscn" id="30_scene_transition"]
 [ext_resource type="PackedScene" uid="uid://bmic0j4cnluey" path="res://objects/checkpoint/checkpoint.tscn" id="40_3j2yj"]
 
@@ -95,7 +95,6 @@ grow_horizontal = 1
 grow_vertical = 1
 
 [node name="DarknessModulate" type="CanvasModulate" parent="."]
-visible = false
 color = Color(0.0558769, 0.0395219, 0.0722072, 1)
 
 [node name="PlayerSpawn" type="Marker2D" parent="."]
@@ -651,5 +650,9 @@ position = Vector2(969, 1008)
 
 [node name="Checkpoint4" parent="." instance=ExtResource("40_3j2yj")]
 position = Vector2(334, 1935)
+
+[connection signal="area_entered" from="Terrain/TileMapLayer/HealthPotion" to="Terrain/TileMapLayer/HealthPotion" method="_on_area_entered"]
+[connection signal="area_entered" from="Terrain/TileMapLayer/@Area2D@51596" to="Terrain/TileMapLayer/@Area2D@51596" method="_on_area_entered"]
+[connection signal="area_entered" from="Terrain/TileMapLayer/@Area2D@51597" to="Terrain/TileMapLayer/@Area2D@51597" method="_on_area_entered"]
 
 [editable path="Platforms/MovingPlatform1"]

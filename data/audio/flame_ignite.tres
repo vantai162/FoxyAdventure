@@ -1,7 +1,7 @@
-[gd_resource type="Resource" script_class="AudioClip" load_steps=3 format=3 uid="uid://flame_ignite_001"]
+[gd_resource type="Resource" script_class="AudioClip" load_steps=3 format=3 uid="uid://dy3rhy6fsilw5"]
 
 [ext_resource type="Script" uid="uid://chlphbiuq1gay" path="res://scripts/audio/audio_clip.gd" id="1_clip"]
-[ext_resource type="AudioStream" uid="uid://de1e7xm8x8p4h" path="res://assets/sounds/explosion.wav" id="2_stream"]
+[ext_resource type="AudioStream" uid="uid://1ffv5ar6yciy" path="res://assets/sounds/explosion.wav" id="2_stream"]
 
 [resource]
 script = ExtResource("1_clip")

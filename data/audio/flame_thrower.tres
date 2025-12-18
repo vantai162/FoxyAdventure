@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="AudioClip" load_steps=3 format=3 uid="uid://pdhw3jxet5nm"]
+
+[ext_resource type="Script" uid="uid://chlphbiuq1gay" path="res://scripts/audio/audio_clip.gd" id="1_dm1od"]
+[ext_resource type="AudioStream" uid="uid://dr4bqt7q6ykac" path="res://assets/sounds/fireball-whoosh-2.mp3" id="2_0j02n"]
+
+[resource]
+script = ExtResource("1_dm1od")
+clip_id = "flame_thrower"
+stream = ExtResource("2_0j02n")
+volume_db = 0.0
+randomize_pitch = true
+pitch_min = 0.9
+pitch_max = 1.1
+description = ""
+metadata/_custom_type_script = "uid://chlphbiuq1gay"

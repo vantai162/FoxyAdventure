@@ -216,6 +216,7 @@ func _on_hit_ground() -> void:
 		collision.set_deferred("disabled", true)
 	
 	if destroy_on_impact:
+		AudioManager.play_sound("hit_rock_1",10.0)
 		# Shatter effect (could add particles here)
 		if sprite:
 			var tween = create_tween()

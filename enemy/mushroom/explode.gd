@@ -9,6 +9,7 @@ func _enter() -> void:
 	obj.get_node("Direction/HurtArea2D/CollisionShape2D").disabled = true
 	await get_tree().create_timer(1.5).timeout  
 	_spawn_toxic_gas()
+	AudioManager.play_sound("gas",10.0)
 	obj.queue_free()
 
 func _spawn_toxic_gas():

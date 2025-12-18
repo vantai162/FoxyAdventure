@@ -1,4 +1,4 @@
-[gd_scene load_steps=43 format=4 uid="uid://bqrnsq4v6ssvi"]
+[gd_scene load_steps=43 format=4 uid="uid://dq68l7mrj3glk"]
 
 [ext_resource type="Script" uid="uid://c5cp6lv5bj1rw" path="res://test/levels/level_2/stage_2_1.gd" id="1_5l4f7"]
 [ext_resource type="PackedScene" uid="uid://dm741hii7d5nv" path="res://scenes/game_screen/health_bar.tscn" id="1_x7kuf"]

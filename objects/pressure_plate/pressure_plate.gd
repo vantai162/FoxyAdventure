@@ -114,6 +114,7 @@ func _on_body_entered(body: Node2D) -> void:
 		if not (body.is_in_group("heavy") or body.is_in_group("pushable")):
 			return
 	else:
+		AudioManager.play_sound("button_press",10.0)
 		# Accept: player, enemies, and pushable objects
 		# This allows puzzle design where enemies can trigger plates!
 		var is_valid := false
