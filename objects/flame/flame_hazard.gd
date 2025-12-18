@@ -209,6 +209,7 @@ func play_cycle() -> void:
 		await off_phase()
 
 func start_phase() -> void:
+	$Ignite.play()
 	current_phase = "starting"
 	animated_sprite.play("start")
 	_set_collision_enabled(true)
@@ -316,6 +317,7 @@ func _stop_flicker() -> void:
 
 ## Force flame on (for puzzle interactions)
 func ignite() -> void:
+	print("played")
 	if current_phase == "off" or current_phase == "ending":
 		# Skip to start phase
 		await start_phase()

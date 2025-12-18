@@ -433,6 +433,8 @@ func _ready() -> void:
 				# Check if channel is already active (respawn with lever still on)
 				if channel_manager.is_channel_active(listen_channel):
 					call_deferred("_on_channel_activated", listen_channel, null)
+					
+	$Sound.play()
 
 
 func _get_configuration_warnings() -> PackedStringArray:

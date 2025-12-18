@@ -1027,6 +1027,7 @@ func splash(splash_pos:Vector2, splash_velocity:float) -> void:
 func _on_body_entered(body: Node2D) -> void:
 	if body.is_in_group("can_interact_with_water"):
 		splash(body.global_position, -body.velocity.y * player_splash_mutiplier)
+		AudioManager.play_sound("water_splash",10.0)
 		
 		# Track body for swim disturbance
 		if not _bodies_in_water.has(body):

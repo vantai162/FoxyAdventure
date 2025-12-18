@@ -145,6 +145,7 @@ func _on_body_entered(body: Node2D) -> void:
 	if body == null or not _is_enabled:
 		return
 	
+	AudioManager.play_sound("wind_area",7.0)
 	# Player - use wind_velocity property for smooth integration
 	if body.is_in_group("player") and "wind_velocity" in body:
 		body.wind_velocity = wind_force

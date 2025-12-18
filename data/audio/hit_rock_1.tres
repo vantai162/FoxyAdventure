@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="AudioClip" load_steps=3 format=3 uid="uid://bsavoiqfpnrp8"]
+
+[ext_resource type="Script" uid="uid://chlphbiuq1gay" path="res://scripts/audio/audio_clip.gd" id="1_d5fb2"]
+[ext_resource type="AudioStream" uid="uid://d1tdmlovib82u" path="res://assets/sounds/hit_rock_1.mp3" id="2_kicsu"]
+
+[resource]
+script = ExtResource("1_d5fb2")
+clip_id = "hit_rock_1"
+stream = ExtResource("2_kicsu")
+volume_db = 0.0
+randomize_pitch = true
+pitch_min = 0.735
+pitch_max = 1.265
+description = ""
+metadata/_custom_type_script = "uid://chlphbiuq1gay"
