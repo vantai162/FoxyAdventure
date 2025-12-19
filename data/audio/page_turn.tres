@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="AudioClip" load_steps=3 format=3 uid="uid://cis8yxlubxxuc"]
+
+[ext_resource type="Script" uid="uid://chlphbiuq1gay" path="res://scripts/audio/audio_clip.gd" id="1_8qdhl"]
+[ext_resource type="AudioStream" uid="uid://bi7yy7uiu61kb" path="res://assets/sounds/63318__flag2__page-turn-please-turn-over-pto-paper_turn_over.wav" id="2_3atuw"]
+
+[resource]
+script = ExtResource("1_8qdhl")
+clip_id = "page_turn"
+stream = ExtResource("2_3atuw")
+volume_db = 0.0
+randomize_pitch = false
+pitch_min = 0.9
+pitch_max = 1.1
+description = ""
+metadata/_custom_type_script = "uid://chlphbiuq1gay"

@@ -222,7 +222,7 @@ exit_direction = 3
 spawn_offset = Vector2(0, -48)
 
 [node name="Foxy" parent="." instance=ExtResource("26_3bl4e")]
-position = Vector2(97, 311)
+position = Vector2(90, 329)
 
 [node name="Blade2" parent="." instance=ExtResource("20_iskdy")]
 position = Vector2(133, 337)

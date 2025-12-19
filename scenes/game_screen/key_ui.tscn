@@ -2,7 +2,7 @@
 
 [ext_resource type="Texture2D" uid="uid://bi8gkhc5c20e0" path="res://assets/key/key_1.png" id="1_nrfgu"]
 [ext_resource type="Script" uid="uid://bjgnv1es25s3c" path="res://scenes/game_screen/key_ui.gd" id="1_ol78c"]
-[ext_resource type="FontFile" uid="uid://dmn322frb0n8t" path="res://assets/fonts/pixel_operator/PixelOperator.ttf" id="3_h4i7h"]
+[ext_resource type="FontFile" uid="uid://cf5fx6yw6wdlj" path="res://assets/fonts/pixel_operator/PixelOperator8.ttf" id="3_xvkir"]
 
 [node name="KeyUI" type="Control"]
 layout_mode = 3
@@ -25,6 +25,6 @@ offset_top = -3.0
 offset_right = 42.0
 offset_bottom = 29.0
 scale = Vector2(0.859829, 0.80711)
-theme_override_fonts/font = ExtResource("3_h4i7h")
-theme_override_font_sizes/font_size = 32
+theme_override_fonts/font = ExtResource("3_xvkir")
+theme_override_font_sizes/font_size = 22
 text = "0"

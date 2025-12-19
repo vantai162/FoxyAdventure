@@ -1,4 +1,4 @@
-[gd_scene load_steps=23 format=3 uid="uid://bmgv5cgan4yt"]
+[gd_scene load_steps=24 format=3 uid="uid://bmgv5cgan4yt"]
 
 [ext_resource type="Script" uid="uid://bmwcsascradew" path="res://enemy/mushroom/mushroom.gd" id="1_jlpow"]
 [ext_resource type="Texture2D" uid="uid://dnlagy1ygfmpg" path="res://assets/monsters/mushroom/mushroom_hurt_03.png" id="2_lprww"]
@@ -8,6 +8,7 @@
 [ext_resource type="Texture2D" uid="uid://bqgmklofxv0qi" path="res://assets/monsters/mushroom/mushroom_02.png" id="6_nf052"]
 [ext_resource type="Script" uid="uid://vrqe6nhdbpvu" path="res://enemy/mushroom/run.gd" id="7_lprww"]
 [ext_resource type="Texture2D" uid="uid://cghgcxg1pvwd6" path="res://assets/monsters/mushroom/mushroom_03.png" id="7_of5h1"]
+[ext_resource type="Texture2D" uid="uid://cpxouolvud4ot" path="res://assets/monsters/mushroom/mushroom_sleep.png" id="8_hkmdn"]
 [ext_resource type="Script" uid="uid://bec5oo64fsxp5" path="res://enemy/mushroom/explode.gd" id="8_jlpow"]
 [ext_resource type="Texture2D" uid="uid://b251p3vy88f5o" path="res://assets/monsters/mushroom/sleep.png" id="8_wkm5k"]
 [ext_resource type="Texture2D" uid="uid://bgnbj6qy3a2ow" path="res://assets/monsters/tribe_temporary/problem.png" id="9_of5h1"]
@@ -79,9 +80,9 @@ animations = [{
 }, {
 "frames": [{
 "duration": 1.0,
-"texture": ExtResource("6_nf052")
+"texture": ExtResource("8_hkmdn")
 }],
-"loop": false,
+"loop": true,
 "name": &"sleep",
 "speed": 1.0
 }]

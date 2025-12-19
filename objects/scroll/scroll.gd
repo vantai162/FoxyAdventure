@@ -15,6 +15,7 @@ func _on_body_entered(body):
 		
 		# Hiệu ứng âm thanh nhặt đồ
 		# body.play_sfx(...)
+		AudioManager.play_sound("page_turn",20.0)
 		
 		# Xóa vật phẩm sau khi đọc xong (hoặc chỉ ẩn đi)
 		queue_free()
