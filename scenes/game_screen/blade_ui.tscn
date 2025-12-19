@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" uid="uid://1fsbitesh4k" path="res://scenes/game_screen/blade_ui.gd" id="1_proae"]
 [ext_resource type="Texture2D" uid="uid://d0s8rm2fj4wef" path="res://assets/foxy/blade/blade_anim_1.png" id="2_proae"]
-[ext_resource type="FontFile" uid="uid://dmn322frb0n8t" path="res://assets/fonts/pixel_operator/PixelOperator.ttf" id="3_laiu8"]
+[ext_resource type="FontFile" uid="uid://cf5fx6yw6wdlj" path="res://assets/fonts/pixel_operator/PixelOperator8.ttf" id="3_proae"]
 
 [node name="BladeUI" type="Control"]
 layout_mode = 3
@@ -27,6 +27,6 @@ offset_top = -3.0
 offset_right = 42.0
 offset_bottom = 29.0
 scale = Vector2(0.859829, 0.80711)
-theme_override_fonts/font = ExtResource("3_laiu8")
-theme_override_font_sizes/font_size = 32
+theme_override_fonts/font = ExtResource("3_proae")
+theme_override_font_sizes/font_size = 22
 text = "0"

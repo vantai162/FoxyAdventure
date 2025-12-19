@@ -121,6 +121,7 @@ func _give_rewards() -> void:
 	# Give coins
 	if coin_reward > 0 and player and player.inventory:
 		player.inventory.adjust_amount_item("Coin", coin_reward)
+		AudioManager.play_sound("coin_spill",15.0)
 	
 	# Spawn items
 	for item_scene in spawn_items:
@@ -149,11 +150,4 @@ func _shake_sprite() -> void:
 
 ## Utility to play a sound at this position
 func _play_sound(stream: AudioStream) -> void:
-	if not stream:
-		return
-	var audio := AudioStreamPlayer2D.new()
-	audio.stream = stream
-	get_parent().add_child(audio)
-	audio.global_position = global_position
-	audio.play()
-	audio.finished.connect(audio.queue_free)
+	AudioManager.play_sound("chest_open",20.0)

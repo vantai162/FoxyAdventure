@@ -1,7 +1,7 @@
-[gd_resource type="Resource" script_class="AudioClip" load_steps=3 format=3 uid="uid://steam_hiss_001"]
+[gd_resource type="Resource" script_class="AudioClip" load_steps=3 format=3 uid="uid://dyppl2prjhm0p"]
 
 [ext_resource type="Script" uid="uid://chlphbiuq1gay" path="res://scripts/audio/audio_clip.gd" id="1_clip"]
-[ext_resource type="AudioStream" uid="uid://cxk5s8kf1w8kd" path="res://assets/sounds/dash.wav" id="2_stream"]
+[ext_resource type="AudioStream" uid="uid://b46tctj0hk2ex" path="res://assets/sounds/dash.wav" id="2_stream"]
 
 [resource]
 script = ExtResource("1_clip")

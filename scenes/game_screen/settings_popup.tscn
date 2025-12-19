@@ -1,4 +1,4 @@
-[gd_scene load_steps=12 format=3 uid="uid://db82ftu2sobir"]
+[gd_scene load_steps=14 format=3 uid="uid://db82ftu2sobir"]
 
 [ext_resource type="Script" uid="uid://cig4g2ihj1ay6" path="res://scenes/game_screen/settings_popup.gd" id="1_a4it1"]
 [ext_resource type="Texture2D" uid="uid://bm66ag0j7y3qi" path="res://assets/ui/popup.png" id="1_ry1hr"]
@@ -22,6 +22,12 @@ bg_color = Color(0.6, 0.6, 0.6, 0)
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_2tnjg"]
 bg_color = Color(0.6, 0.6, 0.6, 0.00392157)
 shadow_offset = Vector2(0, 3.41)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_anvnl"]
+bg_color = Color(0.343767, 0.674388, 0.946378, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_5tp63"]
+bg_color = Color(0.345098, 0.67451, 0.945098, 1)
 
 [node name="SettingsPopup" type="MarginContainer"]
 process_mode = 3
@@ -165,6 +171,7 @@ offset_left = 171.0
 offset_top = 38.0
 offset_right = 262.0
 offset_bottom = 54.0
+theme_override_styles/grabber_area = SubResource("StyleBoxFlat_anvnl")
 min_value = -40.0
 max_value = 0.0
 
@@ -174,6 +181,7 @@ offset_left = 171.0
 offset_top = 60.0
 offset_right = 262.0
 offset_bottom = 76.0
+theme_override_styles/grabber_area = SubResource("StyleBoxFlat_5tp63")
 min_value = -40.0
 max_value = 0.0
 
