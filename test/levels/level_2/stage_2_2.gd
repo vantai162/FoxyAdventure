@@ -18,6 +18,8 @@ extends StageBase
 @onready var warlord_scene = preload("res://enemy/boss/warlordturtle.tscn")
 @onready var turtle_spawn_scene = preload("res://spawner/turtle_spawner.tscn")
 @onready var healpotion_spawn_scene = preload("res://spawner/healthpotion_spawner.tscn")
+var turtle_spawner: Node = null
+
 
 ## Dialogic timeline names
 @export var timeline_name_1: String = "warlord_1"
@@ -75,6 +77,8 @@ func _update_boss_state() -> void:
 		boss_phase2_healthbar.setup()
 		boss_phase2_healthbar.visible = true
 		boss_phase1_healthbar.visible = false
+		if turtle_spawner:
+			turtle_spawner.elite_spawning = true
 	
 	# Handle boss defeat
 	if boss.health <= 1 and not timeline2_triggered and not is_clean_up:
@@ -168,9 +172,9 @@ func _on_dialog_finished() -> void:
 	can_pause = true
 	
 	# Spawn support elements
-	var spawner = turtle_spawn_scene.instantiate()
-	spawner.position = Vector2(676, 26)
-	get_node("Spawner").add_child(spawner)
+	turtle_spawner = turtle_spawn_scene.instantiate()
+	turtle_spawner.position = Vector2(676, 26)
+	get_node("Spawner").add_child(turtle_spawner)
 	turtle_spawner_spawned = true
 	
 	var heal_spawner = healpotion_spawn_scene.instantiate()

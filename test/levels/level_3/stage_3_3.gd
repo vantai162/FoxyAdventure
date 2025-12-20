@@ -44,6 +44,7 @@ func _init() -> void:
 func _ready() -> void:
 	super._ready()
 	AudioManager.switch_sfx_bus("SFX_Cave")
+	AudioManager.play_music("ambience_cave",5.0)
 	# Lever/Gate connection now handled by Channel System in inspector
 
 

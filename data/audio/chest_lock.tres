@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="AudioClip" load_steps=3 format=3 uid="uid://c6rxg1n4p355k"]
+
+[ext_resource type="Script" uid="uid://chlphbiuq1gay" path="res://scripts/audio/audio_clip.gd" id="1_4lx5x"]
+[ext_resource type="AudioStream" uid="uid://crr1kdkyl014y" path="res://assets/sounds/chest-stones-shake-46877.mp3" id="2_5q0t5"]
+
+[resource]
+script = ExtResource("1_4lx5x")
+clip_id = "chest_lock"
+stream = ExtResource("2_5q0t5")
+volume_db = 0.0
+randomize_pitch = false
+pitch_min = 0.9
+pitch_max = 1.1
+description = ""
+metadata/_custom_type_script = "uid://chlphbiuq1gay"

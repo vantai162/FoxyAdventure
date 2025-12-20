@@ -3,7 +3,6 @@
 [ext_resource type="Script" uid="uid://bywdjx02x3vhl" path="res://spawner/turtle_spawner.gd" id="1_32hop"]
 
 [node name="TurtleSpawner" type="Node2D"]
-z_index = 0
 script = ExtResource("1_32hop")
 
 [node name="Timer" type="Timer" parent="."]
