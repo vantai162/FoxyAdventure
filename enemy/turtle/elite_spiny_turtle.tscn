@@ -1,7 +1,7 @@
 [gd_scene load_steps=29 format=3 uid="uid://dumayxma7am7b"]
 
 [ext_resource type="Script" uid="uid://doc61op57jxqn" path="res://enemy/turtle/elite_spiny_turtle.gd" id="1_elite_turtle"]
-[ext_resource type="PackedScene" path="res://enemy/elite_eye_trail.tscn" id="2_eye_trail"]
+[ext_resource type="PackedScene" uid="uid://dxcnl8fucu5je" path="res://enemy/elite_eye_trail.tscn" id="2_eye_trail"]
 [ext_resource type="Shader" uid="uid://q33y13b56v1g" path="res://enemy/elite_enemy.gdshader" id="2_shader"]
 [ext_resource type="PackedScene" uid="uid://bkj05j8tlh2ii" path="res://projectiles/spike_projectile.tscn" id="3_spike"]
 [ext_resource type="Texture2D" uid="uid://8usoreyem8l6" path="res://assets/foxy/smoke/jump_smoke_1.png" id="4_livia"]

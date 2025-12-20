@@ -133,7 +133,7 @@ func _give_rewards() -> void:
 
 func _on_locked() -> void:
 	## Visual/audio feedback when trying to open without key
-	_play_sound(locked_sound)
+	AudioManager.play_sound("chest_lock",18.0)
 	
 	if shake_when_locked and animated_sprite:
 		_shake_sprite()

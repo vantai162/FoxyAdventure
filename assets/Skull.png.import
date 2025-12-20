@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://bn86gx0rjunmx"
-path="res://.godot/imported/Skull.png-04989a4bc81ef3013e257e4aca169520.ctex"
+path="res://.godot/imported/Skull.png-db8c5a69a857791b57942c44d7addb8f.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/monsters/tribe_temporary/Sprites/7-Objects/12-Other Objects/Skull.png"
-dest_files=["res://.godot/imported/Skull.png-04989a4bc81ef3013e257e4aca169520.ctex"]
+source_file="res://assets/Skull.png"
+dest_files=["res://.godot/imported/Skull.png-db8c5a69a857791b57942c44d7addb8f.ctex"]
 
 [params]
 

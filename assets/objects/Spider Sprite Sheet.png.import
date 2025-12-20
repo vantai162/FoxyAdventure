@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://62m3eqgbor7y"
-path="res://.godot/imported/Skull.png-2d7e674c5c7528ddb4d604e9a9586736.ctex"
+uid="uid://dgjm6kuw7b8ms"
+path="res://.godot/imported/Spider Sprite Sheet.png-888254f3b925b103f986f771eb75feb0.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/Pirate Bomb/Sprites/7-Objects/12-Other Objects/Skull.png"
-dest_files=["res://.godot/imported/Skull.png-2d7e674c5c7528ddb4d604e9a9586736.ctex"]
+source_file="res://assets/objects/Spider Sprite Sheet.png"
+dest_files=["res://.godot/imported/Spider Sprite Sheet.png-888254f3b925b103f986f771eb75feb0.ctex"]
 
 [params]
 
