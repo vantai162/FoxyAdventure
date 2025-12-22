@@ -1,4 +1,4 @@
-[gd_scene load_steps=61 format=3 uid="uid://ctmgnaqjtpp40"]
+[gd_scene load_steps=64 format=3 uid="uid://ctmgnaqjtpp40"]
 
 [ext_resource type="Script" uid="uid://bukicvldqmhxv" path="res://enemy/king_crab/king_crab.gd" id="1_script"]
 [ext_resource type="PackedScene" uid="uid://p5etops51kvs" path="res://enemy/king_crab/projectiles/shockwave.tscn" id="2_cqoo5"]
@@ -53,9 +53,12 @@
 [ext_resource type="PackedScene" uid="uid://dx1jtghwrx6ps" path="res://enemy/king_crab/projectiles/king_crab_coconut.tscn" id="34_coconut"]
 [ext_resource type="PackedScene" uid="uid://dncnb1yncdpam" path="res://enemy/king_crab/projectiles/king_crab_claw.tscn" id="35_clawproj"]
 [ext_resource type="PackedScene" uid="uid://p1nb3n6xmbvs" path="res://objects/warning/warning_rocket.tscn" id="36_warning"]
+[ext_resource type="Texture2D" uid="uid://cbghieup7pr35" path="res://assets/king_crab/King_Crab_34.png" id="39_7448b"]
 [ext_resource type="PackedScene" uid="uid://bequ1v0oi2sg0" path="res://enemy/king_crab/projectiles/water_bubble.tscn" id="43_s2fvd"]
 [ext_resource type="Script" uid="uid://8pclbcyle1bg" path="res://enemy/king_crab/bubble_attack.gd" id="52_qyq3g"]
 [ext_resource type="Script" uid="uid://b1e6dns7i2b23" path="res://enemy/king_crab/summon_mini_crab.gd" id="54_ijdas"]
+[ext_resource type="Script" uid="uid://bom7ba2i82uya" path="res://enemy/king_crab/sleep.gd" id="58_yyp5u"]
+[ext_resource type="Script" uid="uid://3rqu8rkg38c5" path="res://enemy/king_crab/wake_up.gd" id="59_2qa4c"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_body"]
 size = Vector2(57, 57)
@@ -323,6 +326,14 @@ animations = [{
 }, {
 "frames": [{
 "duration": 1.0,
+"texture": ExtResource("39_7448b")
+}],
+"loop": true,
+"name": &"sleep",
+"speed": 1.0
+}, {
+"frames": [{
+"duration": 1.0,
 "texture": ExtResource("12_kc13")
 }, {
 "duration": 1.0,
@@ -352,6 +363,20 @@ animations = [{
 "loop": true,
 "name": &"throw",
 "speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("39_7448b")
+}, {
+"duration": 1.0,
+"texture": ExtResource("17_cqoo5")
+}, {
+"duration": 1.0,
+"texture": ExtResource("12_7b5u8")
+}],
+"loop": false,
+"name": &"wake_up",
+"speed": 1.0
 }]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_hit"]
@@ -360,7 +385,7 @@ size = Vector2(63, 63)
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_detect"]
 size = Vector2(555, 555)
 
-[node name="KingCrab" type="CharacterBody2D"]
+[node name="KingCrab" type="CharacterBody2D" groups=["boss"]]
 z_index = 13
 scale = Vector2(2, 2)
 collision_layer = 8
@@ -377,8 +402,8 @@ shape = SubResource("RectangleShape2D_body")
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="Direction"]
 position = Vector2(0, -28)
 sprite_frames = SubResource("SpriteFrames_main")
-animation = &"bubble_attack"
-frame = 1
+animation = &"wake_up"
+frame = 2
 frame_progress = 1.0
 flip_h = true
 
@@ -477,6 +502,12 @@ script = ExtResource("52_qyq3g")
 
 [node name="SummonMiniCrab" type="Node" parent="States"]
 script = ExtResource("54_ijdas")
+
+[node name="Sleep" type="Node" parent="States"]
+script = ExtResource("58_yyp5u")
+
+[node name="WakeUp" type="Node" parent="States"]
+script = ExtResource("59_2qa4c")
 
 [connection signal="hurt" from="Direction/HurtArea2D" to="." method="_on_hurt_area_2d_hurt"]
 [connection signal="body_entered" from="Direction/DetectPlayerArea2D" to="." method="_on_active_area_2d_body_entered"]

@@ -41,6 +41,7 @@ directories/dtl_directory={
 "captain_timeline": "res://dialog/timelines/captain_timeline.dtl",
 "cat_timeline": "res://dialog/timelines/cat_timeline.dtl",
 "cucumber_timeline": "res://dialog/timelines/cucumber_timeline.dtl",
+"foxy_timeline_4_1": "res://dialog/timelines/foxy_timeline_4_1.dtl",
 "foxy_timeline_level2": "res://dialog/timelines/foxy_timeline_level2.dtl",
 "good_ending_timeline": "res://dialog/timelines/good_ending_timeline.dtl",
 "jack_timeline": "res://dialog/timelines/jack_timeline.dtl",

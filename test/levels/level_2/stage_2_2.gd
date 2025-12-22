@@ -133,7 +133,7 @@ func _on_meet_boss_area_2d_body_entered(body: Node2D) -> void:
 		
 		# Start pre-battle dialogue
 		Dialogic.start(timeline_name_1)
-		AudioManager.play_music(music_id, 10.0, 0.5)
+		AudioManager.play_music("theme_2", 15.0, 0.1)
 		Dialogic.timeline_ended.connect(_on_dialog_finished)
 
 
@@ -242,7 +242,6 @@ func _spare_warlord_escape() -> void:
 	var cam = GameManager.player.get_node("Camera2D")
 	AudioManager.play_sound("earthquake")
 	cam.shake_tsunami()
-	AudioManager.play_sound("")
 	var target_pos = boss.position + Vector2(0, -600) 
 	var tween = create_tween()
 	tween.tween_property(boss, "position", target_pos,2.0  # thời gian dài hơn để thấy rõ giảm tốc

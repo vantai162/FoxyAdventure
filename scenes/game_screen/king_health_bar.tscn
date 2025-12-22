@@ -1,0 +1,22 @@
+[gd_scene load_steps=4 format=3 uid="uid://bpcxarfyfvdna"]
+
+[ext_resource type="Texture2D" uid="uid://6mur7qajmj37" path="res://assets/ui/king_hp_ui_under.png" id="1_iscfb"]
+[ext_resource type="Texture2D" uid="uid://b7mrkw5n3mxnl" path="res://assets/ui/warlord_hp_ui.png" id="2_xxfxq"]
+[ext_resource type="Script" uid="uid://dho47yw5bf3u8" path="res://scenes/game_screen/king_health_bar.gd" id="3_1i8ke"]
+
+[node name="KingHealthBar" type="TextureProgressBar"]
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -1034.0
+offset_top = -8.0
+offset_right = -10.0
+offset_bottom = 1016.0
+grow_horizontal = 0
+scale = Vector2(0.284602, 0.303524)
+min_value = 30.0
+value = 100.0
+fill_mode = 1
+texture_under = ExtResource("1_iscfb")
+texture_progress = ExtResource("2_xxfxq")
+script = ExtResource("3_1i8ke")

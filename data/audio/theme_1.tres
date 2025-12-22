@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="AudioClip" load_steps=3 format=3 uid="uid://dibvim6ktmb7r"]
+
+[ext_resource type="Script" uid="uid://chlphbiuq1gay" path="res://scripts/audio/audio_clip.gd" id="1_g4qbr"]
+[ext_resource type="AudioStream" uid="uid://eo5hkpdamqxw" path="res://assets/sounds/ASGORE.mp3" id="2_61vw6"]
+
+[resource]
+script = ExtResource("1_g4qbr")
+clip_id = "theme_1"
+stream = ExtResource("2_61vw6")
+volume_db = 0.0
+randomize_pitch = false
+pitch_min = 0.9
+pitch_max = 1.1
+description = ""
+metadata/_custom_type_script = "uid://chlphbiuq1gay"
