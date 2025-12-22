@@ -280,19 +280,4 @@ story_text = "Không ai biết nguồn gốc thật sự của Trái Tim Biển 
 (Nhấn Q để tiếp tục)"
 memory_title = "⭐ Memory 4 – “Trường sinh bất lão”"
 
-[connection signal="area_entered" from="DirtLayer/Coin" to="DirtLayer/Coin" method="_on_area_entered"]
-[connection signal="area_entered" from="DirtLayer/@Area2D@105970" to="DirtLayer/@Area2D@105970" method="_on_area_entered"]
-[connection signal="area_entered" from="DirtLayer/@Area2D@105971" to="DirtLayer/@Area2D@105971" method="_on_area_entered"]
-[connection signal="area_entered" from="DirtLayer/@Area2D@105972" to="DirtLayer/@Area2D@105972" method="_on_area_entered"]
-[connection signal="area_entered" from="DirtLayer/@Area2D@105973" to="DirtLayer/@Area2D@105973" method="_on_area_entered"]
-[connection signal="area_entered" from="DirtLayer/@Area2D@105974" to="DirtLayer/@Area2D@105974" method="_on_area_entered"]
-[connection signal="area_entered" from="DirtLayer/@Area2D@105975" to="DirtLayer/@Area2D@105975" method="_on_area_entered"]
-[connection signal="area_entered" from="DirtLayer/@Area2D@105976" to="DirtLayer/@Area2D@105976" method="_on_area_entered"]
-[connection signal="area_entered" from="DirtLayer/@Area2D@105977" to="DirtLayer/@Area2D@105977" method="_on_area_entered"]
-[connection signal="area_entered" from="DirtLayer/@Area2D@105978" to="DirtLayer/@Area2D@105978" method="_on_area_entered"]
-[connection signal="area_entered" from="DirtLayer/@Area2D@105979" to="DirtLayer/@Area2D@105979" method="_on_area_entered"]
-[connection signal="area_entered" from="DirtLayer/@Area2D@105980" to="DirtLayer/@Area2D@105980" method="_on_area_entered"]
-[connection signal="area_entered" from="DirtLayer/@Area2D@105981" to="DirtLayer/@Area2D@105981" method="_on_area_entered"]
-[connection signal="area_entered" from="DirtLayer/@Area2D@105982" to="DirtLayer/@Area2D@105982" method="_on_area_entered"]
-[connection signal="area_entered" from="DirtLayer/@Area2D@105983" to="DirtLayer/@Area2D@105983" method="_on_area_entered"]
 [connection signal="body_entered" from="MeetBossArea2D" to="." method="_on_meet_boss_area_2d_body_entered"]

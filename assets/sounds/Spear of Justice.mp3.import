@@ -1,0 +1,19 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+uid="uid://cnlwxvlw261bo"
+path="res://.godot/imported/Spear of Justice.mp3-a36e0820fd5f01dad2972d65e86b9647.mp3str"
+
+[deps]
+
+source_file="res://assets/sounds/Spear of Justice.mp3"
+dest_files=["res://.godot/imported/Spear of Justice.mp3-a36e0820fd5f01dad2972d65e86b9647.mp3str"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

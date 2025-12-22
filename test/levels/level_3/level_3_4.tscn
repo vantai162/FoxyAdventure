@@ -28,6 +28,56 @@
 [node name="Level_3_4" type="Node2D"]
 script = ExtResource("1_stage_script")
 
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+layer = 100
+
+[node name="TextureProgressBar" parent="CanvasLayer" instance=ExtResource("18_kkqtw")]
+offset_left = 5.0
+offset_right = 176.0
+mouse_filter = 2
+
+[node name="OxyBar" parent="CanvasLayer" instance=ExtResource("19_kymkp")]
+offset_left = 200.0
+offset_right = 344.0
+mouse_filter = 2
+
+[node name="DamageOverLay" parent="CanvasLayer" instance=ExtResource("20_emg2g")]
+
+[node name="CoinUI" parent="CanvasLayer" instance=ExtResource("21_1hjjx")]
+anchors_preset = 0
+anchor_right = 0.0
+anchor_bottom = 0.0
+offset_left = 20.0
+offset_top = 70.0
+offset_right = 20.0
+offset_bottom = 70.0
+grow_horizontal = 1
+grow_vertical = 1
+mouse_filter = 2
+
+[node name="KeyUI" parent="CanvasLayer" instance=ExtResource("22_85yhf")]
+anchors_preset = 0
+anchor_right = 0.0
+anchor_bottom = 0.0
+offset_left = 20.0
+offset_top = 110.0
+offset_right = 20.0
+offset_bottom = 110.0
+grow_horizontal = 1
+grow_vertical = 1
+mouse_filter = 2
+
+[node name="BladeUI" parent="CanvasLayer" instance=ExtResource("23_drhko")]
+anchors_preset = 0
+anchor_right = 0.0
+anchor_bottom = 0.0
+offset_left = 20.0
+offset_top = 155.0
+offset_right = 20.0
+offset_bottom = 155.0
+grow_horizontal = 1
+grow_vertical = 1
+
 [node name="DarknessModulate" type="CanvasModulate" parent="."]
 color = Color(0.06, 0.05, 0.08, 1)
 
@@ -316,7 +366,7 @@ target_spawn_name = "ToLevel3_4"
 
 [node name="ToLevel3_5" parent="ExitZone" instance=ExtResource("18_scene_transition")]
 position = Vector2(1560, 600)
-target_scene = "res://test/levels/level_3/level_3_5.tscn"
+target_scene = "uid://d13o8bw60wg6n"
 target_spawn_name = "FromLevel3_4"
 
 [node name="Foxy" parent="." instance=ExtResource("10_foxy")]
@@ -324,53 +374,3 @@ position = Vector2(107, 314)
 
 [node name="Checkpoint" parent="." instance=ExtResource("24_kymkp")]
 position = Vector2(629, 574)
-
-[node name="CanvasLayer" type="CanvasLayer" parent="."]
-layer = 100
-
-[node name="TextureProgressBar" parent="CanvasLayer" instance=ExtResource("18_kkqtw")]
-offset_left = 5.0
-offset_right = 176.0
-mouse_filter = 2
-
-[node name="OxyBar" parent="CanvasLayer" instance=ExtResource("19_kymkp")]
-offset_left = 200.0
-offset_right = 344.0
-mouse_filter = 2
-
-[node name="DamageOverLay" parent="CanvasLayer" instance=ExtResource("20_emg2g")]
-
-[node name="CoinUI" parent="CanvasLayer" instance=ExtResource("21_1hjjx")]
-anchors_preset = 0
-anchor_right = 0.0
-anchor_bottom = 0.0
-offset_left = 20.0
-offset_top = 70.0
-offset_right = 20.0
-offset_bottom = 70.0
-grow_horizontal = 1
-grow_vertical = 1
-mouse_filter = 2
-
-[node name="KeyUI" parent="CanvasLayer" instance=ExtResource("22_85yhf")]
-anchors_preset = 0
-anchor_right = 0.0
-anchor_bottom = 0.0
-offset_left = 20.0
-offset_top = 110.0
-offset_right = 20.0
-offset_bottom = 110.0
-grow_horizontal = 1
-grow_vertical = 1
-mouse_filter = 2
-
-[node name="BladeUI" parent="CanvasLayer" instance=ExtResource("23_drhko")]
-anchors_preset = 0
-anchor_right = 0.0
-anchor_bottom = 0.0
-offset_left = 20.0
-offset_top = 155.0
-offset_right = 20.0
-offset_bottom = 155.0
-grow_horizontal = 1
-grow_vertical = 1

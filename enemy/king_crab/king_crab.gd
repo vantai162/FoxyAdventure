@@ -82,15 +82,18 @@ var last_attack: String = ""  ## Prevents repeating same attack twice
 @onready var upper_claw_pos = $Direction/WaterBubbleFactory/Marker2D_UpperClaw
 @onready var lower_claw_pos = $Direction/WaterBubbleFactory/Marker2D_LowerClaw
 
+signal health_changed
+
 func _ready() -> void:
 	add_to_group("king_crab")
 	add_to_group("enemy")
 	# max_health is set via @export in inspector (inherited from EnemyCharacter)
-	fsm = FSM.new(self, $States, $States/Idle)
+	fsm = FSM.new(self, $States, $States/Sleep)
 	super._ready()  # Calls _init_ray_cast, _init_detect_player_area, _init_hurt_area
 
 func take_damage(damage: int) -> void:
 	super.take_damage(damage)
+	health_changed.emit()
 	if current_phase == 1 and health <= max_health * phase_2_threshold:
 		_enter_phase_2()
 

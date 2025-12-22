@@ -19,4 +19,4 @@ func _update( delta: float):
 
 		else:
 
-			change_state(fsm.default_state)
+			change_state(fsm.states.idle)
