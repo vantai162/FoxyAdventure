@@ -139,6 +139,7 @@ func _on_landing() -> void:
 	obj.change_animation("dive_land")
 	_create_shockwave()
 	_shake_camera(obj.dive_land_shake)
+	AudioManager.play_sound("king_land",22.0)
 
 
 func _launch() -> void:

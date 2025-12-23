@@ -47,6 +47,7 @@ func _update(delta: float) -> void:
 				_fire_bubble_from_lower()
 				attack_phase = AttackPhase.FIRE_SECOND
 				phase_timer = 0.0
+				
 		
 		AttackPhase.FIRE_SECOND:
 			if phase_timer >= RECOVERY_TIME:
@@ -76,3 +77,4 @@ func _spawn_bubble(pos: Vector2) -> void:
 		bubble.global_position = pos
 		bubble.launch(fire_dir, obj.bubble_speed)
 		bubble.trap_duration = obj.bubble_trap_duration
+		AudioManager.play_sound("bubble_attack",20.0)

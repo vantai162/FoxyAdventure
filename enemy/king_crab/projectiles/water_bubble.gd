@@ -125,5 +125,6 @@ func _on_area_2d_body_entered(body: Node2D) -> void:
 		launch_velocity = Vector2.ZERO
 		
 		# Apply stun and bubble trap effect
+		AudioManager.play_sound("water_prison",20.0)
 		body._applyeffect("Stun", trap_duration)
 		body._applyeffect("BubbleTrap", trap_duration)

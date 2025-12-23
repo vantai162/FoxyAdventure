@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="AudioClip" load_steps=3 format=3 uid="uid://dfd8sm5bqlbfs"]
+
+[ext_resource type="Script" uid="uid://chlphbiuq1gay" path="res://scripts/audio/audio_clip.gd" id="1_gs5p6"]
+[ext_resource type="AudioStream" uid="uid://4opte6p4bwg7" path="res://assets/sounds/laserSmall_002.ogg" id="2_j57l1"]
+
+[resource]
+script = ExtResource("1_gs5p6")
+clip_id = "claw_attack"
+stream = ExtResource("2_j57l1")
+volume_db = 0.0
+randomize_pitch = false
+pitch_min = 0.9
+pitch_max = 1.1
+description = ""
+metadata/_custom_type_script = "uid://chlphbiuq1gay"

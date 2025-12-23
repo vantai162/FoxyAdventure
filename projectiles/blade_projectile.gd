@@ -422,9 +422,9 @@ func _on_body_entered(body: Node) -> void:
 
 func _on_area_entered(area: Area2D) -> void:
 	# Pickup by player's HurtArea or other areas
-	if area.get_parent() == thrower:
-		_pickup_by_player()
-		return
+	#if area.get_parent() == thrower:
+	#	_pickup_by_player()
+	#	return
 	
 	# Water extinguishes flame blade
 	if area.is_in_group("water"):
