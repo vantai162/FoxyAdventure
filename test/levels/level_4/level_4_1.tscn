@@ -1,4 +1,4 @@
-[gd_scene load_steps=59 format=4 uid="uid://bnu1efrujuuh1"]
+[gd_scene load_steps=60 format=4 uid="uid://bnu1efrujuuh1"]
 
 [ext_resource type="Script" uid="uid://badrbumv6fcvh" path="res://test/levels/level_4/level_4_1.gd" id="1_jtpgi"]
 [ext_resource type="Texture2D" uid="uid://coet04oricq34" path="res://assets/craftpix-net-926878-free-platformer-game-tileset-pixel-art/PNG/Background/1920x1080/Sky_1920x1080.png" id="1_m8d2m"]
@@ -28,6 +28,7 @@
 [ext_resource type="Texture2D" uid="uid://b1pcu5t8vkkhb" path="res://assets/GandalfHardcore FREE Platformer Assets/GandalfHardcore FREE Platformer Assets/Weeping Willow1.png" id="21_7pjlk"]
 [ext_resource type="PackedScene" uid="uid://dqdstpxycbomj" path="res://effect_Item/BladeItem/blade.tscn" id="25_p7ot3"]
 [ext_resource type="PackedScene" uid="uid://coqrny0yf5swy" path="res://objects/wind/WindArea.tscn" id="28_ni2h2"]
+[ext_resource type="PackedScene" path="res://objects/scene_transition/scene_transition.tscn" id="29_fuc0x"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_0vhqm"]
 texture = ExtResource("1_w1nry")
@@ -6859,7 +6860,13 @@ shape = SubResource("RectangleShape2D_fuc0x")
 position = Vector2(-1173, -382)
 wind_force = Vector2(500, 0)
 
-[node name="Blade2" parent="." instance=ExtResource("25_p7ot3")]
-position = Vector2(126, -637)
+[node name="ExitZone" type="Node2D" parent="."]
+
+[node name="FromLevel3_3" parent="ExitZone" instance=ExtResource("29_fuc0x")]
+position = Vector2(-1154, -238)
+target_scene = "res://test/levels/level_3/level_3_2.tscn"
+target_spawn_name = "ToLevel3_3"
+exit_direction = 0
+spawn_offset = Vector2(48, 0)
 
 [connection signal="body_entered" from="KingCrabTrigger" to="." method="_on_king_crab_trigger_body_entered"]
