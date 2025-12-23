@@ -1,4 +1,4 @@
-[gd_scene load_steps=36 format=4 uid="uid://ddyh8ihq1kbaq"]
+[gd_scene load_steps=35 format=4 uid="uid://ddyh8ihq1kbaq"]
 
 [ext_resource type="Script" uid="uid://0thb0qwv81u6" path="res://test/levels/level_2/stage_2_2.gd" id="1_3q18u"]
 [ext_resource type="PackedScene" uid="uid://dm741hii7d5nv" path="res://scenes/game_screen/health_bar.tscn" id="2_l0ym8"]
@@ -23,7 +23,6 @@
 [ext_resource type="PackedScene" uid="uid://g83nl1ihtg6h" path="res://objects/gate/dugeon_gate.tscn" id="25_3bl4e"]
 [ext_resource type="PackedScene" path="res://objects/scene_transition/scene_transition.tscn" id="25_jfg0o"]
 [ext_resource type="PackedScene" uid="uid://demnh2f4ooy6n" path="res://objects/platform/floating_boat_platform.tscn" id="25_rbb0x"]
-[ext_resource type="PackedScene" uid="uid://bs816w0pr8all" path="res://player/foxy.tscn" id="26_3bl4e"]
 [ext_resource type="PackedScene" uid="uid://dl1jqgf5ab7l" path="res://effect_Item/chest/gold_chest.tscn" id="27_wubtl"]
 [ext_resource type="PackedScene" uid="uid://b3rfttffyg1qj" path="res://effect_Item/key/key.tscn" id="28_klqlj"]
 [ext_resource type="TileSet" uid="uid://xt3l8n15jbfm" path="res://assets/island/tileset.tres" id="29_klqlj"]
@@ -238,9 +237,6 @@ target_scene = "uid://cownslw7ms6s4"
 target_spawn_name = "FromLevel2_2"
 exit_direction = 3
 spawn_offset = Vector2(0, -48)
-
-[node name="Foxy" parent="." instance=ExtResource("26_3bl4e")]
-position = Vector2(-382, -239)
 
 [node name="Blade2" parent="." instance=ExtResource("20_iskdy")]
 position = Vector2(133, 337)

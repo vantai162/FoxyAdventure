@@ -1,4 +1,4 @@
-[gd_scene load_steps=36 format=4 uid="uid://dk8wc2s582aoq"]
+[gd_scene load_steps=35 format=4 uid="uid://dk8wc2s582aoq"]
 
 [ext_resource type="Script" uid="uid://bdma0gw32yfke" path="res://test/levels/level_3/stage_3_2.gd" id="1_stage_script"]
 [ext_resource type="PackedScene" uid="uid://dm741hii7d5nv" path="res://scenes/game_screen/health_bar.tscn" id="2_ji2g6"]
@@ -14,7 +14,6 @@
 [ext_resource type="PackedScene" uid="uid://8koby8md4sgg" path="res://scenes/game_screen/blade_ui.tscn" id="7_yy4tu"]
 [ext_resource type="PackedScene" uid="uid://ufmc2gkfnv58" path="res://enemy/crab/crab.tscn" id="8_crab"]
 [ext_resource type="PackedScene" uid="uid://bxfs4fsx7ot6m" path="res://enemy/starfish/starfish.tscn" id="9_starfish"]
-[ext_resource type="PackedScene" uid="uid://bs816w0pr8all" path="res://player/foxy.tscn" id="10_foxy"]
 [ext_resource type="PackedScene" uid="uid://bt2icn1rxyolq" path="res://enemy/mushroom/elite_spawner_mushroom.tscn" id="11_elite_mushroom"]
 [ext_resource type="PackedScene" uid="uid://bj35soojaj5hs" path="res://enemy/starfish/elite_ricochet_starfish.tscn" id="12_elite_starfish"]
 [ext_resource type="PackedScene" uid="uid://lrdkn2gv1v1m" path="res://effect_Item/coin/coin.tscn" id="13_coin"]
@@ -546,10 +545,6 @@ position = Vector2(1925, 1002)
 target_scene = "res://test/levels/level_3/level_3_3.tscn"
 target_spawn_name = "FromLevel3_2"
 wipe_duration = 0.15
-
-[node name="Foxy" parent="." instance=ExtResource("10_foxy")]
-z_index = 1
-position = Vector2(370, 401)
 
 [node name="Checkpoint" parent="." instance=ExtResource("35_0ao1h")]
 position = Vector2(169, 463)

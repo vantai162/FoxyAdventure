@@ -1,4 +1,4 @@
-[gd_scene load_steps=28 format=4 uid="uid://baiqhcrd0wqes"]
+[gd_scene load_steps=27 format=4 uid="uid://baiqhcrd0wqes"]
 
 [ext_resource type="Script" uid="uid://dmw85c2q8phxb" path="res://test/levels/level_3/stage_3_3.gd" id="1_stage_script"]
 [ext_resource type="TileSet" uid="uid://0yf5cmwk6u1i" path="res://assets/island/terrain/ice_tile_set.tres" id="3_l86yd"]
@@ -8,7 +8,6 @@
 [ext_resource type="PackedScene" uid="uid://dav8b7a6d5e4f" path="res://enemy/shield_tribe/shield_tribe.tscn" id="7_shield"]
 [ext_resource type="PackedScene" uid="uid://ufmc2gkfnv58" path="res://enemy/crab/crab.tscn" id="8_crab"]
 [ext_resource type="PackedScene" uid="uid://bxfs4fsx7ot6m" path="res://enemy/starfish/starfish.tscn" id="9_starfish"]
-[ext_resource type="PackedScene" uid="uid://bs816w0pr8all" path="res://player/foxy.tscn" id="10_foxy"]
 [ext_resource type="PackedScene" uid="uid://cvq5vx1o24fpg" path="res://enemy/aggressive_tribe/elite_bombardier.tscn" id="11_elite_bombardier"]
 [ext_resource type="PackedScene" uid="uid://d02ffhwahuggg" path="res://enemy/shield_tribe/elite_warden.tscn" id="12_elite_warden"]
 [ext_resource type="PackedScene" uid="uid://lrdkn2gv1v1m" path="res://effect_Item/coin/coin.tscn" id="13_coin"]
@@ -320,12 +319,9 @@ target_spawn_name = "ToLevel3_3"
 exit_direction = 0
 spawn_offset = Vector2(48, 0)
 
-[node name="ToLevel3_4" parent="ExitZone" instance=ExtResource("20_scene_transition")]
+[node name="ToLevel4_1" parent="ExitZone" instance=ExtResource("20_scene_transition")]
 position = Vector2(336, 89)
-target_scene = "uid://bw3mfex1cr0w3"
+target_scene = "uid://bnu1efrujuuh1"
 target_spawn_name = "FromLevel3_3"
 exit_direction = 2
 spawn_offset = Vector2(0, 48)
-
-[node name="Foxy" parent="." instance=ExtResource("10_foxy")]
-position = Vector2(333, 194)
