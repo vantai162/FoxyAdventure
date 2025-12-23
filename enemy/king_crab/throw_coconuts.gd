@@ -85,6 +85,7 @@ func _randomize_next_interval() -> void:
 
 
 func _throw_coconut() -> void:
+	AudioManager.play_sound("player_dash",15.0)
 	if not obj.coconut_factory:
 		return
 	

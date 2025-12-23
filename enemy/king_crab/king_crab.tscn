@@ -391,6 +391,8 @@ scale = Vector2(2, 2)
 collision_layer = 8
 script = ExtResource("1_script")
 shockwave_scene = ExtResource("2_cqoo5")
+dive_launch_shake = 50.0
+dive_land_shake = 100.0
 minicrab_scene = ExtResource("3_pd0pn")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]

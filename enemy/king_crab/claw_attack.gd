@@ -71,7 +71,7 @@ func _start_throw() -> void:
 	attack_phase = AttackPhase.THROWING
 	phase_timer = 0.0
 	obj.change_animation("claw_throw")
-	
+	AudioManager.play_sound("claw_attack",20.0)
 	if obj.claw_factory and obj.claw_factory.has_method("create"):
 		active_claw = obj.claw_factory.create()
 		if active_claw:
@@ -103,6 +103,7 @@ func _start_recoil() -> void:
 	attack_phase = AttackPhase.RECOIL
 	phase_timer = 0.0
 	obj.change_animation("claw_recoil")
+	AudioManager.play_sound("stun",15.0)
 
 
 func _start_recovery() -> void:

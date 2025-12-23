@@ -63,6 +63,7 @@ func _start_rolling() -> void:
 	attack_phase = AttackPhase.JUMPING
 	obj.velocity = Vector2(launch_dir * obj.roll_jump_speed_x, obj.roll_jump_speed_y)
 	obj.change_animation("roll")
+	AudioManager.play_sound("king_spin",12.0)
 
 
 func _update_rolling() -> void:
@@ -82,6 +83,8 @@ func _update_rolling() -> void:
 
 func _on_bounce() -> void:
 	_create_shockwave()
+	AudioManager.play_sound("king_land",20.0)
+	_shake_camera(obj.dive_land_shake)
 	bounce_count += 1
 	
 	if bounce_count >= obj.roll_max_bounces:
@@ -111,3 +114,23 @@ func _start_winddown() -> void:
 
 func _exit() -> void:
 	obj.velocity.x = 0
+	
+func _shake_camera(strength: float) -> void:
+	## Shake the active camera - works with player camera OR fixed arena cameras
+	# Phase 2 gets 1.5x shake
+	if obj.current_phase == 2:
+		strength *= 1.5
+	
+	# Try to find any active camera that can shake
+	var viewport = obj.get_viewport()
+	if not viewport:
+		return
+	
+	var camera = viewport.get_camera_2d()
+	if camera and camera.has_method("shake"):
+		camera.shake(strength)
+	elif obj.found_player and obj.found_player.has_node("Camera2D"):
+		# Fallback to player camera
+		var player_cam = obj.found_player.get_node("Camera2D")
+		if player_cam.has_method("shake"):
+			player_cam.shake(strength)

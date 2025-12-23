@@ -34,6 +34,6 @@ func _on_animation_finished() -> void:
 			elapsed += interval
 			
 		player.set_physics_process(true)
-		AudioManager.play_music("theme_1",18.0,0)
+		AudioManager.play_music("theme_1",15.0,0)
 		change_state(fsm.states.idle)
 		print("finished")
