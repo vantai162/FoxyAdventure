@@ -22,7 +22,8 @@ func _spawn_toxic_gas():
 	# Spawn 2 gas clouds (left and right) using factory
 	for dir in [-1, 1]:
 		var gas = gas_factory.create()
-		gas.velocity = Vector2(gas_speed * dir, randf_range(-20, 20))
+		gas.velocity = Vector2(gas_speed * dir, randf_range(-5, 5))
+
 
 func _spawn_toxic_gas_manual():
 	## DEPRECATED fallback for scenes not yet updated with factory
