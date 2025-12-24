@@ -1,0 +1,11 @@
+[gd_resource type="Theme" load_steps=3 format=3 uid="uid://bkd0t72oknhun"]
+
+[ext_resource type="Texture2D" uid="uid://csbx5n63pcjpj" path="res://objects/npc/shop/WoodPixel.png" id="1_je4vg"]
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_54ybl"]
+texture = ExtResource("1_je4vg")
+axis_stretch_horizontal = 2
+axis_stretch_vertical = 2
+
+[resource]
+Panel/styles/panel = SubResource("StyleBoxTexture_54ybl")

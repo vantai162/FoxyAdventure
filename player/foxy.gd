@@ -7,8 +7,7 @@ extends BaseCharacter
 @export var jump_buffer: float
 @export var coyote_time: float
 var inventory= Inventory.new()
-var skin
-
+@export var SkinName:String 
 @export_group("Movement Physics")
 @export var ground_friction: float = 0.25
 @export var min_stop_speed: float = 10.0
@@ -331,6 +330,14 @@ func spawn_air_slash() -> void:
 	air_slash.launch(direction)
 
 func _ready() -> void:
+	var normal_copy=GameManager.skin_manager.cur_skin_data[SkinName].get_normal_Ani()
+	if normal_copy!=null:
+		$Direction/AnimatedSprite2D.queue_free()
+		$Direction.add_child(normal_copy)
+	var blade_copy =GameManager.skin_manager.cur_skin_data[SkinName].get_blade_Ani()
+	if blade_copy!=null:
+		$Direction/BladeAnimatedSprite2D.queue_free()
+		$Direction.add_child(blade_copy)
 	super._ready()
 	fsm = FSM.new(self, $States, $States/Idle)
 	$Direction/HitArea2D/CollisionShape2D.disabled = true
@@ -594,3 +601,16 @@ func get_max_health() -> int:
 func get_health() -> int:
 	return health
 	
+func change_skin():
+	var normal_copy=GameManager.skin_manager.cur_skin_data[SkinName].get_normal_Ani()
+	if normal_copy!=null:
+		$Direction/AnimatedSprite2D.queue_free()
+		$Direction.add_child(normal_copy)
+	var blade_copy =GameManager.skin_manager.cur_skin_data[SkinName].get_blade_Ani()
+	if blade_copy!=null:
+		$Direction/BladeAnimatedSprite2D.queue_free()
+		$Direction.add_child(blade_copy)
+	if has_unlocked_blade&&blade_count>0:
+		set_animated_sprite($Direction/BladeAnimatedSprite2D)
+	else:
+		set_animated_sprite($Direction/AnimatedSprite2D)
