@@ -15,7 +15,7 @@ func _throw_next_coconut() -> void:
 	# Calculate ballistic trajectory with physics (inherited from base)
 	var launch_velocity = _calculate_ballistic_throw()
 	obj.throw_coconut(coconut_scene, obj.throw_origin.global_position, launch_velocity)
-	
+	AudioManager.play_sound("warlord_bomb_launch",18.0)
 	# Burst completion logic
 	if throw_count >= 3:
 		# Attack complete, return to run (or pursue for elite)

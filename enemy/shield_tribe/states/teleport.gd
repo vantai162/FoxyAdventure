@@ -99,6 +99,7 @@ func _transition_to_travel() -> void:
 	
 	# Spawn arrival particles
 	_spawn_arrival_particles()
+	AudioManager.play_sound("claw_attack",12.0)
 
 func _transition_to_fade_in() -> void:
 	current_phase = Phase.FADE_IN

@@ -1,8 +1,13 @@
-[gd_resource type="TileSet" load_steps=42 format=3 uid="uid://0yf5cmwk6u1i"]
+[gd_resource type="TileSet" load_steps=48 format=3 uid="uid://0yf5cmwk6u1i"]
 
 [ext_resource type="Texture2D" uid="uid://t3cktfmhcitn" path="res://assets/island/terrain/ice level demo.png" id="1_lvvyk"]
 [ext_resource type="PackedScene" uid="uid://cqjqdbyd7mqfr" path="res://environment/cave/glowing_crystal.tscn" id="3_crystal"]
 [ext_resource type="PackedScene" uid="uid://bc78438yhr3na" path="res://environment/cave/dripping_water.tscn" id="4_drip"]
+[ext_resource type="PackedScene" uid="uid://cn3lm5txngxlq" path="res://objects/spike/spike_static/spike.tscn" id="6_0620o"]
+[ext_resource type="PackedScene" uid="uid://b0h8a022mpy26" path="res://objects/spike/spike_retractable/spike_retractable.tscn" id="7_gxew1"]
+[ext_resource type="PackedScene" uid="uid://p3tugieif4ic" path="res://objects/spike/spike_ceiling/spike_ceiling.tscn" id="8_23828"]
+[ext_resource type="PackedScene" uid="uid://b6uwup34404a8" path="res://objects/spike/right_spike/right_spike.tscn" id="9_13vum"]
+[ext_resource type="PackedScene" uid="uid://7j0fw4uvbg54" path="res://objects/spike/left_spike/left_spike.tscn" id="10_mkmju"]
 [ext_resource type="PackedScene" uid="uid://lrdkn2gv1v1m" path="res://effect_Item/coin/coin.tscn" id="15_coin"]
 [ext_resource type="PackedScene" uid="uid://b3cbk6lmh2cc3" path="res://effect_Item/heal_potion/health_potion.tscn" id="16_potion"]
 
@@ -496,6 +501,14 @@ scenes/1/scene = ExtResource("4_drip")
 scenes/2/scene = ExtResource("15_coin")
 scenes/3/scene = ExtResource("16_potion")
 
+[sub_resource type="TileSetScenesCollectionSource" id="TileSetScenesCollectionSource_7urpc"]
+resource_name = "spike"
+scenes/1/scene = ExtResource("6_0620o")
+scenes/5/scene = ExtResource("7_gxew1")
+scenes/6/scene = ExtResource("8_23828")
+scenes/7/scene = ExtResource("9_13vum")
+scenes/8/scene = ExtResource("10_mkmju")
+
 [resource]
 occlusion_layer_0/light_mask = 1
 physics_layer_0/collision_layer = 1
@@ -506,3 +519,4 @@ custom_data_layer_0/name = "surface_type"
 custom_data_layer_0/type = 4
 sources/0 = SubResource("TileSetAtlasSource_ws4v0")
 sources/1 = SubResource("TileSetScenesCollectionSource_sjdx8")
+sources/2 = SubResource("TileSetScenesCollectionSource_7urpc")

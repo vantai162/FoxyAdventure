@@ -5828,7 +5828,7 @@ memory_title = "⭐ Memory 2 – “Ngày rời cảng”"
 
 [node name="MemoryScroll2" parent="StoryScroll" instance=ExtResource("51_h4ytb")]
 position = Vector2(906, 234)
-story_text = "\"Một hải tặc chân chính là một hải tặc không dùng tới vũ lực\" 
+story_text = "Một hải tặc chân chính là một hải tặc không dùng tới vũ lực. Cậu muốn làm người thiện hay người ác?
 (Nhấn Q để tiếp tục)"
 memory_title = "⭐ Memory 1 – “Lương tâm”"
 

@@ -319,9 +319,9 @@ target_spawn_name = "ToLevel3_3"
 exit_direction = 0
 spawn_offset = Vector2(48, 0)
 
-[node name="ToLevel4_1" parent="ExitZone" instance=ExtResource("20_scene_transition")]
+[node name="ToLevel3_4" parent="ExitZone" instance=ExtResource("20_scene_transition")]
 position = Vector2(336, 89)
-target_scene = "uid://bnu1efrujuuh1"
+target_scene = "uid://caxibxcw4tq32"
 target_spawn_name = "FromLevel3_3"
 exit_direction = 2
 spawn_offset = Vector2(0, 48)
