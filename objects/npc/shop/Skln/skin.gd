@@ -10,10 +10,12 @@ var SaveDict={
 }
 func UnlockToBuy():
 	SaveDict["Unlocked_To_Buy"]=true
+	GameManager.skin_manager._save_skin_data()
 
 func Buy():
 	SaveDict["Bought"]=true
-
+	GameManager.skin_manager._save_skin_data()
+	
 func load_skin_status(data:Dictionary):
 	if(!data.has("Unlocked_To_Buy")||!data.has("Bought")):
 		print("May be you use wrong save file or wrong field")

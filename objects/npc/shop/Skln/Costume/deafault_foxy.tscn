@@ -229,4 +229,4 @@ animation = &"dead"
 [node name="BladeAnimatedSprite2D" type="AnimatedSprite2D" parent="."]
 visible = false
 sprite_frames = SubResource("SpriteFrames_40j8w")
-animation = &"stun"
+animation = &"fall"

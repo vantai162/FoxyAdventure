@@ -605,7 +605,8 @@ func get_max_health() -> int:
 func get_health() -> int:
 	return health
 	
-func change_skin():
+func change_skin(skinname_para:String):
+	SkinName=skinname_para
 	var normal_copy:AnimatedSprite2D=GameManager.skin_manager.cur_skin_data[SkinName].get_normal_Ani()
 	if normal_copy!=null:
 		if $Direction/AnimatedSprite2D!=null:
