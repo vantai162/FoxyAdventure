@@ -5834,7 +5834,7 @@ memory_title = "⭐ Memory 1 – “Lương tâm”"
 
 [node name="Door" parent="." instance=ExtResource("52_lhgvo")]
 position = Vector2(6946, 226)
-target_stage = "uid://bqrnsq4v6ssvi"
+target_stage = "uid://dq68l7mrj3glk"
 
 [node name="FriendlyTribe" parent="." instance=ExtResource("17_fpaxw")]
 position = Vector2(4412, 326)

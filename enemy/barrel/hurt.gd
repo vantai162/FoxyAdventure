@@ -14,3 +14,9 @@ func _update(delta: float) -> void:
 				obj.queue_free()
 		else:
 			change_state(fsm.states.idle)
+
+
+
+func take_damage(_damage_dir, damage: int) -> void:
+	obj.take_damage(damage)
+	change_state(fsm.states.hurt)
