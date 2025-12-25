@@ -18,7 +18,7 @@ func _ready():
 	_update_ui()
 
 func _update_ui():
-	price_label.text = str(price)
+	price_label.text = "Giá: " + str(price)
 	name_label.text = str(key)
 	if item_type == ShopSystem.itemType.Skill:
 		stock_label.text = "x" + str(stock)
@@ -50,6 +50,7 @@ func _on_buy_pressed():
 					buy_button.disabled = true
 			elif item_type == ShopSystem.itemType.skins:
 				buy_button.disabled = true
+				GameManager.player.change_skin("SinnerFoxy",true)
 			_show_popup("Mua thành công!")
 		ShopSystem.TransactionResult.AlreadyBought:
 			_show_popup("Bạn đã mua item này rồi.")

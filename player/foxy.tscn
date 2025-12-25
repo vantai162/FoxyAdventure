@@ -70,7 +70,6 @@ size = Vector2(23, 30)
 z_index = 10
 collision_layer = 2
 script = ExtResource("1_wod02")
-SkinName = "defaultFoxy"
 ground_friction = 0.15
 wall_jump_force = 136.0
 wall_jump_control_delay = 0.25

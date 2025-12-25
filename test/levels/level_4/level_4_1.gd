@@ -23,8 +23,7 @@ func _ready():
 	# Gọi hàm cha để StageBase vẫn chạy logic của nó
 	super._ready()
 	boss = $KingCrab
-	GameManager.skin_manager.cur_skin_data["SinnerFoxy"].UnlockToBuy()
-	GameManager.skin_manager._save_skin_data()
+	
 	
 
 func _on_stage_process(_delta: float) -> void:

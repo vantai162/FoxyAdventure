@@ -1,4 +1,4 @@
-[gd_scene load_steps=22 format=4 uid="uid://caxibxcw4tq32"]
+[gd_scene load_steps=23 format=4 uid="uid://caxibxcw4tq32"]
 
 [ext_resource type="Script" uid="uid://dw0q420qxl7ar" path="res://test/levels/level_3/stage_3_4.gd" id="1_stage_script"]
 [ext_resource type="TileSet" uid="uid://0yf5cmwk6u1i" path="res://assets/island/terrain/ice_tile_set.tres" id="3_esds8"]
@@ -19,6 +19,7 @@
 [ext_resource type="PackedScene" uid="uid://66fj44rx28g8" path="res://objects/npc/albert_dying.tscn" id="21_cs5cx"]
 [ext_resource type="PackedScene" uid="uid://cstfpndmrkms3" path="res://scenes/game_screen/key_ui.tscn" id="22_85yhf"]
 [ext_resource type="PackedScene" uid="uid://m0ec1cyfshdq" path="res://objects/scroll/scroll.tscn" id="22_a1y3o"]
+[ext_resource type="PackedScene" uid="uid://bs816w0pr8all" path="res://player/foxy.tscn" id="22_kkqtw"]
 [ext_resource type="PackedScene" uid="uid://8koby8md4sgg" path="res://scenes/game_screen/blade_ui.tscn" id="23_drhko"]
 [ext_resource type="PackedScene" uid="uid://bmic0j4cnluey" path="res://objects/checkpoint/checkpoint.tscn" id="24_kymkp"]
 
@@ -198,3 +199,6 @@ position = Vector2(685, 318)
 story_text = "Chuyến đi tới hòn đảo này là chuyến đi cuối cùng của mình. Mình sẽ hoàn lương và không làm hải tặc nữa.
 (Nhấn Q để tiếp tục)"
 memory_title = "⭐ Memory 10 – “Ước muốn của Foxy”"
+
+[node name="Foxy" parent="." instance=ExtResource("22_kkqtw")]
+position = Vector2(1397, 286)

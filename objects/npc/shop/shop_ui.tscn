@@ -19,7 +19,7 @@ script = ExtResource("1_1sh5h")
 
 [node name="TabContainer" type="TabContainer" parent="."]
 layout_mode = 0
-offset_left = 88.0
+offset_left = 15.0
 offset_top = 59.0
 offset_right = 600.0
 offset_bottom = 299.0
@@ -32,7 +32,9 @@ metadata/_tab_index = 0
 
 [node name="GridContainer" type="GridContainer" parent="TabContainer/SkinPanel"]
 layout_mode = 2
-columns = 5
+theme_override_constants/h_separation = 50
+theme_override_constants/v_separation = 50
+columns = 2
 
 [node name="ItemPanel" type="ScrollContainer" parent="TabContainer"]
 visible = false
