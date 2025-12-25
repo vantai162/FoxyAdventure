@@ -1,0 +1,233 @@
+[gd_scene load_steps=36 format=3 uid="uid://dcbwrlrptj8jy"]
+
+[ext_resource type="Script" uid="uid://c2sie7kfdlcfl" path="res://objects/npc/shop/Skln/Costume/Costume.gd" id="1_wygn2"]
+[ext_resource type="Texture2D" uid="uid://gg27h1v3brxy" path="res://assets/foxy/fox_hat/fox_idle_2.png" id="2_eocrt"]
+[ext_resource type="Texture2D" uid="uid://bklgym4diuv81" path="res://assets/foxy/fox_hat/fox_defeat_1.png" id="3_slxkk"]
+[ext_resource type="Texture2D" uid="uid://cic2eimi8jcws" path="res://assets/foxy/fox_hat/fox_defeat_2.png" id="4_l8x8e"]
+[ext_resource type="Texture2D" uid="uid://cxmayw7v1m0jb" path="res://assets/foxy/fox_hat/fox_defeat_3.png" id="5_uvtrx"]
+[ext_resource type="Texture2D" uid="uid://bvmslaqv5dh83" path="res://assets/foxy/fox_hat/fox_fall_1.png" id="6_qcmwb"]
+[ext_resource type="Texture2D" uid="uid://dp3h74gubxsoy" path="res://assets/foxy/fox_hat/fox_hurt_1.png" id="7_54s4x"]
+[ext_resource type="Texture2D" uid="uid://bklwomqcuncv0" path="res://assets/foxy/fox_hat/fox_hurt_2.png" id="8_qsk64"]
+[ext_resource type="Texture2D" uid="uid://doolugyuchafr" path="res://assets/foxy/fox_hat/fox_hurt_3.png" id="9_6kfaf"]
+[ext_resource type="Texture2D" uid="uid://ditqtwqt736ur" path="res://assets/foxy/fox_hat/fox_idle_1.png" id="10_shd82"]
+[ext_resource type="Texture2D" uid="uid://dbiw6pnhfk85a" path="res://assets/foxy/fox_hat/fox_jump_1.png" id="11_jlwox"]
+[ext_resource type="Texture2D" uid="uid://qbgr6ow6m6pq" path="res://assets/foxy/fox_hat/fox_run_1.png" id="12_ubfks"]
+[ext_resource type="Texture2D" uid="uid://inerw0d13eo3" path="res://assets/foxy/fox_hat/fox_run_2.png" id="13_7a3gr"]
+[ext_resource type="Texture2D" uid="uid://cop3clda6n8om" path="res://assets/foxy/fox_hat/fox_run_3.png" id="14_7f7fb"]
+[ext_resource type="Texture2D" uid="uid://dasiqu0kt8c70" path="res://assets/foxy/fox_hat/fox_run_4.png" id="15_mv85r"]
+[ext_resource type="Texture2D" uid="uid://dadnsguuxllh5" path="res://assets/foxy/fox_hat_blade/fox_atk_1.png" id="16_orx3g"]
+[ext_resource type="Texture2D" uid="uid://cfhm2v6acpg1f" path="res://assets/foxy/fox_hat_blade/fox_atk_2.png" id="17_biugp"]
+[ext_resource type="Texture2D" uid="uid://xng5jxvpc6fy" path="res://assets/foxy/fox_hat_blade/fox_atk_3.png" id="18_hdqyn"]
+[ext_resource type="Texture2D" uid="uid://b1vhbkvep3be3" path="res://assets/foxy/fox_hat_blade/fox_defeat_1.png" id="19_jjn21"]
+[ext_resource type="Texture2D" uid="uid://c8f3f0ekm6ixx" path="res://assets/foxy/fox_hat_blade/fox_defeat_2.png" id="20_iwkgw"]
+[ext_resource type="Texture2D" uid="uid://bgtskqs0mdu6u" path="res://assets/foxy/fox_hat_blade/fox_defeat_3.png" id="21_lyh64"]
+[ext_resource type="Texture2D" uid="uid://cimiduqb45fr2" path="res://assets/foxy/fox_hat_blade/fox_fall_1.png" id="22_swc6o"]
+[ext_resource type="Texture2D" uid="uid://dalgyearuwlps" path="res://assets/foxy/fox_hat_blade/fox_hurt_1.png" id="23_u0e3o"]
+[ext_resource type="Texture2D" uid="uid://dupq5h6wrdcsi" path="res://assets/foxy/fox_hat_blade/fox_hurt_2.png" id="24_fblsa"]
+[ext_resource type="Texture2D" uid="uid://cxgseqcytuiaa" path="res://assets/foxy/fox_hat_blade/fox_hurt_3.png" id="25_arly3"]
+[ext_resource type="Texture2D" uid="uid://dwsoxnd6bpiyb" path="res://assets/foxy/fox_hat_blade/fox_idle_1.png" id="26_ctypb"]
+[ext_resource type="Texture2D" uid="uid://cxw0m2cl8vuur" path="res://assets/foxy/fox_hat_blade/fox_idle_2.png" id="27_1iaqc"]
+[ext_resource type="Texture2D" uid="uid://cstij0qctb13g" path="res://assets/foxy/fox_hat_blade/fox_jump_atk_1.png" id="28_u55un"]
+[ext_resource type="Texture2D" uid="uid://bv3h2i8gtpkse" path="res://assets/foxy/fox_hat_blade/fox_jump_atk_2.png" id="29_qcer7"]
+[ext_resource type="Texture2D" uid="uid://dff57wk5cnq8a" path="res://assets/foxy/fox_hat_blade/fox_run_1.png" id="30_r0y35"]
+[ext_resource type="Texture2D" uid="uid://fkgavy53tavg" path="res://assets/foxy/fox_hat_blade/fox_run_2.png" id="31_4daw3"]
+[ext_resource type="Texture2D" uid="uid://bv5c28i1y0urb" path="res://assets/foxy/fox_hat_blade/fox_run_3.png" id="32_n5iq4"]
+[ext_resource type="Texture2D" uid="uid://bsr0r7aed6v3i" path="res://assets/foxy/fox_hat_blade/fox_run_4.png" id="33_mtpbf"]
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_br8l2"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("3_slxkk")
+}, {
+"duration": 1.0,
+"texture": ExtResource("4_l8x8e")
+}, {
+"duration": 1.0,
+"texture": ExtResource("5_uvtrx")
+}],
+"loop": false,
+"name": &"dead",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("6_qcmwb")
+}],
+"loop": true,
+"name": &"fall",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("7_54s4x")
+}, {
+"duration": 1.0,
+"texture": ExtResource("8_qsk64")
+}, {
+"duration": 1.0,
+"texture": ExtResource("9_6kfaf")
+}],
+"loop": false,
+"name": &"hurt",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("10_shd82")
+}, {
+"duration": 1.0,
+"texture": ExtResource("2_eocrt")
+}],
+"loop": true,
+"name": &"idle",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("11_jlwox")
+}],
+"loop": true,
+"name": &"jump",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("12_ubfks")
+}, {
+"duration": 1.0,
+"texture": ExtResource("13_7a3gr")
+}, {
+"duration": 1.0,
+"texture": ExtResource("14_7f7fb")
+}, {
+"duration": 1.0,
+"texture": ExtResource("15_mv85r")
+}],
+"loop": true,
+"name": &"run",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("10_shd82")
+}],
+"loop": true,
+"name": &"stun",
+"speed": 5.0
+}]
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_40j8w"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("16_orx3g")
+}, {
+"duration": 1.0,
+"texture": ExtResource("17_biugp")
+}, {
+"duration": 1.0,
+"texture": ExtResource("18_hdqyn")
+}],
+"loop": true,
+"name": &"attack",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("19_jjn21")
+}, {
+"duration": 1.0,
+"texture": ExtResource("20_iwkgw")
+}, {
+"duration": 1.0,
+"texture": ExtResource("21_lyh64")
+}],
+"loop": false,
+"name": &"dead",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("22_swc6o")
+}],
+"loop": true,
+"name": &"fall",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("23_u0e3o")
+}, {
+"duration": 1.0,
+"texture": ExtResource("24_fblsa")
+}, {
+"duration": 1.0,
+"texture": ExtResource("25_arly3")
+}],
+"loop": false,
+"name": &"hurt",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("26_ctypb")
+}, {
+"duration": 1.0,
+"texture": ExtResource("27_1iaqc")
+}],
+"loop": true,
+"name": &"idle",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("28_u55un")
+}, {
+"duration": 1.0,
+"texture": ExtResource("29_qcer7")
+}],
+"loop": true,
+"name": &"jump_attack",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("30_r0y35")
+}, {
+"duration": 1.0,
+"texture": ExtResource("31_4daw3")
+}, {
+"duration": 1.0,
+"texture": ExtResource("32_n5iq4")
+}, {
+"duration": 1.0,
+"texture": ExtResource("33_mtpbf")
+}],
+"loop": true,
+"name": &"run",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("26_ctypb")
+}],
+"loop": true,
+"name": &"stun",
+"speed": 5.0
+}]
+
+[node name="DeafaultFoxy" type="Node2D"]
+script = ExtResource("1_wygn2")
+Name = "defaultFoxy"
+icon = ExtResource("2_eocrt")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+visible = false
+sprite_frames = SubResource("SpriteFrames_br8l2")
+animation = &"hurt"
+
+[node name="BladeAnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+visible = false
+sprite_frames = SubResource("SpriteFrames_40j8w")
+animation = &"hurt"

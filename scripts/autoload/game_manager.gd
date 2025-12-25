@@ -202,7 +202,7 @@ func spawn_player(spawn_data: Dictionary) -> Player:
 	else:
 		printerr("Player FSM not initialized!")
 	player = new_player
-	skin_manager.change_to_saved_skin()
+	skin_manager.change_to_saved_skin(new_player)
 	return new_player
 
 func request_player_spawn() -> void:

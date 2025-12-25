@@ -17,11 +17,11 @@ func _load_skin_data_from_save():
 	if data.has("Current_Player_Skin") && GameManager.player!=null:
 		GameManager.player.change_skin(data["Current_Player_Skin"],false)
 		
-func change_to_saved_skin():
+func change_to_saved_skin(player: Player):
 	var data=SaveSystem.load_skin_data()
 	print(data)
-	if data.has("Current_Player_Skin") && GameManager.player!=null:
-		GameManager.player.change_skin(data["Current_Player_Skin"],false)
+	if data.has("Current_Player_Skin") && player!=null:
+		player.change_skin(data["Current_Player_Skin"],false)
 
 func _save_skin_data():
 	var saveDict:Dictionary
