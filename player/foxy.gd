@@ -330,18 +330,10 @@ func spawn_air_slash() -> void:
 	air_slash.launch(direction)
 
 func _ready() -> void:
-	var normal_copy:AnimatedSprite2D=GameManager.skin_manager.cur_skin_data[SkinName].get_normal_Ani()
-	if normal_copy!=null:
-		if $Direction/AnimatedSprite2D!=null:
-			$Direction/AnimatedSprite2D.queue_free()
-		var normal_copy_duplicate=normal_copy.duplicate()
-		$Direction.add_child(normal_copy_duplicate)
-	var blade_copy:AnimatedSprite2D =GameManager.skin_manager.cur_skin_data[SkinName].get_blade_Ani()
-	if blade_copy!=null:
-		if $Direction/BladeAnimatedSprite2D!=null:
-			$Direction/BladeAnimatedSprite2D.queue_free()
-		var blade_copy_duplicate=blade_copy.duplicate()
-		$Direction.add_child(blade_copy_duplicate)
+	await get_tree().process_frame
+	if($Direction/AnimatedSprite2D==null&&$Direction/BladeAnimatedSprite2D==null):
+		print("fuck")
+		change_skin("defaultFoxy",false) 
 	super._ready()
 	fsm = FSM.new(self, $States, $States/Idle)
 	$Direction/HitArea2D/CollisionShape2D.disabled = true
@@ -605,20 +597,28 @@ func get_max_health() -> int:
 func get_health() -> int:
 	return health
 	
-func change_skin():
+func change_skin(skinname_para:String,save:bool):
+	SkinName=skinname_para
 	var normal_copy:AnimatedSprite2D=GameManager.skin_manager.cur_skin_data[SkinName].get_normal_Ani()
+	print(normal_copy)
 	if normal_copy!=null:
 		if $Direction/AnimatedSprite2D!=null:
-			$Direction/AnimatedSprite2D.queue_free()
+			$Direction/AnimatedSprite2D.free()
 		var normal_copy_duplicate=normal_copy.duplicate()
+		normal_copy_duplicate.reparent($Direction)
 		$Direction.add_child(normal_copy_duplicate)
 	var blade_copy:AnimatedSprite2D =GameManager.skin_manager.cur_skin_data[SkinName].get_blade_Ani()
 	if blade_copy!=null:
 		if $Direction/BladeAnimatedSprite2D!=null:
-			$Direction/BladeAnimatedSprite2D.queue_free()
+			$Direction/BladeAnimatedSprite2D.free()
 		var blade_copy_duplicate=blade_copy.duplicate()
+		blade_copy_duplicate.reparent($Direction)
 		$Direction.add_child(blade_copy_duplicate)
 	if has_unlocked_blade&&blade_count>0:
 		set_animated_sprite($Direction/BladeAnimatedSprite2D)
 	else:
-		set_animated_sprite($Direction/AnimatedSprite2D6)
+		set_animated_sprite($Direction/AnimatedSprite2D)
+	if save:
+		print("saved")
+		GameManager.skin_manager._save_skin_data()
+	

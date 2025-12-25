@@ -185,6 +185,7 @@ func spawn_player(spawn_data: Dictionary) -> Player:
 	
 	new_player.load_state(spawn_data)
 	
+	
 	if not spawn_data.has("health"):
 		new_player.health = new_player.max_health
 		
@@ -201,6 +202,7 @@ func spawn_player(spawn_data: Dictionary) -> Player:
 	else:
 		printerr("Player FSM not initialized!")
 	player = new_player
+	skin_manager.change_to_saved_skin(new_player)
 	return new_player
 
 func request_player_spawn() -> void:

@@ -43,7 +43,7 @@ extends StageBase
 
 
 func _init() -> void:
-	
+
 	camera_left = 0.0
 	camera_right = 1600.0
 	camera_top = 0.0
@@ -57,3 +57,5 @@ func _on_stage_ready() -> void:
 	print("  PATH: RIGHT → DROP → LEFT → DROP → RIGHT (zigzag!)")
 	print("  TESTS: Timing, crossfire, wind+projectiles, precision")
 	print("  NEXT: Boss Fight (3-5)")
+	#GameManager.skin_manager.cur_skin_data["SinnerFoxy"].UnlockToBuy()
+	#GameManager.skin_manager._save_skin_data()
