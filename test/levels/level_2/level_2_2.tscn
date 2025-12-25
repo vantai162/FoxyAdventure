@@ -271,9 +271,9 @@ frame_progress = 0.702558
 
 [node name="MemoryScroll" parent="." instance=ExtResource("32_2bwa3")]
 position = Vector2(1695, 180)
-story_text = "Không ai biết nguồn gốc thật sự của Trái Tim Biển Cả nhưng họ bảo rằng bất kì ai sở hữu được nó sẽ đạt được trường sinh bất lão
+story_text = "Không ai biết nguồn gốc thật sự của Trái Tim Biển Cả nhưng họ bảo rằng bất kì ai sở hữu được nó sẽ đạt được một điều ước bất kì.
 
 (Nhấn Q để tiếp tục)"
-memory_title = "⭐ Memory 4 – “Trường sinh bất lão”"
+memory_title = "⭐ Memory 4 – “Điều ước”"
 
 [connection signal="body_entered" from="MeetBossArea2D" to="." method="_on_meet_boss_area_2d_body_entered"]

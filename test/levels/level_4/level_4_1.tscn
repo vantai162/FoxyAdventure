@@ -6824,7 +6824,7 @@ tile_map_data = PackedByteArray("AADz/+3/AAABAAgAAADz/+7/AAABAAkAAADz/+//AAABAAo
 tile_set = SubResource("TileSet_1jcpm")
 
 [node name="Foxy" parent="." instance=ExtResource("8_dp26j")]
-position = Vector2(234, -662)
+position = Vector2(-1059, -256)
 
 [node name="Sign" parent="." instance=ExtResource("9_jwqnl")]
 position = Vector2(-1056, -210)
@@ -6862,7 +6862,7 @@ wind_force = Vector2(500, 0)
 
 [node name="ExitZone" type="Node2D" parent="."]
 
-[node name="FromLevel3_3" parent="ExitZone" instance=ExtResource("29_fuc0x")]
+[node name="FromLevel3_4" parent="ExitZone" instance=ExtResource("29_fuc0x")]
 position = Vector2(-1154, -238)
 target_scene = "res://test/levels/level_3/level_3_2.tscn"
 target_spawn_name = "ToLevel3_3"

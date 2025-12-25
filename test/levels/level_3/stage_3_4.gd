@@ -43,6 +43,7 @@ extends StageBase
 
 
 func _init() -> void:
+	
 	camera_left = 0.0
 	camera_right = 1600.0
 	camera_top = 0.0
@@ -50,6 +51,7 @@ func _init() -> void:
 
 
 func _on_stage_ready() -> void:
+	AudioManager.switch_sfx_bus("SFX_Cave")
 	print("[Level 3-4] The Winding Gauntlet loaded")
 	print("  Size: 1600 x 1200 pixels")
 	print("  PATH: RIGHT → DROP → LEFT → DROP → RIGHT (zigzag!)")
