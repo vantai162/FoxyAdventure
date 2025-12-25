@@ -1,7 +1,7 @@
 [gd_scene load_steps=42 format=3 uid="uid://d02ffhwahuggg"]
 
 [ext_resource type="Script" uid="uid://d3yp3umyfkeg5" path="res://enemy/shield_tribe/elite_warden.gd" id="1_elite_warden"]
-[ext_resource type="PackedScene" path="res://enemy/elite_eye_trail.tscn" id="2_eye_trail"]
+[ext_resource type="PackedScene" uid="uid://dxcnl8fucu5je" path="res://enemy/elite_eye_trail.tscn" id="2_eye_trail"]
 [ext_resource type="Shader" uid="uid://q33y13b56v1g" path="res://enemy/elite_enemy.gdshader" id="2_shader"]
 [ext_resource type="Texture2D" uid="uid://c442cyaadrt51" path="res://assets/spear/spear_10.png" id="3_c7sff"]
 [ext_resource type="Script" uid="uid://bc2n7c2iivd3m" path="res://enemy/shield_tribe/states/idle.gd" id="3_idle_state"]

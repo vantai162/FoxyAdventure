@@ -16,6 +16,7 @@ func _enter() -> void:
 	# Faster explosion timer (1.0s vs base 1.5s)
 	await get_tree().create_timer(1.0).timeout
 	_spawn_toxic_gas()
+	AudioManager.play_sound("gas",15.0)
 	obj.queue_free()
 
 func _spawn_toxic_gas():
