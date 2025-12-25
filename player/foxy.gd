@@ -330,14 +330,18 @@ func spawn_air_slash() -> void:
 	air_slash.launch(direction)
 
 func _ready() -> void:
-	var normal_copy=GameManager.skin_manager.cur_skin_data[SkinName].get_normal_Ani()
+	var normal_copy:AnimatedSprite2D=GameManager.skin_manager.cur_skin_data[SkinName].get_normal_Ani()
 	if normal_copy!=null:
-		$Direction/AnimatedSprite2D.queue_free()
-		$Direction.add_child(normal_copy)
-	var blade_copy =GameManager.skin_manager.cur_skin_data[SkinName].get_blade_Ani()
+		if $Direction/AnimatedSprite2D!=null:
+			$Direction/AnimatedSprite2D.queue_free()
+		var normal_copy_duplicate=normal_copy.duplicate()
+		$Direction.add_child(normal_copy_duplicate)
+	var blade_copy:AnimatedSprite2D =GameManager.skin_manager.cur_skin_data[SkinName].get_blade_Ani()
 	if blade_copy!=null:
-		$Direction/BladeAnimatedSprite2D.queue_free()
-		$Direction.add_child(blade_copy)
+		if $Direction/BladeAnimatedSprite2D!=null:
+			$Direction/BladeAnimatedSprite2D.queue_free()
+		var blade_copy_duplicate=blade_copy.duplicate()
+		$Direction.add_child(blade_copy_duplicate)
 	super._ready()
 	fsm = FSM.new(self, $States, $States/Idle)
 	$Direction/HitArea2D/CollisionShape2D.disabled = true
@@ -602,15 +606,19 @@ func get_health() -> int:
 	return health
 	
 func change_skin():
-	var normal_copy=GameManager.skin_manager.cur_skin_data[SkinName].get_normal_Ani()
+	var normal_copy:AnimatedSprite2D=GameManager.skin_manager.cur_skin_data[SkinName].get_normal_Ani()
 	if normal_copy!=null:
-		$Direction/AnimatedSprite2D.queue_free()
-		$Direction.add_child(normal_copy)
-	var blade_copy =GameManager.skin_manager.cur_skin_data[SkinName].get_blade_Ani()
+		if $Direction/AnimatedSprite2D!=null:
+			$Direction/AnimatedSprite2D.queue_free()
+		var normal_copy_duplicate=normal_copy.duplicate()
+		$Direction.add_child(normal_copy_duplicate)
+	var blade_copy:AnimatedSprite2D =GameManager.skin_manager.cur_skin_data[SkinName].get_blade_Ani()
 	if blade_copy!=null:
-		$Direction/BladeAnimatedSprite2D.queue_free()
-		$Direction.add_child(blade_copy)
+		if $Direction/BladeAnimatedSprite2D!=null:
+			$Direction/BladeAnimatedSprite2D.queue_free()
+		var blade_copy_duplicate=blade_copy.duplicate()
+		$Direction.add_child(blade_copy_duplicate)
 	if has_unlocked_blade&&blade_count>0:
 		set_animated_sprite($Direction/BladeAnimatedSprite2D)
 	else:
-		set_animated_sprite($Direction/AnimatedSprite2D)
+		set_animated_sprite($Direction/AnimatedSprite2D6)

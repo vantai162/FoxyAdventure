@@ -1,7 +1,8 @@
 class_name SkinManager
 extends Node
 @export var skinDict:Dictionary={
-	"SinnerFoxy":preload("res://objects/npc/shop/Skln/Costume/sinner_foxy_skin.tscn")
+	"SinnerFoxy":preload("res://objects/npc/shop/Skln/Costume/sinner_foxy_skin.tscn"),
+	"defaultFoxy":preload("res://objects/npc/shop/Skln/Costume/deafault_foxy.tscn")
 }# use skin_name:PackedScene
 var cur_skin_data:Dictionary#used skin_name:Skin
 enum SkinState{CantBuy,AlreadyBought,CanBuy,TooExpensive}
