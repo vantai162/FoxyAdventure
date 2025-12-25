@@ -18,11 +18,16 @@ func _ready():
 	_update_ui()
 
 func _update_ui():
-	price_label.text += str(price)
+	price_label.text = str(price)
 	name_label.text = str(key)
-	if stock_label:
+	if item_type == ShopSystem.itemType.Skill:
 		stock_label.text = "x" + str(stock)
-	buy_button.disabled = (stock <= 0)
+		buy_button.disabled = (stock <= 0)
+	elif item_type == ShopSystem.itemType.skins:
+		stock_label.text = ""
+		if GameManager.skin_manager.is_skin_bought(key):
+			buy_button.disabled = true
+	
 	
 func set_icon(tex:CompressedTexture2D):
 	print(tex)
@@ -38,11 +43,13 @@ func _on_buy_pressed():
 			# trừ tiền (bạn phải cập nhật money ở GameManager)
 			GameManager.player.inventory.use_coin(price)
 			# update UI stock, coin display (ShopUI nên lắng nghe)
-			if stock_label:
+			if item_type == ShopSystem.itemType.Skill and stock_label:
 				stock -= 1
 				stock_label.text = "x" + str(stock)
 				if stock <= 0:
 					buy_button.disabled = true
+			elif item_type == ShopSystem.itemType.skins:
+				buy_button.disabled = true
 			_show_popup("Mua thành công!")
 		ShopSystem.TransactionResult.AlreadyBought:
 			_show_popup("Bạn đã mua item này rồi.")

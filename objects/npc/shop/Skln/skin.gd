@@ -4,6 +4,7 @@ enum Rarity{COMMON,UNCOMMON,RARE,EPIC,LEGEND}
 @export var rarity:Rarity
 @export var value:int
 @export var Name:String
+@export var icon:Texture2D   # thêm icon để hiển thị trong shop
 var SaveDict={
 	"Unlocked_To_Buy":false,
 	"Bought":false

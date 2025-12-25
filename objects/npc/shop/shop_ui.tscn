@@ -1,6 +1,6 @@
 [gd_scene load_steps=4 format=3 uid="uid://b2giuwebynr7a"]
 
-[ext_resource type="Script" path="res://objects/npc/shop/shop_ui.gd" id="1_1sh5h"]
+[ext_resource type="Script" uid="uid://crvrd2msmn5ij" path="res://objects/npc/shop/shop_ui.gd" id="1_1sh5h"]
 [ext_resource type="FontFile" uid="uid://311kfe7re7nu" path="res://assets/fonts/pixel_operator/PixelOperator8-Bold.ttf" id="2_lgd5o"]
 
 [sub_resource type="Theme" id="Theme_ra8hn"]

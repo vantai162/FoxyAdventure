@@ -243,6 +243,7 @@ position = Vector2(133, 337)
 
 [node name="GoldChest" parent="." instance=ExtResource("27_wubtl")]
 position = Vector2(1905, 104)
+requires_key = true
 
 [node name="TileMapLayer" type="TileMapLayer" parent="."]
 modulate = Color(1, 1, 1, 0.968627)
