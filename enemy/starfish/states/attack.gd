@@ -8,8 +8,8 @@ var time_prepare:float = 0.3
 
 
 func _enter() -> void:
-	print("attack")
-
+	AudioManager.play_sound("king_spin",15.0)
+	
 	obj.change_animation("attack")
 	obj.get_node("Direction/HitArea2D/CollisionShape2D").disabled = false
 	timer = 1.2

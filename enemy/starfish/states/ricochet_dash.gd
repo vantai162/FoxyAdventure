@@ -103,6 +103,7 @@ func _start_dash() -> void:
 	
 	# Apply dash velocity
 	obj.velocity = obj.dash_direction * dash_speed
+	AudioManager.play_sound("king_spin",15.0)
 
 func _end_current_dash() -> void:
 	## End current dash and start next one (or return to run)
