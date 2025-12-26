@@ -1,20 +1,24 @@
 # Bối cảnh: Mưa bão. Captain đứng nhìn xác Warlord Turtle.
 
+Captain: (Cười khẽ) Hừm… không ngờ đấy, Foxy.
+Captain: Nếu không có mày… con King Crab đó đã nghiền nát tao rồi.
+
 Captain:[portrait=idle] Làm tốt lắm, Foxy. Ngươi đã dọn sạch chướng ngại vật cuối cùng.
 Captain:[portrait=idle] Đúng là vũ khí hoàn hảo nhất mà ta từng mài giũa.
 
-Foxy:[portrait=idle] ... Xong việc rồi.
+[signal arg="foxy_turn_around"]
+Foxy:[portrait=idle] ... Thuyền trưởng?!?.
 
 Captain:[portrait=idle] Chưa đâu. Nhìn ngôi đền kia đi. **Trái Tim Biển Cả** đang ở đó.
 Captain:[portrait=idle] Thứ đó nắm giữ quyền năng điều khiển thủy triều và bão tố. Có nó, cả thế giới sẽ phải quỳ gối trước chúng ta.
 
 # Captain đưa chiếc mũ
-Captain:[portrait=idle] Đội lên đi. Hãy vứt bỏ cái tên Foxy yếu đuối và trở lại làm **Bloodfang**.
+Captain:[portrait=idle] Hãy vứt bỏ cái tên Foxy yếu đuối và cùng ta thống trị thế giới nào.
 
 [signal arg="stop_music"]
 [wait time=1.0]
 
-Foxy:[portrait=idle] (Nhận lấy mũ) Quyền lực tuyệt đối sao...?
+Foxy:[portrait=idle] Quyền lực tuyệt đối sao...?
 Foxy: [portrait=idle] Nghe thú vị đấy.
 
 [signal arg="foxy_wear_hat"]

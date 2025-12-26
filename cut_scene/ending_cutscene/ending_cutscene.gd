@@ -19,9 +19,14 @@ var original_sky_texture: Texture2D
 @onready var leaf_particles = $GoodEffects/CanvasLayer
 
 @onready var foxy_actor = $Actors/Foxy
+# --- [NEW] FOXY SKINS ---
+@onready var foxy_normal = $Actors/Foxy/Foxy_Normal
+@onready var foxy_sinner = $Actors/Foxy/Foxy_Sinner
+
 @onready var captain_npc = $Actors/Captain
 @onready var hat_prop = $Actors/Hat
 @onready var warlord_actor = $Actors/Warlord
+@onready var king_crab = $Actors/KingCrab
 
 # --- UI CINEMATIC ---
 @onready var top_bar = $CinematicUI/TopBar
@@ -52,8 +57,14 @@ func _ready():
 	global_light.color = Color(0, 0, 0, 1)
 	
 	hat_prop.visible = true
-	foxy_actor.play("idle")
+	foxy_normal.visible = true
+	foxy_sinner.visible = false
+
+	foxy_normal.play("idle")
+	foxy_sinner.play("idle")
 	captain_npc.play("idle")
+	king_crab.play("idle")
+	
 	captain_npc.flip_h = true 
 	
 	# Đặt Z-Index mặc định để tránh lỗi hiển thị
@@ -69,7 +80,7 @@ func _ready():
 	
 	# --- [LOGIC CHECK ENDING MỚI] ---
 	var final_ending_type = "GOOD" # Mặc định là Good
-	GameManager.add_kill()
+	#GameManager.add_kill()
 	print("Current Kill Count: ", GameManager.kill_count)
 	
 	# Nếu giết quá 10 mạng -> BAD ENDING
@@ -77,8 +88,50 @@ func _ready():
 		final_ending_type = "BAD"
 	
 	# Bắt đầu diễn hoạt theo kết quả đã check
-	start_opening_sequence(final_ending_type)
+	start_captain_entrance(final_ending_type)
+	
+func start_captain_entrance(type: String):
+	# Foxy đứng sẵn
+	foxy_normal.play("idle")
+	foxy_sinner.play("idle")
+	
+	# Captain xuất hiện phía sau (ngoài màn hình)
+	captain_npc.position = get_active_foxy().position + Vector2(-600, 0)
+	captain_npc.flip_h = false
+	captain_npc.play("walk")
+	
+	# Camera focus Foxy trước
+	cam.position = get_active_foxy().position
+	cam.zoom = Vector2(1.2, 1.2)
+	
+	await get_tree().create_timer(0.5).timeout
+	
+	# Captain đi tới gần Foxy
+	var target_x = get_active_foxy().position.x - stop_distance
+	var t = create_tween()
+	t.tween_property(captain_npc, "position:x", target_x, 3.0)\
+		.set_trans(Tween.TRANS_SINE)
+	
+	await t.finished
+	
+	captain_npc.play("idle")
+	#captain_npc.flip_h = true
+	
+	# Camera focus cả hai
+	var center_pos = (get_active_foxy().position + captain_npc.position) / 2
+	focus_camera(center_pos, Vector2(1.5, 1.5), 1.5)
+	
+	await get_tree().create_timer(1.0).timeout
+	
+	# BẮT ĐẦU DIALOG
+	start_dialog_by_type(type)
 
+
+func start_dialog_by_type(type: String):
+	if type == "BAD" or type == "BAD_ENDING":
+		play_bad_scenario()
+	else:
+		play_good_scenario()
 
 func open_cinematic_bars():
 	if top_bar and bot_bar:
@@ -91,8 +144,8 @@ func open_cinematic_bars():
 		t.tween_property(bot_bar, "position:y", get_viewport_rect().size.y - 80, 2.0).set_trans(Tween.TRANS_SINE)
 
 func start_opening_sequence(type: String):
-	foxy_actor.position.x = captain_npc.position.x - 300
-	var center_pos = (foxy_actor.position + captain_npc.position) / 2
+	get_active_foxy().position.x = captain_npc.position.x - 300
+	var center_pos = (get_active_foxy().position + captain_npc.position) / 2
 	cam.position = center_pos
 	cam.zoom = Vector2(1.2, 1.2)
 	
@@ -101,16 +154,18 @@ func start_opening_sequence(type: String):
 	
 	await get_tree().create_timer(1.0).timeout
 	
-	foxy_actor.play("run")
+	foxy_normal.play("idle")
+	foxy_sinner.play("idle")
 	var walk_tween = create_tween()
 	var target_x = captain_npc.position.x - stop_distance
-	walk_tween.tween_property(foxy_actor, "position:x", target_x, 3.5).set_trans(Tween.TRANS_LINEAR)
+	walk_tween.tween_property(get_active_foxy(), "position:x", target_x, 3.5).set_trans(Tween.TRANS_LINEAR)
 	
 	var cam_tween = create_tween()
 	cam_tween.tween_property(cam, "position:x", target_x + 40, 3.5).set_trans(Tween.TRANS_SINE)
 	
 	await walk_tween.finished
-	foxy_actor.play("idle")
+	foxy_normal.play("idle")
+	foxy_sinner.play("idle")
 	
 	focus_camera(captain_npc.position - Vector2(40, 0), Vector2(1.5, 1.5), 2.0)
 	
@@ -143,6 +198,8 @@ func play_bad_scenario():
 	t_env.tween_property(global_light, "energy", 0.5, 6.0) 
 	await get_tree().create_timer(6.0).timeout
 	Dialogic.start("bad_ending_timeline")
+	await get_tree().process_frame
+	force_dialogic_on_top()
 
 func play_good_scenario():
 	good_effects.visible = true
@@ -163,27 +220,48 @@ func play_good_scenario():
 	t.tween_property(global_light, "energy", 1.1, 5.0)
 	await get_tree().create_timer(5.0).timeout
 	Dialogic.start("good_ending_timeline")
-
+	await get_tree().process_frame
+	force_dialogic_on_top()
+	
 # --- SIGNAL HANDLERS ---
 func _on_dialogic_signal(arg: String):
 	match arg:
 		"stop_music":
 			create_tween().tween_property(bgm_player, "volume_db", -80, 1.0)
-		
+		"foxy_turn_around":
+			foxy_normal.flip_h = true
+			foxy_sinner.flip_h = true
 		# [BAD ENDING] FOXY ĐỘI MŨ VÀ ĐI CÙNG CAPTAIN
 		"foxy_wear_hat":
-			# Hiệu ứng Bad Ending cũ (Slow motion, zoom, đội mũ)
-			Engine.time_scale = 0.5 
-			focus_camera(foxy_actor.position, Vector2(2.0, 2.0), 0.5)
-			
+			# ===============================
+			# [NEW] FOXY TRANSFORMATION
+			# ===============================
+
+			Engine.time_scale = 0.5
+			focus_camera(get_active_foxy().position, Vector2(2.0, 2.0), 0.5)
+
+			# Đội mũ biến mất
 			hat_prop.visible = false
-			foxy_actor.play("idle") 
-			
+
+			# --- [NEW] ĐỔI SKIN ---
+			foxy_normal.visible = false
+			foxy_sinner.visible = true
+
+			# Đồng bộ trạng thái
+			foxy_sinner.position = foxy_normal.position
+			foxy_sinner.flip_h = foxy_normal.flip_h
+			foxy_sinner.z_index = foxy_normal.z_index
+
+			# Animation sinner
+			foxy_sinner.play("idle")
+
+			# Hiệu ứng tà ác
 			var t = create_tween()
-			t.tween_property(foxy_actor, "modulate", Color(2.0, 0.2, 0.2), 0.5) # Đỏ rực
-			
+			t.tween_property(foxy_sinner, "modulate", Color(2.0, 0.2, 0.2), 0.5)
+
 			flash_screen(Color.RED)
 			shake_camera(5.0)
+
 			await get_tree().create_timer(1.0).timeout
 			Engine.time_scale = 1.0
 			
@@ -228,20 +306,25 @@ func _on_dialogic_signal(arg: String):
 		"destroy_hat":
 			Engine.time_scale = 0.5 
 			
-			foxy_actor.play("run")
+			foxy_normal.play("idle")
+			foxy_sinner.play("idle")
 			var t = create_tween().set_trans(Tween.TRANS_EXPO).set_ease(Tween.EASE_IN)
-			t.tween_property(foxy_actor, "position:x", captain_npc.position.x - 50, 0.4)
+			var foxy = get_active_foxy()
+			t.tween_property(foxy, "position:x", captain_npc.position.x - 50, 0.4)
 			
 			focus_camera(captain_npc.position, Vector2(2.5, 2.5), 0.4)
 			
 			await t.finished
-			
-			foxy_actor.play("attack")
+			foxy_normal.flip_h = false
+			foxy_sinner.flip_h = false
+			foxy_normal.play("attack")
+			foxy_sinner.play("attack")
 			await get_tree().create_timer(0.2).timeout
 			
 			hat_prop.visible = false 
 			
 			captain_npc.play("hurt")
+			captain_npc.flip_h = true
 			captain_npc.modulate = Color(1, 0.5, 0.5)
 			captain_npc.z_index = warlord_actor.z_index + 10 
 			
@@ -256,8 +339,8 @@ func _on_dialogic_signal(arg: String):
 			await get_tree().create_timer(1.0).timeout
 			captain_npc.modulate = Color.WHITE
 			captain_npc.play("idle") 
-			captain_npc.flip_h = true 
-			foxy_actor.play("idle")
+			foxy_normal.play("idle")
+			foxy_sinner.play("idle")
 			
 			var surround_pos = captain_npc.position
 			focus_camera(surround_pos, Vector2(1.3, 1.3), 1.0)
@@ -285,20 +368,21 @@ func shake_camera(intensity: float):
 func play_duo_walk_away():
 	# BAD ENDING WALK
 	focus_camera(cam.position, Vector2(1.0, 1.0), 4.0)
-	
-	foxy_actor.play("run")
-	captain_npc.play("run") # Đổi thành run cho đồng bộ
-	
-	foxy_actor.flip_h = false
+
+	# [CHANGED] dùng sinner foxy
+	foxy_sinner.play("run")
+	captain_npc.play("run")
+
+	foxy_sinner.flip_h = false
 	captain_npc.flip_h = false
-	
+
 	var t = create_tween().set_parallel(true)
-	# Đi ra xa (về bên phải)
-	t.tween_property(foxy_actor, "position:x", foxy_actor.position.x + 800, 5.0)
+
+	t.tween_property(foxy_sinner, "position:x", foxy_sinner.position.x + 800, 5.0)
 	t.tween_property(captain_npc, "position:x", captain_npc.position.x + 800, 5.0)
-	
-	# Biến thành bóng đen (Silhouette)
-	t.tween_property(foxy_actor, "modulate", Color.BLACK, 4.0)
+
+	# Silhouette
+	t.tween_property(foxy_sinner, "modulate", Color.BLACK, 4.0)
 	t.tween_property(captain_npc, "modulate", Color.BLACK, 4.0)
 
 func play_captain_flee():
@@ -314,9 +398,9 @@ func play_captain_flee():
 	await t.finished
 	captain_npc.speed_scale = 1.0 
 	
-	foxy_actor.flip_h = true 
+	#foxy_actor.flip_h = true 
 	
-	var center_final = (foxy_actor.position + warlord_actor.position) / 2
+	var center_final = (get_active_foxy().position + warlord_actor.position) / 2
 	focus_camera(center_final, Vector2(1.5, 1.5), 2.0)
 
 func flash_screen(color: Color):
@@ -352,7 +436,7 @@ func finish_game():
 
 func show_credits():
 	var credit_label = Label.new()
-	credit_label.text = "FOXY ADVENTURE\n\nDesign by You\nCode by You\nArt by You\n\nThanks for playing!"
+	credit_label.text = "FOXY ADVENTURE - Voyage of Oblivion\n\nFrom Group 10-UIT With Love\nHoàng Văn Tài\nVõ Trung Tín\nPhan Phú Thọ\nVõ Minh Tiến\nNguyễn Duy Tường Thi\n\nSpecial thanks to:\nAnh Mentor Hưng Trịnh\nCác thầy cô, anh chị trainers tại VNG\nVà quan trọng nhất là các bạn:người chơi"
 	credit_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	credit_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	credit_label.add_theme_font_size_override("font_size", 32)
@@ -362,7 +446,15 @@ func show_credits():
 	credit_label.position = Vector2(0, screen_size.y)
 	
 	var t = create_tween()
-	var end_pos_y = -300.0
+	var end_pos_y = -800.0
 	t.tween_property(credit_label, "position:y", end_pos_y, 10.0)
 	await t.finished
 	get_tree().change_scene_to_file("res://scenes/game_screen/main_menu.tscn")
+	
+func get_active_foxy() -> AnimatedSprite2D:
+	return foxy_sinner if foxy_sinner.visible else foxy_normal
+	
+func force_dialogic_on_top():
+	for node in get_tree().root.get_children():
+		if node is CanvasLayer and node.name.begins_with("Dialogic"):
+			node.layer = 10
