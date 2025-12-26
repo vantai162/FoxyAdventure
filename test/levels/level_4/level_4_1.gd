@@ -40,6 +40,11 @@ func _update_boss_state() -> void:
 		boss_phase2_healthbar.visible = true
 		boss_phase1_healthbar.visible = false
 	
+	if boss.health <= 1:
+		AudioManager.stop_music(0)
+		GameManager.fade_to_black()
+		get_tree().change_scene_to_file("res://cut_scene/ending_cutscene/ending_cutscene.tscn")
+		GameManager.fade_from_black()
 
 
 func _on_king_crab_trigger_body_entered(body: Node2D) -> void:

@@ -1,97 +1,110 @@
 # --- BỐI CẢNH: TRỜI VỪA TẠNH MƯA, NẮNG LÊN ---
-# Foxy và Captain đang đối mặt. Cả hai đều mệt mỏi.
+# Bãi biển còn ẩm ướt. Foxy đứng quay lưng nhìn ra biển.
+# Captain đứng phía sau, thở dốc nhưng ánh mắt đã không còn mệt mỏi.
 
-Captain: (Thở dốc) Mày... mày dai như đỉa đói vậy, Foxy.
-Captain: Nhưng mày nghĩ sức một mình mày có thể đánh bại Đế chế TideFang sao?
+Captain: (Cười khẽ) Hừm… không ngờ đấy, Foxy.
+Captain: Nếu không có mày… con King Crab đó đã nghiền nát tao rồi.
 
-Foxy: Ta không cần đánh bại đế chế của ông.
-Foxy: Ta chỉ cần lấy lại thứ không thuộc về ông thôi.
+Foxy: Thuyền trưởng ?!? Thì ra ngươi ở đây ư?
+[signal arg="foxy_turn_around"]
+Foxy: Thì ra ngươi lợi dụng ta để có thể đạt được Trái Tim Biển Cả
 
-Captain: Ngu ngốc! Tao sẽ chôn mày ngay tại đây cùng với bí mật của hòn đảo này!
+Captain: (Gật đầu chậm rãi) Phải… phải…
+Captain: Nhờ mày mà bây giờ không có ai bảo vệ Trái Tim Biển Cả nữa rồi…
 
-# [KỊCH TÍNH] Warlord xuất hiện bất ngờ
-# [SIGNAL] warlord_arrive: Warlord trượt vào từ bên trái, camera lia qua
+# Captain tiến thêm một bước, giọng hạ thấp
+Captain: Nói thật nhé…
+Captain: Tao nợ mày một mạng.
+
+# Captain rút vũ khí / siết chặt Trái Tim Biển Cả
+Captain: Chỉ là… người nợ tao mạng sống…
+Captain: …thường không sống lâu được.
+
+Foxy: (Giật mình) Ông nói cái gì—?!
+
+Captain: Xin lỗi nhé, Foxy.
+Captain: Tao không thể để kẻ đã thấy sức mạnh này tiếp tục sống được.
+
+Captain: (Gầm lên) TRÁI TIM BIỂN CẢ LÀ CỦA TA!
+
+# [KỊCH TÍNH]
+# [SIGNAL] warlord_arrive
 [signal arg="warlord_arrive"]
-Warlord: [speed=0.5]Khá khen cho cái giọng to mồm đó...
 
-Captain: (Giật mình quay lại) Hả?! Kẻ nào...
+Warlord: [speed=0.5]Không đâu, Thuyền trưởng.
 
-Warlord: ...nhưng để xem ngươi chôn được bao nhiêu người?
-Warlord: Bắt lấy hắn! Đừng để tên cướp biển bẩn thỉu này thoát!
+Captain: (Giật bắn, quay ngoắt lại) Cái quái—?!
+Captain: Ngươi… vẫn còn sống sao?!
 
-# Captain hoảng loạn vì bị kẹp giữa 2 người
-Captain: Cái gì?! Lũ rùa già?! Ta tưởng lính của ta đã nướng chín bọn bay rồi cơ mà!
 
-# [SIGNAL] warlord_pressure: Warlord lướt tới đe dọa
+Foxy: (Quay lại, ngạc nhiên) Là… ông?
+
+Warlord: Ta nợ cậu một mạng.
+Warlord: Và Warlord không để ân nhân của mình chết oan.
+
+Captain: (Cười điên loạn) Ha! Thêm một con rùa già nữa à?!
+Captain: Tao có Trái Tim Biển Cả! Tao là bất khả chiến bại!
+
+# [SIGNAL] warlord_pressure
 [signal arg="warlord_pressure"]
-Warlord: Lửa của ngươi chỉ làm mai của ta cứng hơn thôi!
-Warlord: Ngươi đã đốt làng ta. Giờ thì nợ máu phải trả bằng máu!
 
-Captain: (Lùi lại, mồ hôi nhễ nhại) Lũ sâu bọ! Tránh xa tao ra!
-Captain: (Quay súng/kiếm về phía Warlord) Tao có Trái Tim Biển Cả! Tao là bất khả chiến bại!
+Warlord: Ngươi dựa vào sức mạnh vay mượn…
+Warlord: …mà quên mất cách chiến đấu bằng chính linh hồn mình.
 
-# Foxy tận dụng lúc Captain mất tập trung
-Foxy: [speed=0.8]Mắt ông chỉ nhìn thấy vàng bạc... nên ông đã mù trước lưỡi kiếm của ta rồi.
-Foxy: Ngươi sơ hở rồi, Thuyền trưởng.
+Captain: CÂM MỒM!
+
+# Foxy bước lên một bước
+Foxy: Ông không thắng được King Crab.
+Foxy: Không thắng được ta.
+Foxy: Và cũng sẽ không thắng được ông ấy.
+
+Foxy: [speed=0.8]Bởi vì ông không chiến đấu vì điều gì ngoài lòng tham.
 
 # [CAO TRÀO]
-# [SIGNAL] destroy_hat: Foxy lướt siêu nhanh tới chém vỡ mũ
+# [SIGNAL] destroy_hat
 [signal arg="destroy_hat"]
-[wait time=1.5]
+[wait time="1.0"]
 
-# Mũ vỡ. Captain ngã ra đất.
-Captain: [speed=2]KHÔNGGGGGG!!!
-Captain: (Run rẩy sờ lên đầu) Cái mũ... Di sản của ta... Nguồn sức mạnh của ta...
+# Mũ vỡ – sức mạnh tan biến
+Captain: [speed=2]KHÔÔÔNG!!!
+Captain: Không! Không thể nào!!
 
-Foxy: Hết rồi. Quyền lực của ông vừa tan thành mây khói đấy.
+Captain: (Quỳ gối) Tao… tao đã ở rất gần rồi mà…
 
-Captain: (Nhìn Foxy rồi nhìn Warlord) Tụi mày... Tụi mày dám chơi hội đồng tao...
-Captain: Chuyện này chưa xong đâu! Tao sẽ quay lại với hạm đội! Tao sẽ san phẳng cái đảo chết tiệt này!
+Foxy: Quyền lực không phải thứ ông có thể cướp được.
+Foxy: Nó chỉ tồn tại khi ông xứng đáng.
 
-Foxy: Biến đi. Trước khi cái đầu của ngươi cũng chung số phận với cái mũ đó.
-Foxy: [speed=0.5]Và nếu ta thấy bóng dáng tàu TideFang ở chân trời... Ta sẽ đánh chìm nó.
+Captain: (Ngẩng lên, căm hận) Tụi mày… tụi mày sẽ hối hận!
+Captain: Tao sẽ quay lại!
 
-Captain: Á á á! Tao sẽ nhớ mặt tụi bay!
-# [SIGNAL] good_ending_scene: Captain trượt nhanh ra khỏi màn hình (bỏ chạy thục mạng)
+Warlord: Nếu còn dám đặt chân lên hòn đảo này…
+Warlord: Ta sẽ tự tay tiễn ngươi xuống đáy biển.
+
+Foxy: Biến đi.
+Foxy: Đây là lần cảnh cáo duy nhất.
+
+Captain: Khốn kiếp… KHỐN KIẾP!!!
+
+# [SIGNAL] good_ending_scene
 [signal arg="good_ending_scene"]
 
-# --- KHOẢNG LẶNG BÌNH YÊN ---
-# Nhạc chuyển sang giai điệu nhẹ nhàng, cảm động
-[wait time=2.5]
+# --- KHOẢNG LẶNG ---
+[wait time="1.0"]
 
-Foxy: (Thở dài) Hắn đi rồi... Chạy nhanh hơn cả thỏ đế.
+Foxy: (Thở dài) Hắn chạy nhanh thật…
 
-Warlord: (Quan sát Foxy) Một cú đánh đẹp đấy, chàng trai trẻ. Gọn gàng và dứt khoát.
+Warlord: Ta nghĩ cậu xứng đáng với Trái Tim Biển Cả. Thật ra Trái Tim Biển Cả không ban cho cậu điều ước gì cả mà nó là một thứ để cân bằng hệ sinh thái của đại dương.
 
-Foxy: (Quay lại, giọng quan tâm) Ông ổn chứ, lão già? Ta thấy ông dính đòn khá nặng lúc nãy.
+Foxy: (Nhìn Warlord) Ông biết chuyện đó ngay từ đầu à?
 
-Warlord: Hừm. Vết thương xác thịt này chưa đủ để giết một Warlord đâu.
-Warlord: Nhưng ta vẫn có một thắc mắc...
+Warlord: Ta làm vậy để tìm người bảo hộ xứng đáng cho nó khỏi tay kẻ xấu.
+Warlord: Và cậu hoàn toàn xứng đáng với danh hiệu đó. Nhiệm vụ của ta và King Crab đã luôn là bảo vệ Trái Tim Biển Cả khỏi tay kẻ xấu.
 
-Foxy: Gì cơ?
+Foxy: Thì ra là vậy! Ta sẽ hoàn lương không làm hải tặc nữa và trở thành người bảo hộ của hòn đảo này!
 
-Warlord: Tại sao? Ngươi là Bloodfang... Kẻ đã từng là ác mộng của dân làng ta.
-Warlord: Tại sao ngươi lại quay lại cứu kẻ thù cũ?
+Warlord: Rất tốt! Biển cả không cần thêm quỷ dữ. Nó cần những kẻ gác cổng.
 
-# Khoảnh khắc thú nhận của Foxy
-[wait time=1.0]
-Foxy: ... Ta không còn là Bloodfang nữa.
-Foxy: Ta đã gây ra quá nhiều đổ nát. Ta không thể xây lại ngôi làng cho ông, cũng không thể xóa đi vết sẹo đó.
-Foxy: Nhưng ta có thể ngăn chặn những kẻ như tên Thuyền trưởng kia làm điều tương tự.
 
-Warlord: (Im lặng một chút) ...
-Warlord: Ta đã sống đủ lâu để thấy người tốt hóa quỷ. Nhưng đây là lần đầu tiên... ta thấy một con quỷ tìm lại được trái tim mình.
-
-Foxy: (Cười nhẹ) Đừng vội tin ta. Ta vẫn là một tên lính đánh thuê thôi.
-
-Warlord: Không. Hôm nay, cậu không chiến đấu vì tiền.
-Warlord: Cảm ơn cậu, Foxy. Hoặc ta nên gọi là... Người Gác Đền của TideFall.
-
-Foxy: (Xua tay) Thôi đi, sến súa quá. Gọi ta là Foxy được rồi.
-Foxy: Đi nào. Ta đói rồi. Hy vọng sau vụ này ông sẽ mời ta một bữa ra trò.
-
-Warlord: Ha ha ha! Được! Rượu và cá nướng, bao nhiêu cũng có!
-
-# Camera bay lên cao, Foxy và Warlord nhìn ra biển
-[wait time=2.0]
+# Camera bay lên cao
+[wait time="1.0"]
 [signal arg="credits"]
