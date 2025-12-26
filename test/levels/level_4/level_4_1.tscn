@@ -1,4 +1,4 @@
-[gd_scene load_steps=61 format=4 uid="uid://bnu1efrujuuh1"]
+[gd_scene load_steps=62 format=4 uid="uid://bnu1efrujuuh1"]
 
 [ext_resource type="Script" uid="uid://badrbumv6fcvh" path="res://test/levels/level_4/level_4_1.gd" id="1_jtpgi"]
 [ext_resource type="Texture2D" uid="uid://coet04oricq34" path="res://assets/craftpix-net-926878-free-platformer-game-tileset-pixel-art/PNG/Background/1920x1080/Sky_1920x1080.png" id="1_m8d2m"]
@@ -29,6 +29,7 @@
 [ext_resource type="PackedScene" uid="uid://coqrny0yf5swy" path="res://objects/wind/WindArea.tscn" id="28_ni2h2"]
 [ext_resource type="PackedScene" path="res://objects/scene_transition/scene_transition.tscn" id="29_fuc0x"]
 [ext_resource type="PackedScene" uid="uid://fwuimc71t468" path="res://objects/npc/shop/shop_item/shop_vendor.tscn" id="29_pfu55"]
+[ext_resource type="PackedScene" uid="uid://bs816w0pr8all" path="res://player/foxy.tscn" id="31_4ls57"]
 [ext_resource type="PackedScene" uid="uid://lrdkn2gv1v1m" path="res://effect_Item/coin/coin.tscn" id="31_5lmp0"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_0vhqm"]
@@ -6871,5 +6872,8 @@ position = Vector2(-561, -202)
 
 [node name="Coin" parent="." instance=ExtResource("31_5lmp0")]
 position = Vector2(-685, -236)
+
+[node name="Foxy" parent="." instance=ExtResource("31_4ls57")]
+position = Vector2(-778, -209)
 
 [connection signal="body_entered" from="KingCrabTrigger" to="." method="_on_king_crab_trigger_body_entered"]

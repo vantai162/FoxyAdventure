@@ -43,6 +43,8 @@ metadata/_tab_index = 1
 
 [node name="GridContainer" type="GridContainer" parent="TabContainer/ItemPanel"]
 layout_mode = 2
+theme_override_constants/h_separation = 50
+theme_override_constants/v_separation = 50
 columns = 2
 
 [node name="PopupResult" type="AcceptDialog" parent="."]
