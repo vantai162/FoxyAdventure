@@ -17,43 +17,29 @@ grow_vertical = 2
 size_flags_horizontal = 3
 script = ExtResource("1_k8a2t")
 
-[node name="TextureRect" type="TextureRect" parent="."]
-layout_mode = 1
-anchors_preset = -1
-offset_left = 28.0
-offset_top = 23.0
-offset_right = 72.0
-offset_bottom = 76.0
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+layout_mode = 0
+offset_left = 20.0
+offset_top = 20.0
+offset_right = 64.0
+offset_bottom = 136.0
+
+[node name="TextureRect" type="TextureRect" parent="VBoxContainer"]
+layout_mode = 2
 stretch_mode = 5
 
-[node name="PriceLabel" type="Label" parent="."]
-layout_mode = 0
-offset_left = 30.0
-offset_top = 102.0
-offset_right = 70.0
-offset_bottom = 125.0
+[node name="PriceLabel" type="Label" parent="VBoxContainer"]
+layout_mode = 2
 text = "Giá:"
 
-[node name="NameLabel" type="Label" parent="."]
-layout_mode = 0
-offset_left = 28.0
-offset_top = 75.0
-offset_right = 72.0
-offset_bottom = 98.0
+[node name="NameLabel" type="Label" parent="VBoxContainer"]
+layout_mode = 2
 text = "name"
 
-[node name="StockLabel" type="Label" parent="."]
-layout_mode = 0
-offset_left = 31.0
-offset_top = 127.0
-offset_right = 72.0
-offset_bottom = 150.0
+[node name="StockLabel" type="Label" parent="VBoxContainer"]
+layout_mode = 2
 text = "stock"
 
-[node name="BuyButton" type="Button" parent="."]
-layout_mode = 0
-offset_left = 18.0
-offset_top = 159.0
-offset_right = 87.0
-offset_bottom = 190.0
+[node name="BuyButton" type="Button" parent="VBoxContainer"]
+layout_mode = 2
 text = "Mua"

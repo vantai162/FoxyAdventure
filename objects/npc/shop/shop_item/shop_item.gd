@@ -6,16 +6,25 @@ var item_type = ShopSystem.itemType.Skill # hoặc .skins
 var price:int 
 var stock:int  
 
-@onready var price_label = $PriceLabel
-@onready var name_label = $NameLabel
-@onready var stock_label = $StockLabel
-@onready var buy_button = $BuyButton
-@onready var icon = $TextureRect
+@onready var price_label = $VBoxContainer/PriceLabel
+@onready var name_label = $VBoxContainer/NameLabel
+@onready var stock_label = $VBoxContainer/StockLabel
+@onready var buy_button = $VBoxContainer/BuyButton
+@onready var icon = $VBoxContainer/TextureRect
 
 func _ready():
 	buy_button.pressed.connect(_on_buy_pressed)
-	print(icon)
+	buy_button.add_theme_stylebox_override("normal", create_shop_style())
 	_update_ui()
+
+func create_shop_style() -> StyleBoxFlat:
+	var style = StyleBoxFlat.new()
+	style.bg_color = Color("4b3d33")
+	style.set_border_width_all(2)
+	style.border_color = Color("2d221a")
+	style.corner_radius_top_left = 2
+	style.corner_radius_bottom_right = 2
+	return style
 
 func _update_ui():
 	price_label.text = "Giá: " + str(price)
@@ -50,7 +59,7 @@ func _on_buy_pressed():
 					buy_button.disabled = true
 			elif item_type == ShopSystem.itemType.skins:
 				buy_button.disabled = true
-				GameManager.player.change_skin("SinnerFoxy",true)
+				GameManager.player.change_skin(key,true)
 			_show_popup("Mua thành công!")
 		ShopSystem.TransactionResult.AlreadyBought:
 			_show_popup("Bạn đã mua item này rồi.")
@@ -66,5 +75,28 @@ func _on_buy_pressed():
 func _show_popup(text:String):
 	var dlg = AcceptDialog.new()
 	dlg.dialog_text = text
+	dlg.size = Vector2(270, 100)
+	dlg.borderless = true
+	dlg.title = ""
+	var panel_style = StyleBoxFlat.new()
+	panel_style.bg_color = Color("4b3d33")   # nền nâu
+	panel_style.set_border_width_all(2)
+	panel_style.border_color = Color("2d221a")
+	panel_style.corner_radius_top_left = 6
+	panel_style.corner_radius_top_right = 6
+	panel_style.corner_radius_bottom_left = 6
+	panel_style.corner_radius_bottom_right = 6
+	panel_style.content_margin_top = 20 
+	panel_style.content_margin_left = 10
+	panel_style.content_margin_right = 10
+	panel_style.content_margin_bottom = 10
+	
+	dlg.add_theme_stylebox_override("panel", panel_style)
+	var ok_button = dlg.get_ok_button()
+	if ok_button:
+		ok_button.add_theme_stylebox_override("normal", create_shop_style())
+		ok_button.add_theme_color_override("font_color", Color("e0d4c0")) # chữ màu kem
+		ok_button.size = Vector2(100, 100)
+	
 	add_child(dlg)
 	dlg.popup_centered()
