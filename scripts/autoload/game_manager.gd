@@ -27,7 +27,12 @@ func _ready() -> void:
 	key_manager.load_key()
 	if(key_manager.KeyDict.size()<=0):
 		key_manager._get_key_dictionary_from_input_map()
-	current_checkpoint_id = ""
+	print(load_checkpoint(current_checkpoint_id)["stage_path"])
+	await get_tree().process_frame
+	await get_tree().change_scene_to_file(load_checkpoint(current_checkpoint_id)["stage_path"])
+	await get_tree().process_frame
+	current_stage=get_tree().current_scene
+	await get_tree().process_frame
 	skin_manager._load_skin_data_from_save()
 	checkpoint_data.clear()
 	

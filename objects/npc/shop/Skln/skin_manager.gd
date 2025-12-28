@@ -8,12 +8,13 @@ var cur_skin_data:Dictionary#used skin_name:Skin
 enum SkinState{CantBuy,AlreadyBought,CanBuy,TooExpensive}
 func _load_skin_data_from_save():
 	var data=SaveSystem.load_skin_data()
-	if data.has("Current_Player_Skin")&&GameManager.player!=null:
-		GameManager.player.change_skin(data["Current_Player_Skin"])
 	for skin_name in skinDict:
 		cur_skin_data[skin_name]=skinDict[skin_name].instantiate()
 		if(data.has(skin_name)):
 			cur_skin_data[skin_name].load_skin_status(data[skin_name])
+	if data.has("Current_Player_Skin")&&GameManager.player!=null:
+		if data["Current_Player_Skin"]!="":	
+			GameManager.player.change_skin(data["Current_Player_Skin"],false)
 
 func _save_skin_data():
 	var saveDict:Dictionary

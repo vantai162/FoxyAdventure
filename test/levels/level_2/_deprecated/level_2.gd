@@ -7,7 +7,7 @@ var can_pause = true
 
 func _enter_tree() -> void:
 	GameManager.current_stage = self
-
+	
 func _ready() -> void:
 	
 	var editor_player = find_child("Foxy", true, false)

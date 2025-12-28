@@ -330,7 +330,9 @@ func spawn_air_slash() -> void:
 	air_slash.launch(direction)
 
 func _ready() -> void:
-	change_skin("defaultFoxy")
+	if($Direction/AnimatedSprite2D==null&&$Direction/BladeAnimatedSprite2D):
+		change_skin("defaultFoxy",false)
+	print($Direction/AnimatedSprite2D.sprite_frames.has_animation("jump"))
 	super._ready()
 	fsm = FSM.new(self, $States, $States/Idle)
 	$Direction/HitArea2D/CollisionShape2D.disabled = true
@@ -595,7 +597,7 @@ func get_max_health() -> int:
 func get_health() -> int:
 	return health
 	
-func change_skin(skinname_para:String):
+func change_skin(skinname_para:String,save:bool):
 	SkinName=skinname_para
 	var normal_copy:AnimatedSprite2D=GameManager.skin_manager.cur_skin_data[SkinName].get_normal_Ani()
 	if normal_copy!=null:
@@ -613,4 +615,5 @@ func change_skin(skinname_para:String):
 		set_animated_sprite($Direction/BladeAnimatedSprite2D)
 	else:
 		set_animated_sprite($Direction/AnimatedSprite2D)
-	GameManager.skin_manager._save_skin_data()
+	if(save==true)	:
+		GameManager.skin_manager._save_skin_data()

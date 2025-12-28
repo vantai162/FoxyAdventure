@@ -1,6 +1,6 @@
 [gd_scene load_steps=80 format=4 uid="uid://dfurop71qa3su"]
 
-[ext_resource type="Script" uid="uid://k5xd5m2hm6xo" path="res://test/levels/level_1/stage_1_1.gd" id="1_7qv11"]
+[ext_resource type="Script" path="res://test/levels/level_1/stage_1_1.gd" id="1_7qv11"]
 [ext_resource type="PackedScene" uid="uid://dm741hii7d5nv" path="res://scenes/game_screen/health_bar.tscn" id="2_l7nct"]
 [ext_resource type="PackedScene" uid="uid://bs816w0pr8all" path="res://player/foxy.tscn" id="2_xeh7v"]
 [ext_resource type="TileSet" uid="uid://bmuxyu21ya31y" path="res://assets/tileset.tres" id="3_l7nct"]

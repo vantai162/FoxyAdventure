@@ -1,4 +1,4 @@
-[gd_scene load_steps=36 format=3 uid="uid://dcbwrlrptj8jy"]
+[gd_scene load_steps=37 format=3 uid="uid://dcbwrlrptj8jy"]
 
 [ext_resource type="Script" uid="uid://c2sie7kfdlcfl" path="res://objects/npc/shop/Skln/Costume/Costume.gd" id="1_dee3q"]
 [ext_resource type="Texture2D" uid="uid://bklgym4diuv81" path="res://assets/foxy/fox_hat/fox_defeat_1.png" id="2_1kka3"]
@@ -28,6 +28,7 @@
 [ext_resource type="Texture2D" uid="uid://dwsoxnd6bpiyb" path="res://assets/foxy/fox_hat_blade/fox_idle_1.png" id="26_vrwr6"]
 [ext_resource type="Texture2D" uid="uid://cxw0m2cl8vuur" path="res://assets/foxy/fox_hat_blade/fox_idle_2.png" id="27_5yaaw"]
 [ext_resource type="Texture2D" uid="uid://cstij0qctb13g" path="res://assets/foxy/fox_hat_blade/fox_jump_atk_1.png" id="28_c7nbs"]
+[ext_resource type="Texture2D" uid="uid://c7tqhp8t7pqpj" path="res://assets/foxy/fox_hat_blade/fox_jump_1.png" id="28_dee3q"]
 [ext_resource type="Texture2D" uid="uid://bv3h2i8gtpkse" path="res://assets/foxy/fox_hat_blade/fox_jump_atk_2.png" id="29_enlfd"]
 [ext_resource type="Texture2D" uid="uid://dff57wk5cnq8a" path="res://assets/foxy/fox_hat_blade/fox_run_1.png" id="30_3djyi"]
 [ext_resource type="Texture2D" uid="uid://fkgavy53tavg" path="res://assets/foxy/fox_hat_blade/fox_run_2.png" id="31_pbjb8"]
@@ -182,6 +183,14 @@ animations = [{
 }, {
 "frames": [{
 "duration": 1.0,
+"texture": ExtResource("28_dee3q")
+}],
+"loop": true,
+"name": &"jump",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
 "texture": ExtResource("28_c7nbs")
 }, {
 "duration": 1.0,
@@ -229,4 +238,4 @@ animation = &"dead"
 [node name="BladeAnimatedSprite2D" type="AnimatedSprite2D" parent="."]
 visible = false
 sprite_frames = SubResource("SpriteFrames_40j8w")
-animation = &"fall"
+animation = &"jump"

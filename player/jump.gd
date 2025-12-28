@@ -1,7 +1,9 @@
 extends Player_State
 
 func _enter() -> void:
+	print("JUMP")
 	obj.change_animation("jump")
+	print(obj.current_animation)
 	super._enter()
 	AudioManager.play_sound("player_jump",20.0)
 	# If coming from wall cling, activate wall jump air restriction

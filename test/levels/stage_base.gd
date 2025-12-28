@@ -23,7 +23,6 @@ var can_pause = true
 ## Also handle editor-placed player here to prevent double _ready() calls
 func _enter_tree() -> void:
 	GameManager.current_stage = self
-	
 	# Handle editor player EARLY - before its _ready() runs!
 	# This prevents the torch from calling _ready() on a player that will be freed
 	_handle_editor_player_early()
@@ -53,11 +52,11 @@ func _handle_editor_player_early() -> void:
 
 func _ready() -> void:
 	# Editor player is already handled in _enter_tree()
-	
+	GameManager.current_stage=self
+	GameManager.respawn_at_checkpoint()
 	# Spawn player if needed (only if no editor player was kept)
 	if GameManager.player == null:
 		GameManager.request_player_spawn()
-	
 	# Handle portal teleportation or scene transition spawn
 	_handle_portal_spawn()
 	_handle_scene_transition_spawn()

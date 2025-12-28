@@ -11,7 +11,7 @@ var wake_up_scn_played: bool = false
 
 func _enter_tree() -> void:
 	GameManager.current_stage = self
-
+	
 func _ready() -> void:
 	var editor_player = find_child("Foxy", true, false)
 	if editor_player != null:
