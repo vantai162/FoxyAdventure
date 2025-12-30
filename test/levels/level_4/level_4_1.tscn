@@ -6715,7 +6715,7 @@ animations = [{
 }]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_fuc0x"]
-size = Vector2(143, 328)
+size = Vector2(106.5, 328)
 
 [node name="Level41" type="Node2D"]
 script = ExtResource("1_jtpgi")
@@ -6840,7 +6840,7 @@ direction = -1
 max_health = 50
 
 [node name="Node2D" type="Node2D" parent="." groups=["coconut_tree"]]
-position = Vector2(729, -299)
+position = Vector2(725, -298)
 
 [node name="Node2D2" type="Node2D" parent="." groups=["coconut_tree"]]
 position = Vector2(1576, -266)
@@ -6852,7 +6852,7 @@ position = Vector2(258, -599)
 collision_mask = 3
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="KingCrabTrigger"]
-position = Vector2(1126, -287)
+position = Vector2(1144.25, -287)
 shape = SubResource("RectangleShape2D_fuc0x")
 
 [node name="WindArea" parent="." instance=ExtResource("28_ni2h2")]
@@ -6874,6 +6874,6 @@ position = Vector2(-561, -202)
 position = Vector2(-685, -236)
 
 [node name="Foxy" parent="." instance=ExtResource("31_4ls57")]
-position = Vector2(-778, -209)
+position = Vector2(649, -386)
 
 [connection signal="body_entered" from="KingCrabTrigger" to="." method="_on_king_crab_trigger_body_entered"]

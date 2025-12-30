@@ -1,8 +1,9 @@
 class_name Player_State
 extends FSMState
 
+
 func control_moving() -> bool:
-	if(GameManager.paused):
+	if GameManager.paused or obj.input_locked:
 		return false
 	var dir: float = Input.get_action_strength("right") - Input.get_action_strength("left")
 	var is_moving: bool = abs(dir) > 0.1
@@ -78,7 +79,7 @@ func control_moving() -> bool:
 	
 	return false
 func control_jump() -> bool:
-	if(GameManager.paused):
+	if GameManager.paused or obj.input_locked:
 		return false
 	if (Input.is_action_just_pressed("jump") and obj.jump_count < 2) or (obj._checkbuffer() and obj.is_on_floor()):
 		if(obj.jump_count==0&& fsm.current_state==fsm.states.fall):
@@ -95,7 +96,7 @@ func control_jump() -> bool:
 	return false
 
 func control_attack() -> bool:
-	if(GameManager.paused):
+	if GameManager.paused or obj.input_locked:
 		return false
 	if Input.is_action_just_pressed("attack") and obj.can_attack():
 		change_state(fsm.states.attack)
@@ -103,7 +104,7 @@ func control_attack() -> bool:
 	return false
 
 func control_throw() -> bool:
-	if(GameManager.paused):
+	if GameManager.paused or obj.input_locked:
 		return false
 	if Input.is_action_just_pressed("throw_blade") and obj.can_throw_blade():
 		change_state(fsm.states.throw)
@@ -111,7 +112,7 @@ func control_throw() -> bool:
 	return false
 
 func control_dash() -> bool:
-	if(GameManager.paused):
+	if GameManager.paused or obj.input_locked:
 		return false
 	if obj.CoolDown["Dash"] > 0:
 		return false
@@ -128,7 +129,7 @@ func control_dash() -> bool:
 
 
 func control_swimming() -> bool:
-	if GameManager.paused:
+	if GameManager.paused or obj.input_locked: 
 		return false
 
 	# Thoát khỏi nước

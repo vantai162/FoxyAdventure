@@ -59,12 +59,12 @@ func _play_intro_cinematic() -> void:
 	# 1. Create and play the wake-up cinematic
 	var cinematic = wake_up_cinematic_scn.instantiate()
 	add_child(cinematic)
-	
+	GameManager.player.input_locked = true
 	# 2. Wait for cinematic to finish
 	await cinematic.finished
 	wake_up_scn_played = true
 	cinematic.queue_free()
-	
+	GameManager.player.input_locked = false
 	# 3. Start dialogue
 	print("[Level1] Intro complete, starting dialogue")
 	Dialogic.start(wakeup_timeline)

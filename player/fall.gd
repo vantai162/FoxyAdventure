@@ -4,6 +4,7 @@ func _enter() -> void:
 	obj.change_animation("fall")
 
 func _update(_delta: float) -> void:
+	obj.current_oxygen = min(obj.max_oxygen, obj.current_oxygen + obj.oxygen_increase_rate * _delta)
 	var is_moving=false
 	var jumped=false
 	if(obj._checkcoyotea()):
