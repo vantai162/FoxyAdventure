@@ -42,6 +42,7 @@ var endgame: bool = false
 ## UI references
 var boss_phase1_healthbar: TextureProgressBar
 var boss_phase2_healthbar: TextureProgressBar
+var phase2_initialized: bool = false
 
 
 ## Node references (set by @onready after scene loads)
@@ -72,7 +73,8 @@ func _on_stage_process(_delta: float) -> void:
 
 func _update_boss_state() -> void:
 	# Handle phase 2 transition
-	if boss.current_phase == 2 and not endgame:
+	if boss.current_phase == 2 and not endgame and not phase2_initialized:
+		phase2_initialized = true # Chặn không cho chạy lại vào frame sau
 		boss_phase2_healthbar = $CanvasLayer/WarlordPhase2HealthBar
 		boss_phase2_healthbar.setup()
 		boss_phase2_healthbar.visible = true
@@ -236,7 +238,6 @@ func _spare_warlord_escape() -> void:
 	boss.set_physics_process(false)
 	await get_tree().create_timer(2.0).timeout
 	var cam = GameManager.player.get_node("Camera2D")
-	AudioManager.play_sound("earthquake")
 	cam.shake_tsunami()
 	var target_pos = boss.position + Vector2(0, -600) 
 	var tween = create_tween()

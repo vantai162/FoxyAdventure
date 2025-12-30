@@ -22,6 +22,8 @@ var current_sfx_bus_name: String = SFX_BUS
 var current_music_id: String = ""
 
 func _ready() -> void:
+	# Đợi một frame để đảm bảo AudioServer đã sẵn sàng trên trình duyệt
+	await get_tree().process_frame
 	# Initialize music player
 	music_player = AudioStreamPlayer.new()
 	music_player.name = "MusicPlayer"

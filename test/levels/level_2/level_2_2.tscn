@@ -277,4 +277,19 @@ story_text = "Không ai biết nguồn gốc thật sự của Trái Tim Biển 
 (Nhấn Q để tiếp tục)"
 memory_title = "⭐ Memory 4 – “Điều ước”"
 
+[connection signal="area_entered" from="DirtLayer/Coin" to="DirtLayer/Coin" method="_on_area_entered"]
+[connection signal="area_entered" from="DirtLayer/@Area2D@56665" to="DirtLayer/@Area2D@56665" method="_on_area_entered"]
+[connection signal="area_entered" from="DirtLayer/@Area2D@56666" to="DirtLayer/@Area2D@56666" method="_on_area_entered"]
+[connection signal="area_entered" from="DirtLayer/@Area2D@56667" to="DirtLayer/@Area2D@56667" method="_on_area_entered"]
+[connection signal="area_entered" from="DirtLayer/@Area2D@56668" to="DirtLayer/@Area2D@56668" method="_on_area_entered"]
+[connection signal="area_entered" from="DirtLayer/@Area2D@56669" to="DirtLayer/@Area2D@56669" method="_on_area_entered"]
+[connection signal="area_entered" from="DirtLayer/@Area2D@56670" to="DirtLayer/@Area2D@56670" method="_on_area_entered"]
+[connection signal="area_entered" from="DirtLayer/@Area2D@56671" to="DirtLayer/@Area2D@56671" method="_on_area_entered"]
+[connection signal="area_entered" from="DirtLayer/@Area2D@56672" to="DirtLayer/@Area2D@56672" method="_on_area_entered"]
+[connection signal="area_entered" from="DirtLayer/@Area2D@56673" to="DirtLayer/@Area2D@56673" method="_on_area_entered"]
+[connection signal="area_entered" from="DirtLayer/@Area2D@56674" to="DirtLayer/@Area2D@56674" method="_on_area_entered"]
+[connection signal="area_entered" from="DirtLayer/@Area2D@56675" to="DirtLayer/@Area2D@56675" method="_on_area_entered"]
+[connection signal="area_entered" from="DirtLayer/@Area2D@56676" to="DirtLayer/@Area2D@56676" method="_on_area_entered"]
+[connection signal="area_entered" from="DirtLayer/@Area2D@56677" to="DirtLayer/@Area2D@56677" method="_on_area_entered"]
+[connection signal="area_entered" from="DirtLayer/@Area2D@56678" to="DirtLayer/@Area2D@56678" method="_on_area_entered"]
 [connection signal="body_entered" from="MeetBossArea2D" to="." method="_on_meet_boss_area_2d_body_entered"]
