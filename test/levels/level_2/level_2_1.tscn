@@ -262,6 +262,7 @@ position = Vector2(270, 145)
 [node name="Spawner" type="Node2D" parent="."]
 
 [node name="ShopVendor" parent="." instance=ExtResource("34_5l4f7")]
+z_index = 20
 position = Vector2(974, -236)
 
 [node name="VerticalMovingPlatform" parent="." groups=["one_way_platform"] instance=ExtResource("37_q2kgt")]

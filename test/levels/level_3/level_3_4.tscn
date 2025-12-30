@@ -204,12 +204,3 @@ memory_title = "⭐ Memory 10 – “Ước muốn của Foxy”"
 
 [node name="Foxy" parent="." instance=ExtResource("22_kkqtw")]
 position = Vector2(235, 305)
-
-[connection signal="area_entered" from="Terrain/TileMapLayer/Coin" to="Terrain/TileMapLayer/Coin" method="_on_area_entered"]
-[connection signal="area_entered" from="Terrain/TileMapLayer/@Area2D@80252" to="Terrain/TileMapLayer/@Area2D@80252" method="_on_area_entered"]
-[connection signal="area_entered" from="Terrain/TileMapLayer/@Area2D@80253" to="Terrain/TileMapLayer/@Area2D@80253" method="_on_area_entered"]
-[connection signal="area_entered" from="Terrain/TileMapLayer/@Area2D@80254" to="Terrain/TileMapLayer/@Area2D@80254" method="_on_area_entered"]
-[connection signal="area_entered" from="Terrain/TileMapLayer/@Area2D@80255" to="Terrain/TileMapLayer/@Area2D@80255" method="_on_area_entered"]
-[connection signal="area_entered" from="Terrain/TileMapLayer/@Area2D@80256" to="Terrain/TileMapLayer/@Area2D@80256" method="_on_area_entered"]
-[connection signal="area_entered" from="Terrain/TileMapLayer/@Area2D@80257" to="Terrain/TileMapLayer/@Area2D@80257" method="_on_area_entered"]
-[connection signal="area_entered" from="Terrain/TileMapLayer/@Area2D@80258" to="Terrain/TileMapLayer/@Area2D@80258" method="_on_area_entered"]
