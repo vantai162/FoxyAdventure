@@ -1,4 +1,4 @@
-[gd_scene load_steps=35 format=4 uid="uid://ddyh8ihq1kbaq"]
+[gd_scene load_steps=36 format=4 uid="uid://ddyh8ihq1kbaq"]
 
 [ext_resource type="Script" uid="uid://0thb0qwv81u6" path="res://test/levels/level_2/stage_2_2.gd" id="1_3q18u"]
 [ext_resource type="PackedScene" uid="uid://dm741hii7d5nv" path="res://scenes/game_screen/health_bar.tscn" id="2_l0ym8"]
@@ -29,6 +29,7 @@
 [ext_resource type="Texture2D" uid="uid://8hvgvg1a1kfq" path="res://assets/objects/Skull 0011.png" id="30_rwf7l"]
 [ext_resource type="Texture2D" uid="uid://dgjm6kuw7b8ms" path="res://assets/objects/Spider Sprite Sheet.png" id="31_2bwa3"]
 [ext_resource type="PackedScene" uid="uid://m0ec1cyfshdq" path="res://objects/scroll/scroll.tscn" id="32_2bwa3"]
+[ext_resource type="PackedScene" uid="uid://bs816w0pr8all" path="res://player/foxy.tscn" id="32_7l551"]
 [ext_resource type="Script" uid="uid://d33ee5tueerss" path="res://test/levels/level_2/meet_boss_area_2d.gd" id="35_2jlac"]
 [ext_resource type="PackedScene" uid="uid://diraf0q6ndu7y" path="res://objects/door/dark_entrance.tscn" id="36_3q18u"]
 
@@ -277,19 +278,22 @@ story_text = "Không ai biết nguồn gốc thật sự của Trái Tim Biển 
 (Nhấn Q để tiếp tục)"
 memory_title = "⭐ Memory 4 – “Điều ước”"
 
+[node name="Foxy" parent="." instance=ExtResource("32_7l551")]
+position = Vector2(93, 330)
+
 [connection signal="area_entered" from="DirtLayer/Coin" to="DirtLayer/Coin" method="_on_area_entered"]
-[connection signal="area_entered" from="DirtLayer/@Area2D@56665" to="DirtLayer/@Area2D@56665" method="_on_area_entered"]
-[connection signal="area_entered" from="DirtLayer/@Area2D@56666" to="DirtLayer/@Area2D@56666" method="_on_area_entered"]
-[connection signal="area_entered" from="DirtLayer/@Area2D@56667" to="DirtLayer/@Area2D@56667" method="_on_area_entered"]
-[connection signal="area_entered" from="DirtLayer/@Area2D@56668" to="DirtLayer/@Area2D@56668" method="_on_area_entered"]
-[connection signal="area_entered" from="DirtLayer/@Area2D@56669" to="DirtLayer/@Area2D@56669" method="_on_area_entered"]
-[connection signal="area_entered" from="DirtLayer/@Area2D@56670" to="DirtLayer/@Area2D@56670" method="_on_area_entered"]
-[connection signal="area_entered" from="DirtLayer/@Area2D@56671" to="DirtLayer/@Area2D@56671" method="_on_area_entered"]
-[connection signal="area_entered" from="DirtLayer/@Area2D@56672" to="DirtLayer/@Area2D@56672" method="_on_area_entered"]
-[connection signal="area_entered" from="DirtLayer/@Area2D@56673" to="DirtLayer/@Area2D@56673" method="_on_area_entered"]
-[connection signal="area_entered" from="DirtLayer/@Area2D@56674" to="DirtLayer/@Area2D@56674" method="_on_area_entered"]
-[connection signal="area_entered" from="DirtLayer/@Area2D@56675" to="DirtLayer/@Area2D@56675" method="_on_area_entered"]
-[connection signal="area_entered" from="DirtLayer/@Area2D@56676" to="DirtLayer/@Area2D@56676" method="_on_area_entered"]
-[connection signal="area_entered" from="DirtLayer/@Area2D@56677" to="DirtLayer/@Area2D@56677" method="_on_area_entered"]
-[connection signal="area_entered" from="DirtLayer/@Area2D@56678" to="DirtLayer/@Area2D@56678" method="_on_area_entered"]
+[connection signal="area_entered" from="DirtLayer/@Area2D@23793" to="DirtLayer/@Area2D@23793" method="_on_area_entered"]
+[connection signal="area_entered" from="DirtLayer/@Area2D@23794" to="DirtLayer/@Area2D@23794" method="_on_area_entered"]
+[connection signal="area_entered" from="DirtLayer/@Area2D@23795" to="DirtLayer/@Area2D@23795" method="_on_area_entered"]
+[connection signal="area_entered" from="DirtLayer/@Area2D@23796" to="DirtLayer/@Area2D@23796" method="_on_area_entered"]
+[connection signal="area_entered" from="DirtLayer/@Area2D@23797" to="DirtLayer/@Area2D@23797" method="_on_area_entered"]
+[connection signal="area_entered" from="DirtLayer/@Area2D@23798" to="DirtLayer/@Area2D@23798" method="_on_area_entered"]
+[connection signal="area_entered" from="DirtLayer/@Area2D@23799" to="DirtLayer/@Area2D@23799" method="_on_area_entered"]
+[connection signal="area_entered" from="DirtLayer/@Area2D@23800" to="DirtLayer/@Area2D@23800" method="_on_area_entered"]
+[connection signal="area_entered" from="DirtLayer/@Area2D@23801" to="DirtLayer/@Area2D@23801" method="_on_area_entered"]
+[connection signal="area_entered" from="DirtLayer/@Area2D@23802" to="DirtLayer/@Area2D@23802" method="_on_area_entered"]
+[connection signal="area_entered" from="DirtLayer/@Area2D@23803" to="DirtLayer/@Area2D@23803" method="_on_area_entered"]
+[connection signal="area_entered" from="DirtLayer/@Area2D@23804" to="DirtLayer/@Area2D@23804" method="_on_area_entered"]
+[connection signal="area_entered" from="DirtLayer/@Area2D@23805" to="DirtLayer/@Area2D@23805" method="_on_area_entered"]
+[connection signal="area_entered" from="DirtLayer/@Area2D@23806" to="DirtLayer/@Area2D@23806" method="_on_area_entered"]
 [connection signal="body_entered" from="MeetBossArea2D" to="." method="_on_meet_boss_area_2d_body_entered"]
