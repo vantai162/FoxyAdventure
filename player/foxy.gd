@@ -1,6 +1,8 @@
 class_name Player
 extends BaseCharacter
 
+
+@export var input_locked: bool = false
 @export var runspeed: int = 300
 @export var Attack_Speed: int = 0
 @export var invi_time: float = 2.0
@@ -498,7 +500,7 @@ func _update_timeline(delta: float) -> void:
 	timeline += delta
 	if is_on_floor():
 		last_ground_time = timeline
-	elif fsm.current_state == fsm.states.fall and Input.is_action_pressed("jump"):
+	elif fsm != null and fsm.current_state == fsm.states.fall and Input.is_action_just_pressed("jump"):
 		last_jumppress_onair = timeline
 
 func _checkcoyotea() -> bool:

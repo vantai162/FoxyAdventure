@@ -203,6 +203,9 @@ func spawn_player(spawn_data: Dictionary) -> Player:
 		printerr("Player FSM not initialized!")
 	player = new_player
 	skin_manager.change_to_saved_skin(new_player)
+	if GameManager.current_stage:
+		GameManager.current_stage._setup_camera_bounds()
+		GameManager.current_stage._snap_camera_to_player()
 	return new_player
 
 func request_player_spawn() -> void:

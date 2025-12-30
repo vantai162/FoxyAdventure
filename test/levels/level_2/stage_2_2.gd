@@ -98,7 +98,7 @@ func _trigger_victory_sequence() -> void:
 	
 	# Freeze player for dialogue
 	var player = GameManager.player
-	player.set_physics_process(false)
+	player.input_locked = true
 	if player.has_method("stop_move"):
 		player.stop_move()
 	player.position = Vector2(950, 369)
@@ -144,7 +144,7 @@ func _boss_entry_cinematic() -> void:
 	var cam = player.get_node("Camera2D")
 	
 	# Freeze player
-	player.set_physics_process(false)
+	player.input_locked = true
 	if player.has_method("stop_move"):
 		player.stop_move()
 	
@@ -168,7 +168,7 @@ func _on_dialog_finished() -> void:
 	await get_tree().create_timer(0.2).timeout
 	
 	# Unfreeze player
-	player.set_physics_process(true)
+	player.input_locked = false
 	can_pause = true
 	
 	# Spawn support elements
@@ -194,7 +194,7 @@ func _on_dialog_finished() -> void:
 
 func _on_dialog_finished_2() -> void:
 	var player = GameManager.player
-	player.set_physics_process(true)
+	player.input_locked = false
 	can_pause = true
 
 

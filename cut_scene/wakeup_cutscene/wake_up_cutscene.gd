@@ -21,7 +21,7 @@ func start_sequence():
 
 	# --- 1. SETUP ---
 	# Lock player input during cutscene
-	GameManager.paused = true
+	
 	player.visible = true
 	if player.has_method("change_animation"):
 		player.change_animation("dead")
