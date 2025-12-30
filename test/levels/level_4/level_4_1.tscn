@@ -6873,7 +6873,7 @@ position = Vector2(-561, -202)
 [node name="Coin" parent="." instance=ExtResource("31_5lmp0")]
 position = Vector2(-685, -236)
 
-[node name="Foxy" parent="." instance=ExtResource("31_4ls57")]
-position = Vector2(649, -386)
+[node name="Foxy2" parent="." instance=ExtResource("31_4ls57")]
+position = Vector2(-961, -215)
 
 [connection signal="body_entered" from="KingCrabTrigger" to="." method="_on_king_crab_trigger_body_entered"]
