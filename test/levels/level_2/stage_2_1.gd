@@ -22,7 +22,7 @@ func _init() -> void:
 	# X: -600 to 5600, Y: -700 to 600
 	camera_left = -600.0
 	camera_right = 5600.0
-	camera_top = -700.0
+	camera_top = -900.0
 	camera_bottom = 600.0
 
 
