@@ -1,4 +1,4 @@
-[gd_scene load_steps=27 format=4 uid="uid://baiqhcrd0wqes"]
+[gd_scene load_steps=28 format=4 uid="uid://baiqhcrd0wqes"]
 
 [ext_resource type="Script" uid="uid://dmw85c2q8phxb" path="res://test/levels/level_3/stage_3_3.gd" id="1_stage_script"]
 [ext_resource type="TileSet" uid="uid://0yf5cmwk6u1i" path="res://assets/island/terrain/ice_tile_set.tres" id="3_l86yd"]
@@ -24,7 +24,8 @@
 [ext_resource type="PackedScene" uid="uid://k1cvcu80rfmm" path="res://scenes/game_screen/coin_ui.tscn" id="23_h45nm"]
 [ext_resource type="PackedScene" uid="uid://cstfpndmrkms3" path="res://scenes/game_screen/key_ui.tscn" id="24_dlyds"]
 [ext_resource type="PackedScene" uid="uid://8koby8md4sgg" path="res://scenes/game_screen/blade_ui.tscn" id="25_wrv2e"]
-[ext_resource type="PackedScene" path="res://objects/pressure_plate/pressure_plate.tscn" id="26_n2s4v"]
+[ext_resource type="PackedScene" uid="uid://d1twwiutipd8r" path="res://objects/pressure_plate/pressure_plate.tscn" id="26_n2s4v"]
+[ext_resource type="PackedScene" uid="uid://bs816w0pr8all" path="res://player/foxy.tscn" id="27_h45nm"]
 [ext_resource type="PackedScene" uid="uid://clavapool001" path="res://environment/lava/lava_pool.tscn" id="27_u7sk4"]
 
 [node name="Level_3_3" type="Node2D"]
@@ -325,3 +326,6 @@ target_scene = "uid://caxibxcw4tq32"
 target_spawn_name = "FromLevel3_3"
 exit_direction = 2
 spawn_offset = Vector2(0, 48)
+
+[node name="Foxy" parent="." instance=ExtResource("27_h45nm")]
+position = Vector2(91, 1489)
