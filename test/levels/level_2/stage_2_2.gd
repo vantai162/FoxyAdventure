@@ -99,8 +99,6 @@ func _trigger_victory_sequence() -> void:
 	# Freeze player for dialogue
 	var player = GameManager.player
 	player.input_locked = true
-	if player.has_method("stop_move"):
-		player.stop_move()
 	player.position = Vector2(950, 369)
 	
 	# Start victory dialogue
@@ -145,9 +143,7 @@ func _boss_entry_cinematic() -> void:
 	
 	# Freeze player
 	player.input_locked = true
-	if player.has_method("stop_move"):
-		player.stop_move()
-	
+	player.velocity = Vector2.ZERO
 	# Close the door - no escape!
 	if door.has_method("close"):
 		door.close()

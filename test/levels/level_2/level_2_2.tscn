@@ -1,4 +1,4 @@
-[gd_scene load_steps=36 format=4 uid="uid://ddyh8ihq1kbaq"]
+[gd_scene load_steps=35 format=4 uid="uid://ddyh8ihq1kbaq"]
 
 [ext_resource type="Script" uid="uid://0thb0qwv81u6" path="res://test/levels/level_2/stage_2_2.gd" id="1_3q18u"]
 [ext_resource type="PackedScene" uid="uid://dm741hii7d5nv" path="res://scenes/game_screen/health_bar.tscn" id="2_l0ym8"]
@@ -29,7 +29,6 @@
 [ext_resource type="Texture2D" uid="uid://8hvgvg1a1kfq" path="res://assets/objects/Skull 0011.png" id="30_rwf7l"]
 [ext_resource type="Texture2D" uid="uid://dgjm6kuw7b8ms" path="res://assets/objects/Spider Sprite Sheet.png" id="31_2bwa3"]
 [ext_resource type="PackedScene" uid="uid://m0ec1cyfshdq" path="res://objects/scroll/scroll.tscn" id="32_2bwa3"]
-[ext_resource type="PackedScene" uid="uid://bs816w0pr8all" path="res://player/foxy.tscn" id="32_7l551"]
 [ext_resource type="Script" uid="uid://d33ee5tueerss" path="res://test/levels/level_2/meet_boss_area_2d.gd" id="35_2jlac"]
 [ext_resource type="PackedScene" uid="uid://diraf0q6ndu7y" path="res://objects/door/dark_entrance.tscn" id="36_3q18u"]
 
@@ -277,8 +276,5 @@ story_text = "Không ai biết nguồn gốc thật sự của Trái Tim Biển 
 
 (Nhấn Q để tiếp tục)"
 memory_title = "⭐ Memory 4 – “Điều ước”"
-
-[node name="Foxy" parent="." instance=ExtResource("32_7l551")]
-position = Vector2(-342, -227)
 
 [connection signal="body_entered" from="MeetBossArea2D" to="." method="_on_meet_boss_area_2d_body_entered"]

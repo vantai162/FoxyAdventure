@@ -78,7 +78,7 @@ air_slash_spawn_delay = 0.1
 swim_acceleration = 0.36
 blade_projectile_scene = ExtResource("3_blade")
 air_slash_scene = ExtResource("3_6e2ll")
-max_health = 300
+max_health = 5
 metadata/_custom_type_script = "uid://w7xdmsdvf5vd"
 
 [node name="Camera2D" type="Camera2D" parent="."]
