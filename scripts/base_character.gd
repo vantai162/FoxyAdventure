@@ -368,7 +368,6 @@ func die() -> void:
 	# 2. Cập nhật chỉ số
 	health = 0
 	emit_signal("health_changed") # Để thanh máu tụt về 0
-	emit_signal("died")
 	# 3. Kích hoạt State Chết (Logic chính nằm ở đây)
 	# Kiểm tra xem trong danh sách states có "dead" không
 	if fsm.states.has("dead"):
