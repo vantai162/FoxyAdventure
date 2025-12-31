@@ -38,6 +38,7 @@ func start_sequence():
 	
 	# Giai đoạn 0: Tỉnh dậy trong bóng tối (Chỉ nghe tiếng sóng)
 	await get_tree().create_timer(1.5).timeout
+	player=GameManager.player
 	player.change_animation("dead")	
 	# Fade out màn đen
 	create_tween().tween_property(black_fade, "color:a", 0.0, 2.0)
