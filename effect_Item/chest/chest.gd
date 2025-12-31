@@ -40,9 +40,12 @@ func _chest_ready() -> void:
 	interacted.connect(_on_interacted)
 	if animated_sprite:
 		animated_sprite.play("close")
+		call_deferred("_find_player")
+
+
+func _find_player():
 	player = get_tree().get_first_node_in_group("player")
-
-
+	
 func _on_interacted() -> void:
 	attempt_open_chest()
 
