@@ -35,6 +35,7 @@ script = ExtResource("1_4cu34")
 use_parent_material = true
 sprite_frames = SubResource("SpriteFrames_qclsm")
 animation = &"off"
+frame_progress = 1.0
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 position = Vector2(0, -1)
