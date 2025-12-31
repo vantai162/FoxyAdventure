@@ -38,10 +38,10 @@ func _ready() -> void:
 	pass
 
 func spawnStartfromSavefile():
+	load_checkpoint_data()
 	if(current_checkpoint_id==""):
 		printerr("Save file is corrupted")
 		return
-	load_checkpoint_data()
 	if(load_checkpoint(current_checkpoint_id).has("stage_path")):
 		var scene_to_load=load_checkpoint(current_checkpoint_id)["stage_path"]
 		await get_tree().process_frame
@@ -49,7 +49,7 @@ func spawnStartfromSavefile():
 		await get_tree().process_frame
 		current_stage=get_tree().current_scene
 		var player_data=load_checkpoint(current_checkpoint_id)["player_state"]
-		spawn_player(player_data)
+		respawn_at_checkpoint()
 		
 #change stage by path and target portal name
 func change_stage(stage_path: String, _target_portal_name: String = "") -> void:
