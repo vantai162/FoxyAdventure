@@ -2,6 +2,15 @@ extends EnemyCharacter
 
 ## King Crab Boss - Uses base class detection, simple phase system
 ## All tunable values centralized here for easy designer tweaking
+##
+## POISE SYSTEM: Boss is immune to knockback and stun-lock.
+## Takes damage, shows flash feedback, but attacks continue.
+## This creates a skill-based fight requiring pattern recognition.
+
+@export_group("Boss Poise")
+@export var knockback_immune: bool = true  ## Boss cannot be pushed by player attacks
+@export var stun_immune: bool = true  ## Boss cannot enter hurt state during attacks
+@export var poise_break_threshold: int = 10  ## Damage required to break poise (future feature)
 
 @export_group("Phase System")
 @export var phase_2_threshold: float = 0.5  ## Health ratio to trigger phase 2
@@ -87,13 +96,24 @@ signal health_changed
 func _ready() -> void:
 	add_to_group("king_crab")
 	add_to_group("enemy")
+	add_to_group("boss")  # Mark as boss for special handling
 	# max_health is set via @export in inspector (inherited from EnemyCharacter)
 	fsm = FSM.new(self, $States, $States/Sleep)
 	super._ready()  # Calls _init_ray_cast, _init_detect_player_area, _init_hurt_area
 
+## Override take_damage to implement POISE system
+## Boss takes damage but is NOT knocked back or interrupted
 func take_damage(damage: int) -> void:
 	super.take_damage(damage)
 	health_changed.emit()
+	
+	# Visual feedback: quick red flash without state change
+	if animated_sprite:
+		var tween = create_tween()
+		tween.tween_property(animated_sprite, "modulate", Color(1.5, 0.5, 0.5, 1.0), 0.05)
+		tween.tween_property(animated_sprite, "modulate", Color.WHITE, 0.15)
+	
+	# Phase transition check
 	if current_phase == 1 and health <= max_health * phase_2_threshold:
 		_enter_phase_2()
 

@@ -33,12 +33,13 @@ var burn_cooldown: float = 0.0  ## Prevents re-ignite spam for instant ticks
 @export var burn_immune: bool = false              ## Full immunity (optional)
 
 ## === BALANCED BURN CONSTANTS ===
-## Philosophy: Burn = 1 BONUS damage, not a flamethrower massacre
-const BASE_BURN_DURATION: float = 1.5   ## 1.5s burn (was 3s — too long)
-const BURN_TICK_RATE: float = 1.0       ## 1 tick per second (was 0.5s — too fast)
-const BASE_BURN_DAMAGE: int = 1         ## 1 damage per tick (unchanged)
-const BURN_REIGNITE_COOLDOWN: float = 2.0  ## Can't re-ignite for 2s (was 1s)
-## Result: 1-2 ticks max = 1-2 bonus damage per ignite (not 6-7)
+## Philosophy: Burn = POWER that feels impactful without trivializing combat
+## Tuned for satisfaction: 2-3 ticks = significant but not instant-kill
+const BASE_BURN_DURATION: float = 2.5   ## 2.5s burn (longer for visible damage)
+const BURN_TICK_RATE: float = 0.8       ## 0.8s per tick (faster ticks = more feedback)
+const BASE_BURN_DAMAGE: int = 1         ## 1 damage per tick
+const BURN_REIGNITE_COOLDOWN: float = 1.0  ## 1s cooldown (was 2s — too punishing)
+## Result: 3 ticks = 3 bonus damage per ignite (meaningful upgrade)
 
 ## GPU-native burn particles — preloaded, not procedurally built
 const BURN_PARTICLES_SCENE: PackedScene = preload("res://assets/effects/burn_particles.tscn")

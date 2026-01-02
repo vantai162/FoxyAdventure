@@ -105,32 +105,48 @@ func _on_area_entered(area: Area2D) -> void:
 	queue_free()
 
 func _spawn_pickup_particles() -> void:
-	## Create simple pickup particle effect
+	## Create satisfying key pickup sparkle effect
 	var particles = GPUParticles2D.new()
-	particles.emitting = true
 	particles.one_shot = true
-	particles.amount = 8
+	particles.amount = 10
 	particles.lifetime = 0.5
+	particles.explosiveness = 1.0
 	particles.global_position = global_position
 	particles.z_index = ZLayers.EFFECT_FRONT  # Pickup effect visible
 	
 	var material = ParticleProcessMaterial.new()
 	material.emission_shape = ParticleProcessMaterial.EMISSION_SHAPE_SPHERE
-	material.emission_sphere_radius = 8.0
+	material.emission_sphere_radius = 6.0
 	material.direction = Vector3(0, -1, 0)
-	material.spread = 45.0
-	material.initial_velocity_min = 50.0
-	material.initial_velocity_max = 100.0
-	material.gravity = Vector3(0, 200, 0)
+	material.spread = 180.0
+	material.initial_velocity_min = 35.0
+	material.initial_velocity_max = 70.0
+	material.gravity = Vector3(0, -15, 0)  # Float up briefly then fall
+	material.scale_min = 0.6
+	material.scale_max = 1.2
 	material.color = key_color
 	particles.process_material = material
 	
+	# 4x4 sparkle texture per doctrine
+	var grad = Gradient.new()
+	grad.set_color(0, Color(1.0, 1.0, 0.9, 1.0))
+	grad.set_color(1, Color(key_color.r, key_color.g, key_color.b, 0.0))
+	var tex = GradientTexture2D.new()
+	tex.gradient = grad
+	tex.fill = GradientTexture2D.FILL_RADIAL
+	tex.fill_from = Vector2(0.5, 0.5)
+	tex.width = 4
+	tex.height = 4
+	particles.texture = tex
+	
+	particles.emitting = true
 	get_tree().current_scene.add_child(particles)
 	
 	# Auto-cleanup
-	await get_tree().create_timer(1.0).timeout
-	if is_instance_valid(particles):
-		particles.queue_free()
+	get_tree().create_timer(1.0).timeout.connect(func():
+		if is_instance_valid(particles):
+			particles.queue_free()
+	)
 
 ## Check if this key matches a specific lock ID
 func matches_lock(lock_id: String) -> bool:

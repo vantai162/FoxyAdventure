@@ -1,5 +1,9 @@
 extends EnemyState
 
+## Attack release stretch — opposite of windup squat
+const RELEASE_SCALE: Vector2 = Vector2(0.88, 1.15)  ## Stretch up (throw release)
+const NORMAL_SCALE: Vector2 = Vector2(1.0, 1.0)
+
 var throw_count: int = 0
 
 func _enter() -> void:
@@ -18,6 +22,10 @@ func _exit() -> void:
 	obj.throw_timer.stop()
 	# Clear commitment flag when attack ends
 	obj.is_committed_to_attack = false
+	# Reset scale
+	var direction_node = obj.get_node_or_null("Direction")
+	if direction_node:
+		direction_node.scale = NORMAL_SCALE
 
 func _on_throw_timer_timeout() -> void:
 	if fsm.current_state == self:
@@ -25,6 +33,9 @@ func _on_throw_timer_timeout() -> void:
 
 func _throw_next_coconut() -> void:
 	throw_count += 1
+	
+	# Throw release feedback — stretch up
+	_apply_throw_release()
 	
 	# Coconut pattern: normal, SLOW, normal (unpredictable middle threat)
 	var coconut_scene = obj.special_coconut_scene if throw_count == 2 else obj.normal_coconut_scene
@@ -43,6 +54,19 @@ func _throw_next_coconut() -> void:
 		change_state(fsm.states.run)
 	else:
 		obj.throw_timer.start()
+
+
+## Throw release stretch — satisfying coconut launch
+func _apply_throw_release() -> void:
+	var direction_node = obj.get_node_or_null("Direction")
+	if not direction_node:
+		return
+	
+	var tween = create_tween()
+	# Snap to release stretch
+	tween.tween_property(direction_node, "scale", RELEASE_SCALE, 0.05)
+	# Settle back
+	tween.tween_property(direction_node, "scale", NORMAL_SCALE, 0.1).set_ease(Tween.EASE_OUT)
 
 func _calculate_ballistic_throw() -> Vector2:
 	## Proper ballistic physics: quadratic formula for launch angle

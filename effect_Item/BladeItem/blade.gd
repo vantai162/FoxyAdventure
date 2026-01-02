@@ -44,18 +44,18 @@ func _process(delta: float) -> void:
 		_glow.energy = 0.25 + sin(_float_time * 1.5) * 0.1  # Was 0.5 ± 0.25, now 0.25 ± 0.1
 
 func _create_glow() -> void:
-	## Blade pickup is 13×10 px. Glow should be a subtle metallic shimmer.
-	## Target: ~16px diameter glow (16px texture × 1.0 scale = 16px)
-	## But we want tighter, so 16px × 0.8 = 12.8px glow around 13px blade.
+	## Blade pickup is 13×10 px. Glow should be a crisp metallic shimmer with CONTRAST.
+	## Per Doctrine: "Every visual element must read as PIXELS, not blobs."
+	## Cool blue metallic edge glow — visible but not overwhelming
 	_glow = PointLight2D.new()
 	_glow.name = "BladeGlow"
-	_glow.color = Color(0.6, 0.8, 1.0)  # Cool blue metallic
-	_glow.energy = 0.3  # Was 0.6 - halved
-	_glow.texture_scale = 0.8  # Was 0.4 - with 16px texture = 12.8px glow
+	_glow.color = Color(0.7, 0.85, 1.0)  # Cool blue-white metallic
+	_glow.energy = 0.35  # Subtle but visible
+	_glow.texture_scale = 0.6  # Tighter glow around blade
 	_glow.blend_mode = Light2D.BLEND_MODE_ADD
 	_glow.z_index = ZLayers.LIGHT_EFFECT  # Light effect layer
 	
-	# Create radial gradient texture
+	# Create radial gradient texture - 4x4 per doctrine
 	var gradient = Gradient.new()
 	gradient.set_color(0, Color(1, 1, 1, 1))
 	gradient.set_color(1, Color(1, 1, 1, 0))
@@ -65,8 +65,8 @@ func _create_glow() -> void:
 	tex.fill = GradientTexture2D.FILL_RADIAL
 	tex.fill_from = Vector2(0.5, 0.5)
 	tex.fill_to = Vector2(0.5, 0.0)
-	tex.width = 16  # Was 64 - proper pixel scale
-	tex.height = 16
+	tex.width = 8  # Small for tight glow
+	tex.height = 8
 	_glow.texture = tex
 	
 	add_child(_glow)

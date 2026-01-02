@@ -217,7 +217,8 @@ func _on_hit_ground() -> void:
 	
 	if destroy_on_impact:
 		AudioManager.play_sound("hit_rock_1",10.0)
-		# Shatter effect (could add particles here)
+		# Shatter effect — satisfying impact debris
+		_spawn_shatter_particles()
 		if sprite:
 			var tween = create_tween()
 			tween.tween_property(sprite, "modulate:a", 0.0, 0.2)
@@ -227,6 +228,47 @@ func _on_hit_ground() -> void:
 		if respawn_time > 0:
 			await get_tree().create_timer(respawn_time).timeout
 			_respawn()
+
+
+## Spawn impact debris particles — satisfying shatter
+func _spawn_shatter_particles() -> void:
+	var debris = GPUParticles2D.new()
+	debris.amount = 10
+	debris.lifetime = 0.5
+	debris.explosiveness = 1.0
+	debris.one_shot = true
+	debris.z_index = 25
+	
+	var fall_dir = FALL_DIRECTIONS.get(orientation, Vector2.DOWN)
+	
+	var mat = ParticleProcessMaterial.new()
+	mat.emission_shape = ParticleProcessMaterial.EMISSION_SHAPE_POINT
+	mat.direction = Vector3(-fall_dir.x, -fall_dir.y, 0)  # Scatter opposite to fall
+	mat.spread = 60.0
+	mat.initial_velocity_min = 40.0
+	mat.initial_velocity_max = 80.0
+	mat.gravity = Vector3(0, 150, 0)  # Debris falls
+	mat.scale_min = 0.5
+	mat.scale_max = 1.2
+	mat.color = Color(0.6, 0.55, 0.5, 1.0)  # Stone gray
+	debris.process_material = mat
+	
+	# 4x4 debris texture per doctrine
+	var grad = Gradient.new()
+	grad.set_color(0, Color(0.75, 0.7, 0.65, 1.0))
+	grad.set_color(1, Color(0.45, 0.4, 0.35, 0.0))
+	var tex = GradientTexture2D.new()
+	tex.gradient = grad
+	tex.fill = GradientTexture2D.FILL_RADIAL
+	tex.fill_from = Vector2(0.5, 0.5)
+	tex.width = 4
+	tex.height = 4
+	debris.texture = tex
+	
+	debris.global_position = global_position
+	get_tree().current_scene.add_child(debris)
+	debris.emitting = true
+	get_tree().create_timer(1.0).timeout.connect(debris.queue_free)
 
 func _hide_and_respawn() -> void:
 	visible = false

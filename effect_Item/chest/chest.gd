@@ -107,6 +107,9 @@ func open_chest() -> void:
 	# Play open sound
 	_play_sound(open_sound)
 	
+	# Satisfying chest opening burst!
+	_spawn_open_burst()
+	
 	# Play animation
 	if animated_sprite:
 		animated_sprite.play("open")
@@ -114,6 +117,46 @@ func open_chest() -> void:
 	
 	# Give rewards (virtual - subclasses can override)
 	_give_rewards()
+
+
+## Spawn satisfying treasure burst on chest open
+func _spawn_open_burst() -> void:
+	var burst = GPUParticles2D.new()
+	burst.amount = 16
+	burst.lifetime = 0.7
+	burst.explosiveness = 1.0
+	burst.one_shot = true
+	burst.z_index = 25
+	
+	var mat = ParticleProcessMaterial.new()
+	mat.emission_shape = ParticleProcessMaterial.EMISSION_SHAPE_BOX
+	mat.emission_box_extents = Vector3(8, 2, 0)
+	mat.direction = Vector3(0, -1, 0)  # Burst upward
+	mat.spread = 45.0
+	mat.initial_velocity_min = 40.0
+	mat.initial_velocity_max = 90.0
+	mat.gravity = Vector3(0, 80, 0)  # Fall back down (treasure weight)
+	mat.scale_min = 0.6
+	mat.scale_max = 1.4
+	mat.color = Color(1.0, 0.9, 0.3, 1.0)  # Gold treasure sparkle
+	burst.process_material = mat
+	
+	# 4x4 treasure sparkle texture
+	var grad = Gradient.new()
+	grad.set_color(0, Color(1.0, 1.0, 0.8, 1.0))
+	grad.set_color(1, Color(1.0, 0.85, 0.2, 0.0))
+	var tex = GradientTexture2D.new()
+	tex.gradient = grad
+	tex.fill = GradientTexture2D.FILL_RADIAL
+	tex.fill_from = Vector2(0.5, 0.5)
+	tex.width = 4
+	tex.height = 4
+	burst.texture = tex
+	
+	burst.global_position = global_position + Vector2(0, -8)  # Burst from lid
+	get_tree().current_scene.add_child(burst)
+	burst.emitting = true
+	get_tree().create_timer(1.2).timeout.connect(burst.queue_free)
 
 
 ## Virtual reward method - override in subclasses for custom behavior

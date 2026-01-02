@@ -1,5 +1,10 @@
 extends Player_State
 
+## Attack anticipation — quick windup squash for punch
+const ATTACK_WINDUP_SCALE: Vector2 = Vector2(1.15, 0.9)  ## Wind back
+const ATTACK_SWING_SCALE: Vector2 = Vector2(0.9, 1.1)  ## Swing forward
+const NORMAL_SCALE: Vector2 = Vector2(1.0, 1.0)
+
 var air_slash_timer: float = 0.0
 var air_slash_spawned: bool = false
 var original_gravity: float = 0.0
@@ -24,6 +29,9 @@ func _enter() -> void:
 
 	timer = obj.attack_duration
 	
+	# Attack anticipation feedback — quick windup-swing
+	_apply_attack_anticipation()
+	
 	# Start attack cooldown
 	obj.start_attack_cooldown()
 
@@ -33,6 +41,21 @@ func _enter() -> void:
 	# Reset air slash spawn tracking
 	air_slash_timer = 0.0
 	air_slash_spawned = false
+
+
+## Attack windup-swing squash/stretch — anticipation + follow-through
+func _apply_attack_anticipation() -> void:
+	var direction_node = obj.get_node_or_null("Direction")
+	if not direction_node:
+		return
+	
+	var tween = create_tween()
+	# Quick windup (pull back)
+	tween.tween_property(direction_node, "scale", ATTACK_WINDUP_SCALE, 0.04)
+	# Snap to swing (thrust forward)
+	tween.tween_property(direction_node, "scale", ATTACK_SWING_SCALE, 0.06)
+	# Settle back to normal
+	tween.tween_property(direction_node, "scale", NORMAL_SCALE, 0.12).set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_ELASTIC)
 
 
 func _exit() -> void:
