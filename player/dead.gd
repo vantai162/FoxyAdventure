@@ -84,7 +84,10 @@ func _spawn_death_particles() -> void:
 	burst.global_position = obj.global_position
 	get_tree().current_scene.add_child(burst)
 	burst.emitting = true
-	get_tree().create_timer(1.5).timeout.connect(burst.queue_free)
+	get_tree().create_timer(1.5).timeout.connect(func():
+		if is_instance_valid(burst):
+			burst.queue_free()
+	)
 
 
 # Hàm này được giữ lại từ File 1

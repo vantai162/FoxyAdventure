@@ -21,9 +21,8 @@ func _exit() -> void:
 	# Stop breathing animation and reset scale
 	if breathing_tween and breathing_tween.is_valid():
 		breathing_tween.kill()
-	var direction_node = obj.get_node_or_null("Direction")
-	if direction_node:
-		direction_node.scale = Vector2.ONE
+	breathing_tween = null
+	_cleanup_scale_tween()  # Use shared cleanup
 
 func _update(delta: float) -> void:
 	obj.current_oxygen = min(obj.max_oxygen, obj.current_oxygen + obj.oxygen_increase_rate * delta)

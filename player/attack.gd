@@ -49,7 +49,7 @@ func _apply_attack_anticipation() -> void:
 	if not direction_node:
 		return
 	
-	var tween = create_tween()
+	var tween = _create_scale_tween()
 	# Quick windup (pull back)
 	tween.tween_property(direction_node, "scale", ATTACK_WINDUP_SCALE, 0.04)
 	# Snap to swing (thrust forward)
@@ -65,6 +65,9 @@ func _exit() -> void:
 	# Restore normal gravity if this was an air attack
 	if is_air_attack:
 		obj.gravity = original_gravity
+	
+	# Cleanup scale tween to prevent conflicts
+	_cleanup_scale_tween()
 
 
 func _update(delta: float) -> void:

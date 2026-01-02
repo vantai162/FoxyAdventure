@@ -156,7 +156,10 @@ func _spawn_open_burst() -> void:
 	burst.global_position = global_position + Vector2(0, -8)  # Burst from lid
 	get_tree().current_scene.add_child(burst)
 	burst.emitting = true
-	get_tree().create_timer(1.2).timeout.connect(burst.queue_free)
+	get_tree().create_timer(1.2).timeout.connect(func():
+		if is_instance_valid(burst):
+			burst.queue_free()
+	)
 
 
 ## Virtual reward method - override in subclasses for custom behavior

@@ -61,8 +61,11 @@ func _spawn_landing_dust() -> void:
 	dust.global_position = obj.global_position + Vector2(0, 14)
 	dust.emitting = true
 	get_tree().current_scene.add_child(dust)
-	# Auto-cleanup
-	get_tree().create_timer(0.6).timeout.connect(dust.queue_free)
+	# Auto-cleanup (with validity check)
+	get_tree().create_timer(0.6).timeout.connect(func():
+		if is_instance_valid(dust):
+			dust.queue_free()
+	)
 
 ## Squash and stretch — horizontal squash on landing for weight
 func _apply_landing_squash() -> void:
@@ -71,5 +74,5 @@ func _apply_landing_squash() -> void:
 		return
 	# Snap to squash, then bounce back to normal
 	direction_node.scale = LANDING_SQUASH
-	var tween = create_tween()
+	var tween = _create_scale_tween()
 	tween.tween_property(direction_node, "scale", NORMAL_SCALE, 0.12).set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_BACK)

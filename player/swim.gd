@@ -22,8 +22,10 @@ func _enter():
 
 
 func _exit():
-	# Exit splash when leaving water
-	_spawn_water_splash()
+	# Only spawn exit splash if NOT transitioning to dead state
+	# Dead fox shouldn't make cheerful splashes
+	if fsm.current_state != fsm.states.dead:
+		_spawn_water_splash()
 	
 	# When leaving swim state, try to re-ignite the torch if in darkness
 	var torch = obj.get_node_or_null("Direction/PlayerTorch")
@@ -96,7 +98,10 @@ func _spawn_water_splash() -> void:
 	splash.global_position = obj.global_position
 	get_tree().current_scene.add_child(splash)
 	splash.emitting = true
-	get_tree().create_timer(1.0).timeout.connect(splash.queue_free)
+	get_tree().create_timer(1.0).timeout.connect(func():
+		if is_instance_valid(splash):
+			splash.queue_free()
+	)
 
 
 ## Spawn underwater bubble — ambient swim feedback
@@ -136,5 +141,8 @@ func _spawn_bubble() -> void:
 	bubble.global_position = obj.global_position + Vector2(obj.direction * 4, -8)
 	get_tree().current_scene.add_child(bubble)
 	bubble.emitting = true
-	get_tree().create_timer(1.2).timeout.connect(bubble.queue_free)
+	get_tree().create_timer(1.2).timeout.connect(func():
+		if is_instance_valid(bubble):
+			bubble.queue_free()
+	)
 	

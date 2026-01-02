@@ -1,4 +1,4 @@
-[gd_scene load_steps=5 format=3 uid="uid://dust_puff_001"]
+[gd_scene load_steps=5 format=3 uid="uid://cg8t2vkm5qjfn"]
 
 [sub_resource type="Gradient" id="Gradient_dust_radial"]
 colors = PackedColorArray(0.95, 0.9, 0.8, 0.7, 0.8, 0.7, 0.55, 0)

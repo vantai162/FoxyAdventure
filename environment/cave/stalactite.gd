@@ -268,7 +268,10 @@ func _spawn_shatter_particles() -> void:
 	debris.global_position = global_position
 	get_tree().current_scene.add_child(debris)
 	debris.emitting = true
-	get_tree().create_timer(1.0).timeout.connect(debris.queue_free)
+	get_tree().create_timer(1.0).timeout.connect(func():
+		if is_instance_valid(debris):
+			debris.queue_free()
+	)
 
 func _hide_and_respawn() -> void:
 	visible = false

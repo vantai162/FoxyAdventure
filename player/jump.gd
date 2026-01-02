@@ -27,8 +27,8 @@ func _enter() -> void:
 		obj.wall_jump_restriction_timer = -1.0  # Normal jump: no restriction
 
 func _exit() -> void:
-	# Timer naturally expires or gets reset by next jump
-	pass
+	# Cleanup scale tween to prevent conflicts with next state
+	_cleanup_scale_tween()
 
 func _update(delta: float):
 	# Update wall jump restriction timer if active
@@ -65,8 +65,11 @@ func _spawn_jump_dust() -> void:
 	dust.global_position = obj.global_position + Vector2(0, 14)
 	dust.emitting = true
 	get_tree().current_scene.add_child(dust)
-	# Auto-cleanup
-	get_tree().create_timer(0.6).timeout.connect(dust.queue_free)
+	# Auto-cleanup (with validity check)
+	get_tree().create_timer(0.6).timeout.connect(func():
+		if is_instance_valid(dust):
+			dust.queue_free()
+	)
 
 ## Spawn dust when pushing off wall — directional puff
 func _spawn_wall_jump_dust() -> void:
@@ -75,8 +78,11 @@ func _spawn_wall_jump_dust() -> void:
 	dust.global_position = obj.global_position + Vector2(-obj.direction * 8, 0)
 	dust.emitting = true
 	get_tree().current_scene.add_child(dust)
-	# Auto-cleanup
-	get_tree().create_timer(0.6).timeout.connect(dust.queue_free)
+	# Auto-cleanup (with validity check)
+	get_tree().create_timer(0.6).timeout.connect(func():
+		if is_instance_valid(dust):
+			dust.queue_free()
+	)
 
 ## Squash and stretch — vertical stretch on jump for springy feel
 func _apply_jump_stretch() -> void:
@@ -85,5 +91,5 @@ func _apply_jump_stretch() -> void:
 		return
 	# Snap to stretch, then tween back to normal
 	direction_node.scale = JUMP_STRETCH
-	var tween = create_tween()
+	var tween = _create_scale_tween()
 	tween.tween_property(direction_node, "scale", NORMAL_SCALE, 0.15).set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_ELASTIC)

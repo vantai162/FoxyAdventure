@@ -30,7 +30,9 @@ func _enter() -> void:
 	obj.throw_blade_projectile()
 
 func _exit() -> void:
-	pass
+	# Cleanup scale tween to prevent conflicts
+	_cleanup_scale_tween()
+
 
 func _update(delta: float) -> void:
 	if update_timer(delta):
@@ -43,7 +45,7 @@ func _apply_throw_feedback() -> void:
 	if not direction_node:
 		return
 	
-	var tween = create_tween()
+	var tween = _create_scale_tween()
 	# Quick windup (pull back)
 	tween.tween_property(direction_node, "scale", THROW_WINDUP, 0.03)
 	# Snap to release (thrust forward)

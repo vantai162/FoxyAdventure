@@ -253,4 +253,7 @@ func _spawn_gate_dust() -> void:
 	dust.global_position = gate_body.global_position
 	get_tree().current_scene.add_child(dust)
 	dust.emitting = true
-	get_tree().create_timer(1.0).timeout.connect(dust.queue_free)
+	get_tree().create_timer(1.0).timeout.connect(func():
+		if is_instance_valid(dust):
+			dust.queue_free()
+	)

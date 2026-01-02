@@ -17,6 +17,10 @@ func _enter() -> void:
 	_spawn_air_burst()
 	_apply_double_jump_stretch()
 
+func _exit() -> void:
+	# Cleanup scale tween to prevent conflicts
+	_cleanup_scale_tween()
+
 func _update(delta: float) -> void:
 	if obj.Effect["Stun"] <= 0:
 		control_moving()
@@ -41,7 +45,10 @@ func _spawn_air_burst() -> void:
 	dust.global_position = obj.global_position + Vector2(0, 8)
 	dust.emitting = true
 	get_tree().current_scene.add_child(dust)
-	get_tree().create_timer(0.6).timeout.connect(dust.queue_free)
+	get_tree().create_timer(0.6).timeout.connect(func():
+		if is_instance_valid(dust):
+			dust.queue_free()
+	)
 
 ## Squash/stretch for double jump — lighter than ground jump
 func _apply_double_jump_stretch() -> void:
@@ -49,5 +56,5 @@ func _apply_double_jump_stretch() -> void:
 	if not direction_node:
 		return
 	direction_node.scale = DOUBLE_JUMP_STRETCH
-	var tween = create_tween()
+	var tween = _create_scale_tween()
 	tween.tween_property(direction_node, "scale", NORMAL_SCALE, 0.12).set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_ELASTIC)

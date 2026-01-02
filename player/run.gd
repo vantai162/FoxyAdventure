@@ -61,5 +61,8 @@ func _spawn_foot_dust() -> void:
 	dust.global_position = obj.global_position + Vector2(-obj.direction * 4, 14)
 	dust.emitting = true
 	get_tree().current_scene.add_child(dust)
-	# Auto-cleanup after particles finish
-	get_tree().create_timer(0.5).timeout.connect(dust.queue_free)
+	# Auto-cleanup after particles finish (with validity check for scene transitions)
+	get_tree().create_timer(0.5).timeout.connect(func():
+		if is_instance_valid(dust):
+			dust.queue_free()
+	)

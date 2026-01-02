@@ -44,10 +44,6 @@ func _apply_hit_feedback() -> void:
 			if cam.has_method("shake"):
 				cam.shake(camera_shake_amount)
 	
-	# Hitstop — brief freeze frame
+	# Hitstop — use centralized manager to prevent race conditions
 	if enable_hitstop and hitstop_duration > 0:
-		Engine.time_scale = 0.0
-		# Use a timer that ignores time scale
-		get_tree().create_timer(hitstop_duration, true, false, true).timeout.connect(
-			func(): Engine.time_scale = 1.0
-		)
+		HitstopManager.request_hitstop(hitstop_duration)

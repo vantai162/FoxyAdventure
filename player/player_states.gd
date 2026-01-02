@@ -1,6 +1,29 @@
 class_name Player_State
 extends FSMState
 
+## Shared scale tween for squash/stretch animations
+## Only one scale tween should be active at a time to prevent conflicts
+var _scale_tween: Tween = null
+
+## Kill any active scale tween and reset scale to normal
+## Call this in _exit() of states that use squash/stretch
+func _cleanup_scale_tween() -> void:
+	if _scale_tween and _scale_tween.is_valid():
+		_scale_tween.kill()
+	_scale_tween = null
+	var direction_node = obj.get_node_or_null("Direction")
+	if direction_node:
+		direction_node.scale = Vector2.ONE
+
+
+## Create a managed scale tween — kills previous tween first
+func _create_scale_tween() -> Tween:
+	if _scale_tween and _scale_tween.is_valid():
+		_scale_tween.kill()
+	_scale_tween = create_tween()
+	return _scale_tween
+
+
 func control_moving() -> bool:
 	if(GameManager.paused):
 		return false

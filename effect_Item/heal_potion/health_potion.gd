@@ -203,4 +203,7 @@ func _spawn_heal_burst() -> void:
 	burst.global_position = global_position
 	get_tree().current_scene.add_child(burst)
 	burst.emitting = true
-	get_tree().create_timer(1.0).timeout.connect(burst.queue_free)
+	get_tree().create_timer(1.0).timeout.connect(func():
+		if is_instance_valid(burst):
+			burst.queue_free()
+	)

@@ -64,7 +64,7 @@ func _spawn_activation_feedback() -> void:
 	particles.lifetime = 0.6
 	particles.explosiveness = 1.0
 	particles.one_shot = true
-	particles.z_index = 5
+	particles.z_index = 30  # Above player for visibility
 	
 	var mat = ParticleProcessMaterial.new()
 	mat.emission_shape = ParticleProcessMaterial.EMISSION_SHAPE_SPHERE
@@ -95,5 +95,8 @@ func _spawn_activation_feedback() -> void:
 	particles.emitting = true
 	
 	# Cleanup
-	get_tree().create_timer(1.0).timeout.connect(particles.queue_free)
+	get_tree().create_timer(1.0).timeout.connect(func():
+		if is_instance_valid(particles):
+			particles.queue_free()
+	)
 	

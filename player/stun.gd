@@ -14,24 +14,30 @@ func _enter() -> void:
 	if camera and camera.has_method("shake"):
 		camera.shake(3.0)
 	
-	# Spawn circling star particles
+	# Spawn circling star particles — parent to scene, not player
 	_spawn_stun_stars()
 
 func _exit() -> void:
-	# Cleanup stun particles
-	if stun_particles and is_instance_valid(stun_particles):
+	# Cleanup stun particles safely
+	if stun_particles and is_instance_valid(stun_particles) and not stun_particles.is_queued_for_deletion():
 		stun_particles.emitting = false
 		stun_particles.queue_free()
-		stun_particles = null
+	stun_particles = null
 
 func _update(delta: float) -> void:
 	obj._updateeffect(delta)
+	
+	# Update particle position to follow player (since parented to scene)
+	if stun_particles and is_instance_valid(stun_particles):
+		stun_particles.global_position = obj.global_position + Vector2(0, -20)
+	
 	if obj.Effect["Stun"] <= 0:
 		obj.stun_ani.visible = false
 		change_state(fsm.states.idle)
 
 
 ## Spawn circling stun stars — classic dazed effect
+## Parent to current_scene to avoid double-free if player dies
 func _spawn_stun_stars() -> void:
 	stun_particles = GPUParticles2D.new()
 	stun_particles.amount = 4
@@ -67,7 +73,7 @@ func _spawn_stun_stars() -> void:
 	tex.height = 4
 	stun_particles.texture = tex
 	
-	# Position above player's head
-	stun_particles.position = Vector2(0, -20)
-	obj.add_child(stun_particles)
+	# Position above player's head — parent to scene, not player
+	stun_particles.global_position = obj.global_position + Vector2(0, -20)
+	get_tree().current_scene.add_child(stun_particles)
 	stun_particles.emitting = true

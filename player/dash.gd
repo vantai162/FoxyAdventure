@@ -91,4 +91,7 @@ func _spawn_dash_feedback() -> void:
 	dust.global_position = obj.global_position + Vector2(-obj.direction * 8, 14)
 	dust.emitting = true
 	get_tree().current_scene.add_child(dust)
-	get_tree().create_timer(0.6).timeout.connect(dust.queue_free)
+	get_tree().create_timer(0.6).timeout.connect(func():
+		if is_instance_valid(dust):
+			dust.queue_free()
+	)

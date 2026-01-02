@@ -24,6 +24,7 @@ AudioManager="*res://scripts/audio/audio_manager.gd"
 ShopSystem="*res://objects/npc/shop/shop_system.gd"
 InteractionChannel="*res://scripts/autoload/interaction_channel.gd"
 TransitionEffects="*res://scripts/autoload/transition_effects.tscn"
+HitstopManager="*res://scripts/hitstop_manager.gd"
 
 [dialogic]
 

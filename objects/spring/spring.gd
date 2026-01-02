@@ -117,7 +117,10 @@ func _spawn_launch_feedback(launch_dir: Vector2) -> void:
 	particles.emitting = true
 	
 	# Cleanup
-	get_tree().create_timer(0.8).timeout.connect(particles.queue_free)
+	get_tree().create_timer(0.8).timeout.connect(func():
+		if is_instance_valid(particles):
+			particles.queue_free()
+	)
 
 
 func _on_animated_sprite_2d_animation_finished() -> void:
