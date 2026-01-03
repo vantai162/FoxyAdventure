@@ -1,8 +1,9 @@
 extends EnemyState
 
 ## Windup anticipation — visual "tell" before throw
-const WINDUP_SCALE: Vector2 = Vector2(1.15, 0.88)  ## Squat down
-const NORMAL_SCALE: Vector2 = Vector2(1.0, 1.0)
+## NOTE: Values only, direction preserved at runtime
+const WINDUP_SCALE_X: float = 1.15  ## Wider
+const WINDUP_SCALE_Y: float = 0.88  ## Shorter (squat)
 
 func _enter() -> void:
 	obj.change_animation("attack")
@@ -30,10 +31,11 @@ func _update(_delta: float) -> void:
 
 func _exit() -> void:
 	obj.windup_timer.stop()
-	# Reset scale on exit
+	# Reset scale on exit — preserve facing direction!
 	var direction_node = obj.get_node_or_null("Direction")
 	if direction_node:
-		direction_node.scale = NORMAL_SCALE
+		var facing = sign(direction_node.scale.x) if direction_node.scale.x != 0 else 1.0
+		direction_node.scale = Vector2(facing * 1.0, 1.0)
 
 func _on_windup_timer_timeout() -> void:
 	if fsm.current_state == self:
@@ -41,11 +43,12 @@ func _on_windup_timer_timeout() -> void:
 
 
 ## Windup anticipation — squat down before throw
+## CRITICAL: Preserve X sign for direction!
 func _apply_windup_anticipation() -> void:
 	var direction_node = obj.get_node_or_null("Direction")
 	if not direction_node:
 		return
 	
-	# Quick squat down — "winding up"
+	var facing = sign(direction_node.scale.x) if direction_node.scale.x != 0 else 1.0
 	var tween = create_tween()
-	tween.tween_property(direction_node, "scale", WINDUP_SCALE, 0.1).set_ease(Tween.EASE_OUT)
+	tween.tween_property(direction_node, "scale", Vector2(facing * WINDUP_SCALE_X, WINDUP_SCALE_Y), 0.1).set_ease(Tween.EASE_OUT)

@@ -5,9 +5,11 @@ extends Player_State
 const GROUND_THROW_MOMENTUM_KEEP: float = 0.6
 
 ## Throw anticipation squash/stretch
-const THROW_WINDUP: Vector2 = Vector2(1.1, 0.92)
-const THROW_RELEASE: Vector2 = Vector2(0.88, 1.12)
-const NORMAL_SCALE: Vector2 = Vector2(1.0, 1.0)
+## NOTE: Values only, direction preserved at runtime
+const THROW_WINDUP_X: float = 1.1
+const THROW_WINDUP_Y: float = 0.92
+const THROW_RELEASE_X: float = 0.88
+const THROW_RELEASE_Y: float = 1.12
 
 func _enter() -> void:
 	if obj.is_on_floor():
@@ -40,15 +42,17 @@ func _update(delta: float) -> void:
 
 
 ## Throw windup-release squash/stretch — satisfying ranged feel
+## CRITICAL: Preserve X sign for direction!
 func _apply_throw_feedback() -> void:
 	var direction_node = obj.get_node_or_null("Direction")
 	if not direction_node:
 		return
 	
+	var facing = sign(direction_node.scale.x) if direction_node.scale.x != 0 else 1.0
 	var tween = _create_scale_tween()
 	# Quick windup (pull back)
-	tween.tween_property(direction_node, "scale", THROW_WINDUP, 0.03)
+	tween.tween_property(direction_node, "scale", Vector2(facing * THROW_WINDUP_X, THROW_WINDUP_Y), 0.03)
 	# Snap to release (thrust forward)
-	tween.tween_property(direction_node, "scale", THROW_RELEASE, 0.05)
+	tween.tween_property(direction_node, "scale", Vector2(facing * THROW_RELEASE_X, THROW_RELEASE_Y), 0.05)
 	# Settle back
-	tween.tween_property(direction_node, "scale", NORMAL_SCALE, 0.1).set_ease(Tween.EASE_OUT)
+	tween.tween_property(direction_node, "scale", Vector2(facing * 1.0, 1.0), 0.1).set_ease(Tween.EASE_OUT)

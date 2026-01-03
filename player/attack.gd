@@ -1,9 +1,11 @@
 extends Player_State
 
 ## Attack anticipation — quick windup squash for punch
-const ATTACK_WINDUP_SCALE: Vector2 = Vector2(1.15, 0.9)  ## Wind back
-const ATTACK_SWING_SCALE: Vector2 = Vector2(0.9, 1.1)  ## Swing forward
-const NORMAL_SCALE: Vector2 = Vector2(1.0, 1.0)
+## NOTE: Values only, direction preserved at runtime
+const ATTACK_WINDUP_X: float = 1.15  ## Wind back (wider)
+const ATTACK_WINDUP_Y: float = 0.9
+const ATTACK_SWING_X: float = 0.9  ## Swing forward (narrower)
+const ATTACK_SWING_Y: float = 1.1
 
 var air_slash_timer: float = 0.0
 var air_slash_spawned: bool = false
@@ -44,18 +46,20 @@ func _enter() -> void:
 
 
 ## Attack windup-swing squash/stretch — anticipation + follow-through
+## CRITICAL: Preserve X sign for direction!
 func _apply_attack_anticipation() -> void:
 	var direction_node = obj.get_node_or_null("Direction")
 	if not direction_node:
 		return
 	
+	var facing = sign(direction_node.scale.x) if direction_node.scale.x != 0 else 1.0
 	var tween = _create_scale_tween()
 	# Quick windup (pull back)
-	tween.tween_property(direction_node, "scale", ATTACK_WINDUP_SCALE, 0.04)
+	tween.tween_property(direction_node, "scale", Vector2(facing * ATTACK_WINDUP_X, ATTACK_WINDUP_Y), 0.04)
 	# Snap to swing (thrust forward)
-	tween.tween_property(direction_node, "scale", ATTACK_SWING_SCALE, 0.06)
+	tween.tween_property(direction_node, "scale", Vector2(facing * ATTACK_SWING_X, ATTACK_SWING_Y), 0.06)
 	# Settle back to normal
-	tween.tween_property(direction_node, "scale", NORMAL_SCALE, 0.12).set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_ELASTIC)
+	tween.tween_property(direction_node, "scale", Vector2(facing * 1.0, 1.0), 0.12).set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_ELASTIC)
 
 
 func _exit() -> void:

@@ -3,15 +3,19 @@ extends Player_State
 ## "Light feet" dust effect — communicates dash readiness organically
 ## No UI needed: visible dust puffs = dash available, no dust = cooling down
 const DASH_READY_DUST: PackedScene = preload("res://assets/effects/dash_ready_dust.tscn")
+const WALK_DUST: PackedScene = preload("res://assets/effects/walk_dust.tscn")
 
 var waited: float = 0.0
 var dust_timer: float = 0.0
 var dust_interval: float = 0.18  ## Time between dust puffs when dash ready
+var walk_dust_timer: float = 0.0
+var walk_dust_interval: float = 0.25  ## Slightly slower for walk dust animation
 
 func _enter() -> void:
 	super._enter()
 	waited = 0.0
 	dust_timer = 0.0
+	walk_dust_timer = 0.0
 	obj.change_animation("run")
 
 func _update(delta: float):
@@ -34,6 +38,13 @@ func _update(delta: float):
 			if dust_timer >= dust_interval:
 				dust_timer = 0.0
 				_spawn_foot_dust()
+		
+		# Hand-drawn walk dust — always when running on floor
+		if obj.is_on_floor():
+			walk_dust_timer += delta
+			if walk_dust_timer >= walk_dust_interval:
+				walk_dust_timer = 0.0
+				_spawn_walk_dust()
 		
 		if control_dash():
 			return
@@ -66,3 +77,13 @@ func _spawn_foot_dust() -> void:
 		if is_instance_valid(dust):
 			dust.queue_free()
 	)
+
+## Spawn hand-drawn walk dust — using smoke_walk assets
+func _spawn_walk_dust() -> void:
+	var dust = WALK_DUST.instantiate()
+	# Behind player's feet
+	dust.global_position = obj.global_position + Vector2(-obj.direction * 6, 12)
+	# Flip based on direction so dust flows behind
+	dust.flip_h = obj.direction > 0
+	get_tree().current_scene.add_child(dust)
+	# Scene auto-frees after animation (see walk_dust.tscn)

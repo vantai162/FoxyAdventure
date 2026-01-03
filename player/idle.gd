@@ -1,8 +1,9 @@
 extends Player_State
 
 ## Idle breathing — subtle life in stillness
-const BREATH_SCALE_MIN: Vector2 = Vector2(1.0, 0.98)
-const BREATH_SCALE_MAX: Vector2 = Vector2(1.0, 1.02)
+## CRITICAL: Use relative scale to preserve facing direction
+const BREATH_SCALE_Y_MIN: float = 0.98
+const BREATH_SCALE_Y_MAX: float = 1.02
 const BREATH_DURATION: float = 1.2  ## Full breath cycle
 
 ## Bored fidget timing — fox looks around after idle
@@ -42,6 +43,7 @@ func _update(delta: float) -> void:
 
 
 ## Start subtle breathing animation — life in stillness
+## CRITICAL: Only animate Y scale to preserve X direction!
 func _start_breathing() -> void:
 	var direction_node = obj.get_node_or_null("Direction")
 	if not direction_node:
@@ -49,13 +51,14 @@ func _start_breathing() -> void:
 	
 	breathing_tween = create_tween()
 	breathing_tween.set_loops()  # Infinite loop
-	breathing_tween.tween_property(direction_node, "scale", BREATH_SCALE_MAX, BREATH_DURATION * 0.5).set_ease(Tween.EASE_IN_OUT).set_trans(Tween.TRANS_SINE)
-	breathing_tween.tween_property(direction_node, "scale", BREATH_SCALE_MIN, BREATH_DURATION * 0.5).set_ease(Tween.EASE_IN_OUT).set_trans(Tween.TRANS_SINE)
+	# Only tween scale.y — DO NOT touch scale.x (direction)!
+	breathing_tween.tween_property(direction_node, "scale:y", BREATH_SCALE_Y_MAX, BREATH_DURATION * 0.5).set_ease(Tween.EASE_IN_OUT).set_trans(Tween.TRANS_SINE)
+	breathing_tween.tween_property(direction_node, "scale:y", BREATH_SCALE_Y_MIN, BREATH_DURATION * 0.5).set_ease(Tween.EASE_IN_OUT).set_trans(Tween.TRANS_SINE)
 
 
 ## Fidget when idle too long — fox is alive, not a statue
+## CRITICAL: Use scale:y only or preserve X sign for direction!
 func _do_fidget() -> void:
-	# Quick head turn / ear twitch effect via scale pulse
 	var direction_node = obj.get_node_or_null("Direction")
 	if not direction_node:
 		return
@@ -65,10 +68,10 @@ func _do_fidget() -> void:
 		breathing_tween.pause()
 	
 	var fidget_tween = create_tween()
-	# Quick squash (looking around)
-	fidget_tween.tween_property(direction_node, "scale", Vector2(1.05, 0.95), 0.1)
-	fidget_tween.tween_property(direction_node, "scale", Vector2(0.95, 1.05), 0.1)
-	fidget_tween.tween_property(direction_node, "scale", Vector2.ONE, 0.15).set_ease(Tween.EASE_OUT)
+	# Quick squash (looking around) - only animate Y to preserve direction
+	fidget_tween.tween_property(direction_node, "scale:y", 0.95, 0.1)
+	fidget_tween.tween_property(direction_node, "scale:y", 1.05, 0.1)
+	fidget_tween.tween_property(direction_node, "scale:y", 1.0, 0.15).set_ease(Tween.EASE_OUT)
 	fidget_tween.tween_callback(func():
 		if breathing_tween and breathing_tween.is_valid():
 			breathing_tween.play()

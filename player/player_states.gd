@@ -5,15 +5,30 @@ extends FSMState
 ## Only one scale tween should be active at a time to prevent conflicts
 var _scale_tween: Tween = null
 
+## Get direction-preserving scale vector
+## CRITICAL: Direction node uses scale.x sign for facing direction
+## scale.x < 0 = facing left, scale.x > 0 = facing right
+## All squash/stretch must use this to avoid moonwalking!
+func _get_directional_scale(base_scale: Vector2) -> Vector2:
+	var direction_node = obj.get_node_or_null("Direction")
+	if not direction_node:
+		return base_scale
+	var facing = sign(direction_node.scale.x) if direction_node.scale.x != 0 else 1.0
+	return Vector2(facing * base_scale.x, base_scale.y)
+
+
 ## Kill any active scale tween and reset scale to normal
 ## Call this in _exit() of states that use squash/stretch
+## CRITICAL: Preserves direction sign (scale.x negative = facing left)
 func _cleanup_scale_tween() -> void:
 	if _scale_tween and _scale_tween.is_valid():
 		_scale_tween.kill()
 	_scale_tween = null
 	var direction_node = obj.get_node_or_null("Direction")
 	if direction_node:
-		direction_node.scale = Vector2.ONE
+		# Preserve facing direction! scale.x sign = direction
+		var facing = sign(direction_node.scale.x) if direction_node.scale.x != 0 else 1.0
+		direction_node.scale = Vector2(facing * 1.0, 1.0)
 
 
 ## Create a managed scale tween — kills previous tween first

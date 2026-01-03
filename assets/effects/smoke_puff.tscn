@@ -1,0 +1,44 @@
+[gd_scene load_steps=7 format=3 uid="uid://csmokepuff0001"]
+
+[ext_resource type="Texture2D" uid="uid://8usoreyem8l6" path="res://assets/foxy/smoke/jump_smoke_1.png" id="1_smoke1"]
+[ext_resource type="Texture2D" uid="uid://jtpy308mqnwi" path="res://assets/foxy/smoke/jump_smoke_2.png" id="2_smoke2"]
+[ext_resource type="Texture2D" uid="uid://cbk136ktae42o" path="res://assets/foxy/smoke/jump_smoke_3.png" id="3_smoke3"]
+[ext_resource type="Texture2D" uid="uid://c8cs1hwh7venp" path="res://assets/foxy/smoke/jump_smoke_4.png" id="4_smoke4"]
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_smoke"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("1_smoke1")
+}, {
+"duration": 1.0,
+"texture": ExtResource("2_smoke2")
+}, {
+"duration": 1.0,
+"texture": ExtResource("3_smoke3")
+}, {
+"duration": 1.0,
+"texture": ExtResource("4_smoke4")
+}],
+"loop": false,
+"name": &"puff",
+"speed": 12.0
+}]
+
+[sub_resource type="GDScript" id="GDScript_smoke"]
+script/source = "extends AnimatedSprite2D
+## Self-freeing smoke puff effect using hand-drawn assets
+
+func _ready() -> void:
+	animation_finished.connect(_on_animation_finished)
+	play(\"puff\")
+
+func _on_animation_finished() -> void:
+	queue_free()
+"
+
+[node name="SmokePuff" type="AnimatedSprite2D"]
+z_index = 25
+sprite_frames = SubResource("SpriteFrames_smoke")
+animation = &"puff"
+script = SubResource("GDScript_smoke")

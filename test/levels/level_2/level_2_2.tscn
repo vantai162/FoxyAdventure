@@ -277,4 +277,22 @@ story_text = "Không ai biết nguồn gốc thật sự của Trái Tim Biển 
 (Nhấn Q để tiếp tục)"
 memory_title = "⭐ Memory 4 – “Điều ước”"
 
+[node name="PlayerSpawn" type="Marker2D" parent="."]
+position = Vector2(-419.173, -259.721)
+
+[connection signal="area_entered" from="DirtLayer/Coin" to="DirtLayer/Coin" method="_on_area_entered"]
+[connection signal="area_entered" from="DirtLayer/@Area2D@25979" to="DirtLayer/@Area2D@25979" method="_on_area_entered"]
+[connection signal="area_entered" from="DirtLayer/@Area2D@25980" to="DirtLayer/@Area2D@25980" method="_on_area_entered"]
+[connection signal="area_entered" from="DirtLayer/@Area2D@25981" to="DirtLayer/@Area2D@25981" method="_on_area_entered"]
+[connection signal="area_entered" from="DirtLayer/@Area2D@25982" to="DirtLayer/@Area2D@25982" method="_on_area_entered"]
+[connection signal="area_entered" from="DirtLayer/@Area2D@25983" to="DirtLayer/@Area2D@25983" method="_on_area_entered"]
+[connection signal="area_entered" from="DirtLayer/@Area2D@25984" to="DirtLayer/@Area2D@25984" method="_on_area_entered"]
+[connection signal="area_entered" from="DirtLayer/@Area2D@25985" to="DirtLayer/@Area2D@25985" method="_on_area_entered"]
+[connection signal="area_entered" from="DirtLayer/@Area2D@25986" to="DirtLayer/@Area2D@25986" method="_on_area_entered"]
+[connection signal="area_entered" from="DirtLayer/@Area2D@25987" to="DirtLayer/@Area2D@25987" method="_on_area_entered"]
+[connection signal="area_entered" from="DirtLayer/@Area2D@25988" to="DirtLayer/@Area2D@25988" method="_on_area_entered"]
+[connection signal="area_entered" from="DirtLayer/@Area2D@25989" to="DirtLayer/@Area2D@25989" method="_on_area_entered"]
+[connection signal="area_entered" from="DirtLayer/@Area2D@25990" to="DirtLayer/@Area2D@25990" method="_on_area_entered"]
+[connection signal="area_entered" from="DirtLayer/@Area2D@25991" to="DirtLayer/@Area2D@25991" method="_on_area_entered"]
+[connection signal="area_entered" from="DirtLayer/@Area2D@25992" to="DirtLayer/@Area2D@25992" method="_on_area_entered"]
 [connection signal="body_entered" from="MeetBossArea2D" to="." method="_on_meet_boss_area_2d_body_entered"]

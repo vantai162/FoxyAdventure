@@ -1,8 +1,9 @@
 extends EnemyState
 
 ## Attack release stretch — opposite of windup squat
-const RELEASE_SCALE: Vector2 = Vector2(0.88, 1.15)  ## Stretch up (throw release)
-const NORMAL_SCALE: Vector2 = Vector2(1.0, 1.0)
+## NOTE: Values only, direction preserved at runtime
+const RELEASE_SCALE_X: float = 0.88  ## Narrower
+const RELEASE_SCALE_Y: float = 1.15  ## Taller (stretch up)
 
 var throw_count: int = 0
 
@@ -22,10 +23,11 @@ func _exit() -> void:
 	obj.throw_timer.stop()
 	# Clear commitment flag when attack ends
 	obj.is_committed_to_attack = false
-	# Reset scale
+	# Reset scale — PRESERVE FACING DIRECTION!
 	var direction_node = obj.get_node_or_null("Direction")
 	if direction_node:
-		direction_node.scale = NORMAL_SCALE
+		var facing = sign(direction_node.scale.x) if direction_node.scale.x != 0 else 1.0
+		direction_node.scale = Vector2(facing * 1.0, 1.0)
 
 func _on_throw_timer_timeout() -> void:
 	if fsm.current_state == self:
@@ -57,16 +59,19 @@ func _throw_next_coconut() -> void:
 
 
 ## Throw release stretch — satisfying coconut launch
+## CRITICAL: Preserve X sign for direction!
 func _apply_throw_release() -> void:
 	var direction_node = obj.get_node_or_null("Direction")
 	if not direction_node:
 		return
 	
+	var facing = sign(direction_node.scale.x) if direction_node.scale.x != 0 else 1.0
+	
 	var tween = create_tween()
-	# Snap to release stretch
-	tween.tween_property(direction_node, "scale", RELEASE_SCALE, 0.05)
-	# Settle back
-	tween.tween_property(direction_node, "scale", NORMAL_SCALE, 0.1).set_ease(Tween.EASE_OUT)
+	# Snap to release stretch (preserve facing)
+	tween.tween_property(direction_node, "scale", Vector2(facing * RELEASE_SCALE_X, RELEASE_SCALE_Y), 0.05)
+	# Settle back (preserve facing)
+	tween.tween_property(direction_node, "scale", Vector2(facing * 1.0, 1.0), 0.1).set_ease(Tween.EASE_OUT)
 
 func _calculate_ballistic_throw() -> Vector2:
 	## Proper ballistic physics: quadratic formula for launch angle

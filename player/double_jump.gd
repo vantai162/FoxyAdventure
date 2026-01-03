@@ -7,8 +7,9 @@ extends Player_State
 const AIR_BURST_DUST: PackedScene = preload("res://assets/effects/dust_puff.tscn")
 
 ## Squash/stretch for double jump (less pronounced than ground jump)
-const DOUBLE_JUMP_STRETCH: Vector2 = Vector2(0.9, 1.15)
-const NORMAL_SCALE: Vector2 = Vector2(1.0, 1.0)
+## NOTE: Values only, not absolute vectors — direction preserved at runtime
+const DOUBLE_JUMP_STRETCH_Y: float = 1.15
+const DOUBLE_JUMP_SQUASH_X: float = 0.9
 
 func _enter() -> void:
 	# Double jump doesn't restrict air control - uses base air_control_base
@@ -51,10 +52,12 @@ func _spawn_air_burst() -> void:
 	)
 
 ## Squash/stretch for double jump — lighter than ground jump
+## CRITICAL: Preserve X sign for direction!
 func _apply_double_jump_stretch() -> void:
 	var direction_node = obj.get_node_or_null("Direction")
 	if not direction_node:
 		return
-	direction_node.scale = DOUBLE_JUMP_STRETCH
+	var facing = sign(direction_node.scale.x) if direction_node.scale.x != 0 else 1.0
+	direction_node.scale = Vector2(facing * DOUBLE_JUMP_SQUASH_X, DOUBLE_JUMP_STRETCH_Y)
 	var tween = _create_scale_tween()
-	tween.tween_property(direction_node, "scale", NORMAL_SCALE, 0.12).set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_ELASTIC)
+	tween.tween_property(direction_node, "scale", Vector2(facing * 1.0, 1.0), 0.12).set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_ELASTIC)
