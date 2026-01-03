@@ -2,9 +2,9 @@ extends EnemyState
 
 ## Dive ground-pound attack with warning indicator and wind-up
 
-# King Crab attacks cannot be interrupted - take damage but keep attacking
+# Boss poise handled by stun_immune flag — use super for proper hit feedback
 func take_damage(_damage_dir, damage: int) -> void:
-	obj.take_damage(damage)
+	super.take_damage(_damage_dir, damage)
 ## 
 ## ANIMATION ASSUMPTIONS (create these in SpriteFrames):
 ##   - "dive_windup"  : Crouch/prepare before launching (loop: false)

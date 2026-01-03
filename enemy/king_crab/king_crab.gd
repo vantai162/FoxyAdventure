@@ -116,6 +116,10 @@ func take_damage(damage: int) -> void:
 	# Phase transition check
 	if current_phase == 1 and health <= max_health * phase_2_threshold:
 		_enter_phase_2()
+	
+	# CRITICAL: Death check — with stun_immune, hurt state is skipped, so check here!
+	if health <= 0:
+		fsm.change_state(fsm.states.dead)
 
 func _enter_phase_2() -> void:
 	current_phase = 2

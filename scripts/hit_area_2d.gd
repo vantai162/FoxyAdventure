@@ -44,6 +44,9 @@ func _apply_hit_feedback() -> void:
 			if cam.has_method("shake"):
 				cam.shake(camera_shake_amount)
 	
-	# Hitstop — use centralized manager to prevent race conditions
+	# Hitstop — freeze the ATTACKER (owner of this hit area)
+	# The VICTIM freezes themselves in their hurt state
 	if enable_hitstop and hitstop_duration > 0:
-		HitstopManager.request_hitstop(hitstop_duration)
+		var attacker = get_parent()  # Usually the character with this HitArea2D
+		if attacker:
+			HitstopManager.freeze_node(attacker, hitstop_duration)

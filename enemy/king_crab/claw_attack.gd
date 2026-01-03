@@ -11,9 +11,9 @@ extends EnemyState
 ##   - "claw_recoil"   : Stunned from claw impact (loop: false)
 ##   - "claw_recover"  : Getting back up / recovering (loop: false)
 
-# King Crab attacks cannot be interrupted - take damage but keep attacking
+# Boss poise handled by stun_immune flag — use super for proper hit feedback
 func take_damage(_damage_dir, damage: int) -> void:
-	obj.take_damage(damage)
+	super.take_damage(_damage_dir, damage)
 
 
 enum AttackPhase { WINDUP, THROWING, WAITING, CATCHING, RECOIL, RECOVERY }

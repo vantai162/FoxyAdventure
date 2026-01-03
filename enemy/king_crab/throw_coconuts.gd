@@ -3,8 +3,9 @@ extends EnemyState
 ## Throw coconuts at player from tree top - intense barrage attack
 
 # King Crab attacks cannot be interrupted - take damage but keep attacking
+# Boss poise handled by stun_immune flag — use super for proper hit feedback
 func take_damage(_damage_dir, damage: int) -> void:
-	obj.take_damage(damage)
+	super.take_damage(_damage_dir, damage)
 ## 
 ## Attack patterns:
 ##   - Aimed shots directly at player

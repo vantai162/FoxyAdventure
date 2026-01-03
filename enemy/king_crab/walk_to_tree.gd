@@ -3,8 +3,9 @@ extends EnemyState
 ## Walk to nearest coconut tree, then climb up
 
 # King Crab attacks cannot be interrupted - take damage but keep attacking
+# Boss poise handled by stun_immune flag — use super for proper hit feedback
 func take_damage(_damage_dir, damage: int) -> void:
-	obj.take_damage(damage)
+	super.take_damage(_damage_dir, damage)
 
 var target_tree: Node2D = null
 var stuck_timer: float = 0.0

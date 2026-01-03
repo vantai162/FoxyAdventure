@@ -4,8 +4,9 @@ extends EnemyState
 ## Spawns mini crabs in a timed sequence using proper FSM pattern (no await!)
 
 # King Crab attacks cannot be interrupted - take damage but keep attacking
+# Boss poise handled by stun_immune flag — use super for proper hit feedback
 func take_damage(_damage_dir, damage: int) -> void:
-	obj.take_damage(damage)
+	super.take_damage(_damage_dir, damage)
 
 
 enum SpawnPhase { WINDUP, SPAWNING, RECOVERY }
