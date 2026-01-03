@@ -659,8 +659,14 @@ position = Vector2(969, 1008)
 [node name="Checkpoint4" parent="." instance=ExtResource("40_3j2yj")]
 position = Vector2(334, 1935)
 
+<<<<<<< HEAD
+[connection signal="area_entered" from="Terrain/TileMapLayer/@Area2D@37394" to="Terrain/TileMapLayer/@Area2D@37394" method="_on_area_entered"]
+[connection signal="area_entered" from="Terrain/TileMapLayer/@Area2D@37395" to="Terrain/TileMapLayer/@Area2D@37395" method="_on_area_entered"]
+[connection signal="area_entered" from="Terrain/TileMapLayer/@Area2D@37396" to="Terrain/TileMapLayer/@Area2D@37396" method="_on_area_entered"]
+=======
 [connection signal="area_entered" from="Terrain/TileMapLayer/HealthPotion" to="Terrain/TileMapLayer/HealthPotion" method="_on_area_entered"]
 [connection signal="area_entered" from="Terrain/TileMapLayer/@Area2D@46779" to="Terrain/TileMapLayer/@Area2D@46779" method="_on_area_entered"]
 [connection signal="area_entered" from="Terrain/TileMapLayer/@Area2D@46780" to="Terrain/TileMapLayer/@Area2D@46780" method="_on_area_entered"]
+>>>>>>> ff6b030e8896658ac420fff07e8d332a36247715
 
 [editable path="Platforms/MovingPlatform1"]

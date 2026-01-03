@@ -169,8 +169,14 @@ func _perform_transition_in() -> void:
 	#
 	# We wait for 2-3 process frames, not just timer time, because
 	# we need the ENGINE to run its full update loop including rendering.
+	if not is_inside_tree():
+		return
 	await get_tree().process_frame
+	if not is_inside_tree():
+		return
 	await get_tree().process_frame
+	if not is_inside_tree():
+		return
 	await get_tree().process_frame
 	
 	if GameManager.has_meta("incoming_transition_direction"):
