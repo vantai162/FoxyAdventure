@@ -1,5 +1,11 @@
 extends EnemyCharacter
 
+## BOSS POISE SYSTEM — Warlord Turtle cannot be knocked back or stun-locked
+## This creates a skill-based fight requiring pattern recognition.
+@export_group("Boss Poise")
+@export var knockback_immune: bool = true  ## Boss cannot be pushed by player attacks
+@export var stun_immune: bool = true  ## Boss cannot enter hurt state during attacks
+
 @export var boomb_scene: PackedScene
 @export var rocket_scene: PackedScene
 @export var whirlpool_scene: PackedScene  ## Used by summon_whirlpool state
@@ -33,11 +39,16 @@ var current_phase: int = 1
 var water_raised: bool = false
 var last_water_action_time: float = 0.0
 var cached_water_node: water = null
+
+## Visual feedback state
+var _invincibility_tween: Tween = null
+
 signal health_changed
 
 func _ready():
+	add_to_group("boss")  # Mark as boss for special handling
+	add_to_group("enemy")
 	super._ready()
-	invincible_timer = max_invincible
 	fsm = FSM.new(self, $States, $States/Idle)
 
 func fire_boomb():
@@ -127,18 +138,79 @@ func _update_laugh(delta: float) -> void:
 		AudioManager.play_sound("warlord_laugh",20.0)
 		laugh_timer = 0.0
 
-func take_damage(amount: int):
-	health -= amount
-	emit_signal("health_changed")
-	AudioManager.play_sound("hurt",20.0)
-	# Force vulnerable khi máu <= 1
+## Override take_damage to implement POISE system + proper visual feedback
+## Boss takes damage but is NOT knocked back or interrupted
+## MUST match King Crab's pattern for consistency!
+func take_damage(damage: int) -> void:
+	super.take_damage(damage)  # Handles health -= damage AND plays hurt sound
+	health_changed.emit()
+	
+	# Visual feedback: quick red flash without state change (matches King Crab)
+	if animated_sprite:
+		var tween = create_tween()
+		tween.tween_property(animated_sprite, "modulate", Color(1.5, 0.5, 0.5, 1.0), 0.05)
+		tween.tween_property(animated_sprite, "modulate", Color.WHITE, 0.15)
+	
+	# NOTE: Sound already played by super.take_damage() via BaseCharacter
+	
+	# Phase transition at 50% health
+	if current_phase == 1 and health <= max_health / 2:
+		_enter_phase_2()
+	
+	# Vulnerable state at 1 HP
 	if health == 1:
 		become_vulnerable()
-
-	# Check chết
+	
+	# Death check
 	if health <= 0:
 		die()
+
+func _enter_phase_2() -> void:
+	current_phase = 2
+	# Use phase transition state if available
+	if fsm.states.has("phasetransition"):
+		fsm.change_state(fsm.states.phasetransition)
+	else:
+		print("Warlord Turtle enters Phase 2!")
 		
 func become_vulnerable():
 	if fsm.current_state != fsm.states.vulnerable:
 		fsm.change_state(fsm.states.vulnerable)
+
+func die() -> void:
+	if fsm.states.has("dead"):
+		fsm.change_state(fsm.states.dead)
+	else:
+		queue_free()
+
+## Enable hurt area for a limited time with VISUAL FEEDBACK
+## Kojima's Law: If the player can't hurt the boss, SHOW THEM WHY
+func enable_hurt_for(seconds: float) -> void:
+	HurtArea.disabled = false
+	hurt_timer.start(seconds)
+	_stop_invincibility_visual()
+
+func _on_hurt_timer_timeout() -> void:
+	HurtArea.disabled = true
+	_start_invincibility_visual()
+
+## VISUAL FEEDBACK: Pulsing transparency when invincible
+## Per VISUAL_DESIGN_DOCTRINE: "Every visual element must read as PIXELS, not blobs"
+## This uses a subtle alpha pulse, not a shader blur
+func _start_invincibility_visual() -> void:
+	if _invincibility_tween and _invincibility_tween.is_valid():
+		_invincibility_tween.kill()
+	
+	_invincibility_tween = create_tween()
+	_invincibility_tween.set_loops()  # Loop forever until stopped
+	# Pulse between semi-transparent and slightly-less-transparent
+	_invincibility_tween.tween_property(animated_sprite, "modulate", Color(0.7, 0.7, 0.9, 0.6), 0.4)
+	_invincibility_tween.tween_property(animated_sprite, "modulate", Color(0.9, 0.9, 1.0, 0.85), 0.4)
+
+func _stop_invincibility_visual() -> void:
+	if _invincibility_tween and _invincibility_tween.is_valid():
+		_invincibility_tween.kill()
+		_invincibility_tween = null
+	# Restore full opacity
+	if animated_sprite:
+		animated_sprite.modulate = Color.WHITE

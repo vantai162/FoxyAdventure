@@ -3,8 +3,9 @@ extends EnemyState
 ## Phase 2: Roll Bounce Attack - bouncy rolling with shockwaves on each landing
 
 # King Crab attacks cannot be interrupted - take damage but keep attacking
+# Boss poise handled by stun_immune flag — use super for proper hit feedback
 func take_damage(_damage_dir, damage: int) -> void:
-	obj.take_damage(damage)
+	super.take_damage(_damage_dir, damage)
 ## 
 ## ANIMATION ASSUMPTIONS (create these in SpriteFrames):
 ##   - "roll_windup" : Curling into ball before launch (loop: false)

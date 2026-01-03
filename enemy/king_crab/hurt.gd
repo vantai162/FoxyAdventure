@@ -1,13 +1,14 @@
 
 extends EnemyState
 
-## King Crab Boss Hurt State — POISE ENABLED
-## Boss does NOT get knocked back. Boss does NOT get stun-locked.
-## This is a VISUAL FEEDBACK state only — returns to idle almost instantly.
+## King Crab Boss Hurt State — LEGACY (stun_immune = true means this rarely runs)
+## With poise system in enemy_state.gd, bosses skip this state during normal combat.
+## This state is kept for:
+## - Death transition
+## - Fallback if stun_immune is ever disabled
+## - Animation purposes if manually triggered
 
 func _enter():
-	## Flash effect is handled in king_crab.take_damage() override
-	## This state exists only for death check transition
 	obj.change_animation("hurt")
 	timer = 0.1  # Minimal time — boss recovers fast
 
@@ -18,13 +19,6 @@ func _update(delta: float):
 		else:
 			change_state(fsm.states.idle)
 
-## POISE OVERRIDE: Boss takes damage but is NOT knocked back
-func take_damage(_damage_dir: Vector2, damage: int) -> void:
-	## CRITICAL: Do NOT apply knockback to boss
-	## obj.velocity.x = _damage_dir.x * obj.knockback_force  ← REMOVED
-	
-	# Apply damage through proper system (handles flash, phase transitions)
-	obj.take_damage(damage)
-	
-	# Do NOT change state — boss continues current attack
-	# The visual flash is handled by king_crab.take_damage()
+## NOTE: This take_damage override is LEGACY
+## With stun_immune = true, EnemyState.take_damage() never calls change_state(hurt)
+## Damage is handled directly via king_crab.take_damage() override

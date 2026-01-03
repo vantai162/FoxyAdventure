@@ -3,8 +3,9 @@ extends EnemyState
 ## Climb coconut tree - tween position up to tree marker position
 
 # King Crab attacks cannot be interrupted - take damage but keep attacking
+# Boss poise handled by stun_immune flag — use super for proper hit feedback
 func take_damage(_damage_dir, damage: int) -> void:
-	obj.take_damage(damage)
+	super.take_damage(_damage_dir, damage)
 ## Rotates crab sideways during climb for visual effect
 ## 
 ## ANIMATION ASSUMPTIONS:

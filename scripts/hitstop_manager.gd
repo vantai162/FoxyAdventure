@@ -1,52 +1,103 @@
 extends Node
-## HitstopManager — Centralized hitstop control to prevent race conditions
+## HitstopManager — Targeted Character Freeze (THE GODOT-NATIVE WAY v2)
 ## 
-## PROBLEM SOLVED: Multiple simultaneous hitstops would fight over Engine.time_scale,
-## potentially causing permanent freezes when Timer 1 restores time_scale while Timer 2
-## is still waiting with time_scale = 0.
+## DESIGN PHILOSOPHY:
+## Hitstop should freeze CHARACTERS visually while keeping physics coherent.
+## 
+## THE PROBLEM WITH process_mode = DISABLED:
+## - CharacterBody2D stops calling move_and_slide()
+## - If on a moving platform, character "falls off" because it's not updating
+## - The node becomes a physics ghost
 ##
-## SOLUTION: Single mutex-like controller. Only one hitstop can be active.
-## New hitstop requests during an active hitstop are ignored (first wins).
+## THE CORRECT APPROACH:
+## 1. Keep _physics_process RUNNING (so move_and_slide() tracks platforms)
+## 2. Zero velocity (character doesn't move on its own)
+## 3. Pause AnimatedSprite2D (visual freeze)
+## 4. Set a "frozen" flag the FSM respects (no state transitions, no input)
 ##
-## CRITICAL FIX: Timer nodes do NOT work when Engine.time_scale = 0 because their
-## delta becomes 0. We use SceneTree.create_timer() with ignore_time_scale=true instead.
+## Characters check `is_frozen()` to skip their update logic.
 
-var is_hitstop_active: bool = false
-var active_timer: SceneTreeTimer = null
+## Track frozen nodes to restore them
+var _frozen_nodes: Dictionary = {}  # node -> freeze_data
 
 
-## Request a hitstop. If one is already active, this request is IGNORED (no stacking).
-## Returns true if hitstop was started, false if already in hitstop.
-func request_hitstop(duration: float) -> bool:
-	if is_hitstop_active:
-		return false  # Already frozen — ignore new request
+## Check if a node is currently frozen
+func is_frozen(node: Node) -> bool:
+	return _frozen_nodes.has(node)
+
+
+## Freeze a specific node for hitstop effect.
+## The node should check is_frozen() in its _physics_process to skip logic.
+func freeze_node(node: Node, duration: float) -> void:
+	if not is_instance_valid(node):
+		return
+	if duration <= 0:
+		return
+	if _frozen_nodes.has(node):
+		return  # Already frozen
 	
+	var freeze_data := {
+		"original_velocity": Vector2.ZERO,
+		"animated_sprites": [] as Array[AnimatedSprite2D],
+	}
+	
+	# Store and zero velocity for CharacterBody2D
+	if node is CharacterBody2D:
+		freeze_data.original_velocity = node.velocity
+		node.velocity = Vector2.ZERO
+	
+	# Find and pause all AnimatedSprite2D nodes
+	_collect_animated_sprites(node, freeze_data.animated_sprites)
+	for sprite: AnimatedSprite2D in freeze_data.animated_sprites:
+		sprite.pause()
+	
+	_frozen_nodes[node] = freeze_data
+	
+	# Schedule unfreeze with REAL TIME timer
+	var timer := get_tree().create_timer(duration, true, false, true)
+	timer.timeout.connect(_unfreeze_node.bind(node))
+
+
+## Unfreeze a specific node
+func _unfreeze_node(node: Node) -> void:
+	if not _frozen_nodes.has(node):
+		return
+	
+	var freeze_data: Dictionary = _frozen_nodes[node]
+	_frozen_nodes.erase(node)
+	
+	if not is_instance_valid(node):
+		return
+	
+	# Restore velocity (NOT process mode — we never disabled it)
+	if node is CharacterBody2D:
+		node.velocity = freeze_data.original_velocity
+	
+	# Resume animations
+	for sprite: AnimatedSprite2D in freeze_data.animated_sprites:
+		if is_instance_valid(sprite):
+			sprite.play()
+
+
+## Recursively collect AnimatedSprite2D nodes
+func _collect_animated_sprites(node: Node, sprites: Array[AnimatedSprite2D]) -> void:
+	for child in node.get_children():
+		if child is AnimatedSprite2D:
+			sprites.append(child)
+		_collect_animated_sprites(child, sprites)
+
+
+## LEGACY API: For backwards compatibility
+func request_hitstop(duration: float) -> bool:
 	if duration <= 0:
 		return false
-	
-	is_hitstop_active = true
-	Engine.time_scale = 0.0
-	
-	# CRITICAL: Use SceneTreeTimer with ignore_time_scale=true
-	# Signature: create_timer(time_sec, process_always, process_in_physics, ignore_time_scale)
-	active_timer = get_tree().create_timer(duration, true, false, true)
-	active_timer.timeout.connect(_on_hitstop_end)
-	
+	var player = GameManager.player
+	if is_instance_valid(player):
+		freeze_node(player, duration)
 	return true
 
 
-func _on_hitstop_end() -> void:
-	Engine.time_scale = 1.0
-	is_hitstop_active = false
-	active_timer = null
-
-
-## Force end hitstop (for scene transitions, pause menu, etc.)
+## Force end all hitstops
 func cancel_hitstop() -> void:
-	if is_hitstop_active:
-		# SceneTreeTimer can't be stopped, but we can disconnect and reset immediately
-		if active_timer and active_timer.timeout.is_connected(_on_hitstop_end):
-			active_timer.timeout.disconnect(_on_hitstop_end)
-		Engine.time_scale = 1.0
-		is_hitstop_active = false
-		active_timer = null
+	for node in _frozen_nodes.keys():
+		_unfreeze_node(node)

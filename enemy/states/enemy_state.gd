@@ -8,15 +8,26 @@ const HIT_PARTICLES_SCENE: PackedScene = preload("res://assets/effects/dust_puff
 const ENEMY_HITSTOP: float = 0.04
 
 func take_damage(_damage_dir, damage: int) -> void:
-	obj.velocity.x = _damage_dir.x * obj.knockback_force
+	# POISE SYSTEM: Check for boss immunity flags
+	var is_knockback_immune := obj.get("knockback_immune") == true
+	var is_stun_immune := obj.get("stun_immune") == true
+	
+	# Apply knockback ONLY if not immune
+	if not is_knockback_immune:
+		obj.velocity.x = _damage_dir.x * obj.knockback_force
+	
+	# Apply damage (always)
 	obj.take_damage(damage)
 	_spawn_hit_feedback(_damage_dir)
-	change_state(fsm.states.hurt)
+	
+	# Change to hurt state ONLY if not stun immune
+	if not is_stun_immune:
+		change_state(fsm.states.hurt)
 
 ## Spawn hit feedback — particles + hitstop for satisfying combat
 func _spawn_hit_feedback(damage_dir: Vector2) -> void:
-	# Hitstop for impact weight — use centralized manager
-	HitstopManager.request_hitstop(ENEMY_HITSTOP)
+	# Hitstop for impact weight — FREEZE THIS ENEMY, not the world
+	HitstopManager.freeze_node(obj, ENEMY_HITSTOP)
 	
 	# Hit particles burst — instantiate fresh to avoid shared resource mutation
 	var particles = HIT_PARTICLES_SCENE.instantiate()

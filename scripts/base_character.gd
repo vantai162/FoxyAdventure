@@ -78,6 +78,11 @@ func _physics_process(delta: float) -> void:
 	# Skip game logic in editor
 	if Engine.is_editor_hint():
 		return
+	
+	# HITSTOP: If frozen, only do move_and_slide (stay on platforms) — skip all logic
+	if HitstopManager.is_frozen(self):
+		move_and_slide()
+		return
 		
 	# Animation
 	_check_changed_animation()
@@ -92,9 +97,6 @@ func _physics_process(delta: float) -> void:
 	_update_movement(delta)
 	# Direction
 	_check_changed_direction()
-	
-	
-	
 
 
 func _update_movement(delta: float) -> void:

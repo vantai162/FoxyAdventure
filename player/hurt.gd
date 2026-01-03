@@ -16,8 +16,8 @@ func _enter():
 
 ## Apply hit feedback — hitstop + camera shake for damage impact
 func _apply_hurt_feedback() -> void:
-	# Hitstop FIRST — freeze frame before shake sells the impact
-	HitstopManager.request_hitstop(HURT_HITSTOP)
+	# Hitstop — FREEZE THE PLAYER, not the world
+	HitstopManager.freeze_node(obj, HURT_HITSTOP)
 	
 	var camera = obj.get_node_or_null("Camera2D")
 	if camera and camera.has_method("shake"):
