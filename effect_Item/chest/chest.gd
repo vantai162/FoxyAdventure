@@ -31,7 +31,7 @@ var is_opened: bool = false
 
 
 func _ready() -> void:
-	super._ready()  # CRITICAL: Connect InteractiveArea2D signals (body_entered, body_exited)
+	super._ready()
 	_chest_ready()
 
 
@@ -40,7 +40,6 @@ func _chest_ready() -> void:
 	interacted.connect(_on_interacted)
 	if animated_sprite:
 		animated_sprite.play("close")
-	player = get_tree().get_first_node_in_group("player")
 
 
 func _on_interacted() -> void:
@@ -51,8 +50,12 @@ func attempt_open_chest() -> void:
 	if is_opened:
 		return
 	
-	if not player or not player.inventory:
+	# Get player from InteractiveArea2D's tracked reference (set when player enters)
+	var current_player := _current_player as Player
+	if not current_player or not current_player.inventory:
 		return
+	
+	player = current_player
 	
 	# Check if key is required
 	if requires_key:
