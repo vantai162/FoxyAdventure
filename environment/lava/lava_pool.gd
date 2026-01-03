@@ -222,6 +222,9 @@ var _settled_count: int = 0
 var _last_active_min: int = 0
 var _last_active_max: int = 0
 
+## Sub-stepping accumulator for FPS-independent physics
+var _physics_accumulator: float = 0.0
+
 ## Debug monitoring
 var debug_timer: float = 0.0
 var debug_interval: float = 1.0
@@ -574,8 +577,25 @@ func _process(delta: float) -> void:
 	# Continuous lavafall bubbling (creates "damn that's smooth" effect)
 	_apply_lavafall_bubbles(_ambient_wave_time)
 	
-	# Wave physics (KEEP - this is gameplay interaction)
-	_update_physics(delta)
+	# SUB-STEPPING: Run physics at a fixed timestep regardless of frame rate.
+	# This ensures the spring-mass simulation behaves identically at 6 FPS or 60 FPS.
+	_physics_accumulator += delta
+	
+	# Fixed timestep: ~60 physics updates per second
+	const FIXED_DT: float = 0.016667
+	# Safety cap: max 10 sub-steps per frame to prevent spiral of death
+	const MAX_SUBSTEPS: int = 10
+	
+	var substeps_done: int = 0
+	while _physics_accumulator >= FIXED_DT and substeps_done < MAX_SUBSTEPS:
+		_physics_accumulator -= FIXED_DT
+		_update_physics(FIXED_DT)
+		substeps_done += 1
+	
+	# Drain excess accumulator under extreme lag
+	if _physics_accumulator > FIXED_DT * 3.0:
+		_physics_accumulator = FIXED_DT * 2.0
+	
 	_update_visuals()
 	
 	# Update light/particle positions to track surface (dynamic positioning)
@@ -867,18 +887,10 @@ func _update_light_pulse(delta: float) -> void:
 			light.energy = (light_energy / float(lava_lights.size()) * 1.5) + (flicker * light_pulse_amount)
 
 func _update_physics(delta: float) -> void:
-	# CRITICAL: Validate delta to prevent catastrophic physics behavior
-	if not is_finite(delta) or delta <= 0.0 or delta > 1.0:
-		push_warning("Lava physics: invalid delta %.3f, skipping frame" % delta)
-		return
-	
-	var safe_delta = min(delta, 0.05)  # Cap at 20 FPS worst case
-	
-	# Lag compensation: if actual delta is larger than safe_delta, add extra damping
-	var lag_damping_factor = 1.0
-	if delta > 0.03:  # FPS below 33
-		var lag_severity = (delta - 0.03) / 0.03
-		lag_damping_factor = 1.0 + (lag_severity * lag_severity * 0.5)
+	# With sub-stepping, delta is always a fixed small value (~0.0167)
+	# We only need basic validation, no more lag compensation hacks
+	if not is_finite(delta) or delta <= 0.0 or delta > 0.1:
+		return  # Silent skip for invalid delta
 	
 	# OPTIMIZATION: Track active region to skip settled segments
 	var active_min = segment_count
@@ -905,7 +917,7 @@ func _update_physics(delta: float) -> void:
 		# Emergency displacement: prevent total runaway
 		if abs(displacement) > emergency_displacement_threshold:
 			var emergency_correction = -sign(displacement) * abs(displacement) * 0.5
-			seg["height"] += emergency_correction * safe_delta
+			seg["height"] += emergency_correction * delta
 			seg["velocity"] *= 0.5
 			active_min = min(active_min, i)
 			active_max = max(active_max, i)
@@ -926,14 +938,14 @@ func _update_physics(delta: float) -> void:
 		active_min = min(active_min, i)
 		active_max = max(active_max, i)
 		
-		# Physics integration (direct, no artificial time multiplier)
+		# Physics integration (with sub-stepping, delta is always fixed - no lag compensation needed)
 		var spring_force = -lava_restoring_force * displacement
-		var linear_damping = wave_energy_loss * lag_damping_factor * velocity
+		var linear_damping = wave_energy_loss * velocity
 		var quadratic_damping_force = quadratic_damping * velocity * abs(velocity)
 		var acceleration = spring_force - linear_damping - quadratic_damping_force
 		
 		# Velocity integration
-		seg["velocity"] += acceleration * safe_delta
+		seg["velocity"] += acceleration * delta
 		
 		# REST-ZONE DAMPING: Kill micro-oscillations near rest
 		if abs(displacement) < rest_zone_threshold and abs(seg["velocity"]) < 5.0:
@@ -944,7 +956,7 @@ func _update_physics(delta: float) -> void:
 		seg["velocity"] = clamp(seg["velocity"], -max_velocity, max_velocity)
 		
 		# Position integration
-		seg["height"] += seg["velocity"] * safe_delta
+		seg["height"] += seg["velocity"] * delta
 	
 	# Update active region tracking
 	if active_min < segment_count:
@@ -955,12 +967,8 @@ func _update_physics(delta: float) -> void:
 	if active_min >= segment_count:
 		return
 	
-	# Wave propagation (only in active region)
-	var actual_spread_updates = wave_spread_updates
-	if delta > 0.025:
-		actual_spread_updates = max(2, wave_spread_updates / 2)
-	
-	for _update in range(actual_spread_updates):
+	# Wave propagation (with sub-stepping, always use full wave_spread_updates)
+	for _update in range(wave_spread_updates):
 		for i in range(max(1, active_min), min(segment_count - 1, active_max + 1)):
 			var seg = segment_data[i]
 			var rest = segment_rest_height[i]
@@ -976,7 +984,7 @@ func _update_physics(delta: float) -> void:
 				var left_seg = segment_data[i - 1]
 				var left_diff = seg["height"] - left_seg["height"]
 				var wave_force = left_diff * wave_strength
-				left_seg["velocity"] += wave_force * safe_delta
+				left_seg["velocity"] += wave_force * delta
 				
 				# Wake up left neighbor if significant force applied
 				if abs(wave_force) > 2.0 and _settled_segments[i - 1] == 1:
@@ -987,7 +995,7 @@ func _update_physics(delta: float) -> void:
 				var right_seg = segment_data[i + 1]
 				var right_diff = seg["height"] - right_seg["height"]
 				var wave_force = right_diff * wave_strength
-				right_seg["velocity"] += wave_force * safe_delta
+				right_seg["velocity"] += wave_force * delta
 				
 				# Wake up right neighbor if significant force applied
 				if abs(wave_force) > 2.0 and _settled_segments[i + 1] == 1:
@@ -999,7 +1007,7 @@ func _update_physics(delta: float) -> void:
 		var seg = segment_data[edge_idx]
 		var rest = segment_rest_height[edge_idx]
 		var displacement_from_rest = rest - seg["height"]
-		var correction_force = displacement_from_rest * edge_convergence_strength * safe_delta
+		var correction_force = displacement_from_rest * edge_convergence_strength * delta
 		seg["velocity"] += correction_force
 		seg["velocity"] = clamp(seg["velocity"], -10.0, 10.0)
 
