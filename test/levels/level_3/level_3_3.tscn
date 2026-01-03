@@ -24,7 +24,7 @@
 [ext_resource type="PackedScene" uid="uid://k1cvcu80rfmm" path="res://scenes/game_screen/coin_ui.tscn" id="23_h45nm"]
 [ext_resource type="PackedScene" uid="uid://cstfpndmrkms3" path="res://scenes/game_screen/key_ui.tscn" id="24_dlyds"]
 [ext_resource type="PackedScene" uid="uid://8koby8md4sgg" path="res://scenes/game_screen/blade_ui.tscn" id="25_wrv2e"]
-[ext_resource type="PackedScene" uid="uid://d1twwiutipd8r" path="res://objects/pressure_plate/pressure_plate.tscn" id="26_n2s4v"]
+[ext_resource type="PackedScene" path="res://objects/pressure_plate/pressure_plate.tscn" id="26_n2s4v"]
 [ext_resource type="PackedScene" uid="uid://bs816w0pr8all" path="res://player/foxy.tscn" id="27_h45nm"]
 [ext_resource type="PackedScene" uid="uid://clavapool001" path="res://environment/lava/lava_pool.tscn" id="27_u7sk4"]
 

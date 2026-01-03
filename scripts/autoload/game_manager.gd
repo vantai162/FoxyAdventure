@@ -20,6 +20,7 @@ var player_spawn_data: Dictionary = {}
 var paused=false
 var skin_manager:SkinManager=SkinManager.new()
 var kill_count: int = 0
+var is_continue_game: bool = false
 
 
 func _ready() -> void:

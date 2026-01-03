@@ -200,12 +200,3 @@ position = Vector2(685, 318)
 story_text = "Chuyến đi tới hòn đảo này là chuyến đi cuối cùng của mình. Mình sẽ hoàn lương và không làm hải tặc nữa.
 (Nhấn Q để tiếp tục)"
 memory_title = "⭐ Memory 10 – “Ước muốn của Foxy”"
-
-[connection signal="area_entered" from="Terrain/TileMapLayer/Coin" to="Terrain/TileMapLayer/Coin" method="_on_area_entered"]
-[connection signal="area_entered" from="Terrain/TileMapLayer/@Area2D@46528" to="Terrain/TileMapLayer/@Area2D@46528" method="_on_area_entered"]
-[connection signal="area_entered" from="Terrain/TileMapLayer/@Area2D@46529" to="Terrain/TileMapLayer/@Area2D@46529" method="_on_area_entered"]
-[connection signal="area_entered" from="Terrain/TileMapLayer/@Area2D@46530" to="Terrain/TileMapLayer/@Area2D@46530" method="_on_area_entered"]
-[connection signal="area_entered" from="Terrain/TileMapLayer/@Area2D@46531" to="Terrain/TileMapLayer/@Area2D@46531" method="_on_area_entered"]
-[connection signal="area_entered" from="Terrain/TileMapLayer/@Area2D@46532" to="Terrain/TileMapLayer/@Area2D@46532" method="_on_area_entered"]
-[connection signal="area_entered" from="Terrain/TileMapLayer/@Area2D@46533" to="Terrain/TileMapLayer/@Area2D@46533" method="_on_area_entered"]
-[connection signal="area_entered" from="Terrain/TileMapLayer/@Area2D@46534" to="Terrain/TileMapLayer/@Area2D@46534" method="_on_area_entered"]

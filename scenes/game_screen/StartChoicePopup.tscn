@@ -1,0 +1,166 @@
+[gd_scene load_steps=11 format=3 uid="uid://bo8wm2rih12qq"]
+
+[ext_resource type="Script" uid="uid://cx2ekhqsf714g" path="res://scenes/game_screen/start_choice_popup.gd" id="1_6brya"]
+[ext_resource type="Texture2D" uid="uid://dsf8msyd5qpjh" path="res://assets/background/Free-Nature-Backgrounds-Pixel-Art3.png" id="2_twuu0"]
+[ext_resource type="Texture2D" uid="uid://bm66ag0j7y3qi" path="res://assets/ui/popup.png" id="3_d8dyt"]
+[ext_resource type="FontFile" uid="uid://bf742t4mxgd7l" path="res://assets/fonts/big_font.fnt" id="4_46sbi"]
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_a4khq"]
+texture = ExtResource("2_twuu0")
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ljd5v"]
+bg_color = Color(0.6, 0.6, 0.6, 0)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_1c6ji"]
+bg_color = Color(0.6, 0.6, 0.6, 0)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ldmlv"]
+bg_color = Color(0.6, 0.6, 0.6, 0)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_l8noe"]
+bg_color = Color(0.6, 0.6, 0.6, 0)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_r5pit"]
+bg_color = Color(0.6, 0.6, 0.6, 0)
+
+[node name="StartChoicePopup" type="Control"]
+process_mode = 3
+z_index = 10
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_6brya")
+
+[node name="Panel" type="Panel" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxTexture_a4khq")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Panel"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -20.0
+offset_top = -20.0
+offset_right = 20.0
+offset_bottom = 20.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="NinePatchRect" type="NinePatchRect" parent="Panel/VBoxContainer"]
+custom_minimum_size = Vector2(160, 96)
+layout_mode = 2
+texture = ExtResource("3_d8dyt")
+patch_margin_left = 32
+patch_margin_top = 32
+patch_margin_right = 32
+patch_margin_bottom = 32
+axis_stretch_horizontal = 1
+axis_stretch_vertical = 1
+
+[node name="NewGameButton" type="Button" parent="Panel/VBoxContainer/NinePatchRect"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -46.5
+offset_top = -15.5
+offset_right = 46.5
+offset_bottom = 15.5
+grow_horizontal = 2
+grow_vertical = 2
+focus_mode = 0
+theme_override_fonts/font = ExtResource("4_46sbi")
+theme_override_font_sizes/font_size = 17
+theme_override_styles/hover_pressed = SubResource("StyleBoxFlat_ljd5v")
+theme_override_styles/hover = SubResource("StyleBoxFlat_1c6ji")
+theme_override_styles/pressed_mirrored = SubResource("StyleBoxFlat_ldmlv")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_l8noe")
+theme_override_styles/normal = SubResource("StyleBoxFlat_r5pit")
+text = "NEW GAME"
+
+[node name="NinePatchRect2" type="NinePatchRect" parent="Panel/VBoxContainer"]
+custom_minimum_size = Vector2(160, 96)
+layout_mode = 2
+texture = ExtResource("3_d8dyt")
+patch_margin_left = 32
+patch_margin_top = 32
+patch_margin_right = 32
+patch_margin_bottom = 32
+axis_stretch_horizontal = 1
+axis_stretch_vertical = 1
+
+[node name="ContinueButton" type="Button" parent="Panel/VBoxContainer/NinePatchRect2"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -46.5
+offset_top = -15.5
+offset_right = 46.5
+offset_bottom = 15.5
+grow_horizontal = 2
+grow_vertical = 2
+focus_mode = 0
+theme_override_fonts/font = ExtResource("4_46sbi")
+theme_override_font_sizes/font_size = 17
+theme_override_styles/hover_pressed = SubResource("StyleBoxFlat_ljd5v")
+theme_override_styles/hover = SubResource("StyleBoxFlat_1c6ji")
+theme_override_styles/pressed_mirrored = SubResource("StyleBoxFlat_ldmlv")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_l8noe")
+theme_override_styles/normal = SubResource("StyleBoxFlat_r5pit")
+text = "CONTINUE
+"
+
+[node name="NinePatchRect3" type="NinePatchRect" parent="Panel/VBoxContainer"]
+custom_minimum_size = Vector2(160, 96)
+layout_mode = 2
+texture = ExtResource("3_d8dyt")
+patch_margin_left = 32
+patch_margin_top = 32
+patch_margin_right = 32
+patch_margin_bottom = 32
+axis_stretch_horizontal = 1
+axis_stretch_vertical = 1
+
+[node name="BackGameButton" type="Button" parent="Panel/VBoxContainer/NinePatchRect3"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -46.5
+offset_top = -15.5
+offset_right = 46.5
+offset_bottom = 15.5
+grow_horizontal = 2
+grow_vertical = 2
+focus_mode = 0
+theme_override_fonts/font = ExtResource("4_46sbi")
+theme_override_font_sizes/font_size = 17
+theme_override_styles/hover_pressed = SubResource("StyleBoxFlat_ljd5v")
+theme_override_styles/hover = SubResource("StyleBoxFlat_1c6ji")
+theme_override_styles/pressed_mirrored = SubResource("StyleBoxFlat_ldmlv")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_l8noe")
+theme_override_styles/normal = SubResource("StyleBoxFlat_r5pit")
+text = "BACK
+"
+
+[connection signal="pressed" from="Panel/VBoxContainer/NinePatchRect/NewGameButton" to="." method="on_new_game_pressed"]
+[connection signal="pressed" from="Panel/VBoxContainer/NinePatchRect2/ContinueButton" to="." method="on_continue_pressed"]
+[connection signal="pressed" from="Panel/VBoxContainer/NinePatchRect3/BackGameButton" to="." method="_on_cancel_pressed"]

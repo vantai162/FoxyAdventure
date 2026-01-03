@@ -36,7 +36,7 @@ func _init() -> void:
 
 func _on_stage_ready() -> void:
 	# Play intro cinematic on first entry
-	if GameManager.player and not wake_up_scn_played:
+	if GameManager.player and not wake_up_scn_played and not GameManager.is_continue_game:
 		await _play_intro_cinematic()
 	else:
 		# If returning (e.g., from checkpoint), just start music
