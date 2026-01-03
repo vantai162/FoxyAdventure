@@ -81,8 +81,10 @@ func _spawn_jump_dust() -> void:
 	get_tree().current_scene.add_child(smoke)
 
 ## Spawn dust when pushing off wall — directional puff
+## PHYSICS: Feet push OFF wall → smoke shoots AWAY from wall (horizontal)
+## The jump_smoke asset shoots UP by default, so we ROTATE it 90°
 func _spawn_wall_jump_dust() -> void:
-	# Particle dust
+	# Particle dust (subtle debris from wall)
 	var dust = JUMP_DUST.instantiate()
 	dust.global_position = obj.global_position + Vector2(-obj.direction * 8, 0)
 	dust.emitting = true
@@ -92,12 +94,14 @@ func _spawn_wall_jump_dust() -> void:
 			dust.queue_free()
 	)
 	
-	# Hand-drawn smoke at wall contact
+	# Hand-drawn smoke shooting AWAY from wall
+	# Asset shoots UP, so rotate ±90° to shoot horizontally
 	var smoke = SMOKE_PUFF.instantiate()
-	smoke.global_position = obj.global_position + Vector2(-obj.direction * 10, 4)
+	smoke.global_position = obj.global_position + Vector2(-obj.direction * 6, 0)
 	smoke.scale = Vector2(0.5, 0.5)
-	# Flip smoke to face away from wall
-	smoke.flip_h = obj.direction < 0
+	# Rotate: jumping RIGHT (direction=1) means wall is LEFT, smoke goes RIGHT (+90°)
+	# Jumping LEFT (direction=-1) means wall is RIGHT, smoke goes LEFT (-90°)
+	smoke.rotation_degrees = -90.0 * obj.direction  # +90 for right, -90 for left
 	get_tree().current_scene.add_child(smoke)
 
 ## Squash and stretch — vertical stretch on jump for springy feel

@@ -1,9 +1,8 @@
 extends Player_State
 
-## Landing dust effect — organic feedback for impact
-## Uses hand-drawn smoke assets for better visual feel
+## Landing dust effect — particles only (no smoke asset)
+## PHYSICS: Body impacts DOWN → dust spreads outward, NOT upward smoke
 const LANDING_DUST: PackedScene = preload("res://assets/effects/dust_puff.tscn")
-const SMOKE_PUFF: PackedScene = preload("res://assets/effects/smoke_puff.tscn")
 
 ## Squash and stretch constants — horizontal squash on landing
 ## NOTE: Values only, direction preserved at runtime
@@ -58,9 +57,10 @@ func _update(_delta: float) -> void:
 		fsm.change_state(fsm.states.swim)
 
 ## Spawn dust puff on landing — visual weight and impact
-## Uses both particle effect AND hand-drawn smoke for layered feel
+## PHYSICS: Body impacts DOWN → dust spreads outward/settles
+## The jump_smoke asset shoots UP which contradicts landing physics
+## So we use ONLY particles here — they spread naturally on impact
 func _spawn_landing_dust() -> void:
-	# Particle dust (subtle, fast)
 	var dust = LANDING_DUST.instantiate()
 	dust.global_position = obj.global_position + Vector2(0, 14)
 	dust.emitting = true
@@ -69,12 +69,6 @@ func _spawn_landing_dust() -> void:
 		if is_instance_valid(dust):
 			dust.queue_free()
 	)
-	
-	# Hand-drawn smoke puff (prominent, animated)
-	var smoke = SMOKE_PUFF.instantiate()
-	smoke.global_position = obj.global_position + Vector2(0, 12)
-	smoke.scale = Vector2(0.7, 0.7)  ## Landing is bigger impact than jump
-	get_tree().current_scene.add_child(smoke)
 
 ## Squash and stretch — horizontal squash on landing for weight
 ## CRITICAL: Preserve X sign for direction!

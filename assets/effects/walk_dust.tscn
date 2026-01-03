@@ -1,4 +1,4 @@
-[gd_scene load_steps=7 format=3 uid="uid://cwalkdust00001"]
+[gd_scene load_steps=7 format=3 uid="uid://bd7jskn11dvlg"]
 
 [ext_resource type="Texture2D" uid="uid://lx7c3exk2vl1" path="res://assets/foxy/smoke/smoke_walk_1.png" id="1_walk1"]
 [ext_resource type="Texture2D" uid="uid://ikyx0hjrhytx" path="res://assets/foxy/smoke/smoke_walk_2.png" id="2_walk2"]

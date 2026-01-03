@@ -1,4 +1,4 @@
-[gd_scene load_steps=7 format=3 uid="uid://csmokepuff0001"]
+[gd_scene load_steps=7 format=3 uid="uid://blpffhmu0krc7"]
 
 [ext_resource type="Texture2D" uid="uid://8usoreyem8l6" path="res://assets/foxy/smoke/jump_smoke_1.png" id="1_smoke1"]
 [ext_resource type="Texture2D" uid="uid://jtpy308mqnwi" path="res://assets/foxy/smoke/jump_smoke_2.png" id="2_smoke2"]
