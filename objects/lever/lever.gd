@@ -93,7 +93,7 @@ func _play_activation_feedback() -> void:
 	## Visual and audio feedback when lever is toggled
 	# Sound
 	if not activation_sound.is_empty():
-		AudioManager.play_sound(activation_sound, 15.0)
+		AudioManager.play_sound("button_press", 15.0)
 	
 	# Scale punch (satisfying "thunk" feel)
 	if scale_punch != 1.0 and has_node("AnimatedSprite2D"):

@@ -33,7 +33,7 @@ func _on_animation_finished() -> void:
 			await get_tree().create_timer(interval).timeout
 			elapsed += interval
 			
-		player.set_physics_process(true)
+		player.input_locked = false
 		AudioManager.play_music("theme_1",15.0,0)
 		change_state(fsm.states.idle)
 		print("finished")

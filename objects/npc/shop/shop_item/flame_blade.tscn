@@ -6,4 +6,4 @@
 [node name="FlameBlade" type="Node"]
 script = ExtResource("1_q6knn")
 icon = ExtResource("2_5qa82")
-value = 1
+value = 30

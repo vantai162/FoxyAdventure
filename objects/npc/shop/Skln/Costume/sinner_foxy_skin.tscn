@@ -229,16 +229,16 @@ animations = [{
 [node name="SinnerFoxySkin" type="Node2D"]
 script = ExtResource("1_ntspm")
 rarity = 4
-value = 1
+value = 50
 Name = "SinnerFoxy"
 icon = ExtResource("28_rhb5p")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
 visible = false
 sprite_frames = SubResource("SpriteFrames_dmo7m")
-animation = &"dead"
+animation = &"jump"
 
 [node name="BladeAnimatedSprite2D" type="AnimatedSprite2D" parent="."]
 visible = false
 sprite_frames = SubResource("SpriteFrames_f0fik")
-animation = &"jump_attack"
+animation = &"jump"

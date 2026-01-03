@@ -660,7 +660,7 @@ position = Vector2(969, 1008)
 position = Vector2(334, 1935)
 
 [connection signal="area_entered" from="Terrain/TileMapLayer/HealthPotion" to="Terrain/TileMapLayer/HealthPotion" method="_on_area_entered"]
-[connection signal="area_entered" from="Terrain/TileMapLayer/@Area2D@35076" to="Terrain/TileMapLayer/@Area2D@35076" method="_on_area_entered"]
-[connection signal="area_entered" from="Terrain/TileMapLayer/@Area2D@35077" to="Terrain/TileMapLayer/@Area2D@35077" method="_on_area_entered"]
+[connection signal="area_entered" from="Terrain/TileMapLayer/@Area2D@46779" to="Terrain/TileMapLayer/@Area2D@46779" method="_on_area_entered"]
+[connection signal="area_entered" from="Terrain/TileMapLayer/@Area2D@46780" to="Terrain/TileMapLayer/@Area2D@46780" method="_on_area_entered"]
 
 [editable path="Platforms/MovingPlatform1"]

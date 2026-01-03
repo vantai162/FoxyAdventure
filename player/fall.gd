@@ -16,6 +16,9 @@ func _enter() -> void:
 	was_airborne = true
 
 func _update(_delta: float) -> void:
+	# Restore oxygen when falling (not underwater)
+	obj.current_oxygen = min(obj.max_oxygen, obj.current_oxygen + obj.oxygen_increase_rate * _delta)
+	
 	var is_moving = false
 	var jumped = false
 	

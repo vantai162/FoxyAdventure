@@ -23,7 +23,7 @@ func _enter() -> void:
 		if not obj._is_on_ice():
 			obj.velocity.x = 0
 	else:
-		obj.change_animation("Jump_attack")
+		obj.change_animation("jump_attack")
 		# Air attack: preserve momentum (physics-consistent), but apply hover effect
 		# NOT zeroing velocity - player keeps their arc
 		original_gravity = obj.gravity

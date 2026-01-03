@@ -6,4 +6,4 @@
 [node name="HpUp" type="Node"]
 script = ExtResource("1_eq5yx")
 icon = ExtResource("2_850p8")
-value = 1
+value = 10
