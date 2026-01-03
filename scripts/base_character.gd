@@ -189,9 +189,10 @@ func _is_on_ice() -> bool:
 	## Check if standing on an ice surface using TileMap custom data
 	var tile_data = _get_floor_tile_data()
 	if tile_data:
-		var surface_type = tile_data.get_custom_data("surface_type")
-		if surface_type == "ice":
-			return true
+		if tile_data.has_custom_data("surface_type"):
+			var surface_type = tile_data.get_custom_data("surface_type")
+			if surface_type == "ice":
+				return true
 	
 	# Fallback: Check if floor collider is in "ice" group (for non-TileMap ice)
 	var collider = floor_ray_cast.get_collider()
@@ -367,7 +368,6 @@ func die() -> void:
 	# 2. Cập nhật chỉ số
 	health = 0
 	emit_signal("health_changed") # Để thanh máu tụt về 0
-	emit_signal("died")
 	# 3. Kích hoạt State Chết (Logic chính nằm ở đây)
 	# Kiểm tra xem trong danh sách states có "dead" không
 	if fsm.states.has("dead"):

@@ -67,6 +67,7 @@ func _exit() -> void:
 	wall_normal = Vector2.ZERO
 
 func _update(delta: float):
+	obj.current_oxygen = min(obj.max_oxygen, obj.current_oxygen + obj.oxygen_increase_rate * delta)
 	# ========================================
 	# PRIORITY 1: Ice check (can't grip ice!)
 	# ========================================

@@ -20,7 +20,7 @@ func _enter() -> void:
 			obj.velocity.x *= GROUND_THROW_MOMENTUM_KEEP
 		# Ice: keep full momentum (slippery throw!)
 	else:
-		obj.change_animation("Jump_attack")
+		obj.change_animation("jump_attack")
 		# Air throw: preserve FULL momentum (throw while moving!)
 		# Ranged fantasy: safe option that rewards mobility
 	

@@ -22,9 +22,17 @@ var current_sfx_bus_name: String = SFX_BUS
 var current_music_id: String = ""
 
 func _ready() -> void:
+	# Đợi một frame để đảm bảo AudioServer đã sẵn sàng trên trình duyệt
+	await get_tree().process_frame
 	# Initialize music player
 	music_player = AudioStreamPlayer.new()
 	music_player.name = "MusicPlayer"
+	# --- Sửa: kiểm tra bus tồn tại trước khi gán ---
+	if AudioServer.get_bus_index(MUSIC_BUS) != -1:
+		music_player.bus = MUSIC_BUS
+	else:
+		push_error("Music bus not found, defaulting to Master")
+		music_player.bus = "Master"
 	music_player.bus = MUSIC_BUS
 	add_child(music_player)
 	
@@ -32,7 +40,11 @@ func _ready() -> void:
 	for i in range(max_sfx_players):
 		var player = AudioStreamPlayer.new()
 		player.name = "SFXPlayer_" + str(i)
-		player.bus = SFX_BUS
+		if AudioServer.get_bus_index(SFX_BUS) != -1:
+			player.bus = SFX_BUS
+		else:
+			push_error("SFX bus not found, defaulting to Master")
+			player.bus = "Master"
 		add_child(player)
 		sfx_players.append(player)
 	

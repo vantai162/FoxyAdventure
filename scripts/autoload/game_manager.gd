@@ -23,13 +23,11 @@ var kill_count: int = 0
 
 
 func _ready() -> void:
-	load_checkpoint_data()
 	key_manager.load_key()
 	if(key_manager.KeyDict.size()<=0):
 		key_manager._get_key_dictionary_from_input_map()
-	current_checkpoint_id = ""
+	spawnStartfromSavefile()
 	skin_manager._load_skin_data_from_save()
-	checkpoint_data.clear()
 	
 	#Dùng cho sau này có tính đến đoạn continue hay new game
 	# Load số int trực tiếp từ SaveSystem
@@ -39,6 +37,20 @@ func _ready() -> void:
 	#load_save_data(saved_count)
 	pass
 
+func spawnStartfromSavefile():
+	load_checkpoint_data()
+	if(current_checkpoint_id==""):
+		printerr("Save file is corrupted")
+		return
+	if(load_checkpoint(current_checkpoint_id).has("stage_path")):
+		var scene_to_load=load_checkpoint(current_checkpoint_id)["stage_path"]
+		await get_tree().process_frame
+		await get_tree().change_scene_to_file(scene_to_load)
+		await get_tree().process_frame
+		current_stage=get_tree().current_scene
+		var player_data=load_checkpoint(current_checkpoint_id)["player_state"]
+		respawn_at_checkpoint()
+		
 #change stage by path and target portal name
 func change_stage(stage_path: String, _target_portal_name: String = "") -> void:
 	target_portal_name = _target_portal_name
@@ -113,9 +125,6 @@ func respawn_at_checkpoint() -> void:
 	await fade_to_black()
 	
 	# Delete player after screen is black
-	if player != null:
-		player.queue_free()
-		player = null
 	
 	await get_tree().process_frame
 	
@@ -179,7 +188,11 @@ func spawn_player(spawn_data: Dictionary) -> Player:
 	if player_scene == null:
 		printerr("Player scene not set in GameManager!")
 		return null
-	
+		
+	if player != null:
+		player.queue_free()
+		player = null
+		
 	var new_player = player_scene.instantiate() as Player
 	current_stage.add_child(new_player)
 	
@@ -203,6 +216,9 @@ func spawn_player(spawn_data: Dictionary) -> Player:
 		printerr("Player FSM not initialized!")
 	player = new_player
 	skin_manager.change_to_saved_skin(new_player)
+	if GameManager.current_stage:
+		GameManager.current_stage._setup_camera_bounds()
+		GameManager.current_stage._snap_camera_to_player()
 	return new_player
 
 func request_player_spawn() -> void:

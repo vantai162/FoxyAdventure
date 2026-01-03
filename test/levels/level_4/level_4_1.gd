@@ -51,7 +51,9 @@ func _on_king_crab_trigger_body_entered(body: Node2D) -> void:
 	if body is Player and not king_crab_spawned:
 		var player = GameManager.player
 		can_pause = false
-		player.set_physics_process(false)
+		player.position = Vector2(1126,-167)
+		player.input_locked = true
+		player.velocity = Vector2.ZERO
 		king_crab_spawned = true
 		Dialogic.start(timeline_name_1)
 		Dialogic.timeline_ended.connect(_on_dialog_finished)

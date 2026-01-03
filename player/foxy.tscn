@@ -28,7 +28,7 @@
 [ext_resource type="AudioStream" uid="uid://b8tju1hs1dwa8" path="res://assets/sounds/jump.wav" id="51_a4g31"]
 [ext_resource type="PackedScene" uid="uid://bsqdqcru1xnem" path="res://player/torch/player_torch.tscn" id="53_torch_scene"]
 [ext_resource type="Script" uid="uid://itto4t514erb" path="res://player/stun.gd" id="56_dkaj1"]
-[ext_resource type="Script" uid="uid://co4h0j7dbevid" path="res://player/player_targeting.gd" id="57_targeting"]
+[ext_resource type="Script" path="res://player/player_targeting.gd" id="57_targeting"]
 [ext_resource type="PackedScene" uid="uid://cb0oeg7am8tuj" path="res://player/target_indicator.tscn" id="58_indicator"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_8r8n2"]
@@ -78,7 +78,7 @@ air_slash_spawn_delay = 0.1
 swim_acceleration = 0.36
 blade_projectile_scene = ExtResource("3_blade")
 air_slash_scene = ExtResource("3_6e2ll")
-max_health = 300
+max_health = 5
 metadata/_custom_type_script = "uid://w7xdmsdvf5vd"
 
 [node name="Camera2D" type="Camera2D" parent="."]
