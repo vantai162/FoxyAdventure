@@ -2,6 +2,9 @@ extends Area2D
 class_name BladeContainer
 ## Blade capacity upgrade pickup
 ## Features: floating, spinning blade, pulsing glow, container ring effect
+##
+## COLLISION FIX: Uses body_entered to detect player CharacterBody2D directly
+## Player body is on layer 2, so we mask layer 2
 
 @export_group("Visual")
 @export var float_amplitude: float = 4.0
@@ -17,7 +20,8 @@ var _float_offset: float = 0.0
 var _start_y: float = 0.0
 
 func _ready() -> void:
-	area_entered.connect(_on_area_entered)
+	# Use body_entered for reliable player detection
+	body_entered.connect(_on_body_entered)
 	_start_y = position.y
 	_float_offset = randf() * TAU
 
@@ -42,11 +46,10 @@ func _process(delta: float) -> void:
 		container_ring.scale = Vector2(pulse, pulse)
 		container_ring.modulate.a = 0.3 + sin(_float_offset * 1.8) * 0.1  # Was 0.4 ± 0.2, now 0.3 ± 0.1
 
-func _on_area_entered(area: Area2D) -> void:
-	var parent = area.get_parent()
-	if parent is Player:
+func _on_body_entered(body: Node2D) -> void:
+	if body is Player:
 		# Can't pick up if already at max capacity
-		if not parent.can_upgrade_blade_capacity():
+		if not body.can_upgrade_blade_capacity():
 			return
 		
 		# Collection effect - satisfying but not blinding
@@ -63,7 +66,7 @@ func _on_area_entered(area: Area2D) -> void:
 		# Audio feedback — this is an upgrade, should sound special
 		AudioManager.play_sound("power_up", 12.0)
 		
-		parent.increase_blade_capacity()
+		body.increase_blade_capacity()
 		
 		await tween.finished
 		queue_free()

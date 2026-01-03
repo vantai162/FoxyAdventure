@@ -4,6 +4,13 @@ extends Player_State
 ## 1.0 = full momentum, 0.5 = half speed, 0.0 = full stop
 const GROUND_THROW_MOMENTUM_KEEP: float = 0.6
 
+## Throw anticipation squash/stretch
+## NOTE: Values only, direction preserved at runtime
+const THROW_WINDUP_X: float = 1.1
+const THROW_WINDUP_Y: float = 0.92
+const THROW_RELEASE_X: float = 0.88
+const THROW_RELEASE_Y: float = 1.12
+
 func _enter() -> void:
 	if obj.is_on_floor():
 		obj.change_animation("attack")
@@ -18,11 +25,46 @@ func _enter() -> void:
 		# Ranged fantasy: safe option that rewards mobility
 	
 	timer = obj.throw_duration
+	
+	# Throw release feedback — windup and release squash/stretch
+	_apply_throw_feedback()
+	
 	obj.throw_blade_projectile()
 
 func _exit() -> void:
-	pass
+	# Cleanup scale tween to prevent conflicts
+	_cleanup_scale_tween()
+
 
 func _update(delta: float) -> void:
 	if update_timer(delta):
 		change_state(fsm.previous_state)
+
+
+## Throw windup-release squash/stretch — satisfying ranged feel
+## CRITICAL: Preserve X sign for direction!
+## CRITICAL: Only animate Y to avoid direction race condition!
+func _apply_throw_feedback() -> void:
+	var direction_node = obj.get_node_or_null("Direction")
+	if not direction_node:
+		return
+	
+	var facing = sign(direction_node.scale.x) if direction_node.scale.x != 0 else 1.0
+	var tween = _create_scale_tween()
+	# Quick windup (pull back) - set X immediately, tween Y
+	direction_node.scale.x = facing * THROW_WINDUP_X
+	tween.tween_property(direction_node, "scale:y", THROW_WINDUP_Y, 0.03)
+	# Snap to release (thrust forward)
+	tween.tween_callback(func():
+		if direction_node:
+			var current_facing = sign(direction_node.scale.x) if direction_node.scale.x != 0 else 1.0
+			direction_node.scale.x = current_facing * THROW_RELEASE_X
+	)
+	tween.tween_property(direction_node, "scale:y", THROW_RELEASE_Y, 0.05)
+	# Settle back
+	tween.tween_property(direction_node, "scale:y", 1.0, 0.1).set_ease(Tween.EASE_OUT)
+	tween.tween_callback(func():
+		if direction_node:
+			var current_facing = sign(direction_node.scale.x) if direction_node.scale.x != 0 else 1.0
+			direction_node.scale.x = current_facing * 1.0
+	)

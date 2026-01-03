@@ -314,6 +314,9 @@ collision_mask = 2
 position = Vector2(1502, 223)
 shape = SubResource("RectangleShape2D_dmtgj")
 
+[node name="PlayerSpawn" type="Marker2D" parent="."]
+position = Vector2(-413.595, -272.681)
+
 [connection signal="lever_activated" from="Lever" to="Gate" method="open_gate"]
 [connection signal="lever_deactivated" from="Lever" to="Gate" method="close_gate"]
 [connection signal="body_entered" from="DialogArea" to="." method="_on_dialog_area_body_entered"]

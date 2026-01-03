@@ -35,7 +35,7 @@ color_ramp = SubResource("GradientTexture1D_burn")
 [node name="BurnParticles" type="GPUParticles2D"]
 z_index = 25
 emitting = false
-amount = 32
+amount = 16
 process_material = SubResource("ParticleProcessMaterial_burn")
 texture = SubResource("GradientTexture2D_particle")
 lifetime = 0.5

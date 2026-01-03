@@ -1,10 +1,21 @@
 extends Player_State
 
+## "Light feet" dust effect — communicates dash readiness organically
+## No UI needed: visible dust puffs = dash available, no dust = cooling down
+const DASH_READY_DUST: PackedScene = preload("res://assets/effects/dash_ready_dust.tscn")
+const WALK_DUST: PackedScene = preload("res://assets/effects/walk_dust.tscn")
+
 var waited: float = 0.0
+var dust_timer: float = 0.0
+var dust_interval: float = 0.18  ## Time between dust puffs when dash ready
+var walk_dust_timer: float = 0.0
+var walk_dust_interval: float = 0.25  ## Slightly slower for walk dust animation
 
 func _enter() -> void:
 	super._enter()
 	waited = 0.0
+	dust_timer = 0.0
+	walk_dust_timer = 0.0
 	obj.change_animation("run")
 
 func _update(delta: float):
@@ -21,6 +32,21 @@ func _update(delta: float):
 		if waited > obj.run_idle_wait_time:
 			change_state(fsm.states.idle)
 	else:
+		# "Light feet" visual feedback — dust puffs when dash is available
+		if obj.CoolDown["Dash"] <= 0 and obj.is_on_floor():
+			dust_timer += delta
+			if dust_timer >= dust_interval:
+				dust_timer = 0.0
+				_spawn_foot_dust()
+		
+		# Hand-drawn walk dust — only when dash is ready (light feet = can dash)
+		# This visual communicates "ready to dash" to player
+		if obj.is_on_floor() and obj.CoolDown.get("Dash", 0) <= 0:
+			walk_dust_timer += delta
+			if walk_dust_timer >= walk_dust_interval:
+				walk_dust_timer = 0.0
+				_spawn_walk_dust()
+		
 		if control_dash():
 			return
 		# tăng speed khi nhấn lại
@@ -38,3 +64,27 @@ func _update(delta: float):
 			change_state(fsm.states.wallcling)
 	if obj.is_in_water and obj.is_head_underwater():
 		change_state(fsm.states.swim)
+
+## Spawn subtle dust puff at player's feet — "light feet" = dash ready
+func _spawn_foot_dust() -> void:
+	var dust = DASH_READY_DUST.instantiate()
+	# Feet position: player origin (0,0) is center-ish, feet are at bottom
+	# Collision is 21x30 at (-0.5, -1), so feet are at y ≈ +14
+	dust.global_position = obj.global_position + Vector2(-obj.direction * 4, 14)
+	dust.emitting = true
+	get_tree().current_scene.add_child(dust)
+	# Auto-cleanup after particles finish (with validity check for scene transitions)
+	get_tree().create_timer(0.5).timeout.connect(func():
+		if is_instance_valid(dust):
+			dust.queue_free()
+	)
+
+## Spawn hand-drawn walk dust — using smoke_walk assets
+func _spawn_walk_dust() -> void:
+	var dust = WALK_DUST.instantiate()
+	# Behind player's feet
+	dust.global_position = obj.global_position + Vector2(-obj.direction * 6, 12)
+	# Flip based on direction so dust flows behind
+	dust.flip_h = obj.direction > 0
+	get_tree().current_scene.add_child(dust)
+	# Scene auto-frees after animation (see walk_dust.tscn)

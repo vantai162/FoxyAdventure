@@ -76,6 +76,13 @@ func break_wall() -> void:
 	if dust_effect.has_method("play_effect"):
 		dust_effect.play_effect()
 	
+	# Camera shake for satisfying destruction feel
+	var player = get_tree().get_first_node_in_group("player")
+	if player:
+		var camera = player.get_node_or_null("Camera2D")
+		if camera and camera.has_method("shake"):
+			camera.shake(5.0)
+	
 	if collision_shape:
 		collision_shape.set_deferred("disabled", true)
 	if hitbox:

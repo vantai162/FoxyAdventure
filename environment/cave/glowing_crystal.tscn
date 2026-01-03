@@ -15,7 +15,7 @@ pulse_speed = 0.36
 color = Color(0.3, 1, 0.5, 1)
 energy = 1.2
 texture = ExtResource("2_glow")
-texture_scale = 2.5
+texture_scale = 3.5
 
 [node name="Sparkles" type="GPUParticles2D" parent="."]
 emitting = false

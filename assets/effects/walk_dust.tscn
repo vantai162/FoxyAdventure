@@ -1,0 +1,45 @@
+[gd_scene load_steps=7 format=3 uid="uid://bd7jskn11dvlg"]
+
+[ext_resource type="Texture2D" uid="uid://lx7c3exk2vl1" path="res://assets/foxy/smoke/smoke_walk_1.png" id="1_walk1"]
+[ext_resource type="Texture2D" uid="uid://ikyx0hjrhytx" path="res://assets/foxy/smoke/smoke_walk_2.png" id="2_walk2"]
+[ext_resource type="Texture2D" uid="uid://b3xo3vc5p2imc" path="res://assets/foxy/smoke/smoke_walk_3.png" id="3_walk3"]
+[ext_resource type="Texture2D" uid="uid://b1fnpnp0ctssn" path="res://assets/foxy/smoke/smoke_walk_4.png" id="4_walk4"]
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_walk"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("1_walk1")
+}, {
+"duration": 1.0,
+"texture": ExtResource("2_walk2")
+}, {
+"duration": 1.0,
+"texture": ExtResource("3_walk3")
+}, {
+"duration": 1.0,
+"texture": ExtResource("4_walk4")
+}],
+"loop": false,
+"name": &"puff",
+"speed": 10.0
+}]
+
+[sub_resource type="GDScript" id="GDScript_walk"]
+script/source = "extends AnimatedSprite2D
+## Self-freeing walk dust effect using hand-drawn assets
+
+func _ready() -> void:
+	animation_finished.connect(_on_animation_finished)
+	play(\"puff\")
+
+func _on_animation_finished() -> void:
+	queue_free()
+"
+
+[node name="WalkDust" type="AnimatedSprite2D"]
+z_index = 25
+scale = Vector2(0.7, 0.7)
+sprite_frames = SubResource("SpriteFrames_walk")
+animation = &"puff"
+script = SubResource("GDScript_walk")

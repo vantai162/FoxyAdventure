@@ -119,6 +119,10 @@ func open_gate() -> void:
 		return
 	is_open = true
 	
+	# Gate opening feedback — dust and sound
+	_spawn_gate_dust()
+	AudioManager.play_sound("lever_click", 12.0)  # Mechanical sound
+	
 	# Try animation player first (for custom animations)
 	if has_node("AnimationPlayer"):
 		var anim_name = _get_open_animation_name()
@@ -135,6 +139,10 @@ func close_gate() -> void:
 	if not is_open:
 		return
 	is_open = false
+	
+	# Gate closing feedback — heavier dust
+	_spawn_gate_dust()
+	AudioManager.play_sound("hit_rock_1", 10.0)  # Heavy slam
 	
 	# Try animation player (for custom animations)
 	if has_node("AnimationPlayer"):
@@ -203,3 +211,49 @@ func toggle_gate() -> void:
 		close_gate()
 	else:
 		open_gate()
+
+
+## Spawn dust particles on gate movement — mechanical weight
+func _spawn_gate_dust() -> void:
+	if not gate_body:
+		return
+	
+	var dust = GPUParticles2D.new()
+	dust.amount = 8
+	dust.lifetime = 0.5
+	dust.explosiveness = 0.9
+	dust.one_shot = true
+	dust.z_index = 25
+	
+	var mat = ParticleProcessMaterial.new()
+	mat.emission_shape = ParticleProcessMaterial.EMISSION_SHAPE_BOX
+	mat.emission_box_extents = Vector3(16, 4, 0)
+	mat.direction = Vector3(0, -1, 0)
+	mat.spread = 45.0
+	mat.initial_velocity_min = 15.0
+	mat.initial_velocity_max = 35.0
+	mat.gravity = Vector3(0, 60, 0)
+	mat.scale_min = 0.5
+	mat.scale_max = 1.0
+	mat.color = Color(0.7, 0.65, 0.55, 0.8)  # Dusty stone
+	dust.process_material = mat
+	
+	# 4x4 dust texture
+	var grad = Gradient.new()
+	grad.set_color(0, Color(0.8, 0.75, 0.65, 0.9))
+	grad.set_color(1, Color(0.5, 0.45, 0.4, 0.0))
+	var tex = GradientTexture2D.new()
+	tex.gradient = grad
+	tex.fill = GradientTexture2D.FILL_RADIAL
+	tex.fill_from = Vector2(0.5, 0.5)
+	tex.width = 4
+	tex.height = 4
+	dust.texture = tex
+	
+	dust.global_position = gate_body.global_position
+	get_tree().current_scene.add_child(dust)
+	dust.emitting = true
+	get_tree().create_timer(1.0).timeout.connect(func():
+		if is_instance_valid(dust):
+			dust.queue_free()
+	)

@@ -94,7 +94,7 @@ color = Color(1, 0.55, 0.2, 1)
 energy = 1.2
 shadow_enabled = true
 texture = SubResource("GradientTexture2D_light")
-texture_scale = 0.75
+texture_scale = 1.75
 
 [node name="TorchSparks" type="GPUParticles2D" parent="."]
 position = Vector2(0, -12)

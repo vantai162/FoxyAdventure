@@ -234,6 +234,9 @@ var _settled_count: int = 0
 var _last_active_min: int = 0
 var _last_active_max: int = 0
 
+## Sub-stepping accumulator for FPS-independent physics
+var _physics_accumulator: float = 0.0
+
 ## Water raising state tracking
 var _water_raise_active: bool = false
 var _water_raise_start_heights: Array = []
@@ -686,7 +689,27 @@ func _process(delta:float)->void:
 	# Continuous waterfall ripples (creates "damn that's smooth" effect)
 	_apply_waterfall_ripples(_ambient_wave_time)
 	
-	update_physics(delta)
+	# SUB-STEPPING: Run physics at a fixed timestep regardless of frame rate.
+	# This ensures the spring-mass simulation behaves identically at 6 FPS or 60 FPS.
+	# Accumulate time debt and pay it off in fixed chunks.
+	_physics_accumulator += delta
+	
+	# Fixed timestep: ~60 physics updates per second (matches normal gameplay)
+	const FIXED_DT: float = 0.016667
+	# Safety cap: max 10 sub-steps per frame to prevent spiral of death
+	const MAX_SUBSTEPS: int = 10
+	
+	var substeps_done: int = 0
+	while _physics_accumulator >= FIXED_DT and substeps_done < MAX_SUBSTEPS:
+		_physics_accumulator -= FIXED_DT
+		update_physics(FIXED_DT)
+		substeps_done += 1
+	
+	# If we hit max substeps, drain excess to prevent infinite accumulation
+	# This means under EXTREME lag (< 6 FPS), water runs slower but stays STABLE
+	if _physics_accumulator > FIXED_DT * 3.0:
+		_physics_accumulator = FIXED_DT * 2.0  # Keep some for smooth catchup
+	
 	update_visuals()
 	_update_collision_shape()  # Update collision shape to match water level
 	
@@ -772,19 +795,10 @@ func _initiate_water() -> void:
 
 
 func update_physics(delta: float) -> void:
-	# CRITICAL: Validate delta to prevent catastrophic physics behavior
-	# If delta is NaN, Inf, negative, or absurdly large, skip physics this frame
-	if not is_finite(delta) or delta <= 0.0 or delta > 1.0:
-		push_warning("Water physics: invalid delta %.3f, skipping frame" % delta)
-		return
-	
-	var safe_delta = min(delta, 0.05)  # Cap at 20 FPS worst case
-	
-	# Lag compensation: if actual delta is larger than safe_delta, add extra damping
-	var lag_damping_factor = 1.0
-	if delta > 0.03:  # FPS below 33
-		var lag_severity = (delta - 0.03) / 0.03
-		lag_damping_factor = 1.0 + (lag_severity * lag_severity * 0.5)
+	# With sub-stepping, delta is always a fixed small value (~0.0167)
+	# We only need basic validation, no more lag compensation hacks
+	if not is_finite(delta) or delta <= 0.0 or delta > 0.1:
+		return  # Silent skip for invalid delta
 	
 	# OPTIMIZATION: Track active region to skip settled segments
 	var active_min = segment_count
@@ -812,7 +826,7 @@ func update_physics(delta: float) -> void:
 		# Critical displacement: emergency stabilization
 		if abs(displacement) > 200.0:
 			var emergency_correction = -sign(displacement) * abs(displacement) * 0.5
-			seg["height"] += emergency_correction * safe_delta
+			seg["height"] += emergency_correction * delta
 			seg["velocity"] *= 0.5
 			active_min = min(active_min, i)
 			active_max = max(active_max, i)
@@ -833,14 +847,15 @@ func update_physics(delta: float) -> void:
 		active_max = max(active_max, i)
 		
 		# Physics integration (only for active segments)
-		var linear_damping_force = wave_energy_loss * lag_damping_factor * velocity
+		# With sub-stepping, delta is always fixed so no lag compensation needed
+		var linear_damping_force = wave_energy_loss * velocity
 		var quad_coeff = quadratic_damping if quadratic_damping != null else 0.15
 		var quadratic_damping_force = quad_coeff * velocity * abs(velocity)
 		var spring_force = -water_restoring_force * displacement
 		var acceleration = spring_force - linear_damping_force - quadratic_damping_force
 		
 		# Velocity integration
-		seg["velocity"] += acceleration * safe_delta
+		seg["velocity"] += acceleration * delta
 		
 		# REST-ZONE DAMPING: Kill micro-oscillations near rest
 		if abs(displacement) < 1.0 and abs(seg["velocity"]) < 12.0:
@@ -851,7 +866,7 @@ func update_physics(delta: float) -> void:
 		seg["velocity"] = clamp(seg["velocity"], -max_velocity, max_velocity)
 		
 		# Position integration
-		seg["height"] += seg["velocity"] * safe_delta
+		seg["height"] += seg["velocity"] * delta
 	
 	# Update active region tracking
 	# CRITICAL FIX: If no segments were active this frame, preserve previous region
@@ -867,11 +882,8 @@ func update_physics(delta: float) -> void:
 		return
 	
 	# Wave propagation (only in active region)
-	var actual_spread_updates = wave_spread_updates
-	if delta > 0.025:
-		actual_spread_updates = max(4, wave_spread_updates / 2)
-	
-	for updates in range(actual_spread_updates):
+	# With sub-stepping, we always use full wave_spread_updates
+	for updates in range(wave_spread_updates):
 		for i in range(max(1, active_min), min(segment_count - 1, active_max + 1)):
 			var seg = segment_data[i]
 			var rest = segment_rest_height[i]
@@ -901,7 +913,7 @@ func update_physics(delta: float) -> void:
 						wave_multiplier *= 0.3
 					
 					var wave_force = height_diff * wave_strength * wave_multiplier
-					left_seg["velocity"] += wave_force * safe_delta
+					left_seg["velocity"] += wave_force * delta
 					
 					# Wake up left neighbor if significant force applied
 					if abs(wave_force) > 5.0 and _settled_segments[i - 1] == 1:
@@ -927,7 +939,7 @@ func update_physics(delta: float) -> void:
 						wave_multiplier_right *= 0.3
 					
 					var wave_force = height_diff_right * wave_strength * wave_multiplier_right
-					right_seg["velocity"] += wave_force * safe_delta
+					right_seg["velocity"] += wave_force * delta
 					
 					# Wake up right neighbor if significant force applied
 					if abs(wave_force) > 5.0 and _settled_segments[i + 1] == 1:
@@ -939,7 +951,7 @@ func update_physics(delta: float) -> void:
 	for edge_idx in [0, 1, segment_count - 2, segment_count - 1]:
 		var seg = segment_data[edge_idx]
 		var displacement_from_rest = segment_rest_height[edge_idx] - seg["height"]
-		var correction_force = displacement_from_rest * edge_convergence_strength * safe_delta
+		var correction_force = displacement_from_rest * edge_convergence_strength * delta
 		seg["velocity"] += correction_force
 		seg["velocity"] = clamp(seg["velocity"], -20.0, 20.0)
 
@@ -1196,6 +1208,15 @@ func _print_water_diagnostics() -> void:
 	if Engine.is_editor_hint():
 		return
 	
+	# === FPS & DELTA DIAGNOSTICS ===
+	# This is the critical info to understand if lag is causing instability
+	var current_fps = Engine.get_frames_per_second()
+	var frame_delta = get_process_delta_time()  # Actual frame delta (not fixed physics)
+	
+	# Calculate how many substeps would run this frame
+	var potential_substeps = int((_physics_accumulator + frame_delta) / 0.016667)
+	var capped_substeps = mini(potential_substeps, 10)  # Capped at MAX_SUBSTEPS
+	
 	# OPTIMIZATION: Only calculate metrics if diagnostics are actually enabled
 	var max_displacement: float = 0.0
 	var max_velocity: float = 0.0
@@ -1233,8 +1254,11 @@ func _print_water_diagnostics() -> void:
 			if _settled_segments[i] == 1:
 				_settled_count += 1
 	
-	print("[WATER AUDIT] settled=%d/%d | max_disp=%.1f (seg %d) | max_vel=%.1f (seg %d) | avg_energy=%.2f | runaways=%d" % 
-		[_settled_count, segment_count, max_displacement, max_disp_idx, max_velocity, max_vel_idx, avg_energy, runaway_count])
+	# === ENHANCED DIAGNOSTIC OUTPUT ===
+	var fps_warning = " ⚠️LAG!" if current_fps < 30 else ""
+	var substep_info = " substeps=%d/%d" % [capped_substeps, potential_substeps] if potential_substeps > 1 else ""
+	print("[WATER AUDIT] FPS=%d%s%s | settled=%d/%d | max_disp=%.1f | max_vel=%.1f | avg_energy=%.2f | runaways=%d" % 
+		[current_fps, fps_warning, substep_info, _settled_count, segment_count, max_displacement, max_velocity, avg_energy, runaway_count])
 	
 	if runaway_count > 0:
 		print("  ⚠️ WARNING: %d segments exhibiting runaway behavior!" % runaway_count)

@@ -1,5 +1,12 @@
 extends Player_State
 
+## Attack anticipation — quick windup squash for punch
+## NOTE: Values only, direction preserved at runtime
+const ATTACK_WINDUP_X: float = 1.15  ## Wind back (wider)
+const ATTACK_WINDUP_Y: float = 0.9
+const ATTACK_SWING_X: float = 0.9  ## Swing forward (narrower)
+const ATTACK_SWING_Y: float = 1.1
+
 var air_slash_timer: float = 0.0
 var air_slash_spawned: bool = false
 var original_gravity: float = 0.0
@@ -24,6 +31,9 @@ func _enter() -> void:
 
 	timer = obj.attack_duration
 	
+	# Attack anticipation feedback — quick windup-swing
+	_apply_attack_anticipation()
+	
 	# Start attack cooldown
 	obj.start_attack_cooldown()
 
@@ -35,6 +45,35 @@ func _enter() -> void:
 	air_slash_spawned = false
 
 
+## Attack windup-swing squash/stretch — anticipation + follow-through
+## CRITICAL: Preserve X sign for direction!
+## CRITICAL: Only animate Y to avoid direction race condition!
+func _apply_attack_anticipation() -> void:
+	var direction_node = obj.get_node_or_null("Direction")
+	if not direction_node:
+		return
+	
+	var facing = sign(direction_node.scale.x) if direction_node.scale.x != 0 else 1.0
+	var tween = _create_scale_tween()
+	# Quick windup (pull back) - set X immediately, tween Y
+	direction_node.scale.x = facing * ATTACK_WINDUP_X
+	tween.tween_property(direction_node, "scale:y", ATTACK_WINDUP_Y, 0.04)
+	# Snap to swing (thrust forward)
+	tween.tween_callback(func():
+		if direction_node:
+			var current_facing = sign(direction_node.scale.x) if direction_node.scale.x != 0 else 1.0
+			direction_node.scale.x = current_facing * ATTACK_SWING_X
+	)
+	tween.tween_property(direction_node, "scale:y", ATTACK_SWING_Y, 0.06)
+	# Settle back to normal
+	tween.tween_property(direction_node, "scale:y", 1.0, 0.12).set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_ELASTIC)
+	tween.tween_callback(func():
+		if direction_node:
+			var current_facing = sign(direction_node.scale.x) if direction_node.scale.x != 0 else 1.0
+			direction_node.scale.x = current_facing * 1.0
+	)
+
+
 func _exit() -> void:
 	# Disable collision shape of hit area
 	obj.get_node("Direction/HitArea2D/CollisionShape2D").disabled = true
@@ -42,6 +81,9 @@ func _exit() -> void:
 	# Restore normal gravity if this was an air attack
 	if is_air_attack:
 		obj.gravity = original_gravity
+	
+	# Cleanup scale tween to prevent conflicts
+	_cleanup_scale_tween()
 
 
 func _update(delta: float) -> void:

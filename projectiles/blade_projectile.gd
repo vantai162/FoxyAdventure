@@ -599,8 +599,9 @@ func _start_loyal_pulse() -> void:
 		loyal_pulse_tween.kill()
 	
 	loyal_pulse_tween = create_tween().set_loops()
-	loyal_pulse_tween.tween_property(loyal_glow, "energy", 0.9, 0.6).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
-	loyal_pulse_tween.tween_property(loyal_glow, "energy", 0.5, 0.6).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+	## Doctrine-compliant glow: 0.4-0.6 energy range (was 0.5-0.9 — flashbang territory)
+	loyal_pulse_tween.tween_property(loyal_glow, "energy", 0.55, 0.6).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+	loyal_pulse_tween.tween_property(loyal_glow, "energy", 0.35, 0.6).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
 
 ## Remove loyal visual when blade is no longer loyal (edge case)
 func _remove_loyal_visual() -> void:
