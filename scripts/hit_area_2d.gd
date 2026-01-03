@@ -9,7 +9,7 @@ class_name HitArea2D
 
 ## Game Feel — hitstop creates weight and impact
 @export_group("Hit Feedback")
-@export var hitstop_duration: float = 0.04  ## Brief freeze on hit (frames of impact)
+@export var hitstop_duration: float = 0.06  ## Brief freeze on hit (60ms = clearly perceivable punch)
 @export var camera_shake_amount: float = 4.0  ## Screen shake on hit (0 = disabled)
 @export var enable_hitstop: bool = true  ## Toggle for different attack types
 

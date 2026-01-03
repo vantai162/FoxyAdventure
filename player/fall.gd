@@ -71,12 +71,21 @@ func _spawn_landing_dust() -> void:
 	)
 
 ## Squash and stretch — horizontal squash on landing for weight
-## CRITICAL: Preserve X sign for direction!
+## CRITICAL: Only animate scale.y to avoid direction conflicts!
+## The X squash is instant, then we animate Y back to normal
 func _apply_landing_squash() -> void:
 	var direction_node = obj.get_node_or_null("Direction")
 	if not direction_node:
 		return
+	# Instant squash: widen X, shorten Y (preserving facing)
 	var facing = sign(direction_node.scale.x) if direction_node.scale.x != 0 else 1.0
 	direction_node.scale = Vector2(facing * LANDING_SQUASH_X, LANDING_SQUASH_Y)
+	# Animate ONLY Y back to normal — let X be controlled by direction system
 	var tween = _create_scale_tween()
-	tween.tween_property(direction_node, "scale", Vector2(facing * 1.0, 1.0), 0.12).set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_BACK)
+	tween.tween_property(direction_node, "scale:y", 1.0, 0.12).set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_BACK)
+	# Snap X back to normal magnitude after a tiny delay (direction sign preserved by system)
+	tween.tween_callback(func():
+		if direction_node:
+			var current_facing = sign(direction_node.scale.x) if direction_node.scale.x != 0 else 1.0
+			direction_node.scale.x = current_facing * 1.0
+	)

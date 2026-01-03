@@ -47,6 +47,7 @@ func _enter() -> void:
 
 ## Attack windup-swing squash/stretch — anticipation + follow-through
 ## CRITICAL: Preserve X sign for direction!
+## CRITICAL: Only animate Y to avoid direction race condition!
 func _apply_attack_anticipation() -> void:
 	var direction_node = obj.get_node_or_null("Direction")
 	if not direction_node:
@@ -54,12 +55,23 @@ func _apply_attack_anticipation() -> void:
 	
 	var facing = sign(direction_node.scale.x) if direction_node.scale.x != 0 else 1.0
 	var tween = _create_scale_tween()
-	# Quick windup (pull back)
-	tween.tween_property(direction_node, "scale", Vector2(facing * ATTACK_WINDUP_X, ATTACK_WINDUP_Y), 0.04)
+	# Quick windup (pull back) - set X immediately, tween Y
+	direction_node.scale.x = facing * ATTACK_WINDUP_X
+	tween.tween_property(direction_node, "scale:y", ATTACK_WINDUP_Y, 0.04)
 	# Snap to swing (thrust forward)
-	tween.tween_property(direction_node, "scale", Vector2(facing * ATTACK_SWING_X, ATTACK_SWING_Y), 0.06)
+	tween.tween_callback(func():
+		if direction_node:
+			var current_facing = sign(direction_node.scale.x) if direction_node.scale.x != 0 else 1.0
+			direction_node.scale.x = current_facing * ATTACK_SWING_X
+	)
+	tween.tween_property(direction_node, "scale:y", ATTACK_SWING_Y, 0.06)
 	# Settle back to normal
-	tween.tween_property(direction_node, "scale", Vector2(facing * 1.0, 1.0), 0.12).set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_ELASTIC)
+	tween.tween_property(direction_node, "scale:y", 1.0, 0.12).set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_ELASTIC)
+	tween.tween_callback(func():
+		if direction_node:
+			var current_facing = sign(direction_node.scale.x) if direction_node.scale.x != 0 else 1.0
+			direction_node.scale.x = current_facing * 1.0
+	)
 
 
 func _exit() -> void:

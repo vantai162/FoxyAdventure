@@ -5,7 +5,7 @@ class_name EnemyState
 const HIT_PARTICLES_SCENE: PackedScene = preload("res://assets/effects/dust_puff.tscn")
 
 ## Hitstop duration for enemy hits — brief freeze for impact weight
-const ENEMY_HITSTOP: float = 0.025
+const ENEMY_HITSTOP: float = 0.04
 
 func take_damage(_damage_dir, damage: int) -> void:
 	obj.velocity.x = _damage_dir.x * obj.knockback_force

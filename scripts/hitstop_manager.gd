@@ -7,17 +7,12 @@ extends Node
 ##
 ## SOLUTION: Single mutex-like controller. Only one hitstop can be active.
 ## New hitstop requests during an active hitstop are ignored (first wins).
+##
+## CRITICAL FIX: Timer nodes do NOT work when Engine.time_scale = 0 because their
+## delta becomes 0. We use SceneTree.create_timer() with ignore_time_scale=true instead.
 
 var is_hitstop_active: bool = false
-var hitstop_timer: Timer = null
-
-func _ready() -> void:
-	# Create a timer that processes even when time_scale = 0
-	hitstop_timer = Timer.new()
-	hitstop_timer.one_shot = true
-	hitstop_timer.process_callback = Timer.TIMER_PROCESS_PHYSICS
-	hitstop_timer.timeout.connect(_on_hitstop_end)
-	add_child(hitstop_timer)
+var active_timer: SceneTreeTimer = null
 
 
 ## Request a hitstop. If one is already active, this request is IGNORED (no stacking).
@@ -32,9 +27,10 @@ func request_hitstop(duration: float) -> bool:
 	is_hitstop_active = true
 	Engine.time_scale = 0.0
 	
-	# Use process_always to tick even with time_scale = 0
-	hitstop_timer.wait_time = duration
-	hitstop_timer.start()
+	# CRITICAL: Use SceneTreeTimer with ignore_time_scale=true
+	# Signature: create_timer(time_sec, process_always, process_in_physics, ignore_time_scale)
+	active_timer = get_tree().create_timer(duration, true, false, true)
+	active_timer.timeout.connect(_on_hitstop_end)
 	
 	return true
 
@@ -42,11 +38,15 @@ func request_hitstop(duration: float) -> bool:
 func _on_hitstop_end() -> void:
 	Engine.time_scale = 1.0
 	is_hitstop_active = false
+	active_timer = null
 
 
 ## Force end hitstop (for scene transitions, pause menu, etc.)
 func cancel_hitstop() -> void:
 	if is_hitstop_active:
-		hitstop_timer.stop()
+		# SceneTreeTimer can't be stopped, but we can disconnect and reset immediately
+		if active_timer and active_timer.timeout.is_connected(_on_hitstop_end):
+			active_timer.timeout.disconnect(_on_hitstop_end)
 		Engine.time_scale = 1.0
 		is_hitstop_active = false
+		active_timer = null

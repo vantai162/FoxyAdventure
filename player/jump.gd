@@ -84,17 +84,13 @@ func _spawn_jump_dust() -> void:
 	get_tree().current_scene.add_child(smoke)
 
 ## Spawn dust when pushing off wall — directional puff
-## PHYSICS: Smoke comes FROM the wall, shooting outward
-## The jump_smoke asset shoots UP by default, so we ROTATE it to shoot horizontally
+## Smoke spawns AT the wall and shoots AWAY from it (toward player's jump direction)
 func _spawn_wall_jump_dust() -> void:
-	# Wall is in the OPPOSITE direction of where player is now facing
-	# Player jumped RIGHT (direction=1) → wall was LEFT
-	# Player jumped LEFT (direction=-1) → wall was RIGHT
-	var wall_side = -obj.direction  # -1 if wall was left, +1 if wall was right
+	# Player jumped in obj.direction, wall is behind them
 	
-	# Particle dust at wall contact
+	# Particle dust at wall (behind player)
 	var dust = JUMP_DUST.instantiate()
-	dust.global_position = obj.global_position + Vector2(wall_side * 12, 0)
+	dust.global_position = obj.global_position + Vector2(-obj.direction * 12, 0)
 	dust.emitting = true
 	get_tree().current_scene.add_child(dust)
 	get_tree().create_timer(0.6).timeout.connect(func():
@@ -102,15 +98,14 @@ func _spawn_wall_jump_dust() -> void:
 			dust.queue_free()
 	)
 	
-	# Hand-drawn smoke FROM the wall, shooting AWAY from wall (toward player direction)
-	# Spawn at wall position, not player position
+	# Smoke at wall, shooting AWAY from wall (in player's jump direction)
 	var smoke = SMOKE_PUFF.instantiate()
-	smoke.global_position = obj.global_position + Vector2(wall_side * 14, 0)
+	smoke.global_position = obj.global_position + Vector2(-obj.direction * 14, 0)
 	smoke.scale = Vector2(0.6, 0.6)
-	# Rotate smoke to shoot horizontally AWAY from wall:
-	# - Wall on LEFT (wall_side=-1): smoke shoots RIGHT = rotate +90°
-	# - Wall on RIGHT (wall_side=+1): smoke shoots LEFT = rotate -90°
-	smoke.rotation_degrees = 90.0 * wall_side
+	# Asset shoots UP. Rotate to shoot horizontally AWAY from wall:
+	# direction=1 (jumped right, wall on left): rotate +90° to shoot RIGHT
+	# direction=-1 (jumped left, wall on right): rotate -90° to shoot LEFT
+	smoke.rotation_degrees = 90.0 * obj.direction
 	get_tree().current_scene.add_child(smoke)
 
 ## Squash and stretch — vertical stretch on jump for springy feel
@@ -119,8 +114,14 @@ func _apply_jump_stretch() -> void:
 	var direction_node = obj.get_node_or_null("Direction")
 	if not direction_node:
 		return
-	# Preserve facing direction while applying squash/stretch
+	# Instant stretch (preserving facing)
 	var facing = sign(direction_node.scale.x) if direction_node.scale.x != 0 else 1.0
 	direction_node.scale = Vector2(facing * JUMP_SQUASH_X, JUMP_STRETCH_Y)
+	# Animate ONLY Y — let direction system handle X
 	var tween = _create_scale_tween()
-	tween.tween_property(direction_node, "scale", Vector2(facing * 1.0, 1.0), 0.15).set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_ELASTIC)
+	tween.tween_property(direction_node, "scale:y", 1.0, 0.15).set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_ELASTIC)
+	tween.tween_callback(func():
+		if direction_node:
+			var current_facing = sign(direction_node.scale.x) if direction_node.scale.x != 0 else 1.0
+			direction_node.scale.x = current_facing * 1.0
+	)

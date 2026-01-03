@@ -43,6 +43,7 @@ func _update(delta: float) -> void:
 
 ## Throw windup-release squash/stretch — satisfying ranged feel
 ## CRITICAL: Preserve X sign for direction!
+## CRITICAL: Only animate Y to avoid direction race condition!
 func _apply_throw_feedback() -> void:
 	var direction_node = obj.get_node_or_null("Direction")
 	if not direction_node:
@@ -50,9 +51,20 @@ func _apply_throw_feedback() -> void:
 	
 	var facing = sign(direction_node.scale.x) if direction_node.scale.x != 0 else 1.0
 	var tween = _create_scale_tween()
-	# Quick windup (pull back)
-	tween.tween_property(direction_node, "scale", Vector2(facing * THROW_WINDUP_X, THROW_WINDUP_Y), 0.03)
+	# Quick windup (pull back) - set X immediately, tween Y
+	direction_node.scale.x = facing * THROW_WINDUP_X
+	tween.tween_property(direction_node, "scale:y", THROW_WINDUP_Y, 0.03)
 	# Snap to release (thrust forward)
-	tween.tween_property(direction_node, "scale", Vector2(facing * THROW_RELEASE_X, THROW_RELEASE_Y), 0.05)
+	tween.tween_callback(func():
+		if direction_node:
+			var current_facing = sign(direction_node.scale.x) if direction_node.scale.x != 0 else 1.0
+			direction_node.scale.x = current_facing * THROW_RELEASE_X
+	)
+	tween.tween_property(direction_node, "scale:y", THROW_RELEASE_Y, 0.05)
 	# Settle back
-	tween.tween_property(direction_node, "scale", Vector2(facing * 1.0, 1.0), 0.1).set_ease(Tween.EASE_OUT)
+	tween.tween_property(direction_node, "scale:y", 1.0, 0.1).set_ease(Tween.EASE_OUT)
+	tween.tween_callback(func():
+		if direction_node:
+			var current_facing = sign(direction_node.scale.x) if direction_node.scale.x != 0 else 1.0
+			direction_node.scale.x = current_facing * 1.0
+	)

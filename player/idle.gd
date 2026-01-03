@@ -57,7 +57,7 @@ func _start_breathing() -> void:
 
 
 ## Fidget when idle too long — fox is alive, not a statue
-## CRITICAL: Use scale:y only or preserve X sign for direction!
+## DRAMATIC squash/stretch to be clearly visible
 func _do_fidget() -> void:
 	var direction_node = obj.get_node_or_null("Direction")
 	if not direction_node:
@@ -67,11 +67,15 @@ func _do_fidget() -> void:
 	if breathing_tween and breathing_tween.is_valid():
 		breathing_tween.pause()
 	
+	# Preserve facing direction
+	var facing = sign(direction_node.scale.x) if direction_node.scale.x != 0 else 1.0
+	
 	var fidget_tween = create_tween()
-	# Quick squash (looking around) - only animate Y to preserve direction
-	fidget_tween.tween_property(direction_node, "scale:y", 0.95, 0.1)
-	fidget_tween.tween_property(direction_node, "scale:y", 1.05, 0.1)
-	fidget_tween.tween_property(direction_node, "scale:y", 1.0, 0.15).set_ease(Tween.EASE_OUT)
+	# DRAMATIC anticipation squash (20% compression) → stretch up (15%) → settle
+	# This is a "look around" gesture that's actually VISIBLE
+	fidget_tween.tween_property(direction_node, "scale", Vector2(facing * 1.15, 0.80), 0.12).set_ease(Tween.EASE_OUT)
+	fidget_tween.tween_property(direction_node, "scale", Vector2(facing * 0.90, 1.15), 0.15).set_ease(Tween.EASE_OUT)
+	fidget_tween.tween_property(direction_node, "scale", Vector2(facing * 1.0, 1.0), 0.2).set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_ELASTIC)
 	fidget_tween.tween_callback(func():
 		if breathing_tween and breathing_tween.is_valid():
 			breathing_tween.play()

@@ -39,8 +39,9 @@ func _update(delta: float):
 				dust_timer = 0.0
 				_spawn_foot_dust()
 		
-		# Hand-drawn walk dust — always when running on floor
-		if obj.is_on_floor():
+		# Hand-drawn walk dust — only when dash is ready (light feet = can dash)
+		# This visual communicates "ready to dash" to player
+		if obj.is_on_floor() and obj.CoolDown.get("Dash", 0) <= 0:
 			walk_dust_timer += delta
 			if walk_dust_timer >= walk_dust_interval:
 				walk_dust_timer = 0.0
