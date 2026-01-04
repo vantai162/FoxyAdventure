@@ -53,6 +53,10 @@ func _ready():
 	area_entered.connect(_on_area_entered)
 
 func _physics_process(delta: float):
+	# Hitstop: freeze in place when hit lands
+	if HitstopManager.is_frozen(self):
+		return
+	
 	# Move projectile
 	position += velocity * delta
 	

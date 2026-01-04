@@ -12,7 +12,7 @@ extends EnemyState
 ##   - "claw_recover"  : Getting back up / recovering (loop: false)
 
 # Boss poise handled by stun_immune flag — use super for proper hit feedback
-func take_damage(_damage_dir, damage: int) -> void:
+func take_damage(_damage_dir: Vector2, damage: int) -> void:
 	super.take_damage(_damage_dir, damage)
 
 

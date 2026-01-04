@@ -42,6 +42,7 @@ var cached_water_node: water = null
 
 ## Visual feedback state
 var _invincibility_tween: Tween = null
+var _hurt_flash_tween: Tween = null  ## Prevents tween stacking on rapid hits
 
 signal health_changed
 
@@ -132,18 +133,17 @@ func _update_laugh(delta: float) -> void:
 
 ## Override take_damage to implement POISE system + proper visual feedback
 ## Boss takes damage but is NOT knocked back or interrupted
-## MUST match King Crab's pattern for consistency!
 func take_damage(damage: int) -> void:
 	super.take_damage(damage)  # Handles health -= damage AND plays hurt sound
 	health_changed.emit()
 	
-	# Visual feedback: quick red flash without state change (matches King Crab)
+	# Visual feedback: quick red flash (kill previous tween to prevent stacking)
 	if animated_sprite:
-		var tween = create_tween()
-		tween.tween_property(animated_sprite, "modulate", Color(1.5, 0.5, 0.5, 1.0), 0.05)
-		tween.tween_property(animated_sprite, "modulate", Color.WHITE, 0.15)
-	
-	# NOTE: Sound already played by super.take_damage() via BaseCharacter
+		if _hurt_flash_tween and _hurt_flash_tween.is_valid():
+			_hurt_flash_tween.kill()
+		_hurt_flash_tween = create_tween()
+		_hurt_flash_tween.tween_property(animated_sprite, "modulate", Color(1.5, 0.5, 0.5, 1.0), 0.05)
+		_hurt_flash_tween.tween_property(animated_sprite, "modulate", Color.WHITE, 0.15)
 	
 	# Phase transition at 50% health
 	if current_phase == 1 and health <= max_health / 2:
@@ -157,16 +157,15 @@ func take_damage(damage: int) -> void:
 	if health <= 0:
 		die()
 
+
 func _enter_phase_2() -> void:
 	current_phase = 2
-	# Use phase transition state if available
 	if fsm.states.has("phasetransition"):
 		fsm.change_state(fsm.states.phasetransition)
-	else:
-		print("Warlord Turtle enters Phase 2!")
-		
-func become_vulnerable():
-	if fsm.current_state != fsm.states.vulnerable:
+
+
+func become_vulnerable() -> void:
+	if fsm.states.has("vulnerable") and fsm.current_state != fsm.states.vulnerable:
 		fsm.change_state(fsm.states.vulnerable)
 
 func die() -> void:

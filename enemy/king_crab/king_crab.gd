@@ -33,15 +33,18 @@ extends EnemyCharacter
 @export var dive_land_shake: float = 15.0
 
 @export_group("Claw Attack")
-@export var claw_windup_time: float = 0.4
-@export var claw_throw_time: float = 0.2
-@export var claw_catch_time: float = 0.2
-@export var claw_recoil_time: float = 0.8  ## Extended from 0.5 - gives player breathing room after dodging
-@export var claw_recovery_time: float = 0.6  ## Extended from 0.4 - punish window for skilled players
-@export var claw_speed: float = 600.0
-@export var claw_travel_distance: float = 800.0
-@export var claw_return_threshold: float = 50.0
-@export var claw_wrap_offset_ratio: float = 0.9
+@export var claw_windup_time: float = 0.5  ## Slightly longer windup - more readable
+@export var claw_throw_time: float = 0.15  ## Snappier throw
+@export var claw_catch_time: float = 0.25  ## Catch animation
+@export var claw_recovery_time: float = 0.4  ## Short recovery - boss stays dangerous
+@export var claw_speed: float = 500.0  ## Slightly slower - more trackable
+@export var claw_travel_distance: float = 600.0  ## Shorter distance - tighter arena control
+@export var claw_return_threshold: float = 60.0
+@export var claw_tracking_speed: float = 200.0  ## NEW: Vertical tracking toward player
+@export var claw_tracking_range: float = 120.0  ## NEW: Max vertical deviation
+@export var claw_return_height_offset: float = 64.0  ## NEW: Returns at different height
+@export var claw_catch_shake: float = 8.0  ## NEW: Camera shake on catch
+@export var claw_scale_max: float = 1.4  ## NEW: Claw grows during flight
 
 @export_group("Roll Bounce")
 @export var roll_windup_time: float = 0.4
@@ -82,6 +85,7 @@ extends EnemyCharacter
 
 var current_phase: int = 1
 var last_attack: String = ""  ## Prevents repeating same attack twice
+var _hurt_flash_tween: Tween = null  ## Prevents tween stacking on rapid hits
 
 # Factories (for spawning projectiles)
 @onready var coconut_factory = $Direction/CoconutFactory if has_node("Direction/CoconutFactory") else null
@@ -107,24 +111,26 @@ func take_damage(damage: int) -> void:
 	super.take_damage(damage)
 	health_changed.emit()
 	
-	# Visual feedback: quick red flash without state change
+	# Visual feedback: quick red flash (kill previous tween to prevent stacking)
 	if animated_sprite:
-		var tween = create_tween()
-		tween.tween_property(animated_sprite, "modulate", Color(1.5, 0.5, 0.5, 1.0), 0.05)
-		tween.tween_property(animated_sprite, "modulate", Color.WHITE, 0.15)
+		if _hurt_flash_tween and _hurt_flash_tween.is_valid():
+			_hurt_flash_tween.kill()
+		_hurt_flash_tween = create_tween()
+		_hurt_flash_tween.tween_property(animated_sprite, "modulate", Color(1.5, 0.5, 0.5, 1.0), 0.05)
+		_hurt_flash_tween.tween_property(animated_sprite, "modulate", Color.WHITE, 0.15)
 	
 	# Phase transition check
 	if current_phase == 1 and health <= max_health * phase_2_threshold:
 		_enter_phase_2()
 	
-	# CRITICAL: Death check — with stun_immune, hurt state is skipped, so check here!
-	if health <= 0:
+	# Death check — with stun_immune, hurt state is skipped
+	if health <= 0 and fsm.states.has("dead"):
 		fsm.change_state(fsm.states.dead)
+
 
 func _enter_phase_2() -> void:
 	current_phase = 2
 	movement_speed *= phase_2_speed_multiplier
-	print("King Crab enters Phase 2!")
 
 # Tree climbing support
 func find_nearest_tree() -> Node2D:
