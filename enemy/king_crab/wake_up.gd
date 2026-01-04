@@ -28,11 +28,17 @@ func _on_animation_finished() -> void:
 		var elapsed = 0.0
 
 		while elapsed < duration:
+			# GUARD: Check we're still in this state (boss might die during intro)
+			if fsm.current_state != self or not is_instance_valid(obj):
+				return
 			if cam and cam.has_method("shake_tsunami"):
 				cam.shake_tsunami(20.0, 0.2)  # rung ngắn mỗi lần
 			await get_tree().create_timer(interval).timeout
 			elapsed += interval
-			
+		
+		# GUARD: Final check before state transition
+		if fsm.current_state != self or not is_instance_valid(obj):
+			return
 		player.input_locked = false
 		AudioManager.play_music("theme_1",15.0,0)
 		change_state(fsm.states.idle)

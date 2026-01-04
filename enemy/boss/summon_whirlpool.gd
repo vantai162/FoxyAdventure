@@ -68,9 +68,10 @@ func _summon_whirlpools() -> void:
 			spawn_positions.append(spawn_pos)
 			_spawn_whirlpool(spawn_pos)
 	
-	# Wait for animation, then return to idle
+	# Wait for animation, then return to idle (guarded against state change)
 	await get_tree().create_timer(1.0).timeout
-	change_state(fsm.states.idle)
+	if fsm.current_state == self and is_instance_valid(obj):
+		change_state(fsm.states.idle)
 
 func _spawn_whirlpool(position: Vector2) -> void:
 	if not obj.whirlpool_scene:
@@ -78,3 +79,9 @@ func _spawn_whirlpool(position: Vector2) -> void:
 	var whirlpool = obj.whirlpool_scene.instantiate()
 	whirlpool.global_position = position
 	get_tree().current_scene.add_child(whirlpool)
+
+
+func _exit() -> void:
+	# Cleanup handled by FSM — nothing to do here
+	# The await callback checks fsm.current_state to guard against race conditions
+	pass

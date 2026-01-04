@@ -2,7 +2,9 @@ extends EnemyState
 
 
 func _enter():
-
+	# Reset rotation in case crab died while climbing
+	obj.get_node("Direction").rotation_degrees = 0.0
+	
 	obj.change_animation("dead")
 	GameManager.add_kill()
 	timer = 1.0

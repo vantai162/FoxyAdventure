@@ -118,7 +118,7 @@ func can_use_water_action() -> bool:
 	var current_time = Time.get_ticks_msec() / 1000.0
 	var time_since_last = current_time - last_water_action_time
 	return time_since_last >= water_action_cooldown
-	
+
 func _process(delta):
 	if health >= 2:
 		_update_laugh(delta)

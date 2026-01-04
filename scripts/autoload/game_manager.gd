@@ -56,6 +56,9 @@ func spawnStartfromSavefile():
 func change_stage(stage_path: String, _target_portal_name: String = "") -> void:
 	target_portal_name = _target_portal_name
 	
+	# Cancel any active hitstop freezes before scene change
+	HitstopManager.cancel_all_freezes()
+	
 	await fade_to_black()
 	
 	if is_instance_valid(player):

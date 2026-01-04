@@ -32,9 +32,17 @@ func _perform_water_action() -> void:
 	
 	obj.last_water_action_time = Time.get_ticks_msec() / 1000.0
 	
-	# Wait for animation + water transition to complete
+	# Wait for animation + water transition to complete (guarded against state change)
 	await get_tree().create_timer(obj.water_raise_duration).timeout
+	if fsm.current_state != self or not is_instance_valid(obj):
+		return
 	if fsm.states.has("summonwhirlpool"):
 		change_state(fsm.states.summonwhirlpool)
 	else:
 		change_state(fsm.states.idle)
+
+
+func _exit() -> void:
+	# Cleanup handled by FSM — nothing to do here
+	# The await callback checks fsm.current_state to guard against race conditions
+	pass

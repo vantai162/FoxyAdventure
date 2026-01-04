@@ -1,12 +1,24 @@
-[gd_scene load_steps=5 format=3 uid="uid://p5etops51kvs"]
+[gd_scene load_steps=8 format=3 uid="uid://p5etops51kvs"]
 
 [ext_resource type="Script" uid="uid://cns88shw3kv2l" path="res://enemy/king_crab/projectiles/shockwave.gd" id="1_shockwave"]
+[ext_resource type="Shader" path="res://assets/shaders/shockwave_ring.gdshader" id="2_shader"]
 
-[sub_resource type="Gradient" id="Gradient_ring"]
-colors = PackedColorArray(1, 0.6, 0.2, 0.8, 1, 0.3, 0.1, 0)
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_ring"]
+shader = ExtResource("2_shader")
+shader_parameter/ring_width = 0.04
+shader_parameter/expansion = 0.0
+shader_parameter/ring_color = Color(1.0, 1.0, 1.0, 1.0)
+shader_parameter/fade_power = 1.5
+shader_parameter/ring_count = 5
+shader_parameter/ring_spacing = 0.15
 
-[sub_resource type="GradientTexture2D" id="GradientTexture2D_ring"]
-gradient = SubResource("Gradient_ring")
+[sub_resource type="Gradient" id="Gradient_white"]
+colors = PackedColorArray(1, 1, 1, 1, 1, 1, 1, 1)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_base"]
+gradient = SubResource("Gradient_white")
+width = 64
+height = 64
 fill = 1
 fill_from = Vector2(0.5, 0.5)
 fill_to = Vector2(0.5, 0)
@@ -15,12 +27,12 @@ fill_to = Vector2(0.5, 0)
 radius = 8.0
 
 [node name="Shockwave" type="Node2D"]
-z_index = 14
+z_index = 25
 script = ExtResource("1_shockwave")
 
 [node name="Visual" type="Sprite2D" parent="."]
-modulate = Color(1, 0.7, 0.3, 0.8)
-texture = SubResource("GradientTexture2D_ring")
+material = SubResource("ShaderMaterial_ring")
+texture = SubResource("GradientTexture2D_base")
 
 [node name="HitArea2D" type="Area2D" parent="."]
 collision_layer = 0

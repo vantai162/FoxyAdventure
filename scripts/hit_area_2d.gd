@@ -71,6 +71,5 @@ func _find_attacker() -> Node:
 			return node
 		node = node.get_parent()
 	
-	# No attacker found — hitstop will be skipped
-	push_warning("HitArea2D: Could not find attacker for hitstop")
+	# No attacker found — hitstop will be skipped (this is normal for some setups)
 	return null

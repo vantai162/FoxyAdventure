@@ -25,6 +25,12 @@ func _enter() -> void:
 	spawn_timer = 0.0
 	obj.velocity = Vector2.ZERO
 	obj.change_animation("summon")
+	
+	# Face the player before summoning
+	if obj.found_player:
+		var dir_to_player = sign(obj.found_player.global_position.x - obj.global_position.x)
+		if dir_to_player != 0 and dir_to_player != obj.direction:
+			obj.change_direction(dir_to_player)
 
 
 func _update(delta: float) -> void:

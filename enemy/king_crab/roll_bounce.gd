@@ -103,7 +103,7 @@ func _create_shockwave() -> void:
 	var shockwave = obj.shockwave_scene.instantiate()
 	obj.get_tree().current_scene.add_child(shockwave)
 	shockwave.global_position = obj.global_position + Vector2(0, 20)
-	shockwave.max_radius = 60.0
+	shockwave.gameplay_hit_radius = 60.0
 
 
 func _start_winddown() -> void:

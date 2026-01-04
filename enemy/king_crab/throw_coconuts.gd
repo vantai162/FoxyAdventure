@@ -24,6 +24,7 @@ var coconut_speed: float = 350.0
 var next_interval: float = 0.0
 
 var descent_tween: Tween = null
+var is_descending: bool = false  ## Guard to prevent actions during descent
 
 
 func _enter() -> void:
@@ -31,6 +32,7 @@ func _enter() -> void:
 	throw_count = 0
 	time_since_throw = 0.0
 	descent_tween = null
+	is_descending = false
 	
 	# Phase 2: more throws, faster, more aggressive
 	if obj.current_phase == 2:
@@ -49,6 +51,7 @@ func _enter() -> void:
 
 
 func _exit() -> void:
+	is_descending = false  ## Reset guard flag
 	# Clean up any running tween to prevent crashes
 	if descent_tween and descent_tween.is_valid():
 		descent_tween.kill()
@@ -56,6 +59,11 @@ func _exit() -> void:
 
 
 func _update(delta: float) -> void:
+	# Block all actions during descent
+	if is_descending:
+		obj.velocity = Vector2.ZERO
+		return
+	
 	# Stay in the air - prevent gravity
 	obj.velocity = Vector2.ZERO
 	
@@ -150,6 +158,9 @@ func _calculate_arc_to_target(from: Vector2, to: Vector2) -> Vector2:
 
 
 func _descend_and_return() -> void:
+	# Set guard flag FIRST
+	is_descending = true
+	
 	# Reset rotation before descending
 	obj.get_node("Direction").rotation_degrees = 0.0
 	

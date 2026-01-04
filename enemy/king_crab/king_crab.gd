@@ -2,11 +2,19 @@ extends EnemyCharacter
 
 ## King Crab Boss - Uses base class detection, simple phase system
 ## All tunable values centralized here for easy designer tweaking
+##
+## POISE SYSTEM: Boss is immune to knockback and stun-lock.
+## Takes damage, shows flash feedback, but attacks continue.
+## This creates a skill-based fight requiring pattern recognition.
 
 signal health_changed
 
 ## Visual feedback state
 var _hurt_flash_tween: Tween = null  ## Prevents tween stacking on rapid hits
+
+@export_group("Boss Poise")
+@export var knockback_immune: bool = true  ## Boss cannot be pushed by player attacks
+@export var stun_immune: bool = true  ## Boss cannot enter hurt state during attacks
 
 @export_group("Phase System")
 @export var phase_2_threshold: float = 0.5  ## Health ratio to trigger phase 2
@@ -32,7 +40,7 @@ var _hurt_flash_tween: Tween = null  ## Prevents tween stacking on rapid hits
 @export var claw_windup_time: float = 0.4
 @export var claw_throw_time: float = 0.2
 @export var claw_catch_time: float = 0.2
-@export var claw_recoil_time: float = 0.7  ## Longer stun - trade-off for double wrap danger
+@export var claw_recoil_time: float = 1.5  ## Long stun window - player's reward for surviving double wrap
 @export var claw_recovery_time: float = 0.5  ## Slightly longer recovery
 @export var claw_speed: float = 600.0
 @export var claw_travel_distance: float = 800.0
@@ -67,18 +75,35 @@ var _hurt_flash_tween: Tween = null  ## Prevents tween stacking on rapid hits
 @export var climb_duration: float = 1.8
 @export var walk_stuck_timeout: float = 1.0
 
+@export_group("Bubble Attack")
+@export var bubble_attack_interval: float = 3.5
+@export var bubble_speed: float = 300.0
+@export var bubble_trap_duration: float = 2.0
+
+@export_group("Summon MiniCrab")
+@export var minicrab_scene: PackedScene
+@export var minicrab_count: int = 3
+@export var minicrab_spawn_interval: float = 1.0
+@export var minicrab_spawn_radius: float = 120.0
+
 var current_phase: int = 1
+var last_attack: String = ""  ## Tracks last attack to avoid repetition (used by idle.gd)
 
 # Factories (for spawning projectiles)
 @onready var coconut_factory = $Direction/CoconutFactory if has_node("Direction/CoconutFactory") else null
 @onready var claw_factory = $Direction/ClawFactory if has_node("Direction/ClawFactory") else null
 @onready var warning_factory = $Direction/WarningFactory if has_node("Direction/WarningFactory") else null
+@onready var water_bubble_factory = $Direction/WaterBubbleFactory if has_node("Direction/WaterBubbleFactory") else null
+
+# Bubble attack spawn positions (Marker2D nodes)
+@onready var upper_claw_pos = $Direction/WaterBubbleFactory/Marker2D_UpperClaw if has_node("Direction/WaterBubbleFactory/Marker2D_UpperClaw") else null
+@onready var lower_claw_pos = $Direction/WaterBubbleFactory/Marker2D_LowerClaw if has_node("Direction/WaterBubbleFactory/Marker2D_LowerClaw") else null
 
 func _ready() -> void:
 	add_to_group("king_crab")
 	# "boss" group is set in king_crab.tscn
 	# "enemy" group is set by EnemyCharacter base class
-	fsm = FSM.new(self, $States, $States/Idle)
+	fsm = FSM.new(self, $States, $States/Sleep)  # Boss starts sleeping, wakes on player_entered
 	super._ready()  # Calls _init_ray_cast, _init_detect_player_area, _init_hurt_area, add_to_group("enemy")
 
 ## Override take_damage to implement POISE system + proper visual feedback

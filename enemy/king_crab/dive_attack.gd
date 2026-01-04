@@ -158,7 +158,7 @@ func _create_shockwave() -> void:
 	shockwave.global_position = obj.global_position + Vector2(0, 10)
 	# Phase 2: bigger shockwave
 	if obj.current_phase == 2:
-		shockwave.max_radius = 120.0
+		shockwave.gameplay_hit_radius = 120.0
 
 
 func _shake_camera(strength: float) -> void:

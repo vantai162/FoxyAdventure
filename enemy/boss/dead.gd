@@ -3,6 +3,11 @@ extends EnemyState
 
 
 func _enter():
+	# Reset any visual state (rotation, modulate, etc.) for clean death
+	obj.get_node("Direction").rotation_degrees = 0.0
+	if obj.animated_sprite:
+		obj.animated_sprite.modulate = Color.WHITE
+	
 	obj.change_animation("dead")
 	timer = 1.0
 	GameManager.add_kill()
