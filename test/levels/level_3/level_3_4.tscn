@@ -200,3 +200,6 @@ position = Vector2(685, 318)
 story_text = "Chuyến đi tới hòn đảo này là chuyến đi cuối cùng của mình. Mình sẽ hoàn lương và không làm hải tặc nữa.
 (Nhấn Q để tiếp tục)"
 memory_title = "⭐ Memory 10 – “Ước muốn của Foxy”"
+
+[node name="Checkpoint2" parent="." instance=ExtResource("24_kymkp")]
+position = Vector2(301, 320)

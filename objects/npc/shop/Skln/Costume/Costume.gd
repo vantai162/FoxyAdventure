@@ -2,6 +2,7 @@ class_name Costume
 extends skin
 var NormalAni:AnimatedSprite2D=null
 var BladeAni:AnimatedSprite2D=null
+@export var description: String 
 
 func _ready() -> void:
 	if $AnimatedSprite2D!=null:

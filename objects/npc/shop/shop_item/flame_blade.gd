@@ -3,6 +3,7 @@ extends StatItem
 ## Unlocks fire effect on the fox's blade, causing enemies to burn.
 ## This is a permanent upgrade that persists across saves.
 @export var icon:CompressedTexture2D
+@export var description: String = "Kỹ năng ném kiếm của bạn sẽ phi ra kiếm lửa gây sát thương đốt lên kẻ địch."
 ## Called when purchase is successful
 func conduct_effect() -> void:
 	var player = GameManager.player

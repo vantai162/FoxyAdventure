@@ -64,7 +64,7 @@ collision_mask = 2
 script = ExtResource("1_tcnf6")
 
 [node name="BladeGlow" type="PointLight2D" parent="."]
-color = Color(0.7, 0.85, 1.0, 1)
+color = Color(0.7, 0.85, 1, 1)
 energy = 0.35
 blend_mode = 1
 texture = SubResource("GradientTexture2D_blade")

@@ -47,6 +47,7 @@ func _load_skill_items():
 		var item_data = ShopSystem.objLinker[key]
 		# lấy price từ objLinker
 		ui.price = item_data.value
+		ui.description = item_data.description
 		ui.stock = ShopSystem.Stock.get(key, 0)
 		ui.call_deferred("set_icon", ShopSystem.objLinker[key].icon)
 		items_grid.add_child(ui)
@@ -58,6 +59,7 @@ func _load_skin_items():
 		ui.item_type = ShopSystem.itemType.skins
 		var skin_data = GameManager.skin_manager.cur_skin_data[key]
 		ui.price = skin_data.value
+		ui.description = skin_data.description
 		ui.stock = 1
 		ui.call_deferred("set_icon", skin_data.icon)
 		skins_grid.add_child(ui)

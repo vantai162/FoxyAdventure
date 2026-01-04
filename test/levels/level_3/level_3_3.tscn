@@ -4,17 +4,18 @@
 [ext_resource type="TileSet" uid="uid://0yf5cmwk6u1i" path="res://assets/island/terrain/ice_tile_set.tres" id="3_l86yd"]
 [ext_resource type="PackedScene" uid="uid://cqjqdbyd7mqfr" path="res://environment/cave/glowing_crystal.tscn" id="4_crystal"]
 [ext_resource type="PackedScene" uid="uid://bmgv5cgan4yt" path="res://enemy/mushroom/mushroom.tscn" id="5_mushroom"]
-[ext_resource type="PackedScene" uid="uid://c1bijw8i8erx5" path="res://enemy/turtle/turtle.tscn" id="6_turtle"]
 [ext_resource type="PackedScene" uid="uid://dav8b7a6d5e4f" path="res://enemy/shield_tribe/shield_tribe.tscn" id="7_shield"]
-[ext_resource type="PackedScene" uid="uid://ufmc2gkfnv58" path="res://enemy/crab/crab.tscn" id="8_crab"]
-[ext_resource type="PackedScene" uid="uid://bxfs4fsx7ot6m" path="res://enemy/starfish/starfish.tscn" id="9_starfish"]
 [ext_resource type="PackedScene" uid="uid://cvq5vx1o24fpg" path="res://enemy/aggressive_tribe/elite_bombardier.tscn" id="11_elite_bombardier"]
 [ext_resource type="PackedScene" uid="uid://d02ffhwahuggg" path="res://enemy/shield_tribe/elite_warden.tscn" id="12_elite_warden"]
 [ext_resource type="PackedScene" uid="uid://lrdkn2gv1v1m" path="res://effect_Item/coin/coin.tscn" id="13_coin"]
 [ext_resource type="PackedScene" uid="uid://b3cbk6lmh2cc3" path="res://effect_Item/heal_potion/health_potion.tscn" id="14_health_potion"]
 [ext_resource type="PackedScene" uid="uid://dl1jqgf5ab7l" path="res://effect_Item/chest/gold_chest.tscn" id="15_gold_chest"]
+[ext_resource type="PackedScene" uid="uid://bj35soojaj5hs" path="res://enemy/starfish/elite_ricochet_starfish.tscn" id="15_h45nm"]
+[ext_resource type="PackedScene" uid="uid://dumayxma7am7b" path="res://enemy/turtle/elite_spiny_turtle.tscn" id="16_dlyds"]
 [ext_resource type="PackedScene" uid="uid://b3rfttffyg1qj" path="res://effect_Item/key/key.tscn" id="16_key"]
 [ext_resource type="PackedScene" uid="uid://h568k604b62r" path="res://effect_Item/BladeContainer/blade_container.tscn" id="17_blade_container"]
+[ext_resource type="PackedScene" uid="uid://bodccm7jppcjv" path="res://enemy/barrel/elite_sniper.tscn" id="17_wrv2e"]
+[ext_resource type="PackedScene" uid="uid://jm5jjtt5tfsj" path="res://enemy/crab/elite_hunter_crab.tscn" id="18_8cht6"]
 [ext_resource type="PackedScene" uid="uid://dy2go6q81lmqg" path="res://effect_Item/TrapCoin/trap_coin.tscn" id="18_trap_coin"]
 [ext_resource type="PackedScene" uid="uid://cm32wkmjlw1rq" path="res://effect_Item/chest/trap_chest.tscn" id="19_trap_chest"]
 [ext_resource type="PackedScene" uid="uid://dm741hii7d5nv" path="res://scenes/game_screen/health_bar.tscn" id="20_gwpnj"]
@@ -24,8 +25,7 @@
 [ext_resource type="PackedScene" uid="uid://k1cvcu80rfmm" path="res://scenes/game_screen/coin_ui.tscn" id="23_h45nm"]
 [ext_resource type="PackedScene" uid="uid://cstfpndmrkms3" path="res://scenes/game_screen/key_ui.tscn" id="24_dlyds"]
 [ext_resource type="PackedScene" uid="uid://8koby8md4sgg" path="res://scenes/game_screen/blade_ui.tscn" id="25_wrv2e"]
-[ext_resource type="PackedScene" path="res://objects/pressure_plate/pressure_plate.tscn" id="26_n2s4v"]
-[ext_resource type="PackedScene" uid="uid://bs816w0pr8all" path="res://player/foxy.tscn" id="27_h45nm"]
+[ext_resource type="PackedScene" uid="uid://d1twwiutipd8r" path="res://objects/pressure_plate/pressure_plate.tscn" id="26_n2s4v"]
 [ext_resource type="PackedScene" uid="uid://clavapool001" path="res://environment/lava/lava_pool.tscn" id="27_u7sk4"]
 
 [node name="Level_3_3" type="Node2D"]
@@ -133,20 +133,8 @@ stay_activated = true
 [node name="Mushroom1" parent="Enemies" instance=ExtResource("5_mushroom")]
 position = Vector2(100, 1229)
 
-[node name="Turtle1" parent="Enemies" instance=ExtResource("6_turtle")]
-position = Vector2(329, 1114)
-
 [node name="ShieldTribe1" parent="Enemies" instance=ExtResource("7_shield")]
 position = Vector2(517, 1210)
-
-[node name="Crab1" parent="Enemies" instance=ExtResource("8_crab")]
-position = Vector2(150, 607)
-
-[node name="Mushroom2" parent="Enemies" instance=ExtResource("5_mushroom")]
-position = Vector2(102, 378)
-
-[node name="Starfish1" parent="Enemies" instance=ExtResource("9_starfish")]
-position = Vector2(386, 467)
 
 [node name="EliteBombardier" parent="Enemies" instance=ExtResource("11_elite_bombardier")]
 position = Vector2(470, 881)
@@ -155,6 +143,18 @@ direction = -1
 [node name="EliteWarden" parent="Enemies" instance=ExtResource("12_elite_warden")]
 position = Vector2(536, 303)
 direction = -1
+
+[node name="EliteRicochetStarfish" parent="Enemies" instance=ExtResource("15_h45nm")]
+position = Vector2(134, 607)
+
+[node name="EliteSpinyTurtle" parent="Enemies" instance=ExtResource("16_dlyds")]
+position = Vector2(341, 1108)
+
+[node name="EliteSniperBarrel" parent="Enemies" instance=ExtResource("17_wrv2e")]
+position = Vector2(83, 382)
+
+[node name="EliteHunterCrab" parent="Enemies" instance=ExtResource("18_8cht6")]
+position = Vector2(378, 480)
 
 [node name="Collectibles" type="Node2D" parent="."]
 
@@ -300,7 +300,7 @@ position = Vector2(500, 750)
 color_preset = 5
 
 [node name="Crystal_Top1" parent="LightSources" instance=ExtResource("4_crystal")]
-position = Vector2(320, 380)
+position = Vector2(322, 385)
 crystal_type = 3
 color_preset = 4
 
@@ -326,6 +326,3 @@ target_scene = "uid://caxibxcw4tq32"
 target_spawn_name = "FromLevel3_3"
 exit_direction = 2
 spawn_offset = Vector2(0, 48)
-
-[node name="Foxy" parent="." instance=ExtResource("27_h45nm")]
-position = Vector2(91, 1489)

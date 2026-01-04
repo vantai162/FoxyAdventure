@@ -1,4 +1,4 @@
-[gd_scene load_steps=41 format=4 uid="uid://cownslw7ms6s4"]
+[gd_scene load_steps=42 format=4 uid="uid://cownslw7ms6s4"]
 
 [ext_resource type="Script" uid="uid://cblkjof8tqn71" path="res://test/levels/level_3/stage_3_1.gd" id="1_stage_script"]
 [ext_resource type="TileSet" uid="uid://0yf5cmwk6u1i" path="res://assets/island/terrain/ice_tile_set.tres" id="2_a6ecy"]
@@ -6,9 +6,9 @@
 [ext_resource type="PackedScene" uid="uid://dvpguoojkycep" path="res://scenes/game_screen/oxy_bar.tscn" id="3_3j2yj"]
 [ext_resource type="PackedScene" uid="uid://giogr7michck" path="res://objects/water/water.tscn" id="3_is5y3"]
 [ext_resource type="PackedScene" uid="uid://dqdstpxycbomj" path="res://effect_Item/BladeItem/blade.tscn" id="3_vnnrn"]
-[ext_resource type="PackedScene" path="res://environment/cave/stalactite.tscn" id="4_b7ip3"]
+[ext_resource type="PackedScene" uid="uid://rhntp41ai45p" path="res://environment/cave/stalactite.tscn" id="4_b7ip3"]
 [ext_resource type="PackedScene" uid="uid://cqjqdbyd7mqfr" path="res://environment/cave/glowing_crystal.tscn" id="4_crystal"]
-[ext_resource type="PackedScene" path="res://objects/platform/moving_platform.tscn" id="4_moving"]
+[ext_resource type="PackedScene" uid="uid://bptbpry7anyx0" path="res://objects/platform/moving_platform.tscn" id="4_moving"]
 [ext_resource type="PackedScene" uid="uid://ydwm5fvrvrmr" path="res://scenes/game_screen/damage_over_lay.tscn" id="4_oilfl"]
 [ext_resource type="PackedScene" uid="uid://c5m8vno0qh3xy" path="res://objects/whirlpool/whirlpool.tscn" id="4_vnnrn"]
 [ext_resource type="PackedScene" uid="uid://k1cvcu80rfmm" path="res://scenes/game_screen/coin_ui.tscn" id="5_1cg3m"]
@@ -19,10 +19,8 @@
 [ext_resource type="PackedScene" uid="uid://cstfpndmrkms3" path="res://scenes/game_screen/key_ui.tscn" id="6_hvyph"]
 [ext_resource type="PackedScene" uid="uid://bmgv5cgan4yt" path="res://enemy/mushroom/mushroom.tscn" id="6_mushroom"]
 [ext_resource type="PackedScene" uid="uid://8koby8md4sgg" path="res://scenes/game_screen/blade_ui.tscn" id="7_cdhsq"]
-[ext_resource type="PackedScene" uid="uid://ufmc2gkfnv58" path="res://enemy/crab/crab.tscn" id="7_crab"]
-[ext_resource type="PackedScene" uid="uid://bxfs4fsx7ot6m" path="res://enemy/starfish/starfish.tscn" id="8_starfish"]
 [ext_resource type="PackedScene" uid="uid://m0ec1cyfshdq" path="res://objects/scroll/scroll.tscn" id="9_3j2yj"]
-[ext_resource type="PackedScene" path="res://objects/pressure_plate/pressure_plate.tscn" id="9_sb7o5"]
+[ext_resource type="PackedScene" uid="uid://d1twwiutipd8r" path="res://objects/pressure_plate/pressure_plate.tscn" id="9_sb7o5"]
 [ext_resource type="PackedScene" uid="uid://ctr1b8p1h6p8y" path="res://objects/gate/gate.tscn" id="10_343a2"]
 [ext_resource type="PackedScene" uid="uid://jm5jjtt5tfsj" path="res://enemy/crab/elite_hunter_crab.tscn" id="10_elite_crab"]
 [ext_resource type="PackedScene" uid="uid://dumayxma7am7b" path="res://enemy/turtle/elite_spiny_turtle.tscn" id="11_elite_turtle"]
@@ -36,7 +34,10 @@
 [ext_resource type="PackedScene" uid="uid://cm32wkmjlw1rq" path="res://effect_Item/chest/trap_chest.tscn" id="19_trap_chest"]
 [ext_resource type="PackedScene" uid="uid://coqrny0yf5swy" path="res://objects/wind/WindArea.tscn" id="26_2y2ek"]
 [ext_resource type="PackedScene" uid="uid://y7p8q2kh8teb" path="res://objects/flame/flame_hazard.tscn" id="27_alf78"]
+[ext_resource type="PackedScene" uid="uid://bj35soojaj5hs" path="res://enemy/starfish/elite_ricochet_starfish.tscn" id="28_3j2yj"]
 [ext_resource type="PackedScene" uid="uid://b0h8a022mpy26" path="res://objects/spike/spike_retractable/spike_retractable.tscn" id="28_fcwnb"]
+[ext_resource type="PackedScene" uid="uid://cvq5vx1o24fpg" path="res://enemy/aggressive_tribe/elite_bombardier.tscn" id="28_oilfl"]
+[ext_resource type="PackedScene" uid="uid://bodccm7jppcjv" path="res://enemy/barrel/elite_sniper.tscn" id="29_1cg3m"]
 [ext_resource type="PackedScene" uid="uid://dxa1gc3xiner8" path="res://environment/lava/lavafall.tscn" id="29_qrwfa"]
 [ext_resource type="PackedScene" path="res://objects/scene_transition/scene_transition.tscn" id="30_scene_transition"]
 [ext_resource type="PackedScene" uid="uid://bmic0j4cnluey" path="res://objects/checkpoint/checkpoint.tscn" id="40_3j2yj"]
@@ -365,14 +366,8 @@ direction = 3
 
 [node name="Enemies" type="Node2D" parent="."]
 
-[node name="Turtle1" parent="Enemies" instance=ExtResource("5_turtle")]
-position = Vector2(600, 464)
-
 [node name="Mushroom1" parent="Enemies" instance=ExtResource("6_mushroom")]
 position = Vector2(350, 819)
-
-[node name="Crab1" parent="Enemies" instance=ExtResource("7_crab")]
-position = Vector2(1100, 1219)
 
 [node name="Turtle2" parent="Enemies" instance=ExtResource("5_turtle")]
 position = Vector2(281, 1264)
@@ -380,14 +375,29 @@ position = Vector2(281, 1264)
 [node name="Mushroom2" parent="Enemies" instance=ExtResource("6_mushroom")]
 position = Vector2(900, 1828)
 
-[node name="Starfish1" parent="Enemies" instance=ExtResource("8_starfish")]
-position = Vector2(600, 2226)
-
 [node name="EliteHunterCrab" parent="Enemies" instance=ExtResource("10_elite_crab")]
 position = Vector2(1200, 1219)
 
 [node name="EliteSpinyTurtle" parent="Enemies" instance=ExtResource("11_elite_turtle")]
 position = Vector2(700, 1360)
+
+[node name="EliteRicochetStarfish" parent="Enemies" instance=ExtResource("28_3j2yj")]
+position = Vector2(615, 2220)
+
+[node name="EliteRicochetStarfish2" parent="Enemies" instance=ExtResource("28_3j2yj")]
+position = Vector2(574, 456)
+
+[node name="EliteHunterCrab2" parent="Enemies" instance=ExtResource("10_elite_crab")]
+position = Vector2(1027, 1217)
+
+[node name="EliteBombardier" parent="Enemies" instance=ExtResource("28_oilfl")]
+position = Vector2(213, 1922)
+
+[node name="EliteSniperBarrel" parent="Enemies" instance=ExtResource("29_1cg3m")]
+position = Vector2(403, 1116)
+
+[node name="Mushroom" parent="Enemies" instance=ExtResource("6_mushroom")]
+position = Vector2(1063, 1533)
 
 [node name="Collectibles" type="Node2D" parent="."]
 
@@ -644,6 +654,8 @@ target_spawn_name = "FromLevel3_1"
 
 [node name="FromLevel2_2" parent="ExitZone" instance=ExtResource("30_scene_transition")]
 position = Vector2(80, 137)
+monitoring = false
+monitorable = false
 exit_direction = 2
 spawn_offset = Vector2(0, 48)
 
@@ -658,5 +670,9 @@ position = Vector2(969, 1008)
 
 [node name="Checkpoint4" parent="." instance=ExtResource("40_3j2yj")]
 position = Vector2(334, 1935)
+
+[connection signal="area_entered" from="Terrain/TileMapLayer/HealthPotion" to="Terrain/TileMapLayer/HealthPotion" method="_on_area_entered"]
+[connection signal="area_entered" from="Terrain/TileMapLayer/@Area2D@123241" to="Terrain/TileMapLayer/@Area2D@123241" method="_on_area_entered"]
+[connection signal="area_entered" from="Terrain/TileMapLayer/@Area2D@123242" to="Terrain/TileMapLayer/@Area2D@123242" method="_on_area_entered"]
 
 [editable path="Platforms/MovingPlatform1"]

@@ -228,6 +228,7 @@ animations = [{
 
 [node name="SinnerFoxySkin" type="Node2D"]
 script = ExtResource("1_ntspm")
+description = "Trang phục hiếm. Hoàn thành màn chơi với bad ending ít nhất 1 lần để unlock"
 rarity = 4
 value = 50
 Name = "SinnerFoxy"
