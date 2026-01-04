@@ -9,8 +9,8 @@ const ENEMY_HITSTOP: float = 0.04
 
 func take_damage(_damage_dir, damage: int) -> void:
 	# POISE SYSTEM: Check for boss immunity flags
-	var is_knockback_immune := obj.get("knockback_immune") == true
-	var is_stun_immune := obj.get("stun_immune") == true
+	var is_knockback_immune: bool = obj.get("knockback_immune") == true
+	var is_stun_immune: bool = obj.get("stun_immune") == true
 	
 	# Apply knockback ONLY if not immune
 	if not is_knockback_immune:

@@ -99,14 +99,6 @@ func fire_rocket():
 	get_tree().current_scene.add_child(rocket4)
 	warning_marker4.show_animation()
 	rocket4.shoot(rocket4.global_position, warning_marker4.global_position, 1.5)
-	
-func enable_hurt_for(seconds: float):
-	HurtArea.disabled = false
-	hurt_timer.start(seconds)
-
-
-func _on_hurt_timer_timeout():
-	HurtArea.disabled = true
 
 func get_water_node() -> water:
 	## Find and cache the water node in the scene
