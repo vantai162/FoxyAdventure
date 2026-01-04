@@ -80,6 +80,8 @@ func _start_throw() -> void:
 			active_claw.travel_distance = obj.claw_travel_distance
 			active_claw.return_threshold = obj.claw_return_threshold
 			active_claw.wrap_offset_ratio = obj.claw_wrap_offset_ratio
+			active_claw.second_wrap_speed_mult = obj.claw_second_wrap_speed_mult
+			active_claw.second_wrap_shake = obj.claw_second_wrap_shake
 			active_claw.setup(obj.direction, obj)
 			active_claw.returned_to_owner.connect(_on_claw_returned)
 
