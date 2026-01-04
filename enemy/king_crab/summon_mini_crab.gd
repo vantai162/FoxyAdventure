@@ -65,6 +65,9 @@ func _spawn_one() -> void:
 	var forward := Vector2(obj.direction, 0)
 	minicrab.global_position = obj.global_position + forward * obj.minicrab_spawn_radius
 	
+	# Mini crab faces same direction as king (walks away from king)
+	minicrab.direction = obj.direction
+	
 	spawned += 1
 	
 	if spawned >= obj.minicrab_count:
