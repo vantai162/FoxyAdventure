@@ -68,15 +68,21 @@ func freeze_node(node: Node, duration: float) -> void:
 
 
 ## Internal: Restore node to pre-freeze state
-func _unfreeze_node(node: Node) -> void:
-	if not _frozen_nodes.has(node):
+## Accepts Variant to handle freed nodes gracefully (timer callbacks, scene transitions)
+func _unfreeze_node(node_ref) -> void:
+	# Early exit if reference is null or node was freed
+	if node_ref == null:
+		return
+	if not is_instance_valid(node_ref):
+		# Node freed — just clean up registry if it exists
+		_frozen_nodes.erase(node_ref)
+		return
+	if not _frozen_nodes.has(node_ref):
 		return
 	
+	var node: Node = node_ref as Node
 	var freeze_data: Dictionary = _frozen_nodes[node]
 	_frozen_nodes.erase(node)
-	
-	if not is_instance_valid(node):
-		return  # Node was freed during freeze — nothing to restore
 	
 	# Restore CharacterBody2D velocity
 	if node is CharacterBody2D:
