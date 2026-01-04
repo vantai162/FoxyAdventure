@@ -1,4 +1,4 @@
-[gd_scene load_steps=13 format=3 uid="uid://vifaaniwbdnv"]
+[gd_scene load_steps=15 format=3 uid="uid://vifaaniwbdnv"]
 
 [ext_resource type="Script" uid="uid://cimqxeik4xdhh" path="res://projectiles/blade_projectile.gd" id="1"]
 [ext_resource type="Texture2D" uid="uid://bng34woae2g8q" path="res://assets/foxy/blade/blade_throw_1.png" id="2_kj2ao"]
@@ -23,13 +23,6 @@ radius = 8.0
 [sub_resource type="CircleShape2D" id="CircleShape2D_45h00"]
 radius = 16.0
 
-[sub_resource type="Gradient" id="Gradient_fire_color"]
-offsets = PackedFloat32Array(0, 0.3, 0.7, 1)
-colors = PackedColorArray(1, 1, 0.6, 1, 1, 0.5, 0.1, 0.9, 0.8, 0.2, 0, 0.5, 0.3, 0.1, 0, 0)
-
-[sub_resource type="GradientTexture1D" id="GradientTexture1D_fire"]
-gradient = SubResource("Gradient_fire_color")
-
 [sub_resource type="Gradient" id="Gradient_fire_particle_shape"]
 colors = PackedColorArray(1, 1, 1, 1, 1, 1, 1, 0)
 
@@ -40,6 +33,13 @@ height = 4
 fill = 1
 fill_from = Vector2(0.5, 0.5)
 fill_to = Vector2(0.5, 0)
+
+[sub_resource type="Gradient" id="Gradient_fire_color"]
+offsets = PackedFloat32Array(0, 0.3, 0.7, 1)
+colors = PackedColorArray(1, 1, 0.6, 1, 1, 0.5, 0.1, 0.9, 0.8, 0.2, 0, 0.5, 0.3, 0.1, 0, 0)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_fire"]
+gradient = SubResource("Gradient_fire_color")
 
 [sub_resource type="ParticleProcessMaterial" id="ParticleMaterial_fire"]
 emission_shape = 1
@@ -108,9 +108,9 @@ z_index = 25
 position = Vector2(-1, 0)
 emitting = false
 amount = 18
+texture = SubResource("GradientTexture2D_fire_particle")
 lifetime = 0.45
 process_material = SubResource("ParticleMaterial_fire")
-texture = SubResource("GradientTexture2D_fire_particle")
 
 [node name="Light" type="PointLight2D" parent="."]
 color = Color(1, 0.7, 0.3, 1)

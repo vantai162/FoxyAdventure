@@ -1,6 +1,7 @@
 extends StatItem
 
 @export var icon:CompressedTexture2D
+@export var description: String = "Tăng máu tối đa của Foxy thêm 1."
 # conduct_effect sẽ được gọi khi mua thành công
 func conduct_effect() -> void:
 
@@ -11,13 +12,13 @@ func conduct_effect() -> void:
 	var prev_max = gm.player.max_health if gm.player.has_method("get_max_health") == false and gm.player.has_meta("max_health") == false else 0
 	# Prefer direct properties; try best-effort:
 	if "max_health" in gm.player:
-		gm.player.max_health += value
+		gm.player.max_health += 1
 		print(gm.player.max_health)
 	else:
 		# nếu player dùng getter/setter
 		if gm.player.has_method("set_max_health") and gm.player.has_method("get_max_health"):
 			var cur = gm.player.get_max_health()
-			gm.player.set_max_health(cur + value)
+			gm.player.set_max_health(cur + 1)
 			print(gm.player.max_health,"hey")
 	gm.player.max_health_changed.emit()
 
@@ -31,4 +32,4 @@ func conduct_effect() -> void:
 	AudioManager.play_sound("heal",20.0)
 	
 	# Optional: ghi log
-	print("HPUp applied: +", value, " to player.max_health -> ", gm.player.max_health)
+	print("HPUp applied: +", 1, " to player.max_health -> ", gm.player.max_health)
