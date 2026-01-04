@@ -2,7 +2,7 @@
 
 [ext_resource type="Texture2D" uid="uid://t3cktfmhcitn" path="res://assets/island/terrain/ice level demo.png" id="1_lvvyk"]
 [ext_resource type="PackedScene" uid="uid://cqjqdbyd7mqfr" path="res://environment/cave/glowing_crystal.tscn" id="3_crystal"]
-[ext_resource type="PackedScene" path="res://environment/cave/dripping_water.tscn" id="4_drip"]
+[ext_resource type="PackedScene" uid="uid://bc78438yhr3na" path="res://environment/cave/dripping_water.tscn" id="4_drip"]
 [ext_resource type="PackedScene" uid="uid://cn3lm5txngxlq" path="res://objects/spike/spike_static/spike.tscn" id="6_0620o"]
 [ext_resource type="PackedScene" uid="uid://b0h8a022mpy26" path="res://objects/spike/spike_retractable/spike_retractable.tscn" id="7_gxew1"]
 [ext_resource type="PackedScene" uid="uid://p3tugieif4ic" path="res://objects/spike/spike_ceiling/spike_ceiling.tscn" id="8_23828"]

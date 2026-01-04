@@ -8,13 +8,9 @@
 [ext_resource type="PackedScene" uid="uid://ydwm5fvrvrmr" path="res://scenes/game_screen/damage_over_lay.tscn" id="4_yeejn"]
 [ext_resource type="PackedScene" uid="uid://bmgv5cgan4yt" path="res://enemy/mushroom/mushroom.tscn" id="5_mushroom"]
 [ext_resource type="PackedScene" uid="uid://k1cvcu80rfmm" path="res://scenes/game_screen/coin_ui.tscn" id="5_pxv3f"]
-[ext_resource type="PackedScene" uid="uid://b1a2s3d4f5g6h" path="res://enemy/aggressive_tribe/aggressive_tribe.tscn" id="6_aggressive"]
 [ext_resource type="PackedScene" uid="uid://cstfpndmrkms3" path="res://scenes/game_screen/key_ui.tscn" id="6_wr5qh"]
-[ext_resource type="PackedScene" uid="uid://c1bijw8i8erx5" path="res://enemy/turtle/turtle.tscn" id="7_turtle"]
 [ext_resource type="PackedScene" uid="uid://8koby8md4sgg" path="res://scenes/game_screen/blade_ui.tscn" id="7_yy4tu"]
-[ext_resource type="PackedScene" uid="uid://ufmc2gkfnv58" path="res://enemy/crab/crab.tscn" id="8_crab"]
 [ext_resource type="PackedScene" uid="uid://m0ec1cyfshdq" path="res://objects/scroll/scroll.tscn" id="9_0ao1h"]
-[ext_resource type="PackedScene" uid="uid://bxfs4fsx7ot6m" path="res://enemy/starfish/starfish.tscn" id="9_starfish"]
 [ext_resource type="PackedScene" uid="uid://bt2icn1rxyolq" path="res://enemy/mushroom/elite_spawner_mushroom.tscn" id="11_elite_mushroom"]
 [ext_resource type="PackedScene" uid="uid://bj35soojaj5hs" path="res://enemy/starfish/elite_ricochet_starfish.tscn" id="12_elite_starfish"]
 [ext_resource type="PackedScene" uid="uid://lrdkn2gv1v1m" path="res://effect_Item/coin/coin.tscn" id="13_coin"]
@@ -27,11 +23,15 @@
 [ext_resource type="PackedScene" uid="uid://cm32wkmjlw1rq" path="res://effect_Item/chest/trap_chest.tscn" id="19_trap_chest"]
 [ext_resource type="PackedScene" uid="uid://dxa1gc3xiner8" path="res://environment/lava/lavafall.tscn" id="20_bo748"]
 [ext_resource type="PackedScene" uid="uid://nuq050gwbwqt" path="res://objects/spike/spike.tscn" id="21_d273m"]
-[ext_resource type="PackedScene" path="res://environment/cave/stalactite.tscn" id="22_fb13w"]
+[ext_resource type="PackedScene" uid="uid://rhntp41ai45p" path="res://environment/cave/stalactite.tscn" id="22_fb13w"]
 [ext_resource type="PackedScene" uid="uid://y7p8q2kh8teb" path="res://objects/flame/flame_hazard.tscn" id="23_aawq6"]
 [ext_resource type="PackedScene" path="res://objects/water/waterfall.tscn" id="24_ytmni"]
+[ext_resource type="PackedScene" uid="uid://dumayxma7am7b" path="res://enemy/turtle/elite_spiny_turtle.tscn" id="25_0ao1h"]
 [ext_resource type="PackedScene" uid="uid://ctr1b8p1h6p8y" path="res://objects/gate/gate.tscn" id="25_raubr"]
-[ext_resource type="PackedScene" path="res://objects/platform/moving_platform.tscn" id="26_moving"]
+[ext_resource type="PackedScene" uid="uid://jm5jjtt5tfsj" path="res://enemy/crab/elite_hunter_crab.tscn" id="25_yeejn"]
+[ext_resource type="PackedScene" uid="uid://bptbpry7anyx0" path="res://objects/platform/moving_platform.tscn" id="26_moving"]
+[ext_resource type="PackedScene" uid="uid://bodccm7jppcjv" path="res://enemy/barrel/elite_sniper.tscn" id="26_pxv3f"]
+[ext_resource type="PackedScene" uid="uid://cvq5vx1o24fpg" path="res://enemy/aggressive_tribe/elite_bombardier.tscn" id="26_yeejn"]
 [ext_resource type="PackedScene" uid="uid://ca1f6r665b1nr" path="res://objects/lever/lever.tscn" id="27_1bm0d"]
 [ext_resource type="PackedScene" path="res://objects/scene_transition/scene_transition.tscn" id="28_scene_transition"]
 [ext_resource type="PackedScene" uid="uid://bmic0j4cnluey" path="res://objects/checkpoint/checkpoint.tscn" id="35_0ao1h"]
@@ -325,30 +325,30 @@ open_duration = 3.0
 [node name="Mushroom1" parent="Enemies" instance=ExtResource("5_mushroom")]
 position = Vector2(350, 244)
 
-[node name="AggressiveTribe1" parent="Enemies" instance=ExtResource("6_aggressive")]
-position = Vector2(700, 457)
-
-[node name="Turtle1" parent="Enemies" instance=ExtResource("7_turtle")]
-position = Vector2(1000, 672)
-
 [node name="Mushroom2" parent="Enemies" instance=ExtResource("5_mushroom")]
 position = Vector2(1300, 323)
-
-[node name="Crab1" parent="Enemies" instance=ExtResource("8_crab")]
-position = Vector2(1500, 899)
-
-[node name="AggressiveTribe2" parent="Enemies" instance=ExtResource("6_aggressive")]
-position = Vector2(1800, 585)
-direction = -1
-
-[node name="Starfish1" parent="Enemies" instance=ExtResource("9_starfish")]
-position = Vector2(1900, 1026)
 
 [node name="EliteSpawnerMushroom" parent="Enemies" instance=ExtResource("11_elite_mushroom")]
 position = Vector2(1100, 388)
 
 [node name="EliteRicochetStarfish" parent="Enemies" instance=ExtResource("12_elite_starfish")]
 position = Vector2(1600, 881)
+
+[node name="EliteHunterCrab" parent="Enemies" instance=ExtResource("25_yeejn")]
+position = Vector2(1379, 893)
+
+[node name="EliteSniperBarrel" parent="Enemies" instance=ExtResource("26_pxv3f")]
+position = Vector2(1834, 591)
+direction = -1
+
+[node name="EliteBombardier" parent="Enemies" instance=ExtResource("26_yeejn")]
+position = Vector2(708, 455)
+
+[node name="EliteSpinyTurtle" parent="Enemies" instance=ExtResource("25_0ao1h")]
+position = Vector2(918, 670)
+
+[node name="EliteBombardier2" parent="Enemies" instance=ExtResource("26_yeejn")]
+position = Vector2(1689, 1006)
 
 [node name="Collectibles" type="Node2D" parent="."]
 
@@ -572,7 +572,7 @@ position = Vector2(169, 463)
 position = Vector2(351, 670)
 
 [node name="Checkpoint3" parent="." instance=ExtResource("35_0ao1h")]
-position = Vector2(1771, 592)
+position = Vector2(1859, 1024)
 
 [editable path="Platforms/MovingPlatform2"]
 [editable path="Platforms/MovingPlatform3"]
