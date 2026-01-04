@@ -180,12 +180,7 @@ func _check_changed_direction() -> void:
 func _on_changed_direction() -> void:
 	pass
 
-## ============================================================================
-## SURFACE TYPE DETECTION (TileMap-native, Kojima-approved)
-## ============================================================================
-## Uses TileSet custom data layer "surface_type" for data-driven detection.
-## Mark tiles in the TileSet editor with surface_type = "ice" for slippery floors.
-## This works with TileMapLayer - no StaticBody2D workarounds needed!
+## Surface type detection using TileSet custom data layer
 
 func _is_on_ice() -> bool:
 	## Check if standing on an ice surface using TileMap custom data

@@ -1,18 +1,7 @@
 class_name EnemyCharacter
 extends BaseCharacter
 
-## === BURN STATUS (Kojima-Balanced) ===
-## Enemies hit by flame blade burn for damage over time.
-## Design philosophy: Flame blade is a POWER, not a CHEAT.
-##   - It adds value (bonus tick damage) without trivializing combat
-##   - Regular mobs: 1 bonus damage over time (not instant kills)
-##   - Bosses: Reduced effect with resistance multipliers
-##   - Still requires player skill to hit and survive
-##
-## Balance math for 2 HP enemy (crab/turtle):
-##   - Blade hit: 1 damage → 1 HP left
-##   - Burn: 1 tick after 1s → dead
-##   - Total: 2 damage over 1.5s (player must survive that window)
+## Base class for all enemies with burn status support
 ##   - Without flame: 2 hits required (same result, flame saves 1 hit)
 ##
 ## Balance math for 3 HP enemy:
@@ -269,8 +258,6 @@ func _check_player_in_sight() -> void:
 			_on_player_not_in_sight()
 
 
-## === BURN STATUS EFFECTS (Kojima-Balanced) ===
-
 ## Set this enemy on fire. Called by flame blade projectile.
 ## Respects burn immunity and cooldown to prevent exploit spam.
 func ignite() -> void:
@@ -312,8 +299,6 @@ func _update_burn(delta: float) -> void:
 	if burn_tick_timer <= 0:
 		burn_tick_timer = BURN_TICK_RATE
 		
-		# === RESPECT INVINCIBILITY ===
-		# Kojima's Law: Every system respects every other system
 		if invincible:
 			# Still burning visually, but no damage while invincible
 			# This prevents cheese through attack animations
@@ -341,8 +326,7 @@ func _update_burn(delta: float) -> void:
 		if burn_particles:
 			burn_particles.emitting = false
 
-## Visual feedback for burn tick damage — subtle flash without full hurt animation
-## Kojima's Law: The player must FEEL the impact of their actions
+## Visual feedback for burn tick damage
 func _burn_tick_feedback() -> void:
 	# Quick red-orange flash on the sprite
 	if animated_sprite == null:

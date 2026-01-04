@@ -1,18 +1,7 @@
 extends Node
-## HitstopManager — Targeted Node Freeze (Godot-Native)
-## 
-## DESIGN PHILOSOPHY (Kojima's Law):
-## "If the player can't see it, they can't feel it."
-## Hitstop = VISUAL WEIGHT. The moment of impact must REGISTER.
-##
-## TECHNICAL APPROACH:
-## - Freeze INDIVIDUAL nodes, not Engine.time_scale
-## - Keep _physics_process running (platform tracking works)
-## - Zero velocity + pause animations = visual freeze
-## - Scripts check is_frozen() to skip their movement logic
-##
-## WHY NOT Engine.time_scale = 0?
-## - Breaks moving platforms (character falls off)
+
+## Targeted per-node freeze system for hit impact feedback
+## Freezes individual nodes without affecting Engine.time_scale
 ## - Breaks Timer nodes (unless process_always)
 ## - All-or-nothing: can't freeze attacker while victim recoils
 ##

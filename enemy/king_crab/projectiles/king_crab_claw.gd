@@ -1,24 +1,7 @@
 extends Area2D
 
-## King Crab Claw - DOUBLE WRAP ATTACK
-##
-## KOJIMA DESIGN: The claw is a PREDATOR that circles the arena.
-## 
-## SEQUENCE (C = crab position, launched left toward edge A, B = opposite edge):
-## 1. LAUNCH: C → A (normal speed, HIGH altitude, first pass)
-## 2. WRAP #1: Hit A edge → TELEPORT to B edge, DROP LOW, speed UP, START persistent shake
-## 3. PASS 2: B → A (fast, LOW altitude, ground scrape, world trembles)
-## 4. WRAP #2: Hit A edge → TELEPORT to B edge, RISE HIGH, STOP shake, start RETURN
-## 5. RETURN: B → C (seek crab directly, HIGH altitude, normal speed)
-##
-## HEIGHT MECHANICS:
-## - Pass 1 & Return: launch_y = -28 (high, from factory)
-## - Pass 2: low_y = -8 (ground scrape, offset +20 from launch_y)
-##
-## SHAKE MECHANICS:
-## - One-shot shake on wrap 1
-## - PERSISTENT shake during entire pass 2 (ground scrape terror)
-## - Shake stops when return begins
+## King Crab Claw - Double wrap boomerang attack
+## Circles arena twice then returns to crab
 
 signal returned_to_owner
 

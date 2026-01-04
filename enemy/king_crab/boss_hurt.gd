@@ -1,14 +1,7 @@
 extends EnemyState
 class_name BossHurtState
 
-## Boss-specific hurt state with POISE system
-## Kojima's Law: A boss that can be stun-locked is not a boss — it's a punching bag.
-##
-## POISE SYSTEM:
-## - Boss does NOT get knocked back by player attacks
-## - Boss does NOT have attack animations cancelled by damage
-## - Boss takes damage and shows hurt feedback, but CONTINUES attacking
-## - This creates a skill-based fight: you can't cheese, you must learn patterns
+## Boss hurt state with poise - takes damage but continues attacking
 
 ## Duration of hurt visual feedback (flash) without interrupting attack
 @export var hurt_flash_duration: float = 0.15

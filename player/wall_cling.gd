@@ -13,13 +13,7 @@ extends Player_State
 ## 2. FATIGUE PHASE: Accelerating slide as grip weakens (woah woah woah!)
 ## 3. SLIP PHASE: Terminal velocity reached, you're toast
 ##
-## Wall jump RESETS the grip timer - rewards aggressive, skilled play.
-##
-## VISUAL FEEDBACK (Kojima-approved):
-## - Wall scrape particles scale with slide intensity
-## - Claw sparks appear during slip phase (the "oh shit" indicator)
-## - All particles fly AWAY from wall for physical correctness
-## ============================================================================
+## Wall jump resets the grip timer.
 
 ## Particle effect scenes
 const WALL_SCRAPE_SCENE: PackedScene = preload("res://assets/effects/wall_scrape.tscn")

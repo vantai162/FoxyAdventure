@@ -174,8 +174,7 @@ func die() -> void:
 	else:
 		queue_free()
 
-## Enable hurt area for a limited time with VISUAL FEEDBACK
-## Kojima's Law: If the player can't hurt the boss, SHOW THEM WHY
+## Enable hurt area for a limited time
 func enable_hurt_for(seconds: float) -> void:
 	HurtArea.disabled = false
 	hurt_timer.start(seconds)

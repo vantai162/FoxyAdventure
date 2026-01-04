@@ -1,5 +1,5 @@
 # Visual Design Doctrine
-## The Kojima Protocol for FoxyAdventure
+## FoxyAdventure Visual Standards
 
 > "A visual effect that cannot be seen is not an effect. A visual effect that betrays the art style is a lie."
 
@@ -195,7 +195,7 @@ When particles don't show, check in order:
 
 ---
 
-## The Kojima Mantra
+## Design Principles
 
 > "Fitting showmanship, not impulsive showmanship."
 
@@ -243,4 +243,4 @@ Every effect should NOT:
 ---
 
 *"We make games. We make them visible. We make them pixel-perfect."*
-— The Kojima Protocol
+— FoxyAdventure Team

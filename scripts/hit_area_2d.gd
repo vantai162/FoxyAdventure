@@ -1,13 +1,7 @@
 extends Area2D
 class_name HitArea2D
 
-## HitArea2D — Offensive collision that deals damage to HurtArea2D
-## 
-## DESIGN (Kojima's Law): Every hit must REGISTER.
-## - Damage is dealt to victim's HurtArea2D
-## - Hitstop freezes the ATTACKER (this scene's owner)
-## - Camera shake punctuates the impact
-## - The victim handles their own freeze in hurt state
+## Offensive collision that deals damage to HurtArea2D
 
 @export var damage: int = 1
 
