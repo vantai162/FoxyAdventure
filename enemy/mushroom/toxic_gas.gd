@@ -16,6 +16,10 @@ func _ready():
 	tween.tween_property(sprite, "scale", Vector2(1.2, 1.2), move_duration)
 
 func _process(delta):
+	# Hitstop: freeze in place when hit lands
+	if HitstopManager.is_frozen(self):
+		return
+	
 	timer += delta
 
 	if moving:

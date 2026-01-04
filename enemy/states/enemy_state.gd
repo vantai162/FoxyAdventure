@@ -1,46 +1,51 @@
 extends FSMState
 class_name EnemyState
 
-## Hit feedback particles — blood/impact puff on damage
+## Hit feedback particles — impact puff on damage
 const HIT_PARTICLES_SCENE: PackedScene = preload("res://assets/effects/dust_puff.tscn")
 
-## Hitstop duration for enemy hits — brief freeze for impact weight
+## Hitstop duration — brief freeze for impact weight (40ms)
 const ENEMY_HITSTOP: float = 0.04
 
-func take_damage(_damage_dir, damage: int) -> void:
-	# POISE SYSTEM: Check for boss immunity flags
+
+## Take damage with poise system support
+## Bosses with knockback_immune/stun_immune flags resist knockback and stun-lock
+func take_damage(damage_dir: Vector2, damage: int) -> void:
+	# POISE SYSTEM: Check for boss immunity flags (safe access via get())
 	var is_knockback_immune: bool = obj.get("knockback_immune") == true
 	var is_stun_immune: bool = obj.get("stun_immune") == true
 	
-	# Apply knockback ONLY if not immune
+	# Apply knockback ONLY if not immune AND property exists
 	if not is_knockback_immune:
-		obj.velocity.x = _damage_dir.x * obj.knockback_force
+		var knockback_force: float = obj.get("knockback_force") if obj.get("knockback_force") != null else 0.0
+		obj.velocity.x = damage_dir.x * knockback_force
 	
 	# Apply damage (always)
 	obj.take_damage(damage)
-	_spawn_hit_feedback(_damage_dir)
+	_spawn_hit_feedback(damage_dir)
 	
-	# Change to hurt state ONLY if not stun immune
-	if not is_stun_immune:
+	# Change to hurt state ONLY if not stun immune AND hurt state exists
+	if not is_stun_immune and fsm.states.has("hurt"):
 		change_state(fsm.states.hurt)
+
 
 ## Spawn hit feedback — particles + hitstop for satisfying combat
 func _spawn_hit_feedback(damage_dir: Vector2) -> void:
-	# Hitstop for impact weight — FREEZE THIS ENEMY, not the world
+	# Hitstop — FREEZE THIS ENEMY, not the world
 	HitstopManager.freeze_node(obj, ENEMY_HITSTOP)
 	
-	# Hit particles burst — instantiate fresh to avoid shared resource mutation
-	var particles = HIT_PARTICLES_SCENE.instantiate()
+	# Particles — instantiate with unique material to avoid shared resource corruption
+	var particles: GPUParticles2D = HIT_PARTICLES_SCENE.instantiate()
 	particles.global_position = obj.global_position
-	# Create a UNIQUE material to avoid shared resource corruption
+	particles.emitting = true
+	
+	# Set direction on unique material copy
 	if particles.process_material:
-		var unique_mat = particles.process_material.duplicate()
+		var unique_mat: ParticleProcessMaterial = particles.process_material.duplicate()
 		unique_mat.direction = Vector3(-damage_dir.x, -0.5, 0)
 		particles.process_material = unique_mat
-	particles.emitting = true
+	
+	# Add to scene and auto-free after emission
 	get_tree().current_scene.add_child(particles)
-	get_tree().create_timer(0.6).timeout.connect(func():
-		if is_instance_valid(particles):
-			particles.queue_free()
-	)
+	particles.finished.connect(particles.queue_free)
 	

@@ -40,6 +40,10 @@ func hit(hurt_area):
 		hurt_area.take_damage(attack_direction, damage)
 
 func _process(delta: float) -> void:
+	# Hitstop: freeze in place when hit lands
+	if HitstopManager.is_frozen(self):
+		return
+	
 	lifetime += delta
 	
 	# Movement with deceleration

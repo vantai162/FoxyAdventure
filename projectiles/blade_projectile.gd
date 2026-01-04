@@ -201,6 +201,10 @@ func launch_aimed(angle: float, from_player: Player) -> void:
 	AudioManager.play_sound("blade_spinning", 15.0)
 
 func _physics_process(delta: float) -> void:
+	# Hitstop: freeze in place when hit lands
+	if HitstopManager.is_frozen(self):
+		return
+	
 	match current_state:
 		State.FLYING:
 			_update_flying(delta)

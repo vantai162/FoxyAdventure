@@ -62,6 +62,10 @@ func _on_grow_finished() -> void:
 
 
 func _physics_process(delta: float) -> void:
+	# Hitstop: freeze in place when hit lands
+	if HitstopManager.is_frozen(self):
+		return
+	
 	if is_exploding:
 		return
 	
