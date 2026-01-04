@@ -47,8 +47,8 @@ var _hurt_flash_tween: Tween = null  ## Prevents tween stacking on rapid hits
 signal health_changed
 
 func _ready():
-	add_to_group("boss")  # Mark as boss for special handling
-	add_to_group("enemy")
+	# "boss" group is set in warlordturtle.tscn
+	# "enemy" group is set by EnemyCharacter base class
 	super._ready()
 	fsm = FSM.new(self, $States, $States/Idle)
 

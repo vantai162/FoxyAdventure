@@ -3,6 +3,11 @@ extends EnemyCharacter
 ## King Crab Boss - Uses base class detection, simple phase system
 ## All tunable values centralized here for easy designer tweaking
 
+signal health_changed
+
+## Visual feedback state
+var _hurt_flash_tween: Tween = null  ## Prevents tween stacking on rapid hits
+
 @export_group("Phase System")
 @export var phase_2_threshold: float = 0.5  ## Health ratio to trigger phase 2
 @export var phase_2_speed_multiplier: float = 1.3  ## Speed boost in phase 2
@@ -71,15 +76,32 @@ var current_phase: int = 1
 
 func _ready() -> void:
 	add_to_group("king_crab")
-	add_to_group("enemy")
-	# max_health is set via @export in inspector (inherited from EnemyCharacter)
+	# "boss" group is set in king_crab.tscn
+	# "enemy" group is set by EnemyCharacter base class
 	fsm = FSM.new(self, $States, $States/Idle)
-	super._ready()  # Calls _init_ray_cast, _init_detect_player_area, _init_hurt_area
+	super._ready()  # Calls _init_ray_cast, _init_detect_player_area, _init_hurt_area, add_to_group("enemy")
 
+## Override take_damage to implement POISE system + proper visual feedback
+## Boss takes damage but is NOT knocked back or interrupted
 func take_damage(damage: int) -> void:
-	super.take_damage(damage)
+	super.take_damage(damage)  # Handles health -= damage AND plays hurt sound
+	health_changed.emit()
+	
+	# Visual feedback: quick red flash (kill previous tween to prevent stacking)
+	if animated_sprite:
+		if _hurt_flash_tween and _hurt_flash_tween.is_valid():
+			_hurt_flash_tween.kill()
+		_hurt_flash_tween = create_tween()
+		_hurt_flash_tween.tween_property(animated_sprite, "modulate", Color(1.5, 0.5, 0.5, 1.0), 0.05)
+		_hurt_flash_tween.tween_property(animated_sprite, "modulate", Color.WHITE, 0.15)
+	
+	# Phase transition check
 	if current_phase == 1 and health <= max_health * phase_2_threshold:
 		_enter_phase_2()
+	
+	# Death check
+	if health <= 0:
+		die()
 
 func _enter_phase_2() -> void:
 	current_phase = 2
