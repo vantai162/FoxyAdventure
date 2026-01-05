@@ -7,7 +7,7 @@ func _ready():
 	call_deferred("setup")
 	
 func setup():
-	player = get_tree().get_first_node_in_group("player")
+	player = GameManager.player
 	if player and player.inventory:
 		var initial_coin = player.inventory.AmountItem.get("Coin", 0)
 		coin_label.text = str(initial_coin)

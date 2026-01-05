@@ -200,6 +200,10 @@ z_index = 5
 position = Vector2(3928, -151)
 instruction_text = "Có vẻ công tắc ở gần đây"
 
+[node name="Barrel" parent="Enemy" instance=ExtResource("22_1xjcy")]
+position = Vector2(4525, -467)
+direction = -1
+
 [node name="Potion" type="Node2D" parent="."]
 
 [node name="Door" parent="." instance=ExtResource("19_3noe3")]
@@ -308,10 +312,6 @@ shape = SubResource("RectangleShape2D_dmtgj")
 
 [node name="PlayerSpawn" type="Marker2D" parent="."]
 position = Vector2(-413.595, -272.681)
-
-[node name="Barrel" parent="." instance=ExtResource("22_1xjcy")]
-position = Vector2(4525, -467)
-direction = -1
 
 [connection signal="lever_activated" from="Lever" to="Gate" method="open_gate"]
 [connection signal="lever_deactivated" from="Lever" to="Gate" method="close_gate"]
