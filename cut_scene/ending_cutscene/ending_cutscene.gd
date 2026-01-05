@@ -86,6 +86,11 @@ func _ready():
 	# Nếu giết quá 10 mạng -> BAD ENDING
 	if GameManager.kill_count > 0:
 		final_ending_type = "BAD"
+		if GameManager.skin_manager and GameManager.skin_manager.cur_skin_data.has("SinnerFoxy"):
+			GameManager.skin_manager.cur_skin_data["SinnerFoxy"].UnlockToBuy()
+			GameManager.skin_manager._save_skin_data()
+			print("Skin SinnerFoxy đã được unlock sau bad ending!")
+		
 	
 	# Bắt đầu diễn hoạt theo kết quả đã check
 	start_captain_entrance(final_ending_type)
@@ -426,7 +431,7 @@ func finish_game():
 		t.tween_property(bot_bar, "position:y", half_height, 3.0)
 		t.tween_property(bot_bar, "size:y", half_height, 3.0)
 		t.tween_property(global_light, "color", Color.BLACK, 3.0)
-		t.tween_property(bgm_player, "volume_db", -80, 3.0)
+		#t.tween_property(bgm_player, "volume_db", -80, 3.0)
 		await t.finished
 	
 	if bad_effects.visible:
@@ -436,7 +441,7 @@ func finish_game():
 
 func show_credits():
 	var credit_label = Label.new()
-	credit_label.text = "FOXY ADVENTURE - Voyage of Oblivion\n\nFrom Group 10-UIT With Love\nHoàng Văn Tài\nVõ Trung Tín\nPhan Phú Thọ\nVõ Minh Tiến\nNguyễn Duy Tường Thi\n\nSpecial thanks to:\nAnh Mentor Hưng Trịnh\nCác thầy cô, anh chị trainers tại VNG\nVà quan trọng nhất là các bạn:người chơi"
+	credit_label.text = "FOXY ADVENTURE - Voyage of Oblivion\n\nFrom Group 10-UIT With Love\nHoàng Văn Tài\nVõ Trung Tín\nPhan Phú Thọ\nVõ Minh Tiến\nNguyễn Duy Tường Thi\n\nSpecial thanks to:\nAnh Mentor Trịnh Bảo Hưng\nCác thầy cô, anh chị trainers tại VNG\nVà quan trọng nhất là các bạn:người chơi"
 	credit_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	credit_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	credit_label.add_theme_font_size_override("font_size", 32)

@@ -31,6 +31,7 @@ Captain: (Gầm lên) TRÁI TIM BIỂN CẢ LÀ CỦA TA!
 # [KỊCH TÍNH]
 # [SIGNAL] warlord_arrive
 [signal arg="warlord_arrive"]
+audio "res://assets/sounds/King Dice Attack Laugh (Nr. 2 Cuphead Sound) - Sound Effect for editing.wav"
 
 Warlord: [speed=0.5]Không đâu, Thuyền trưởng.
 
@@ -64,6 +65,7 @@ Foxy: [speed=0.8]Bởi vì ông không chiến đấu vì điều gì ngoài lò
 # [CAO TRÀO]
 # [SIGNAL] destroy_hat
 [signal arg="destroy_hat"]
+audio "res://assets/sounds/hurt.wav"
 [wait time="1.0"]
 
 # Mũ vỡ – sức mạnh tan biến

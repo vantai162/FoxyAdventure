@@ -1,4 +1,5 @@
 # Bối cảnh: Mưa bão. Captain đứng nhìn xác Warlord Turtle.
+audio music "res://assets/sounds/54921__suonho__ambienta-soundtrack_metaphisical-death.wav" [sync=""]
 
 Captain: (Cười khẽ) Hừm… không ngờ đấy, Foxy.
 audio "res://assets/sounds/arrr-pirates.mp3" [volume="6.0"]
@@ -23,6 +24,7 @@ Foxy: [portrait=idle] Quyền lực tuyệt đối sao...?
 Foxy: [portrait=idle] Nghe thú vị đấy.
 
 [signal arg="foxy_wear_hat"]
+audio "res://assets/sounds/King Dice Attack Laugh (Nr. 3 Cuphead Sound) - Sound Effect for editing.wav"
 # Hiệu ứng: Chớp đỏ, nhạc Boss nổi lên
 
 Foxy: [portrait=idle] Lệnh của ngài là mệnh lệnh của tôi, Thuyền trưởng.

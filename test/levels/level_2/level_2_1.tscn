@@ -197,8 +197,8 @@ position = Vector2(433, 49)
 
 [node name="Sign" parent="Enemy" instance=ExtResource("22_huoje")]
 z_index = 5
-position = Vector2(3927, -153)
-instruction_text = "Cổng bị khóa. Có vẻ công tắc ở gần đây..."
+position = Vector2(3928, -151)
+instruction_text = "Có vẻ công tắc ở gần đây"
 
 [node name="Potion" type="Node2D" parent="."]
 
