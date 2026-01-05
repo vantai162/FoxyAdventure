@@ -13,6 +13,7 @@ var boss_phase2_healthbar: TextureProgressBar
 
 ## Phase/ending tracking
 var endgame: bool = false
+var phase2_initialized: bool = false
 
 func _on_stage_ready() -> void:
 	# Stop any previous music - boss arena is silent until fight
@@ -34,7 +35,8 @@ func _on_stage_process(_delta: float) -> void:
 
 func _update_boss_state() -> void:
 	# Handle phase 2 transition
-	if boss.current_phase == 2 and not endgame:
+	if boss.current_phase == 2 and not endgame and not phase2_initialized:
+		phase2_initialized = true # Chặn không cho chạy lại vào frame sau
 		boss_phase2_healthbar = $CanvasLayer/KingPhase2HealthBar
 		boss_phase2_healthbar.setup()
 		boss_phase2_healthbar.visible = true
