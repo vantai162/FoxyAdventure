@@ -30,6 +30,6 @@ func conduct_effect() -> void:
 		gm.player.set_health(max(cur_h, gm.player.get_max_health()))
 	gm.player.health_changed.emit()
 	AudioManager.play_sound("heal",20.0)
-	
+	gm.save_checkpoint_data()
 	# Optional: ghi log
 	print("HPUp applied: +", 1, " to player.max_health -> ", gm.player.max_health)

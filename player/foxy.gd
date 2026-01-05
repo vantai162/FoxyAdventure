@@ -550,6 +550,7 @@ func save_state() -> Dictionary:
 	}
 
 func load_state(data: Dictionary) -> void:
+	print("Load state: ",data)
 	if data.has("position"):
 		var pos_array = data["position"]
 		global_position = Vector2(pos_array[0], pos_array[1])

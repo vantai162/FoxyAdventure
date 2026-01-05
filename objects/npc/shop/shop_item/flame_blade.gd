@@ -18,7 +18,7 @@ func conduct_effect() -> void:
 	
 	# Unlock the flame blade
 	player.has_unlocked_flame_blade = true
-	
+	GameManager.save_checkpoint_data()
 	# Celebration feedback — this is a BIG upgrade
 	AudioManager.play_sound("power_up", 15.0)
 	
