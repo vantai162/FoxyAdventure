@@ -37,6 +37,7 @@ var original_sky_texture: Texture2D
 
 # --- CẤU HÌNH ---
 var stop_distance = 80.0 
+var recorded_ending_type: String = "GOOD" # [ADDED] Biến lưu loại ending để hiển thị Text
 
 func _ready():
 	if GameManager.current_stage: GameManager.current_stage.queue_free()
@@ -90,7 +91,8 @@ func _ready():
 			GameManager.skin_manager.cur_skin_data["SinnerFoxy"].UnlockToBuy()
 			GameManager.skin_manager._save_skin_data()
 			print("Skin SinnerFoxy đã được unlock sau bad ending!")
-		
+	
+	recorded_ending_type = final_ending_type # [ADDED] Lưu lại kết quả
 	
 	# Bắt đầu diễn hoạt theo kết quả đã check
 	start_captain_entrance(final_ending_type)
@@ -435,9 +437,46 @@ func finish_game():
 		await t.finished
 	
 	if bad_effects.visible:
-		await get_tree().create_timer(3.0).timeout
+		bad_effects.visible = false
+	
+	# --- [ADDED] HIỆN TITLE ENDING TRƯỚC KHI CHẠY CHỮ ---
+	await play_ending_title_card()
+	# ----------------------------------------------------
 		
 	show_credits()
+
+# --- [ADDED] HÀM HIỆN TEXT ENDING ---
+func play_ending_title_card():
+	var title_label = Label.new()
+	
+	# Cấu hình text
+	if recorded_ending_type == "BAD":
+		title_label.text = "- BAD ENDING -"
+		title_label.modulate = Color(0.8, 0.0, 0.0, 0.0) # Đỏ thẫm, ẩn
+	else:
+		title_label.text = "- GOOD ENDING -"
+		title_label.modulate = Color(1.0, 0.84, 0.0, 0.0) # Vàng kim, ẩn
+
+	# Cấu hình Font và Vị trí
+	title_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	title_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	title_label.add_theme_font_size_override("font_size", 64) 
+	
+	$CinematicUI.add_child(title_label)
+	
+	# Đặt giữa màn hình
+	var screen_size = get_viewport_rect().size
+	title_label.size = Vector2(screen_size.x, 200)
+	title_label.position = Vector2(0, (screen_size.y / 2) - 100)
+	
+	# Animation Fade In -> Wait -> Fade Out
+	var t = create_tween()
+	t.tween_property(title_label, "modulate:a", 1.0, 2.0)
+	t.tween_interval(2.0)
+	t.tween_property(title_label, "modulate:a", 0.0, 1.5)
+	
+	await t.finished
+	title_label.queue_free()
 
 func show_credits():
 	var credit_label = Label.new()

@@ -20,7 +20,7 @@
 [ext_resource type="PackedScene" uid="uid://bmgv5cgan4yt" path="res://enemy/mushroom/mushroom.tscn" id="6_mushroom"]
 [ext_resource type="PackedScene" uid="uid://8koby8md4sgg" path="res://scenes/game_screen/blade_ui.tscn" id="7_cdhsq"]
 [ext_resource type="PackedScene" uid="uid://m0ec1cyfshdq" path="res://objects/scroll/scroll.tscn" id="9_3j2yj"]
-[ext_resource type="PackedScene" uid="uid://d1twwiutipd8r" path="res://objects/pressure_plate/pressure_plate.tscn" id="9_sb7o5"]
+[ext_resource type="PackedScene" path="res://objects/pressure_plate/pressure_plate.tscn" id="9_sb7o5"]
 [ext_resource type="PackedScene" uid="uid://ctr1b8p1h6p8y" path="res://objects/gate/gate.tscn" id="10_343a2"]
 [ext_resource type="PackedScene" uid="uid://jm5jjtt5tfsj" path="res://enemy/crab/elite_hunter_crab.tscn" id="10_elite_crab"]
 [ext_resource type="PackedScene" uid="uid://dumayxma7am7b" path="res://enemy/turtle/elite_spiny_turtle.tscn" id="11_elite_turtle"]
