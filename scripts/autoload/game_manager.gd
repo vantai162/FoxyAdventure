@@ -27,7 +27,7 @@ func _ready() -> void:
 	key_manager.load_key()
 	if(key_manager.KeyDict.size()<=0):
 		key_manager._get_key_dictionary_from_input_map()
-	spawnStartfromSavefile()
+	load_checkpoint_data()
 	skin_manager._load_skin_data_from_save()
 	
 	#Dùng cho sau này có tính đến đoạn continue hay new game
